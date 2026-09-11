@@ -1,0 +1,3337 @@
+[
+  {
+    "name": "rawConditionShortLabel",
+    "file": "src/features/core/utilities.js",
+    "originalLine": 20628
+  },
+  {
+    "name": "rawConditionFilterLabel",
+    "file": "src/features/core/utilities.js",
+    "originalLine": 20634
+  },
+  {
+    "name": "safeCardId",
+    "file": "src/features/core/utilities.js",
+    "originalLine": 20649
+  },
+  {
+    "name": "getRecentlyViewedEntries",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20653
+  },
+  {
+    "name": "rememberRecentlyViewed",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20681
+  },
+  {
+    "name": "getRecentlyViewedCards",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20694
+  },
+  {
+    "name": "getRecentlyViewedCardEntries",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20701
+  },
+  {
+    "name": "recentViewedTimeLabel",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20708
+  },
+  {
+    "name": "getFavoriteIds",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20742
+  },
+  {
+    "name": "saveFavoriteIds",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20767
+  },
+  {
+    "name": "isFavorite",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20787
+  },
+  {
+    "name": "toggleFavorite",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20791
+  },
+  {
+    "name": "favoriteCards",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20804
+  },
+  {
+    "name": "copyInquiryList",
+    "file": "src/features/cards/favorites.js",
+    "originalLine": 20809
+  },
+  {
+    "name": "orderRpcUnavailable",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20846
+  },
+  {
+    "name": "normalizeOrderGroups",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20851
+  },
+  {
+    "name": "loadCollectionGameOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20859
+  },
+  {
+    "name": "collectionCustomGameOrderValue",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20884
+  },
+  {
+    "name": "saveCollectionGameOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20890
+  },
+  {
+    "name": "loadCollectionCardOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20928
+  },
+  {
+    "name": "collectionCustomOrderValue",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20953
+  },
+  {
+    "name": "saveCollectionCardOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20959
+  },
+  {
+    "name": "loadInventoryGameOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 20993
+  },
+  {
+    "name": "inventoryCustomGameOrderValue",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21018
+  },
+  {
+    "name": "saveInventoryGameOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21024
+  },
+  {
+    "name": "loadInventoryCardOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21052
+  },
+  {
+    "name": "inventoryCustomOrderValue",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21077
+  },
+  {
+    "name": "saveInventoryCardOrder",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21083
+  },
+  {
+    "name": "runWhenIdle",
+    "file": "src/features/inventory/ordering.js",
+    "originalLine": 21128
+  },
+  {
+    "name": "isMobileOwnerBlocked",
+    "file": "src/services/auth.js",
+    "originalLine": 21143
+  },
+  {
+    "name": "isOwnerMode",
+    "file": "src/services/auth.js",
+    "originalLine": 21147
+  },
+  {
+    "name": "canManageCollectionOrder",
+    "file": "src/services/auth.js",
+    "originalLine": 21153
+  },
+  {
+    "name": "requireCollectionOrderOwner",
+    "file": "src/services/auth.js",
+    "originalLine": 21157
+  },
+  {
+    "name": "setCollectionCollageExportBusy",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21164
+  },
+  {
+    "name": "collageScopeLabel",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21177
+  },
+  {
+    "name": "collageCardsForCurrentScope",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21181
+  },
+  {
+    "name": "collageCardPriceLabel",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21186
+  },
+  {
+    "name": "collectionCollageRoundedRect",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21197
+  },
+  {
+    "name": "collectionCollageDrawImageContain",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21208
+  },
+  {
+    "name": "collectionCollageDrawLeaf",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21219
+  },
+  {
+    "name": "collectionCollageDrawVineCorner",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21233
+  },
+  {
+    "name": "collectionCollageDrawTrophy",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21265
+  },
+  {
+    "name": "collectionCollageDrawCompass",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21295
+  },
+  {
+    "name": "collectionCollageDrawArch",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21315
+  },
+  {
+    "name": "collectionCollageDrawThemeBackground",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21330
+  },
+  {
+    "name": "loadImageForCollectionCollage",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21517
+  },
+  {
+    "name": "chooseCollectionCollageColumns",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21550
+  },
+  {
+    "name": "collectionCollageAspectSize",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21573
+  },
+  {
+    "name": "chooseCollectionCollageGrid",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21582
+  },
+  {
+    "name": "chooseCollectionCollageGridWithCenterGap",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21600
+  },
+  {
+    "name": "createCollectionCollageQrCode",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21663
+  },
+  {
+    "name": "collagePickerCards",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21727
+  },
+  {
+    "name": "collageResolveSelected",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21730
+  },
+  {
+    "name": "collageMoveSelected",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21734
+  },
+  {
+    "name": "setupCollageCardPicker",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21740
+  },
+  {
+    "name": "closeCollectionCollageSettingsModal",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21809
+  },
+  {
+    "name": "openCollectionCollageSettingsModal",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21814
+  },
+  {
+    "name": "exportCollectionCollage",
+    "file": "src/features/media/collage.js",
+    "originalLine": 21948
+  },
+  {
+    "name": "ensureCardLookup",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22293
+  },
+  {
+    "name": "invalidateCardLookup",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22300
+  },
+  {
+    "name": "getCardById",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22304
+  },
+  {
+    "name": "getCardIndexById",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22310
+  },
+  {
+    "name": "getDetailsCard",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22319
+  },
+  {
+    "name": "replaceCardInMemory",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22323
+  },
+  {
+    "name": "verifyOwnerSession",
+    "file": "src/services/auth.js",
+    "originalLine": 22332
+  },
+  {
+    "name": "clearOwnerOnlyClientState",
+    "file": "src/services/auth.js",
+    "originalLine": 22343
+  },
+  {
+    "name": "cleanupInventoryRenderListeners",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22360
+  },
+  {
+    "name": "setupInventoryStickyBarVisibility",
+    "file": "src/features/cards/repository.js",
+    "originalLine": 22371
+  },
+  {
+    "name": "applyOwnerMode",
+    "file": "src/services/auth.js",
+    "originalLine": 22400
+  },
+  {
+    "name": "routeBase",
+    "file": "src/app/navigation.js",
+    "originalLine": 22476
+  },
+  {
+    "name": "shouldHighlightMore",
+    "file": "src/app/navigation.js",
+    "originalLine": 22481
+  },
+  {
+    "name": "isInventoryRoute",
+    "file": "src/app/navigation.js",
+    "originalLine": 22511
+  },
+  {
+    "name": "goToRoute",
+    "file": "src/app/navigation.js",
+    "originalLine": 22515
+  },
+  {
+    "name": "goToRouteFromHomeTop",
+    "file": "src/app/navigation.js",
+    "originalLine": 22521
+  },
+  {
+    "name": "refreshCurrentListingRoute",
+    "file": "src/app/navigation.js",
+    "originalLine": 22535
+  },
+  {
+    "name": "isOwnerOnlyRoute",
+    "file": "src/app/navigation.js",
+    "originalLine": 22544
+  },
+  {
+    "name": "requireOwner",
+    "file": "src/services/auth.js",
+    "originalLine": 22548
+  },
+  {
+    "name": "confirmOwnerAction",
+    "file": "src/services/auth.js",
+    "originalLine": 22555
+  },
+  {
+    "name": "refreshOwnerSession",
+    "file": "src/services/auth.js",
+    "originalLine": 22560
+  },
+  {
+    "name": "ownerPostHandoffNonce",
+    "file": "src/services/auth.js",
+    "originalLine": 22585
+  },
+  {
+    "name": "currentOwnerPostHandoffNonce",
+    "file": "src/services/auth.js",
+    "originalLine": 22590
+  },
+  {
+    "name": "removeOwnerPostHandoffParam",
+    "file": "src/services/auth.js",
+    "originalLine": 22595
+  },
+  {
+    "name": "receiveOwnerPostGeneratorHandoff",
+    "file": "src/services/auth.js",
+    "originalLine": 22607
+  },
+  {
+    "name": "showToast",
+    "file": "src/ui/notifications.js",
+    "originalLine": 22735
+  },
+  {
+    "name": "soldDateInputValue",
+    "file": "src/ui/notifications.js",
+    "originalLine": 22742
+  },
+  {
+    "name": "soldDateToIso",
+    "file": "src/ui/notifications.js",
+    "originalLine": 22752
+  },
+  {
+    "name": "formatSoldDate",
+    "file": "src/ui/notifications.js",
+    "originalLine": 22759
+  },
+  {
+    "name": "hasListedPrice",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22766
+  },
+  {
+    "name": "formatRoundedPrice",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22773
+  },
+  {
+    "name": "fmtMoney",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22776
+  },
+  {
+    "name": "fmtMYR",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22779
+  },
+  {
+    "name": "fmtSGD",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22782
+  },
+  {
+    "name": "defaultListingPerPage",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22793
+  },
+  {
+    "name": "getSavedListingPerPage",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22797
+  },
+  {
+    "name": "setSavedListingPerPage",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22806
+  },
+  {
+    "name": "safeListingPage",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22814
+  },
+  {
+    "name": "getPriceCurrencyPreference",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22819
+  },
+  {
+    "name": "setPriceCurrencyPreference",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22828
+  },
+  {
+    "name": "syncCurrencyEverywhere",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22836
+  },
+  {
+    "name": "getInventoryViewMode",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22880
+  },
+  {
+    "name": "setInventoryViewMode",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22888
+  },
+  {
+    "name": "isMobileInventoryLayout",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22894
+  },
+  {
+    "name": "effectiveInventoryViewMode",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22898
+  },
+  {
+    "name": "cardCurrencyValue",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22905
+  },
+  {
+    "name": "formatCurrencyValue",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22911
+  },
+  {
+    "name": "orderedCardPrices",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22917
+  },
+  {
+    "name": "cardUsdListedPrice",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22927
+  },
+  {
+    "name": "isHighValueDirectContactCard",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22933
+  },
+  {
+    "name": "highValueContactAlertHTML",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22940
+  },
+  {
+    "name": "cardPriceDisplayHTML",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22950
+  },
+  {
+    "name": "detailPriceDisplayHTML",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22965
+  },
+  {
+    "name": "escapeHtml",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22978
+  },
+  {
+    "name": "uid",
+    "file": "src/features/cards/pricing.js",
+    "originalLine": 22979
+  },
+  {
+    "name": "cardMutationReturnColumns",
+    "file": "src/services/catalogue.js",
+    "originalLine": 22983
+  },
+  {
+    "name": "mergeOwnerOnlyCardFields",
+    "file": "src/services/catalogue.js",
+    "originalLine": 22989
+  },
+  {
+    "name": "dbToCard",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23008
+  },
+  {
+    "name": "cardToDb",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23057
+  },
+  {
+    "name": "optionalColumnUnavailable",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23104
+  },
+  {
+    "name": "fetchPublicCards",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23115
+  },
+  {
+    "name": "ensureCardImagesLoaded",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23163
+  },
+  {
+    "name": "probeOwnerCardCapabilities",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23190
+  },
+  {
+    "name": "loadCards",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23212
+  },
+  {
+    "name": "sanitizeOwnerTags",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23284
+  },
+  {
+    "name": "sanitizeOwnerPrivateNotes",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23298
+  },
+  {
+    "name": "fetchOwnerPrivateMeta",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23302
+  },
+  {
+    "name": "newCardImageVariantKey",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23324
+  },
+  {
+    "name": "fetchOwnerCardImageVariants",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23330
+  },
+  {
+    "name": "saveOwnerCardImageVariants",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23355
+  },
+  {
+    "name": "saveOwnerPrivateMeta",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23420
+  },
+  {
+    "name": "setCardLifecycle",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23448
+  },
+  {
+    "name": "deleteListingPermanently",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23467
+  },
+  {
+    "name": "errorText",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23581
+  },
+  {
+    "name": "cardWriteErrorText",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23586
+  },
+  {
+    "name": "optionalCardWriteColumnUnavailable",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23615
+  },
+  {
+    "name": "createCardStorage",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23631
+  },
+  {
+    "name": "updateCardStorage",
+    "file": "src/services/catalogue.js",
+    "originalLine": 23701
+  },
+  {
+    "name": "giveawayFromDb",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23770
+  },
+  {
+    "name": "collectSocialLinksHtml",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23821
+  },
+  {
+    "name": "collectSocialPostLines",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23832
+  },
+  {
+    "name": "safePublicProfileUrl",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23842
+  },
+  {
+    "name": "recordGiveawayEngagement",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23856
+  },
+  {
+    "name": "recordGiveawayPageViewOnce",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23887
+  },
+  {
+    "name": "fetchGiveawayPerformance",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23896
+  },
+  {
+    "name": "loadGiveaways",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 23923
+  },
+  {
+    "name": "saveGiveaway",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24052
+  },
+  {
+    "name": "deleteGiveaway",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24213
+  },
+  {
+    "name": "isPastGiveawayWinner",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24221
+  },
+  {
+    "name": "isGiveawayHidden",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24225
+  },
+  {
+    "name": "giveawayVisibleToCurrentViewer",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24229
+  },
+  {
+    "name": "giveawayWinnerDateLabel",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24233
+  },
+  {
+    "name": "markGiveawayAsGaveAway",
+    "file": "src/features/content/giveaways-data.js",
+    "originalLine": 24244
+  },
+  {
+    "name": "showcaseFromDb",
+    "file": "src/features/content/showcase-data.js",
+    "originalLine": 24292
+  },
+  {
+    "name": "loadShowcases",
+    "file": "src/features/content/showcase-data.js",
+    "originalLine": 24307
+  },
+  {
+    "name": "saveShowcase",
+    "file": "src/features/content/showcase-data.js",
+    "originalLine": 24323
+  },
+  {
+    "name": "deleteShowcase",
+    "file": "src/features/content/showcase-data.js",
+    "originalLine": 24340
+  },
+  {
+    "name": "analyticsExclusionCookieValue",
+    "file": "src/services/analytics.js",
+    "originalLine": 24355
+  },
+  {
+    "name": "hasAnalyticsExclusionLocalStorage",
+    "file": "src/services/analytics.js",
+    "originalLine": 24370
+  },
+  {
+    "name": "hasAnalyticsExclusionCookie",
+    "file": "src/services/analytics.js",
+    "originalLine": 24378
+  },
+  {
+    "name": "isAnalyticsExcludedDevice",
+    "file": "src/services/analytics.js",
+    "originalLine": 24382
+  },
+  {
+    "name": "setAnalyticsExcludedDevice",
+    "file": "src/services/analytics.js",
+    "originalLine": 24388
+  },
+  {
+    "name": "analyticsExclusionTokenFromUrl",
+    "file": "src/services/analytics.js",
+    "originalLine": 24419
+  },
+  {
+    "name": "removeAnalyticsExclusionTokenFromUrl",
+    "file": "src/services/analytics.js",
+    "originalLine": 24429
+  },
+  {
+    "name": "consumeAnalyticsExclusionLinkIfPresent",
+    "file": "src/services/analytics.js",
+    "originalLine": 24440
+  },
+  {
+    "name": "newAnalyticsExclusionToken",
+    "file": "src/services/analytics.js",
+    "originalLine": 24465
+  },
+  {
+    "name": "newAnalyticsExclusionPairingCode",
+    "file": "src/services/analytics.js",
+    "originalLine": 24476
+  },
+  {
+    "name": "analyticsExclusionPairingUrl",
+    "file": "src/services/analytics.js",
+    "originalLine": 24483
+  },
+  {
+    "name": "analyticsPairingCodeFromUrl",
+    "file": "src/services/analytics.js",
+    "originalLine": 24489
+  },
+  {
+    "name": "removeAnalyticsPairingCodeFromUrl",
+    "file": "src/services/analytics.js",
+    "originalLine": 24498
+  },
+  {
+    "name": "consumeAnalyticsExclusionQrIfPresent",
+    "file": "src/services/analytics.js",
+    "originalLine": 24512
+  },
+  {
+    "name": "createAnalyticsExclusionPairingCode",
+    "file": "src/services/analytics.js",
+    "originalLine": 24527
+  },
+  {
+    "name": "consumeAnalyticsExclusionPairingCode",
+    "file": "src/services/analytics.js",
+    "originalLine": 24549
+  },
+  {
+    "name": "createAnalyticsExclusionLink",
+    "file": "src/services/analytics.js",
+    "originalLine": 24570
+  },
+  {
+    "name": "getVisitorId",
+    "file": "src/services/analytics.js",
+    "originalLine": 24591
+  },
+  {
+    "name": "cancelPendingCardViewQualification",
+    "file": "src/services/analytics.js",
+    "originalLine": 24604
+  },
+  {
+    "name": "sendQualifiedCardViewEvent",
+    "file": "src/services/analytics.js",
+    "originalLine": 24608
+  },
+  {
+    "name": "recordCardViewEvent",
+    "file": "src/services/analytics.js",
+    "originalLine": 24657
+  },
+  {
+    "name": "engagementDedupeWindowMs",
+    "file": "src/services/analytics.js",
+    "originalLine": 24685
+  },
+  {
+    "name": "readEngagementDedupe",
+    "file": "src/services/analytics.js",
+    "originalLine": 24691
+  },
+  {
+    "name": "shouldSkipEngagementEvent",
+    "file": "src/services/analytics.js",
+    "originalLine": 24700
+  },
+  {
+    "name": "recordCardEngagement",
+    "file": "src/services/analytics.js",
+    "originalLine": 24718
+  },
+  {
+    "name": "readOverviewPhotoInteractionDedupe",
+    "file": "src/services/analytics.js",
+    "originalLine": 24761
+  },
+  {
+    "name": "overviewPhotoInteractionAlreadyRecorded",
+    "file": "src/services/analytics.js",
+    "originalLine": 24770
+  },
+  {
+    "name": "markOverviewPhotoInteractionRecorded",
+    "file": "src/services/analytics.js",
+    "originalLine": 24777
+  },
+  {
+    "name": "recordOverviewPhotoInteraction",
+    "file": "src/services/analytics.js",
+    "originalLine": 24785
+  },
+  {
+    "name": "fetchOverviewPhotoInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 24825
+  },
+  {
+    "name": "fetchCardEngagementInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 24853
+  },
+  {
+    "name": "freshQualifiedViewCount",
+    "file": "src/services/analytics.js",
+    "originalLine": 24885
+  },
+  {
+    "name": "freshQualifiedViewDisplay",
+    "file": "src/services/analytics.js",
+    "originalLine": 24891
+  },
+  {
+    "name": "refreshQualifiedViewTotals",
+    "file": "src/services/analytics.js",
+    "originalLine": 24898
+  },
+  {
+    "name": "saveSaleConversionSnapshot",
+    "file": "src/services/analytics.js",
+    "originalLine": 24942
+  },
+  {
+    "name": "fetchSaleConversionSnapshots",
+    "file": "src/services/analytics.js",
+    "originalLine": 24979
+  },
+  {
+    "name": "insightInterestScore",
+    "file": "src/services/analytics.js",
+    "originalLine": 24998
+  },
+  {
+    "name": "captureSaleConversionSnapshot",
+    "file": "src/services/analytics.js",
+    "originalLine": 25011
+  },
+  {
+    "name": "getAnalyticsSessionId",
+    "file": "src/services/analytics.js",
+    "originalLine": 25081
+  },
+  {
+    "name": "recordAnalyticsSession",
+    "file": "src/services/analytics.js",
+    "originalLine": 25094
+  },
+  {
+    "name": "incrementAnalyticsSessionQualifiedView",
+    "file": "src/services/analytics.js",
+    "originalLine": 25116
+  },
+  {
+    "name": "sessionDurationPayload",
+    "file": "src/services/analytics.js",
+    "originalLine": 25142
+  },
+  {
+    "name": "recordSessionActiveSeconds",
+    "file": "src/services/analytics.js",
+    "originalLine": 25154
+  },
+  {
+    "name": "beaconSessionActiveSeconds",
+    "file": "src/services/analytics.js",
+    "originalLine": 25178
+  },
+  {
+    "name": "sessionDurationHeartbeatTick",
+    "file": "src/services/analytics.js",
+    "originalLine": 25225
+  },
+  {
+    "name": "startSessionDurationTracking",
+    "file": "src/services/analytics.js",
+    "originalLine": 25247
+  },
+  {
+    "name": "formatActiveDuration",
+    "file": "src/services/analytics.js",
+    "originalLine": 25262
+  },
+  {
+    "name": "normalizedInventorySearchTerm",
+    "file": "src/services/analytics.js",
+    "originalLine": 25277
+  },
+  {
+    "name": "scheduleInventorySearchAnalytics",
+    "file": "src/services/analytics.js",
+    "originalLine": 25281
+  },
+  {
+    "name": "currentVisitorTrafficSource",
+    "file": "src/services/analytics.js",
+    "originalLine": 25311
+  },
+  {
+    "name": "currentVisitorDeviceType",
+    "file": "src/services/analytics.js",
+    "originalLine": 25330
+  },
+  {
+    "name": "recordWebsiteVisit",
+    "file": "src/services/analytics.js",
+    "originalLine": 25349
+  },
+  {
+    "name": "fetchWebsiteVisitSeries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25419
+  },
+  {
+    "name": "fetchWebsiteVisitCountries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25445
+  },
+  {
+    "name": "fetchWebsiteVisitAccessTime",
+    "file": "src/services/analytics.js",
+    "originalLine": 25477
+  },
+  {
+    "name": "fetchWebsiteVisitDevices",
+    "file": "src/services/analytics.js",
+    "originalLine": 25515
+  },
+  {
+    "name": "fetchWebsiteVisitSources",
+    "file": "src/services/analytics.js",
+    "originalLine": 25547
+  },
+  {
+    "name": "fetchInventorySearchInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 25578
+  },
+  {
+    "name": "fetchReturningVisitorInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 25591
+  },
+  {
+    "name": "fetchSessionDurationInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 25616
+  },
+  {
+    "name": "fetchEngagedVisitSeries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25636
+  },
+  {
+    "name": "visitorCountryName",
+    "file": "src/services/analytics.js",
+    "originalLine": 25660
+  },
+  {
+    "name": "dateRangeForPreset",
+    "file": "src/services/analytics.js",
+    "originalLine": 25674
+  },
+  {
+    "name": "fetchInsights",
+    "file": "src/services/analytics.js",
+    "originalLine": 25695
+  },
+  {
+    "name": "fetchViewSeries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25708
+  },
+  {
+    "name": "fetchRecentQualifiedCardViews",
+    "file": "src/services/analytics.js",
+    "originalLine": 25722
+  },
+  {
+    "name": "insightRecentViewTimeLabel",
+    "file": "src/services/analytics.js",
+    "originalLine": 25756
+  },
+  {
+    "name": "insightRecentCardMeta",
+    "file": "src/services/analytics.js",
+    "originalLine": 25792
+  },
+  {
+    "name": "fetchFilteredQualifiedViewSeries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25814
+  },
+  {
+    "name": "alignWebsiteVisitSeriesToCardSeries",
+    "file": "src/services/analytics.js",
+    "originalLine": 25840
+  },
+  {
+    "name": "insightRowKey",
+    "file": "src/services/analytics.js",
+    "originalLine": 25890
+  },
+  {
+    "name": "insightCardForRow",
+    "file": "src/services/analytics.js",
+    "originalLine": 25896
+  },
+  {
+    "name": "insightStatusLabel",
+    "file": "src/services/analytics.js",
+    "originalLine": 25911
+  },
+  {
+    "name": "previousInsightsRange",
+    "file": "src/services/analytics.js",
+    "originalLine": 25923
+  },
+  {
+    "name": "insightTrendMeta",
+    "file": "src/services/analytics.js",
+    "originalLine": 25936
+  },
+  {
+    "name": "normalizePsaCertInput",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 25971
+  },
+  {
+    "name": "psaCertUrl",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 25981
+  },
+  {
+    "name": "gradePopLabel",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 25986
+  },
+  {
+    "name": "gradePopDetailLabel",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 25993
+  },
+  {
+    "name": "validGradingEntries",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26004
+  },
+  {
+    "name": "gradingSummaryLabel",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26009
+  },
+  {
+    "name": "gradingPopSummaryLabel",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26027
+  },
+  {
+    "name": "slabLabel",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26033
+  },
+  {
+    "name": "psaPopEntries",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26041
+  },
+  {
+    "name": "psaPopEntryIsDue",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26079
+  },
+  {
+    "name": "encodePsaBulkState",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26085
+  },
+  {
+    "name": "decodePsaBulkState",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26094
+  },
+  {
+    "name": "readPsaBulkState",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26106
+  },
+  {
+    "name": "writePsaBulkState",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26119
+  },
+  {
+    "name": "clearPsaBulkState",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26124
+  },
+  {
+    "name": "openPsaPopAutoSync",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26128
+  },
+  {
+    "name": "startBulkPsaPopSync",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26153
+  },
+  {
+    "name": "finishPsaBulkSync",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26189
+  },
+  {
+    "name": "continuePsaBulkSync",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26210
+  },
+  {
+    "name": "hasPsaCert",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26252
+  },
+  {
+    "name": "refreshPsaPopForCard",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26258
+  },
+  {
+    "name": "handleIncomingPsaPopSync",
+    "file": "src/features/owner/psa.js",
+    "originalLine": 26288
+  },
+  {
+    "name": "safeListingBrowseHash",
+    "file": "src/app/routing.js",
+    "originalLine": 26437
+  },
+  {
+    "name": "clearFilteredResultsBrowseContext",
+    "file": "src/app/routing.js",
+    "originalLine": 26442
+  },
+  {
+    "name": "captureFilteredResultsBrowseContext",
+    "file": "src/app/routing.js",
+    "originalLine": 26447
+  },
+  {
+    "name": "getFilteredResultsBrowseContext",
+    "file": "src/app/routing.js",
+    "originalLine": 26468
+  },
+  {
+    "name": "getFilteredResultNavigation",
+    "file": "src/app/routing.js",
+    "originalLine": 26491
+  },
+  {
+    "name": "listingRouteFromHash",
+    "file": "src/app/routing.js",
+    "originalLine": 26508
+  },
+  {
+    "name": "currentListingDomScope",
+    "file": "src/app/routing.js",
+    "originalLine": 26517
+  },
+  {
+    "name": "canPreserveCurrentListing",
+    "file": "src/app/routing.js",
+    "originalLine": 26524
+  },
+  {
+    "name": "canReusePreservedListing",
+    "file": "src/app/routing.js",
+    "originalLine": 26530
+  },
+  {
+    "name": "setNavigationActiveRoute",
+    "file": "src/app/routing.js",
+    "originalLine": 26538
+  },
+  {
+    "name": "rememberReturnScroll",
+    "file": "src/app/routing.js",
+    "originalLine": 26560
+  },
+  {
+    "name": "restoreReturnScrollIfReady",
+    "file": "src/app/routing.js",
+    "originalLine": 26575
+  },
+  {
+    "name": "cardShareHash",
+    "file": "src/app/routing.js",
+    "originalLine": 26600
+  },
+  {
+    "name": "captureInsightsDetailsReturnState",
+    "file": "src/app/routing.js",
+    "originalLine": 26606
+  },
+  {
+    "name": "restoreInsightsDetailsReturnState",
+    "file": "src/app/routing.js",
+    "originalLine": 26615
+  },
+  {
+    "name": "openInsightsCardDetails",
+    "file": "src/app/routing.js",
+    "originalLine": 26639
+  },
+  {
+    "name": "openCardRoute",
+    "file": "src/app/routing.js",
+    "originalLine": 26655
+  },
+  {
+    "name": "getCollectionStats",
+    "file": "src/app/routing.js",
+    "originalLine": 26683
+  },
+  {
+    "name": "updateStatusNavCounts",
+    "file": "src/app/routing.js",
+    "originalLine": 26702
+  },
+  {
+    "name": "currentRoute",
+    "file": "src/app/routing.js",
+    "originalLine": 26723
+  },
+  {
+    "name": "currentHashParams",
+    "file": "src/app/routing.js",
+    "originalLine": 26728
+  },
+  {
+    "name": "scrollListingPageHeaderIntoView",
+    "file": "src/app/routing.js",
+    "originalLine": 26734
+  },
+  {
+    "name": "consumeHomeViewAllScrollTarget",
+    "file": "src/app/routing.js",
+    "originalLine": 26756
+  },
+  {
+    "name": "safeUrlFilterText",
+    "file": "src/app/routing.js",
+    "originalLine": 26771
+  },
+  {
+    "name": "safePriceFilterValue",
+    "file": "src/app/routing.js",
+    "originalLine": 26775
+  },
+  {
+    "name": "listingRouteForScope",
+    "file": "src/app/routing.js",
+    "originalLine": 26783
+  },
+  {
+    "name": "updateListingUrlFromControls",
+    "file": "src/app/routing.js",
+    "originalLine": 26787
+  },
+  {
+    "name": "router",
+    "file": "src/app/routing.js",
+    "originalLine": 26850
+  },
+  {
+    "name": "updateSidebarFooter",
+    "file": "src/app/routing.js",
+    "originalLine": 27029
+  },
+  {
+    "name": "isNearWhiteBackgroundPixel",
+    "file": "src/features/media/images.js",
+    "originalLine": 27043
+  },
+  {
+    "name": "createTransparentWatermarkLogo",
+    "file": "src/features/media/images.js",
+    "originalLine": 27050
+  },
+  {
+    "name": "loadWatermarkLogo",
+    "file": "src/features/media/images.js",
+    "originalLine": 27118
+  },
+  {
+    "name": "drawWebsiteWatermark",
+    "file": "src/features/media/images.js",
+    "originalLine": 27141
+  },
+  {
+    "name": "drawWatermark",
+    "file": "src/features/media/images.js",
+    "originalLine": 27281
+  },
+  {
+    "name": "shouldApplySoldDownloadWatermark",
+    "file": "src/features/media/images.js",
+    "originalLine": 27333
+  },
+  {
+    "name": "drawSoldDownloadWatermark",
+    "file": "src/features/media/images.js",
+    "originalLine": 27337
+  },
+  {
+    "name": "canvasToBlob",
+    "file": "src/features/media/images.js",
+    "originalLine": 27381
+  },
+  {
+    "name": "loadImageElementFromSource",
+    "file": "src/features/media/images.js",
+    "originalLine": 27390
+  },
+  {
+    "name": "renderSoldDownloadBlob",
+    "file": "src/features/media/images.js",
+    "originalLine": 27407
+  },
+  {
+    "name": "renderCardImage",
+    "file": "src/features/media/images.js",
+    "originalLine": 27441
+  },
+  {
+    "name": "renderWatermarkedImage",
+    "file": "src/features/media/images.js",
+    "originalLine": 27482
+  },
+  {
+    "name": "rotateCardImageSource",
+    "file": "src/features/media/images.js",
+    "originalLine": 27487
+  },
+  {
+    "name": "loadImageFromDataUrl",
+    "file": "src/features/media/images.js",
+    "originalLine": 27520
+  },
+  {
+    "name": "normalizedImageMime",
+    "file": "src/features/media/images.js",
+    "originalLine": 27534
+  },
+  {
+    "name": "imageExtensionMatchesMime",
+    "file": "src/features/media/images.js",
+    "originalLine": 27539
+  },
+  {
+    "name": "verifyImageDecodes",
+    "file": "src/features/media/images.js",
+    "originalLine": 27550
+  },
+  {
+    "name": "validateOwnerImageFile",
+    "file": "src/features/media/images.js",
+    "originalLine": 27578
+  },
+  {
+    "name": "resizeImageFile",
+    "file": "src/features/media/images.js",
+    "originalLine": 27594
+  },
+  {
+    "name": "processCardImageUrl",
+    "file": "src/features/media/images.js",
+    "originalLine": 27613
+  },
+  {
+    "name": "applyWatermarkToCardImageSource",
+    "file": "src/features/media/images.js",
+    "originalLine": 27657
+  },
+  {
+    "name": "applyWebsiteWatermarkToCardImageSource",
+    "file": "src/features/media/images.js",
+    "originalLine": 27668
+  },
+  {
+    "name": "watermarkImageUrl",
+    "file": "src/features/media/images.js",
+    "originalLine": 27679
+  },
+  {
+    "name": "applyPsaPrivacyMaskToCardImageSource",
+    "file": "src/features/media/images.js",
+    "originalLine": 27690
+  },
+  {
+    "name": "isPendingCardImage",
+    "file": "src/features/media/images.js",
+    "originalLine": 27735
+  },
+  {
+    "name": "dataUrlToImageBlob",
+    "file": "src/features/media/images.js",
+    "originalLine": 27739
+  },
+  {
+    "name": "cardStorageExtensionForMime",
+    "file": "src/features/media/images.js",
+    "originalLine": 27753
+  },
+  {
+    "name": "uploadPendingCardImage",
+    "file": "src/features/media/images.js",
+    "originalLine": 27759
+  },
+  {
+    "name": "removeCardStoragePaths",
+    "file": "src/features/media/images.js",
+    "originalLine": 27798
+  },
+  {
+    "name": "cardStoragePathFromUrl",
+    "file": "src/features/media/images.js",
+    "originalLine": 27814
+  },
+  {
+    "name": "prepareCardImagesForStorage",
+    "file": "src/features/media/images.js",
+    "originalLine": 27836
+  },
+  {
+    "name": "cleanupRemovedCardStorageImages",
+    "file": "src/features/media/images.js",
+    "originalLine": 27927
+  },
+  {
+    "name": "cardImageStorageErrorText",
+    "file": "src/features/media/images.js",
+    "originalLine": 27943
+  },
+  {
+    "name": "setupCardImageRecovery",
+    "file": "src/features/media/images.js",
+    "originalLine": 27959
+  },
+  {
+    "name": "getImages",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28008
+  },
+  {
+    "name": "statusCornerHTML",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28014
+  },
+  {
+    "name": "overviewGradeOverlayHTML",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28025
+  },
+  {
+    "name": "overviewRawConditionOverlayHTML",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28053
+  },
+  {
+    "name": "overviewSealedConditionOverlayHTML",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28074
+  },
+  {
+    "name": "cardThumbHTML",
+    "file": "src/features/cards/presentation.js",
+    "originalLine": 28093
+  },
+  {
+    "name": "wireGameCombobox",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28154
+  },
+  {
+    "name": "normalizeYearValue",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28222
+  },
+  {
+    "name": "isValidYearValue",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28239
+  },
+  {
+    "name": "normalizePriceNegotiability",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28247
+  },
+  {
+    "name": "priceNegotiabilityFromNotes",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28254
+  },
+  {
+    "name": "stripPriceNegotiabilityMarker",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28266
+  },
+  {
+    "name": "notesWithPriceNegotiability",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28273
+  },
+  {
+    "name": "fieldsTemplate",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28282
+  },
+  {
+    "name": "wireImageControls",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 28472
+  },
+  {
+    "name": "gradingRowHTML",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29130
+  },
+  {
+    "name": "wireGradingControls",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29168
+  },
+  {
+    "name": "validMyrFxRates",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29272
+  },
+  {
+    "name": "readCachedMyrFxRates",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29284
+  },
+  {
+    "name": "saveCachedMyrFxRates",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29295
+  },
+  {
+    "name": "fetchCurrentMyrFxRates",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29302
+  },
+  {
+    "name": "fxRateDateLabel",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29374
+  },
+  {
+    "name": "roundConvertedCardPrice",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29394
+  },
+  {
+    "name": "convertedPriceValue",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29414
+  },
+  {
+    "name": "applyMyrConversionToFields",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29420
+  },
+  {
+    "name": "updateFxRateStatus",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29440
+  },
+  {
+    "name": "wireAutoCurrencyConversion",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29465
+  },
+  {
+    "name": "ensureMyrConversionBeforeSave",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29553
+  },
+  {
+    "name": "wireAvailabilityPriceState",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29574
+  },
+  {
+    "name": "invalidFieldLabel",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29619
+  },
+  {
+    "name": "reportFirstInvalidField",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29634
+  },
+  {
+    "name": "wireSoldDateField",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29643
+  },
+  {
+    "name": "wireAutoCapitalization",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29666
+  },
+  {
+    "name": "populateFields",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29676
+  },
+  {
+    "name": "collectFields",
+    "file": "src/features/owner/forms.js",
+    "originalLine": 29701
+  },
+  {
+    "name": "renderRecentlyViewedPage",
+    "file": "src/features/content/home.js",
+    "originalLine": 29755
+  },
+  {
+    "name": "renderFavoritesPage",
+    "file": "src/features/content/home.js",
+    "originalLine": 29803
+  },
+  {
+    "name": "renderAnalyticsExclusionPairingPage",
+    "file": "src/features/content/home.js",
+    "originalLine": 29848
+  },
+  {
+    "name": "renderHomePage",
+    "file": "src/features/content/home.js",
+    "originalLine": 29945
+  },
+  {
+    "name": "isNewCard",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30204
+  },
+  {
+    "name": "cardLifecycle",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30215
+  },
+  {
+    "name": "isLiveLifecycle",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30220
+  },
+  {
+    "name": "cardMatchesListingScope",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30224
+  },
+  {
+    "name": "listingScopeMeta",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30246
+  },
+  {
+    "name": "normalizeFilterValue",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30274
+  },
+  {
+    "name": "titleCaseWords",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30278
+  },
+  {
+    "name": "giveawayDisplayTitle",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30285
+  },
+  {
+    "name": "normalizeStoredLabel",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30297
+  },
+  {
+    "name": "canonicalAvailability",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30301
+  },
+  {
+    "name": "selectedSetMatches",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30315
+  },
+  {
+    "name": "effectiveFormat",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30334
+  },
+  {
+    "name": "isChampionshipSeries",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30341
+  },
+  {
+    "name": "cardGradeSortScore",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30363
+  },
+  {
+    "name": "compareNullableNumber",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30374
+  },
+  {
+    "name": "getFiltered",
+    "file": "src/features/inventory/filtering.js",
+    "originalLine": 30383
+  },
+  {
+    "name": "relatedCardNameTokens",
+    "file": "src/features/cards/related.js",
+    "originalLine": 30519
+  },
+  {
+    "name": "relatedCardNamesMatch",
+    "file": "src/features/cards/related.js",
+    "originalLine": 30537
+  },
+  {
+    "name": "getRelatedCards",
+    "file": "src/features/cards/related.js",
+    "originalLine": 30547
+  },
+  {
+    "name": "isCompareSelected",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30610
+  },
+  {
+    "name": "compareSelectedCards",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30614
+  },
+  {
+    "name": "updateCompareTray",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30621
+  },
+  {
+    "name": "toggleCompareCard",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30647
+  },
+  {
+    "name": "compareGradeLabel",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30668
+  },
+  {
+    "name": "comparePriceText",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30675
+  },
+  {
+    "name": "closeCompareModal",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30683
+  },
+  {
+    "name": "renderCompareModal",
+    "file": "src/features/cards/compare.js",
+    "originalLine": 30692
+  },
+  {
+    "name": "relatedCardHTML",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30757
+  },
+  {
+    "name": "cardTileHTML",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30777
+  },
+  {
+    "name": "wireShimmer",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30897
+  },
+  {
+    "name": "quickSetCardAvailability",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30907
+  },
+  {
+    "name": "closeQuickCardMenus",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30943
+  },
+  {
+    "name": "stepListingGallery",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 30953
+  },
+  {
+    "name": "wireCardActions",
+    "file": "src/features/cards/tiles.js",
+    "originalLine": 31006
+  },
+  {
+    "name": "syncQuickFilterUI",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31215
+  },
+  {
+    "name": "inventoryQuickFiltersHTML",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31236
+  },
+  {
+    "name": "inventoryPageHTML",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31249
+  },
+  {
+    "name": "inventoryFilterOptions",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31577
+  },
+  {
+    "name": "inventorySortOptions",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31657
+  },
+  {
+    "name": "inventoryScopeEmptyText",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31676
+  },
+  {
+    "name": "inventorySkeletonHTML",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31684
+  },
+  {
+    "name": "inventoryNoResultsHTML",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31700
+  },
+  {
+    "name": "renderInventoryPage",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 31720
+  },
+  {
+    "name": "renderByGamePage",
+    "file": "src/features/inventory/page.js",
+    "originalLine": 33609
+  },
+  {
+    "name": "giveawayDateLabel",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33632
+  },
+  {
+    "name": "giveawayEndsInputToIso",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33649
+  },
+  {
+    "name": "giveawayEndsIsoToInputValue",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33660
+  },
+  {
+    "name": "uploadOwnerImage",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33688
+  },
+  {
+    "name": "uploadGiveawayImage",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33741
+  },
+  {
+    "name": "uploadOwnerProcessedImage",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33789
+  },
+  {
+    "name": "loadGiveawayWinnerListingFrame",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33856
+  },
+  {
+    "name": "getGiveawayWinnerListingOverlay",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33872
+  },
+  {
+    "name": "renderGiveawayWinnerListingImage",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33934
+  },
+  {
+    "name": "newGiveawayPhotoItem",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 33996
+  },
+  {
+    "name": "giveawayPhotoSourcesFromRecord",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34010
+  },
+  {
+    "name": "commitGiveawayActiveEditorItem",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34021
+  },
+  {
+    "name": "loadGiveawayEditorItem",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34034
+  },
+  {
+    "name": "revokeAllGiveawayPhotoObjectUrls",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34068
+  },
+  {
+    "name": "revokeGiveawayPreviewObjectUrl",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34087
+  },
+  {
+    "name": "currentGiveawayBaseSource",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34094
+  },
+  {
+    "name": "currentGiveawayPreviewSource",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34101
+  },
+  {
+    "name": "selectedGiveawayFileIsGif",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34111
+  },
+  {
+    "name": "syncGiveawayWatermarkControls",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34116
+  },
+  {
+    "name": "syncGiveawayPrivacyControls",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34163
+  },
+  {
+    "name": "setGiveawayImageWatermark",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34201
+  },
+  {
+    "name": "setGiveawayImagePsaPrivacy",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34263
+  },
+  {
+    "name": "resetGiveawayImageEditorState",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34316
+  },
+  {
+    "name": "selectedGiveawayPhotoPreviewSource",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34335
+  },
+  {
+    "name": "renderGiveawayImagePreview",
+    "file": "src/features/content/giveaways.js",
+    "originalLine": 34347
+  },
+  {
+    "name": "uploadShowcaseThumbnail",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34389
+  },
+  {
+    "name": "renderShowcaseThumbnailPreview",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34393
+  },
+  {
+    "name": "cleanFacebookVideoUrl",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34402
+  },
+  {
+    "name": "isFacebookVideoUrl",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34414
+  },
+  {
+    "name": "youtubeVideoId",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34425
+  },
+  {
+    "name": "showcaseThumbnail",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34444
+  },
+  {
+    "name": "openShowcaseVideo",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34452
+  },
+  {
+    "name": "closeShowcaseVideo",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34496
+  },
+  {
+    "name": "showcaseDisplayCategory",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34502
+  },
+  {
+    "name": "showcasesForActiveCategory",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34508
+  },
+  {
+    "name": "persistShowcaseDomOrder",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34519
+  },
+  {
+    "name": "setupShowcaseRearrangeMode",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34555
+  },
+  {
+    "name": "renderShowcasePage",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34717
+  },
+  {
+    "name": "openShowcaseForm",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34827
+  },
+  {
+    "name": "closeShowcaseForm",
+    "file": "src/features/content/showcase.js",
+    "originalLine": 34850
+  },
+  {
+    "name": "sortedPastGiveawayWinners",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 34919
+  },
+  {
+    "name": "persistGiveawayWinnerOrder",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 34938
+  },
+  {
+    "name": "currentWinnerOrderFromDom",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 34978
+  },
+  {
+    "name": "saveGiveawayWinnerDomOrder",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 34995
+  },
+  {
+    "name": "setupGiveawayWinnerRearrangeMode",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35004
+  },
+  {
+    "name": "giveawayPublicImages",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35219
+  },
+  {
+    "name": "giveawayGalleryHTML",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35230
+  },
+  {
+    "name": "updateGiveawayGallery",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35274
+  },
+  {
+    "name": "ensureGiveawayDetailsOverlay",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35300
+  },
+  {
+    "name": "closeGiveawayDetails",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35343
+  },
+  {
+    "name": "giveawayDetailRequirementsHTML",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35350
+  },
+  {
+    "name": "renderGiveawayDetailsGallery",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35361
+  },
+  {
+    "name": "openGiveawayDetails",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35383
+  },
+  {
+    "name": "renderGiveawayPage",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35459
+  },
+  {
+    "name": "openGiveawayForm",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35929
+  },
+  {
+    "name": "closeGiveawayForm",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35970
+  },
+  {
+    "name": "syncGiveawayWinnerField",
+    "file": "src/features/content/giveaway-pages.js",
+    "originalLine": 35976
+  },
+  {
+    "name": "resetQualifiedViewCounts",
+    "file": "src/features/owner/insights.js",
+    "originalLine": 36329
+  },
+  {
+    "name": "openResetQualifiedViewsModal",
+    "file": "src/features/owner/insights.js",
+    "originalLine": 36382
+  },
+  {
+    "name": "closeResetQualifiedViewsModal",
+    "file": "src/features/owner/insights.js",
+    "originalLine": 36395
+  },
+  {
+    "name": "renderInsightsPage",
+    "file": "src/features/owner/insights.js",
+    "originalLine": 36404
+  },
+  {
+    "name": "reviewStars",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38290
+  },
+  {
+    "name": "reviewCountryLabel",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38295
+  },
+  {
+    "name": "reviewCountryOptions",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38301
+  },
+  {
+    "name": "reviewDateLabel",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38316
+  },
+  {
+    "name": "reviewRpcUnavailable",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38327
+  },
+  {
+    "name": "loadPublicReviews",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38334
+  },
+  {
+    "name": "loadOwnerReviewSubmissions",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38352
+  },
+  {
+    "name": "approvedReviewSummary",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38371
+  },
+  {
+    "name": "reviewPublicCardHtml",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38381
+  },
+  {
+    "name": "reviewModerationCardHtml",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38409
+  },
+  {
+    "name": "reviewSubmitErrorMessage",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38443
+  },
+  {
+    "name": "submitPublicReview",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38460
+  },
+  {
+    "name": "moderateReview",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38548
+  },
+  {
+    "name": "toggleReviewVerified",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38575
+  },
+  {
+    "name": "deleteReviewSubmission",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38597
+  },
+  {
+    "name": "bindReviewPageEvents",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38630
+  },
+  {
+    "name": "renderReviewsPage",
+    "file": "src/features/content/reviews.js",
+    "originalLine": 38680
+  },
+  {
+    "name": "renderAboutPage",
+    "file": "src/features/content/information.js",
+    "originalLine": 38866
+  },
+  {
+    "name": "renderContactPage",
+    "file": "src/features/content/information.js",
+    "originalLine": 38923
+  },
+  {
+    "name": "compactGeneratedPostSpacing",
+    "file": "src/features/social/posts.js",
+    "originalLine": 38961
+  },
+  {
+    "name": "getFbPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39005
+  },
+  {
+    "name": "saveFbPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39018
+  },
+  {
+    "name": "getFbCardMeta",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39028
+  },
+  {
+    "name": "saveFbCardMeta",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39037
+  },
+  {
+    "name": "safeHttpUrl",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39041
+  },
+  {
+    "name": "openSafeExternalUrl",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39052
+  },
+  {
+    "name": "fbFormatLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39065
+  },
+  {
+    "name": "postEraLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39076
+  },
+  {
+    "name": "postPopLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39082
+  },
+  {
+    "name": "fbGameLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39110
+  },
+  {
+    "name": "defaultFbPostTitle",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39116
+  },
+  {
+    "name": "defaultFbHashtags",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39130
+  },
+  {
+    "name": "buildFbPostText",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39144
+  },
+  {
+    "name": "buildFbNfsPostText",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39195
+  },
+  {
+    "name": "copyTextToClipboard",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39224
+  },
+  {
+    "name": "copyPlainText",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39249
+  },
+  {
+    "name": "currentFacebookToolMode",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39255
+  },
+  {
+    "name": "facebookToolsHeaderHTML",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39260
+  },
+  {
+    "name": "renderFacebookToolsPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39348
+  },
+  {
+    "name": "renderFbPostGeneratorPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39375
+  },
+  {
+    "name": "getFbGiveawayPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39824
+  },
+  {
+    "name": "saveFbGiveawayPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39851
+  },
+  {
+    "name": "giveawayNumberFromTitle",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39874
+  },
+  {
+    "name": "formatGiveawayEndsGmt8",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39879
+  },
+  {
+    "name": "getGiveawayShareUrl",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39909
+  },
+  {
+    "name": "buildGiveawayWinnerAnnouncementPost",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39917
+  },
+  {
+    "name": "renderGiveawayWinnerPostGeneratorPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 39967
+  },
+  {
+    "name": "buildFbGiveawayPost",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40219
+  },
+  {
+    "name": "renderFbGiveawayPostGeneratorPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40318
+  },
+  {
+    "name": "defaultCarousellProductDetails",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40666
+  },
+  {
+    "name": "getCarousellPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40699
+  },
+  {
+    "name": "saveCarousellPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40710
+  },
+  {
+    "name": "buildCarousellPostText",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40718
+  },
+  {
+    "name": "renderCarousellPostGeneratorPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 40765
+  },
+  {
+    "name": "getFbCardListPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41070
+  },
+  {
+    "name": "saveFbCardListPostPrefs",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41091
+  },
+  {
+    "name": "ordinalDay",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41103
+  },
+  {
+    "name": "fbCardListDateLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41114
+  },
+  {
+    "name": "cardListFormat",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41119
+  },
+  {
+    "name": "rawConditionPostLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41127
+  },
+  {
+    "name": "gradedPostLabel",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41133
+  },
+  {
+    "name": "cardListPriceLine",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41139
+  },
+  {
+    "name": "cardListGroupHeading",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41155
+  },
+  {
+    "name": "cardListItemLine",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41165
+  },
+  {
+    "name": "sortCardListCards",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41181
+  },
+  {
+    "name": "buildFbCardListSection",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41197
+  },
+  {
+    "name": "buildFbCardListPost",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41237
+  },
+  {
+    "name": "dataUrlToBlob",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41288
+  },
+  {
+    "name": "imageSourceToBlob",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41308
+  },
+  {
+    "name": "imageExtensionFromBlob",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41324
+  },
+  {
+    "name": "loadScriptOnce",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41334
+  },
+  {
+    "name": "ensureJsZip",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41351
+  },
+  {
+    "name": "downloadCardListFirstImagesZip",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41380
+  },
+  {
+    "name": "renderFbCardListGeneratorPage",
+    "file": "src/features/social/posts.js",
+    "originalLine": 41449
+  },
+  {
+    "name": "getCardDataQualityIssues",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42162
+  },
+  {
+    "name": "dataQualitySummary",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42203
+  },
+  {
+    "name": "renderDataQualityPage",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42219
+  },
+  {
+    "name": "cloneSafeGrading",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42350
+  },
+  {
+    "name": "makeCloneDraft",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42365
+  },
+  {
+    "name": "closeCloneOptions",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42397
+  },
+  {
+    "name": "openCloneOptions",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42403
+  },
+  {
+    "name": "beginCloneCard",
+    "file": "src/features/owner/quality.js",
+    "originalLine": 42410
+  },
+  {
+    "name": "currentInventoryToolMode",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42425
+  },
+  {
+    "name": "currentInventoryToolSubmode",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42440
+  },
+  {
+    "name": "inventoryToolsSwitcher",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42457
+  },
+  {
+    "name": "getStoredImageHealthSummary",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42496
+  },
+  {
+    "name": "saveStoredImageHealthSummary",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42516
+  },
+  {
+    "name": "ownerInventoryHealthSummary",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42529
+  },
+  {
+    "name": "ownerHealthClass",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42592
+  },
+  {
+    "name": "invalidateOwnerReservedAgeCache",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42604
+  },
+  {
+    "name": "ownerReservedAgeDays",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42610
+  },
+  {
+    "name": "ownerReservedAgeLabel",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42616
+  },
+  {
+    "name": "loadOwnerReservedAges",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42624
+  },
+  {
+    "name": "ownerReservedAgeSummary",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42680
+  },
+  {
+    "name": "hydrateOwnerReservedAgeUI",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42700
+  },
+  {
+    "name": "refreshOwnerReservedAgeUI",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42750
+  },
+  {
+    "name": "ownerAlertSummary",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42757
+  },
+  {
+    "name": "ownerAlertsDashboardHTML",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42792
+  },
+  {
+    "name": "renderSupabaseHealthPage",
+    "file": "src/features/owner/tools.js",
+    "originalLine": 42874
+  },
+  {
+    "name": "renderBulkStatusPage",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 42965
+  },
+  {
+    "name": "gradingEntries",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43341
+  },
+  {
+    "name": "isSlabGradingEntry",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43347
+  },
+  {
+    "name": "missingCertificateEntries",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43356
+  },
+  {
+    "name": "cardsMissingCertificates",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43367
+  },
+  {
+    "name": "renderBulkMissingCertsPage",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43376
+  },
+  {
+    "name": "renderBulkPsaPopPage",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43474
+  },
+  {
+    "name": "renderInventoryToolsPage",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43652
+  },
+  {
+    "name": "catalogueAuditIssues",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43684
+  },
+  {
+    "name": "renderCatalogueAuditPage",
+    "file": "src/features/owner/bulk-status.js",
+    "originalLine": 43708
+  },
+  {
+    "name": "switchCardWatermarkVariant",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 43761
+  },
+  {
+    "name": "reapplyCardWatermarkVariants",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 43866
+  },
+  {
+    "name": "reapplyAllCardsWatermarkVariants",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 43967
+  },
+  {
+    "name": "switchAllCardsWatermarkVariant",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44017
+  },
+  {
+    "name": "reprocessCardImages",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44067
+  },
+  {
+    "name": "renderImageReprocessPage",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44111
+  },
+  {
+    "name": "legacyCardImageStats",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44285
+  },
+  {
+    "name": "formatApproxBytes",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44311
+  },
+  {
+    "name": "saveMigratedCardImageUrls",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44319
+  },
+  {
+    "name": "migrateLegacyImagesForCard",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44342
+  },
+  {
+    "name": "fetchSupabaseCapacityUsage",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44392
+  },
+  {
+    "name": "capacityPercent",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44430
+  },
+  {
+    "name": "capacityLeft",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44435
+  },
+  {
+    "name": "capacitySummaryText",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44439
+  },
+  {
+    "name": "checkCardImageStorageReady",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44444
+  },
+  {
+    "name": "renderLegacyImageMigrationPage",
+    "file": "src/features/owner/image-maintenance.js",
+    "originalLine": 44490
+  },
+  {
+    "name": "lifecycleCardRowHTML",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44790
+  },
+  {
+    "name": "renderLifecycleManagerPage",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44814
+  },
+  {
+    "name": "duplicateGradeKey",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44897
+  },
+  {
+    "name": "duplicateFingerprint",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44905
+  },
+  {
+    "name": "findDuplicateGroups",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44918
+  },
+  {
+    "name": "renderDuplicateDetectorPage",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44934
+  },
+  {
+    "name": "historyChangedFields",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 44989
+  },
+  {
+    "name": "historyCardLabel",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45000
+  },
+  {
+    "name": "fetchEditHistory",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45005
+  },
+  {
+    "name": "undoHistoryEntry",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45019
+  },
+  {
+    "name": "renderEditHistoryPage",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45046
+  },
+  {
+    "name": "imageHealthSourceType",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45127
+  },
+  {
+    "name": "checkImageHealthSource",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45139
+  },
+  {
+    "name": "imageHealthIssuesForCard",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45174
+  },
+  {
+    "name": "renderImageHealthPage",
+    "file": "src/features/owner/lifecycle.js",
+    "originalLine": 45233
+  },
+  {
+    "name": "priceInputValue",
+    "file": "src/features/owner/bulk-price.js",
+    "originalLine": 45469
+  },
+  {
+    "name": "normalizeBulkPriceValue",
+    "file": "src/features/owner/bulk-price.js",
+    "originalLine": 45475
+  },
+  {
+    "name": "sameNullableNumber",
+    "file": "src/features/owner/bulk-price.js",
+    "originalLine": 45482
+  },
+  {
+    "name": "renderBulkPricePage",
+    "file": "src/features/owner/bulk-price.js",
+    "originalLine": 45488
+  },
+  {
+    "name": "bulkMetadataCleanString",
+    "file": "src/features/owner/bulk-metadata.js",
+    "originalLine": 45847
+  },
+  {
+    "name": "updateCardMetadataFields",
+    "file": "src/features/owner/bulk-metadata.js",
+    "originalLine": 45851
+  },
+  {
+    "name": "bulkMetadataFieldLabel",
+    "file": "src/features/owner/bulk-metadata.js",
+    "originalLine": 45938
+  },
+  {
+    "name": "bulkMetadataValueOptions",
+    "file": "src/features/owner/bulk-metadata.js",
+    "originalLine": 45950
+  },
+  {
+    "name": "renderBulkMetadataPage",
+    "file": "src/features/owner/bulk-metadata.js",
+    "originalLine": 45960
+  },
+  {
+    "name": "ownerRecentEditTime",
+    "file": "src/features/owner/history.js",
+    "originalLine": 46672
+  },
+  {
+    "name": "formatOwnerTimestamp",
+    "file": "src/features/owner/history.js",
+    "originalLine": 46678
+  },
+  {
+    "name": "renderRecentlyEditedOwnerPage",
+    "file": "src/features/owner/history.js",
+    "originalLine": 46687
+  },
+  {
+    "name": "csvEscape",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46829
+  },
+  {
+    "name": "exportGradingText",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46834
+  },
+  {
+    "name": "exportCertText",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46839
+  },
+  {
+    "name": "safeExportScope",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46844
+  },
+  {
+    "name": "exportCardsForScope",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46848
+  },
+  {
+    "name": "downloadTextFile",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46854
+  },
+  {
+    "name": "buildInventoryCsv",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46867
+  },
+  {
+    "name": "buildInventoryBackupJson",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46910
+  },
+  {
+    "name": "renderInventoryExportPage",
+    "file": "src/features/owner/export.js",
+    "originalLine": 46957
+  },
+  {
+    "name": "renderAddPage",
+    "file": "src/features/owner/add.js",
+    "originalLine": 47055
+  },
+  {
+    "name": "syncDetailsStatusCornerToVisibleImage",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47208
+  },
+  {
+    "name": "scheduleDetailsStatusCornerSync",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47245
+  },
+  {
+    "name": "renderLightboxImage",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47257
+  },
+  {
+    "name": "openImageLightbox",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47270
+  },
+  {
+    "name": "closeImageLightbox",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47284
+  },
+  {
+    "name": "safeDownloadName",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47293
+  },
+  {
+    "name": "getDownloadStatusWatermarkMeta",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47303
+  },
+  {
+    "name": "createStatusWatermarkedDownloadBlob",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47326
+  },
+  {
+    "name": "downloadImageSource",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47402
+  },
+  {
+    "name": "createInventoryQrDownloadBlob",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47451
+  },
+  {
+    "name": "downloadSingleCardImagesZip",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47600
+  },
+  {
+    "name": "getWebsiteShareUrl",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47682
+  },
+  {
+    "name": "getCardShareUrl",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47694
+  },
+  {
+    "name": "publicCardSharePreview",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47699
+  },
+  {
+    "name": "copySharePreview",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47716
+  },
+  {
+    "name": "loadPublicSharePreviewImage",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47721
+  },
+  {
+    "name": "createPublicCardSharePreviewBlob",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47751
+  },
+  {
+    "name": "downloadPublicCardSharePreview",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47820
+  },
+  {
+    "name": "shareCurrentCard",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47839
+  },
+  {
+    "name": "publicContactSellerMessage",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47867
+  },
+  {
+    "name": "messageSellerOnFacebook",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47896
+  },
+  {
+    "name": "shareCurrentCardWhatsApp",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47918
+  },
+  {
+    "name": "getSameSeriesNeighbors",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47935
+  },
+  {
+    "name": "sameSeriesNavigationIsRedundant",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47958
+  },
+  {
+    "name": "replaceCardRouteWithoutRefresh",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47971
+  },
+  {
+    "name": "smoothNavigateDetailsCard",
+    "file": "src/features/cards/details.js",
+    "originalLine": 47983
+  },
+  {
+    "name": "syncDetailsFavoriteButton",
+    "file": "src/features/cards/details.js",
+    "originalLine": 48040
+  },
+  {
+    "name": "closeDetailsMoreMenu",
+    "file": "src/features/cards/details.js",
+    "originalLine": 48057
+  },
+  {
+    "name": "toggleDetailsMoreMenu",
+    "file": "src/features/cards/details.js",
+    "originalLine": 48070
+  },
+  {
+    "name": "openDetailsModal",
+    "file": "src/features/cards/details.js",
+    "originalLine": 48088
+  },
+  {
+    "name": "closeDetailsModal",
+    "file": "src/features/cards/details.js",
+    "originalLine": 48580
+  },
+  {
+    "name": "captureEditReturnScroll",
+    "file": "src/features/owner/editor.js",
+    "originalLine": 48850
+  },
+  {
+    "name": "restoreEditReturnScroll",
+    "file": "src/features/owner/editor.js",
+    "originalLine": 48864
+  },
+  {
+    "name": "resetEditSubmitButton",
+    "file": "src/features/owner/editor.js",
+    "originalLine": 48879
+  },
+  {
+    "name": "openEditModal",
+    "file": "src/features/owner/editor.js",
+    "originalLine": 48888
+  },
+  {
+    "name": "closeEditModal",
+    "file": "src/features/owner/editor.js",
+    "originalLine": 48951
+  },
+  {
+    "name": "openOwnerAccess",
+    "file": "src/services/auth.js",
+    "originalLine": 49103
+  },
+  {
+    "name": "applyTheme",
+    "file": "src/app/theme.js",
+    "originalLine": 49273
+  },
+  {
+    "name": "loadTheme",
+    "file": "src/app/theme.js",
+    "originalLine": 49286
+  },
+  {
+    "name": "setupMobileMoreMenu",
+    "file": "src/app/theme.js",
+    "originalLine": 49340
+  },
+  {
+    "name": "setupMobilePullToRefresh",
+    "file": "src/app/theme.js",
+    "originalLine": 49385
+  },
+  {
+    "name": "renderAppLoadingState",
+    "file": "src/app/startup.js",
+    "originalLine": 49542
+  },
+  {
+    "name": "renderCatalogueLoadError",
+    "file": "src/app/startup.js",
+    "originalLine": 49554
+  },
+  {
+    "name": "reloadCatalogueFromUi",
+    "file": "src/app/startup.js",
+    "originalLine": 49567
+  },
+  {
+    "name": "startApp",
+    "file": "src/app/startup.js",
+    "originalLine": 49586
+  },
+  {
+    "name": "removeLegacyAppRefreshCaches",
+    "file": "src/app/startup.js",
+    "originalLine": 49704
+  }
+]

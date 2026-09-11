@@ -1,0 +1,106 @@
+[
+  {
+    "file": "src/styles/01-foundation.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/02-supplement.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/03-responsive.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/04-layout.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/05-compatibility.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/06-desktop-collapsible-filters-v9.css",
+    "originalId": "desktop-collapsible-filters-v9"
+  },
+  {
+    "file": "src/styles/07-mobile-header-social-links-v17.css",
+    "originalId": "mobile-header-social-links-v17"
+  },
+  {
+    "file": "src/styles/08-owner-public-visibility-v19.css",
+    "originalId": "owner-public-visibility-v19"
+  },
+  {
+    "file": "src/styles/09-mobile-header-theme-page-currency-v22.css",
+    "originalId": "mobile-header-theme-page-currency-v22"
+  },
+  {
+    "file": "src/styles/10-mobile-currency-polish-v24.css",
+    "originalId": "mobile-currency-polish-v24"
+  },
+  {
+    "file": "src/styles/11-mobile-page-head-currency-row-v25.css",
+    "originalId": "mobile-page-head-currency-row-v25"
+  },
+  {
+    "file": "src/styles/12-currency-font-only-v26.css",
+    "originalId": "currency-font-only-v26"
+  },
+  {
+    "file": "src/styles/13-currency-compact-spacing-v27.css",
+    "originalId": "currency-compact-spacing-v27"
+  },
+  {
+    "file": "src/styles/14-currency-label-style-v28.css",
+    "originalId": "currency-label-style-v28"
+  },
+  {
+    "file": "src/styles/15-currency-match-card-details-v29.css",
+    "originalId": "currency-match-card-details-v29"
+  },
+  {
+    "file": "src/styles/16-mobile-currency-true-center-v32.css",
+    "originalId": "mobile-currency-true-center-v32"
+  },
+  {
+    "file": "src/styles/17-mobile-currency-vertical-center-v30.css",
+    "originalId": "mobile-currency-vertical-center-v30"
+  },
+  {
+    "file": "src/styles/18-all-currency-true-center-v33.css",
+    "originalId": "all-currency-true-center-v33"
+  },
+  {
+    "file": "src/styles/19-pc-card-details-side-layout-v38.css",
+    "originalId": "pc-card-details-side-layout-v38"
+  },
+  {
+    "file": "src/styles/20-compatibility.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/21-desktop-quick-filters-collapsible-v41.css",
+    "originalId": "desktop-quick-filters-collapsible-v41"
+  },
+  {
+    "file": "src/styles/22-desktop-collapse-collection-repair-v42.css",
+    "originalId": "desktop-collapse-collection-repair-v42"
+  },
+  {
+    "file": "src/styles/23-card-overview-pill-collapse-v43.css",
+    "originalId": "card-overview-pill-collapse-v43"
+  },
+  {
+    "file": "src/styles/24-card-overview-pill-toggle-inline-v44.css",
+    "originalId": "card-overview-pill-toggle-inline-v44"
+  },
+  {
+    "file": "src/styles/25-compatibility.css",
+    "originalId": null
+  },
+  {
+    "file": "src/styles/26-compatibility.css",
+    "originalId": null
+  }
+]
