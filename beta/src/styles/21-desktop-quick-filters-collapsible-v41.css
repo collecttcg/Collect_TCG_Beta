@@ -1,0 +1,80 @@
+
+/* PC: collapse the top category pills to save vertical space. */
+@media (min-width:801px){
+  .listing-filter-tools .desktop-category-filter-block{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    min-width:0;
+    gap:8px;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:8px;
+    min-height:38px;
+    padding:7px 11px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:var(--surface);
+    color:var(--text);
+    font:inherit;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:border-color .14s ease,background .14s ease;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-toggle:hover,
+  .listing-filter-tools .desktop-quick-filters-toggle.is-expanded{
+    border-color:rgba(227,179,65,.50);
+    background:var(--surface-2);
+  }
+
+  .desktop-quick-filters-toggle-title{
+    font-size:11px;
+    font-weight:650;
+    color:var(--text-muted);
+  }
+
+  .desktop-quick-filters-active{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:22px;
+    padding:3px 8px;
+    border-radius:999px;
+    background:rgba(227,179,65,.12);
+    color:var(--accent-gold);
+    font-size:10.5px;
+    font-weight:700;
+  }
+
+  .desktop-quick-filters-chevron{
+    display:inline-block;
+    color:var(--text-muted);
+    font-size:11px;
+    line-height:1;
+    transition:transform .16s ease;
+  }
+
+  .desktop-quick-filters-toggle.is-expanded .desktop-quick-filters-chevron{
+    transform:rotate(180deg);
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    display:none !important;
+    margin:0 !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible.is-expanded{
+    display:flex !important;
+  }
+}
+
+@media (max-width:800px){
+  .desktop-quick-filters-toggle{display:none !important;}
+  .listing-filter-tools .desktop-category-filter-block{display:contents;}
+  .listing-filter-tools .desktop-quick-filters-collapsible{display:flex !important;}
+}

@@ -1,0 +1,94 @@
+
+
+/* =========================================================
+   OVERVIEW SCAN EYE COMFORT — LISTING THUMBNAILS ONLY
+   Softens bright PSA scans in dense browsing grids without
+   modifying Card Details / lightbox / compare / original files.
+   ========================================================= */
+#invGrid .card .thumb-wrap,
+#invGrid .card .thumb-placeholder{
+  background:#252a31 !important;
+}
+
+#invGrid .card img.thumb{
+  filter:brightness(.87) contrast(.96) !important;
+  transition:filter .16s ease, opacity .16s ease !important;
+}
+
+/* Light mode needs only a subtle reduction. */
+body.light-mode #invGrid .card .thumb-wrap,
+body.light-mode #invGrid .card .thumb-placeholder{
+  background:#e7e9ed !important;
+}
+body.light-mode #invGrid .card img.thumb{
+  filter:brightness(.93) contrast(.98) !important;
+}
+
+/* Do not dim the scan while the visitor intentionally focuses it. */
+@media(hover:hover) and (pointer:fine){
+  #invGrid .card:hover img.thumb{
+    filter:brightness(.91) contrast(.98) !important;
+  }
+  body.light-mode #invGrid .card:hover img.thumb{
+    filter:brightness(.96) contrast(.99) !important;
+  }
+}
+
+/* Preserve natural image rendering for print/share contexts. */
+@media print{
+  #invGrid .card img.thumb{filter:none !important;}
+}
+
+
+.collection-collage-modal-overlay{
+  position:fixed; inset:0; z-index:1200;
+  display:flex; align-items:center; justify-content:center;
+  padding:18px; background:rgba(3,5,8,.78);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.collection-collage-modal{
+  width:min(620px,100%); max-height:min(88vh,780px); overflow:auto;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px; background:#141820;
+  box-shadow:0 30px 90px rgba(0,0,0,.48);
+  padding:22px;
+}
+.collection-collage-modal h2{margin:0 0 6px;font-size:22px;}
+.collection-collage-modal .collage-modal-sub{margin:0 0 20px;color:var(--muted);font-size:13px;line-height:1.5;}
+.collection-collage-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.collection-collage-field{display:flex;flex-direction:column;gap:7px;}
+.collection-collage-field.full{grid-column:1/-1;}
+.collection-collage-field label,.collection-collage-field>span{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em;}
+.collection-collage-field input[type="text"],
+.collection-collage-field select{
+  width:100%; min-height:42px; box-sizing:border-box;
+  border:1px solid var(--border); border-radius:11px;
+  background:rgba(255,255,255,.045); color:var(--text);
+  padding:9px 11px; font:inherit;
+}
+.collection-collage-checks{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:4px;}
+.collection-collage-check{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 11px;border:1px solid var(--border);border-radius:11px;
+  background:rgba(255,255,255,.025);font-size:13px;
+}
+.collection-collage-check input{width:16px;height:16px;}
+.collection-collage-modal-actions{
+  display:flex;justify-content:flex-end;gap:10px;margin-top:20px;
+  padding-top:16px;border-top:1px solid var(--border);
+}
+.collection-collage-modal-actions button{min-width:112px;}
+.collection-collage-preview-note{
+  grid-column:1/-1; padding:10px 12px; border-radius:10px;
+  background:rgba(227,179,65,.08); border:1px solid rgba(227,179,65,.18);
+  color:var(--muted); font-size:12px; line-height:1.45;
+}
+@media(max-width:600px){
+  .collection-collage-settings-grid{grid-template-columns:1fr;}
+  .collection-collage-field.full,.collection-collage-preview-note{grid-column:1;}
+  .collection-collage-checks{grid-template-columns:1fr;}
+  .collection-collage-modal{padding:18px;border-radius:16px;}
+}
+
+.collection-export-collage-btn{white-space:nowrap;}
+.collection-collage-progress{font-variant-numeric:tabular-nums;}

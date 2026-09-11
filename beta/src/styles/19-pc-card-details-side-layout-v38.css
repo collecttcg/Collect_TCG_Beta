@@ -1,0 +1,72 @@
+
+/* v38: true desktop card-detail layout. Mobile keeps the existing image-first stack. */
+.detail-header-desktop{display:none;}
+
+@media (min-width:801px){
+  .modal.card-details-modal{
+    width:min(96vw,1180px) !important;
+    max-width:1180px !important;
+  }
+
+  .modal.card-details-modal #detailsMount > .detail-header-mobile{
+    display:none !important;
+  }
+
+  .modal.card-details-modal .detail-layout{
+    display:grid !important;
+    grid-template-columns:minmax(430px,1.18fr) minmax(360px,.92fr) !important;
+    gap:28px !important;
+    align-items:start !important;
+  }
+
+  .modal.card-details-modal .detail-info{
+    min-width:0;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:12px !important;
+  }
+
+  .modal.card-details-modal .detail-header-desktop{
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:space-between !important;
+    gap:16px !important;
+    margin:0 0 4px !important;
+    padding:2px 0 12px !important;
+    border-bottom:1px solid var(--border);
+  }
+
+  .modal.card-details-modal .detail-header-desktop .detail-title{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .modal.card-details-modal .detail-header-desktop .detail-title h2{
+    margin:3px 0 5px !important;
+    font-size:clamp(25px,2vw,34px) !important;
+    line-height:1.02 !important;
+    overflow-wrap:anywhere;
+  }
+
+  .modal.card-details-modal .detail-header-desktop .detail-meta{
+    line-height:1.35;
+  }
+
+  .modal.card-details-modal .detail-header-desktop .detail-currency-control{
+    flex:0 0 auto;
+    margin-top:1px;
+  }
+
+  .modal.card-details-modal .detail-slider-stage{
+    max-height:76vh !important;
+  }
+
+  .modal.card-details-modal .detail-summary-strip{
+    margin-top:0 !important;
+  }
+}
+
+@media (max-width:800px){
+  .modal.card-details-modal .detail-header-mobile{display:flex !important;}
+  .modal.card-details-modal .detail-header-desktop{display:none !important;}
+}
