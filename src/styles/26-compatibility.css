@@ -1,0 +1,1423 @@
+
+
+/* =========================================================
+   OVERVIEW SCAN EYE COMFORT — LISTING THUMBNAILS ONLY
+   Softens bright PSA scans in dense browsing grids without
+   modifying Card Details / lightbox / compare / original files.
+   ========================================================= */
+#invGrid .card .thumb-wrap,
+#invGrid .card .thumb-placeholder{
+  background:#252a31 !important;
+}
+
+#invGrid .card img.thumb{
+  filter:brightness(.87) contrast(.96) !important;
+  transition:filter .16s ease, opacity .16s ease !important;
+}
+
+/* Light mode needs only a subtle reduction. */
+body.light-mode #invGrid .card .thumb-wrap,
+body.light-mode #invGrid .card .thumb-placeholder{
+  background:#e7e9ed !important;
+}
+body.light-mode #invGrid .card img.thumb{
+  filter:brightness(.93) contrast(.98) !important;
+}
+
+/* Do not dim the scan while the visitor intentionally focuses it. */
+@media(hover:hover) and (pointer:fine){
+  #invGrid .card:hover img.thumb{
+    filter:brightness(.91) contrast(.98) !important;
+  }
+  body.light-mode #invGrid .card:hover img.thumb{
+    filter:brightness(.96) contrast(.99) !important;
+  }
+}
+
+/* Preserve natural image rendering for print/share contexts. */
+@media print{
+  #invGrid .card img.thumb{filter:none !important;}
+}
+
+
+.collection-collage-modal-overlay{
+  position:fixed; inset:0; z-index:1200;
+  display:flex; align-items:center; justify-content:center;
+  padding:18px; background:rgba(3,5,8,.78);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+.collection-collage-modal{
+  width:min(620px,100%); max-height:min(88vh,780px); overflow:auto;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px; background:#141820;
+  box-shadow:0 30px 90px rgba(0,0,0,.48);
+  padding:22px;
+}
+.collection-collage-modal h2{margin:0 0 6px;font-size:22px;}
+.collection-collage-modal .collage-modal-sub{margin:0 0 20px;color:var(--muted);font-size:13px;line-height:1.5;}
+.collection-collage-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.collection-collage-field{display:flex;flex-direction:column;gap:7px;}
+.collection-collage-field.full{grid-column:1/-1;}
+.collection-collage-field label,.collection-collage-field>span{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em;}
+.collection-collage-field input[type="text"],
+.collection-collage-field select{
+  width:100%; min-height:42px; box-sizing:border-box;
+  border:1px solid var(--border); border-radius:11px;
+  background:rgba(255,255,255,.045); color:var(--text);
+  padding:9px 11px; font:inherit;
+}
+.collection-collage-checks{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:4px;}
+.collection-collage-check{
+  display:flex;align-items:center;gap:9px;
+  padding:10px 11px;border:1px solid var(--border);border-radius:11px;
+  background:rgba(255,255,255,.025);font-size:13px;
+}
+.collection-collage-check input{width:16px;height:16px;}
+.collection-collage-modal-actions{
+  display:flex;justify-content:flex-end;gap:10px;margin-top:20px;
+  padding-top:16px;border-top:1px solid var(--border);
+}
+.collection-collage-modal-actions button{min-width:112px;}
+.collection-collage-preview-note{
+  grid-column:1/-1; padding:10px 12px; border-radius:10px;
+  background:rgba(227,179,65,.08); border:1px solid rgba(227,179,65,.18);
+  color:var(--muted); font-size:12px; line-height:1.45;
+}
+@media(max-width:600px){
+  .collection-collage-settings-grid{grid-template-columns:1fr;}
+  .collection-collage-field.full,.collection-collage-preview-note{grid-column:1;}
+  .collection-collage-checks{grid-template-columns:1fr;}
+  .collection-collage-modal{padding:18px;border-radius:16px;}
+}
+
+.collection-export-collage-btn{white-space:nowrap;}
+.collection-collage-progress{font-variant-numeric:tabular-nums;}
+
+/* =========================================================
+   V110 — LIGHT MODE HARMONIZATION
+   Final theme override layer. Dark mode is intentionally untouched.
+   ========================================================= */
+body.light-mode{
+  --bg:#f3f1ec;
+  --sidebar:#fbfaf7;
+  --surface:#ffffff;
+  --surface-2:#f7f5f0;
+  --surface-3:#ece9e2;
+  --border:#c9c5bc;
+  --border-soft:#dedad2;
+  --text:#20262c;
+  --text-muted:#59616a;
+  --text-dim:#737a82;
+  --accent-gold:#946b18;
+  --accent-gold-soft:#c99b42;
+  --accent-teal:#176f68;
+  --danger:#a94458;
+  --success:#2f7d50;
+  color-scheme:light;
+}
+
+body.light-mode{
+  background-color:var(--bg) !important;
+  color:var(--text) !important;
+}
+body.light-mode::before{opacity:.012 !important;}
+body.light-mode .sidebar{
+  background:rgba(251,250,247,.98) !important;
+  border-color:var(--border) !important;
+  box-shadow:1px 0 0 rgba(70,58,35,.04) !important;
+}
+body.light-mode .main,
+body.light-mode #view{color:var(--text);}
+body.light-mode .page-head h2,
+body.light-mode .card-name,
+body.light-mode .detail-title h2,
+body.light-mode .modal h2,
+body.light-mode .panel h3{color:var(--text) !important;}
+body.light-mode .page-head p,
+body.light-mode .tagline,
+body.light-mode .detail-meta,
+body.light-mode .notes,
+body.light-mode .condition-tag,
+body.light-mode .hint{color:var(--text-muted) !important;}
+body.light-mode .eyebrow{color:var(--accent-teal) !important;}
+
+/* Shared controls */
+body.light-mode .btn-ghost,
+body.light-mode .theme-toggle,
+body.light-mode .owner-toggle,
+body.light-mode .icon-btn{
+  border-color:var(--border) !important;
+  background:rgba(255,255,255,.72) !important;
+  color:var(--text-muted) !important;
+}
+body.light-mode .btn-ghost:hover,
+body.light-mode .btn-ghost:focus-visible,
+body.light-mode .theme-toggle:hover,
+body.light-mode .owner-toggle:hover,
+body.light-mode .icon-btn:hover,
+body.light-mode .icon-btn:focus-visible{
+  border-color:rgba(148,107,24,.42) !important;
+  background:#faf6eb !important;
+  color:#6f5117 !important;
+}
+body.light-mode .btn-primary{
+  background:linear-gradient(135deg,#b98727,#d7b35f) !important;
+  color:#251a06 !important;
+  box-shadow:0 5px 14px rgba(116,82,17,.12) !important;
+}
+body.light-mode .btn-primary:hover,
+body.light-mode .btn-primary:focus-visible{
+  background:linear-gradient(135deg,#a87820,#cfa64e) !important;
+  color:#211805 !important;
+}
+
+/* Inputs, selects and custom menus */
+body.light-mode input,
+body.light-mode textarea,
+body.light-mode select,
+body.light-mode .overview-select-btn,
+body.light-mode .combo input{
+  border-color:var(--border) !important;
+  background-color:#fff !important;
+  color:var(--text) !important;
+}
+body.light-mode input::placeholder,
+body.light-mode textarea::placeholder{color:#7a8087 !important;opacity:1 !important;}
+body.light-mode input:focus,
+body.light-mode textarea:focus,
+body.light-mode select:focus,
+body.light-mode .overview-select-btn:focus{
+  border-color:rgba(23,111,104,.62) !important;
+  outline-color:rgba(23,111,104,.28) !important;
+  box-shadow:0 0 0 3px rgba(23,111,104,.08) !important;
+}
+body.light-mode .overview-select-menu,
+body.light-mode .combo-menu{
+  border-color:var(--border) !important;
+  background:#fff !important;
+  box-shadow:0 14px 30px rgba(53,45,31,.14) !important;
+}
+body.light-mode .overview-select-option,
+body.light-mode .combo-option{color:var(--text) !important;}
+body.light-mode .overview-select-option:hover,
+body.light-mode .overview-select-option:focus,
+body.light-mode .combo-option:hover,
+body.light-mode .combo-option:focus{
+  background:#f3efe5 !important;
+  color:#543e15 !important;
+}
+
+/* Inventory/listing cards */
+@media(min-width:801px){
+  body.light-mode #invGrid .card{
+    border-color:#d1ccc2 !important;
+    background:linear-gradient(180deg,#fff,#fbfaf7) !important;
+    box-shadow:0 7px 18px rgba(58,49,33,.07) !important;
+  }
+  body.light-mode #invGrid .card:hover,
+  body.light-mode #invGrid .card:focus-within{
+    border-color:rgba(148,107,24,.42) !important;
+    background:#fff !important;
+    box-shadow:0 13px 28px rgba(58,49,33,.12),0 0 0 1px rgba(148,107,24,.05) !important;
+  }
+  body.light-mode #invGrid .card .card-name{color:#252a2f !important;}
+  body.light-mode #invGrid .card .card-meta,
+  body.light-mode #invGrid .card .condition-tag,
+  body.light-mode #invGrid .card .qty{color:#6b7178 !important;}
+  body.light-mode #invGrid .card .price{color:#8a6315 !important;}
+  body.light-mode #invGrid .card .grade-summary{
+    border-color:rgba(23,111,104,.22) !important;
+    background:#edf6f4 !important;
+    color:#176f68 !important;
+  }
+  body.light-mode #invGrid .card .badge,
+  body.light-mode #invGrid .card .card-meta-one-line span,
+  body.light-mode #invGrid .card .overview-pill{
+    border-color:#d7d2c8 !important;
+    background:#f7f5f0 !important;
+    color:#616970 !important;
+  }
+  body.light-mode #invGrid .card .card-actions.owner-only{
+    border-color:#d7d2c8 !important;
+    background:rgba(255,255,255,.94) !important;
+    box-shadow:0 5px 14px rgba(58,49,33,.10) !important;
+  }
+}
+
+/* Desktop search + advanced filters */
+@media(min-width:801px){
+  body.light-mode .desktop-inline-search input{
+    border-color:#cbc6bc !important;
+    background:linear-gradient(180deg,#fff,#faf9f5) !important;
+    color:#262c31 !important;
+    box-shadow:0 5px 16px rgba(58,49,33,.06) !important;
+  }
+  body.light-mode .desktop-inline-search input::placeholder{color:#757c83 !important;}
+  body.light-mode .desktop-inline-search input:hover{border-color:rgba(148,107,24,.36) !important;}
+  body.light-mode .desktop-inline-search input:focus{
+    border-color:rgba(148,107,24,.55) !important;
+    background:#fffdf8 !important;
+    box-shadow:0 0 0 3px rgba(148,107,24,.08),0 8px 20px rgba(58,49,33,.08) !important;
+  }
+  body.light-mode .desktop-inline-search-clear{color:#70777e !important;}
+  body.light-mode .desktop-inline-search-clear:hover,
+  body.light-mode .desktop-inline-search-clear:focus-visible{
+    background:#f5ecd8 !important;
+    color:#805c16 !important;
+  }
+  body.light-mode .desktop-filter-toggle-btn,
+  body.light-mode .listing-filter-tools .desktop-quick-filters-toggle{
+    border-color:#cbc6bc !important;
+    background:#fff !important;
+    color:#525a62 !important;
+  }
+  body.light-mode .desktop-filter-toggle-btn:hover,
+  body.light-mode .desktop-filter-toggle-btn:focus-visible,
+  body.light-mode .desktop-filter-toggle-btn[aria-expanded="true"],
+  body.light-mode .listing-filter-tools .desktop-quick-filters-toggle:hover,
+  body.light-mode .listing-filter-tools .desktop-quick-filters-toggle.is-expanded{
+    border-color:rgba(148,107,24,.40) !important;
+    background:#faf5e9 !important;
+    color:#725216 !important;
+  }
+  body.light-mode .desktop-filter-toggle-icon,
+  body.light-mode .desktop-quick-filters-active{color:#805c16 !important;}
+  body.light-mode .desktop-filter-toggle-summary,
+  body.light-mode .desktop-filter-toggle-chevron,
+  body.light-mode .desktop-quick-filters-chevron{color:#737a81 !important;}
+  body.light-mode .desktop-filter-toggle-btn .filter-count-badge,
+  body.light-mode .desktop-quick-filters-active{
+    border-color:rgba(148,107,24,.25) !important;
+    background:#f5ecd8 !important;
+    color:#755415 !important;
+  }
+  body.light-mode .filter-drawer-shell:not(.desktop-collapsed){
+    border-color:#cec9bf !important;
+    background:linear-gradient(180deg,#fff,#faf9f6) !important;
+    box-shadow:0 9px 24px rgba(58,49,33,.07) !important;
+  }
+  body.light-mode .filter-drawer-shell:not(.desktop-collapsed) > .filter-drawer-head{
+    border-bottom-color:#e2ddd4 !important;
+  }
+  body.light-mode .filter-drawer-shell:not(.desktop-collapsed) .filter-row input,
+  body.light-mode .filter-drawer-shell:not(.desktop-collapsed) .filter-row select{
+    border-color:#d1ccc2 !important;
+    background-color:#fff !important;
+    color:#4c545b !important;
+  }
+  body.light-mode .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    border-color:#d1ccc2 !important;
+    background:#fff !important;
+    color:#626970 !important;
+  }
+  body.light-mode .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter:hover{
+    border-color:rgba(148,107,24,.32) !important;
+    background:#faf5e9 !important;
+    color:#715217 !important;
+  }
+  body.light-mode .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter.active{
+    border-color:rgba(148,107,24,.48) !important;
+    background:#f2e5c8 !important;
+    color:#66470f !important;
+    box-shadow:none !important;
+  }
+}
+
+/* Card details — desktop premium layout */
+@media(min-width:981px){
+  body.light-mode .modal.card-details-modal{
+    border-color:#c7c1b6 !important;
+    background:
+      radial-gradient(circle at 18% 0%,rgba(148,107,24,.055),transparent 32%),
+      linear-gradient(180deg,#ffffff 0%,#f7f5f0 100%) !important;
+    box-shadow:0 28px 70px rgba(52,44,31,.18),0 0 0 1px rgba(148,107,24,.035) inset !important;
+    color:var(--text) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-bar{
+    border-bottom-color:#ded9cf !important;
+    background:rgba(255,255,255,.93) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-left{
+    border-left-color:#ddd8cf !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-bar .btn-ghost,
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-share-btn,
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-more-btn{
+    border-color:#d0cbc1 !important;
+    background:#fff !important;
+    color:#535b62 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-bar .btn-ghost:hover,
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-share-btn:hover,
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-more-btn:hover{
+    border-color:rgba(148,107,24,.43) !important;
+    background:#faf4e5 !important;
+    color:#6d4d11 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-back-btn{
+    border-color:rgba(148,107,24,.48) !important;
+    background:#fbf5e7 !important;
+    color:#755515 !important;
+    outline-color:rgba(148,107,24,.16) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-back-btn:hover,
+  body.light-mode .modal.card-details-modal .detail-action-bar .detail-back-btn:focus-visible{
+    border-color:rgba(148,107,24,.68) !important;
+    background:#f4e8cc !important;
+    color:#5f430e !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-gallery,
+  body.light-mode .modal.card-details-modal .detail-slider,
+  body.light-mode .modal.card-details-modal .detail-slider-stage{
+    border-color:#d6d0c6 !important;
+    background:#ece9e2 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-slider-stage{
+    background:linear-gradient(180deg,#efede8,#e5e1d8) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-thumb-strip{
+    border-top-color:#ddd8ce !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-thumb-strip-btn{
+    border-color:#cec9bf !important;
+    background:#f4f1eb !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-thumb-strip-btn.active{
+    border-color:rgba(148,107,24,.62) !important;
+    box-shadow:0 0 0 1px rgba(148,107,24,.20),0 6px 14px rgba(58,49,33,.10) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-header-desktop .eyebrow{color:#80601c !important;}
+  body.light-mode .modal.card-details-modal .detail-header-desktop h2{color:#23292e !important;}
+  body.light-mode .modal.card-details-modal .detail-header-desktop .detail-meta{color:#626970 !important;}
+  body.light-mode .modal.card-details-modal .detail-summary-card,
+  body.light-mode .modal.card-details-modal .detail-item,
+  body.light-mode .modal.card-details-modal .detail-section,
+  body.light-mode .modal.card-details-modal .buyer-confidence-card,
+  body.light-mode .modal.card-details-modal .detail-contact-box{
+    border-color:#d5d0c6 !important;
+    background:#fff !important;
+    color:#252b30 !important;
+    box-shadow:none !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-summary-card.price-card{
+    border-color:rgba(148,107,24,.32) !important;
+    background:linear-gradient(135deg,#fbf4e4,#fff) !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-label,
+  body.light-mode .modal.card-details-modal .detail-summary-label,
+  body.light-mode .modal.card-details-modal .buyer-confidence-card small{
+    color:#697178 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-value,
+  body.light-mode .modal.card-details-modal .detail-summary-value,
+  body.light-mode .modal.card-details-modal .buyer-confidence-card strong{
+    color:#292f34 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-summary-card.price-card .detail-summary-value,
+  body.light-mode .modal.card-details-modal .detail-price-primary{color:#8a6315 !important;}
+  body.light-mode .modal.card-details-modal .detail-price-secondary,
+  body.light-mode .modal.card-details-modal .detail-secondary{color:#697078 !important;}
+  body.light-mode .modal.card-details-modal .availability-available{color:#176f68 !important;}
+  body.light-mode .modal.card-details-modal .availability-reserved{color:#896616 !important;}
+  body.light-mode .modal.card-details-modal .availability-sold{color:#9b4857 !important;}
+
+  /* Same-series and recommendation area */
+  body.light-mode .modal.card-details-modal .same-series-nav{
+    border-color:#d5d0c6 !important;
+    background:linear-gradient(135deg,#fff,#f8f6f1) !important;
+  }
+  body.light-mode .modal.card-details-modal .same-series-nav > div:first-child strong{color:#2b3035 !important;}
+  body.light-mode .modal.card-details-modal .same-series-nav > div:first-child > span{color:#70777e !important;}
+  body.light-mode .modal.card-details-modal .same-series-actions .btn-ghost{
+    border-color:#d1ccc2 !important;
+    background:#fff !important;
+    color:#596168 !important;
+  }
+  body.light-mode .modal.card-details-modal .same-series-actions .btn-ghost:hover:not(:disabled),
+  body.light-mode .modal.card-details-modal .same-series-actions .btn-ghost:focus-visible:not(:disabled){
+    border-color:rgba(148,107,24,.40) !important;
+    background:#faf5e9 !important;
+    color:#6d4f14 !important;
+  }
+  body.light-mode .modal.card-details-modal .related-cards-section{border-top-color:#ddd8cf !important;}
+  body.light-mode .modal.card-details-modal .related-cards-head .eyebrow{color:#80601d !important;}
+  body.light-mode .modal.card-details-modal .related-cards-head h3{color:#252b30 !important;}
+  body.light-mode .modal.card-details-modal .related-card{
+    border-color:#d4cfc5 !important;
+    background:linear-gradient(180deg,#fff,#faf9f6) !important;
+    box-shadow:0 8px 20px rgba(58,49,33,.07) !important;
+  }
+  body.light-mode .modal.card-details-modal .related-card:hover,
+  body.light-mode .modal.card-details-modal .related-card:focus-visible{
+    border-color:rgba(148,107,24,.42) !important;
+    background:#fffdf8 !important;
+    box-shadow:0 12px 24px rgba(58,49,33,.11),0 0 0 1px rgba(148,107,24,.04) !important;
+  }
+  body.light-mode .modal.card-details-modal .related-card-image-wrap{
+    border-bottom-color:#ddd8cf !important;
+    background:#ebe8e1 !important;
+  }
+  body.light-mode .modal.card-details-modal .related-card-name{color:#2b3035 !important;}
+  body.light-mode .modal.card-details-modal .related-card-code{color:#846019 !important;}
+  body.light-mode .modal.card-details-modal .related-card-meta span{
+    border-color:#d8d3c9 !important;
+    background:#f6f3ed !important;
+    color:#626970 !important;
+  }
+  body.light-mode .modal.card-details-modal .sold-alternatives-section{
+    border-color:rgba(148,107,24,.24) !important;
+    background:linear-gradient(135deg,#fbf5e8,#fff) !important;
+  }
+  body.light-mode .modal.card-details-modal .sold-alternatives-section .related-cards-head .eyebrow{color:#805d18 !important;}
+  body.light-mode .modal.card-details-modal .sold-alternatives-section .related-cards-head h3{color:#493612 !important;}
+}
+
+/* Owner surfaces */
+body.light-mode .owner-status{color:#176f68 !important;}
+body.light-mode .owner-view-count{color:#805d18 !important;}
+body.light-mode .panel,
+body.light-mode .form-card,
+body.light-mode .insights-panel,
+body.light-mode .insights-stat{
+  border-color:var(--border) !important;
+  background:#fff !important;
+  color:var(--text) !important;
+}
+
+/* Collage settings modal */
+body.light-mode .collection-collage-modal-overlay{
+  background:rgba(50,45,37,.48) !important;
+}
+body.light-mode .collection-collage-modal{
+  border-color:#c8c2b7 !important;
+  background:#fff !important;
+  color:#23292e !important;
+  box-shadow:0 30px 80px rgba(52,44,31,.20) !important;
+}
+body.light-mode .collection-collage-modal .collage-modal-sub,
+body.light-mode .collection-collage-field label,
+body.light-mode .collection-collage-field>span,
+body.light-mode .collection-collage-preview-note{color:#646b72 !important;}
+body.light-mode .collection-collage-field input[type="text"],
+body.light-mode .collection-collage-field select{
+  border-color:#cec8bd !important;
+  background:#fff !important;
+  color:#252b30 !important;
+}
+body.light-mode .collection-collage-check{
+  border-color:#d6d0c6 !important;
+  background:#faf8f3 !important;
+  color:#41484e !important;
+}
+body.light-mode .collection-collage-preview-note{
+  border-color:rgba(148,107,24,.22) !important;
+  background:#faf3e2 !important;
+}
+body.light-mode .collection-collage-modal-actions{border-top-color:#ddd8cf !important;}
+
+/* Toasts and overlays */
+body.light-mode .toast{
+  border-color:#c9c4ba !important;
+  background:#fff !important;
+  color:#252b30 !important;
+  box-shadow:0 12px 28px rgba(52,44,31,.16) !important;
+}
+body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
+
+
+/* =========================================================
+   V111 — LIGHT MODE INVENTORY CONTRAST + CONSISTENCY
+   Targets the newer clean-card desktop classes directly.
+   Dark mode remains unchanged.
+   ========================================================= */
+@media(min-width:801px){
+  /* Group headers / listing shell */
+  body.light-mode .game-group-head,
+  body.light-mode .listing-group-head,
+  body.light-mode .inventory-section-head{
+    border-color:#d4cec3 !important;
+    background:linear-gradient(180deg,#fff,#faf8f3) !important;
+    color:#242a2f !important;
+    box-shadow:0 4px 14px rgba(58,49,33,.045) !important;
+  }
+  body.light-mode .game-group-head h3,
+  body.light-mode .listing-group-head h3,
+  body.light-mode .inventory-section-head h3{
+    color:#242a2f !important;
+  }
+  body.light-mode .game-group-head .count,
+  body.light-mode .listing-group-head .count{
+    color:#626a72 !important;
+  }
+
+  /* Exact V105 card surface selectors */
+  body.light-mode #invGrid.grid:not(.compact-list) .card{
+    border-color:#cdc7bc !important;
+    background:linear-gradient(180deg,#ffffff 0%,#fbfaf7 100%) !important;
+    box-shadow:0 8px 20px rgba(62,52,36,.075) !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card:hover,
+  body.light-mode #invGrid.grid:not(.compact-list) .card:focus-visible,
+  body.light-mode #invGrid.grid:not(.compact-list) .card:focus-within{
+    border-color:rgba(148,107,24,.46) !important;
+    background:#fffdf8 !important;
+    box-shadow:0 14px 30px rgba(62,52,36,.12),0 0 0 1px rgba(148,107,24,.045) inset !important;
+  }
+
+  body.light-mode #invGrid.grid:not(.compact-list) .card > .thumb-wrap,
+  body.light-mode #invGrid.grid:not(.compact-list) .card > .thumb-placeholder{
+    border-bottom-color:#d7d1c7 !important;
+    background:#e8e5de !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card > .thumb-wrap .thumb{
+    filter:brightness(.965) saturate(.96) contrast(.985) !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card:hover > .thumb-wrap .thumb,
+  body.light-mode #invGrid.grid:not(.compact-list) .card:focus-within > .thumb-wrap .thumb{
+    filter:brightness(.99) saturate(.985) contrast(1) !important;
+  }
+
+  /* Readable titles and references — fixes the white-on-white issue. */
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-card-name{
+    color:#252b30 !important;
+    text-shadow:none !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-card-reference{
+    color:#687078 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-card-reference-dot{
+    color:#9a9184 !important;
+  }
+
+  /* Details toggle / card action controls */
+  body.light-mode #invGrid.grid:not(.compact-list) .card .card-overview-pill-toggle,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-details-toggle,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .compare-btn,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .favorite-btn{
+    border-color:#d2ccc1 !important;
+    background:#fff !important;
+    color:#606870 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .card-overview-pill-toggle:hover,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .card-overview-pill-toggle[aria-expanded="true"],
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-details-toggle:hover,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .compare-btn:hover,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .favorite-btn:hover{
+    border-color:rgba(148,107,24,.40) !important;
+    background:#f8f1df !important;
+    color:#745313 !important;
+  }
+
+  /* Price block */
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-price-block{
+    border-top-color:#ddd7cd !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-price-primary{
+    color:#936a18 !important;
+    text-shadow:none !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-price-secondary{
+    color:#656d75 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-price-secondary span{
+    color:#a0988b !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .price-terms,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-price-terms{
+    color:#6b7279 !important;
+  }
+
+  /* All collapsed metadata pills */
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-all-pills .clean-meta-pill,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-all-pills .clean-grade-badge{
+    border-color:#d5cfc4 !important;
+    background:#f7f4ee !important;
+    color:#596168 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-all-pills .clean-grade-badge{
+    border-color:rgba(23,111,104,.25) !important;
+    background:#eaf4f2 !important;
+    color:#176f68 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .clean-all-pills .clean-availability-pill{
+    border-color:rgba(148,107,24,.25) !important;
+    background:#f7edd7 !important;
+    color:#745313 !important;
+  }
+  body.light-mode #invGrid.grid:not(.compact-list) .card .filter-pill-btn.pill-selected{
+    border-color:rgba(148,107,24,.50) !important;
+    background:#eee0bf !important;
+    color:#62450f !important;
+  }
+
+  /* Grade / NEW overlays remain strong but coordinated in light mode. */
+  body.light-mode #invGrid .grade-overlay,
+  body.light-mode #invGrid .card-grade-overlay{
+    border-color:#d6d0c5 !important;
+    background:rgba(255,255,255,.94) !important;
+    color:#252b30 !important;
+    box-shadow:0 4px 14px rgba(50,44,34,.12) !important;
+  }
+  body.light-mode #invGrid .new-badge,
+  body.light-mode #invGrid .card-new-badge{
+    border-color:rgba(23,111,104,.28) !important;
+    background:#dff2ef !important;
+    color:#115f59 !important;
+  }
+
+  /* High-value / lifecycle notes */
+  body.light-mode #invGrid .high-value-note,
+  body.light-mode #invGrid .high-value-listing,
+  body.light-mode #invGrid .listing-warning{
+    border-color:rgba(148,107,24,.32) !important;
+    background:#fbf4e3 !important;
+    color:#755313 !important;
+  }
+
+  /* Owner three-dot control should not look like a dark floating block. */
+  body.light-mode #invGrid.grid:not(.compact-list) .card .card-actions.owner-only,
+  body.light-mode #invGrid.grid:not(.compact-list) .card .owner-card-menu{
+    border-color:#d1cbc0 !important;
+    background:rgba(255,255,255,.96) !important;
+    box-shadow:0 6px 16px rgba(58,49,33,.11) !important;
+  }
+}
+
+/* Light-mode card details: slightly warmer gallery and stronger readable secondary text. */
+@media(min-width:981px){
+  body.light-mode .modal.card-details-modal .detail-layout{
+    color:#252b30 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-info-section-title{
+    color:#697078 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-confidence-item strong{
+    color:#30363b !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-confidence-item small{
+    color:#666e75 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-confidence-icon{
+    border-color:rgba(23,111,104,.20) !important;
+    background:#edf6f4 !important;
+    color:#176f68 !important;
+  }
+  body.light-mode .modal.card-details-modal .details-desktop-contact-socials{
+    border-color:#d4cec4 !important;
+    background:linear-gradient(135deg,#fff,#f8f5ee) !important;
+    color:#2b3035 !important;
+  }
+}
+
+/* =========================================================
+   V112 — STOREFRONT CONSOLIDATION + OWNER/BUYER PREVIEW
+   Final visual layer. Dark mode behavior stays intact unless
+   explicitly scoped below; light mode receives matching tokens.
+   ========================================================= */
+
+/* ---------- Owner mode: visibly administrative, never mixed with buyer UI ---------- */
+.owner-buyer-preview-toggle{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  z-index:140;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:0 15px;
+  border:1px solid rgba(227,179,65,.42);
+  border-radius:999px;
+  background:rgba(18,19,23,.94);
+  color:var(--accent-gold-soft,#f3d488);
+  box-shadow:0 12px 32px rgba(0,0,0,.34);
+  backdrop-filter:blur(14px);
+  font:700 11px/1 'Inter',sans-serif;
+  letter-spacing:.35px;
+  cursor:pointer;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease,color .15s ease;
+}
+.owner-buyer-preview-toggle[hidden]{display:none !important;}
+.owner-buyer-preview-toggle:hover{
+  transform:translateY(-2px);
+  border-color:rgba(227,179,65,.78);
+  background:#1f2025;
+  color:#ffe49a;
+}
+.owner-buyer-preview-toggle.is-previewing{
+  border-color:rgba(95,212,196,.62);
+  background:rgba(18,30,30,.96);
+  color:#8de6da;
+}
+body.owner-buyer-preview::after{
+  content:"BUYER PREVIEW";
+  position:fixed;
+  right:22px;
+  bottom:72px;
+  z-index:139;
+  padding:7px 10px;
+  border:1px solid rgba(95,212,196,.30);
+  border-radius:8px;
+  background:rgba(12,19,20,.90);
+  color:#7bded1;
+  font:800 9px/1 'JetBrains Mono',monospace;
+  letter-spacing:1.2px;
+  pointer-events:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+
+@media(min-width:801px){
+  body.owner-mode .owner-only:not(.card-actions),
+  body.owner-mode .desktop-more-owner{
+    --owner-admin-border:rgba(227,179,65,.25);
+  }
+  body.owner-mode nav.mainnav a.owner-only,
+  body.owner-mode nav.mainnav a.desktop-more-owner{
+    border:1px solid transparent;
+  }
+  body.owner-mode nav.mainnav a.owner-only:hover,
+  body.owner-mode nav.mainnav a.desktop-more-owner:hover{
+    border-color:var(--owner-admin-border);
+    background:rgba(227,179,65,.055);
+  }
+  body.owner-mode .card-actions.owner-only,
+  body.owner-mode .showcase-owner-actions,
+  body.owner-mode .giveaway-owner-actions{
+    outline:1px solid rgba(227,179,65,.12);
+    outline-offset:1px;
+  }
+}
+
+/* ---------- Home: cleaner premium storefront hierarchy ---------- */
+@media(min-width:801px){
+  .home-hero{
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:22px;
+    padding:34px 36px;
+    background:
+      radial-gradient(circle at 82% 12%,rgba(227,179,65,.12),transparent 34%),
+      linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+    box-shadow:0 18px 46px rgba(0,0,0,.16);
+  }
+  .home-hero h1,.home-hero h2{letter-spacing:.2px;}
+  .home-hero-actions{gap:10px;margin-top:20px;}
+  .home-section{margin-top:34px;}
+  .home-section-head{
+    padding-bottom:10px;
+    margin-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.065);
+  }
+  .home-section-head h2,.home-section-head h3{font-size:22px;}
+  .home-section-link{font-weight:700;color:var(--accent-teal);}
+  .home-collection-stats{gap:10px;}
+  .home-stat-card{
+    border:1px solid rgba(255,255,255,.075);
+    background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.018));
+    box-shadow:none;
+    transition:transform .15s ease,border-color .15s ease,background .15s ease;
+  }
+  .home-stat-card:hover{
+    transform:translateY(-2px);
+    border-color:rgba(227,179,65,.35);
+    background:rgba(227,179,65,.045);
+  }
+  .home-feature{
+    border-color:rgba(255,255,255,.075);
+    background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,.012));
+  }
+  .home-feature:hover{border-color:rgba(227,179,65,.34);}
+  .home-shipping{
+    margin-top:34px;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(255,255,255,.018);
+  }
+  .home-shipping-item{padding:18px 20px;}
+}
+
+/* ---------- About / contact: less utilitarian, more storefront ---------- */
+.about-panel{
+  border-color:rgba(255,255,255,.075) !important;
+  border-radius:18px !important;
+  box-shadow:0 14px 34px rgba(0,0,0,.12);
+}
+.about-copy p{max-width:72ch;}
+.about-subhead{
+  padding-top:20px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.about-link,.contact-link{
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.about-link:hover,.contact-link:hover{
+  transform:translateY(-2px);
+  background:rgba(227,179,65,.04);
+}
+
+/* ---------- Empty / zero-result states ---------- */
+.empty-state{
+  min-height:260px;
+  justify-content:center;
+  border-color:rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at 50% 22%,rgba(227,179,65,.055),transparent 34%),
+    rgba(255,255,255,.012);
+}
+.empty-state h2{font-size:26px;letter-spacing:.1px;}
+.empty-state p{line-height:1.6;max-width:440px;}
+.inventory-no-results{margin-top:8px;}
+
+/* ---------- Card details: finish the lower half ---------- */
+@media(min-width:981px){
+  .modal.card-details-modal .detail-section,
+  .modal.card-details-modal .detail-notes,
+  .modal.card-details-modal .detail-slab-list,
+  .modal.card-details-modal .details-buyer-confidence,
+  .modal.card-details-modal .details-desktop-contact-socials{
+    border-radius:14px;
+  }
+  .modal.card-details-modal .detail-section{
+    border-color:rgba(255,255,255,.065);
+    background:rgba(255,255,255,.018);
+  }
+  .modal.card-details-modal .detail-section h3,
+  .modal.card-details-modal .detail-info-section-title{
+    letter-spacing:.7px;
+  }
+  .modal.card-details-modal .detail-grid{
+    gap:9px;
+  }
+  .modal.card-details-modal .detail-item{
+    border-color:rgba(255,255,255,.065);
+    background:rgba(255,255,255,.018);
+  }
+  .modal.card-details-modal .detail-label{
+    font-size:9px;
+    letter-spacing:.85px;
+    color:#858a94;
+  }
+  .modal.card-details-modal .detail-value{
+    color:#ececf0;
+  }
+  .modal.card-details-modal .grade-entry{
+    border-bottom-color:rgba(255,255,255,.055);
+  }
+  .modal.card-details-modal .detail-notes{
+    padding:14px 15px;
+    border:1px solid rgba(255,255,255,.065);
+    background:rgba(255,255,255,.015);
+  }
+}
+
+/* ---------- Focus visibility / accessibility polish ---------- */
+@media(min-width:801px){
+  .btn-primary:focus-visible,
+  .btn-ghost:focus-visible,
+  .icon-btn:focus-visible,
+  .quick-filter:focus-visible,
+  .home-feature:focus-visible,
+  .home-stat-card:focus-visible,
+  .about-link:focus-visible,
+  .contact-link:focus-visible,
+  .owner-buyer-preview-toggle:focus-visible{
+    outline:2px solid var(--accent-gold);
+    outline-offset:3px;
+  }
+}
+
+/* ---------- V112 final light-mode harmonization ---------- */
+body.light-mode{
+  --bg:#f3f1ec;
+  --sidebar:#fbfaf7;
+  --surface:#ffffff;
+  --surface-2:#f7f5f0;
+  --surface-3:#ece9e2;
+  --border:#c9c5bc;
+  --border-soft:#dedad2;
+  --text:#20262c;
+  --text-muted:#5d656d;
+  --text-dim:#737b82;
+  --accent-gold:#946b18;
+  --accent-gold-soft:#b88728;
+  --accent-teal:#176f68;
+  --success:#2d7d59;
+  color-scheme:light;
+}
+body.light-mode .owner-buyer-preview-toggle{
+  border-color:rgba(148,107,24,.34);
+  background:rgba(255,255,255,.96);
+  color:#745313;
+  box-shadow:0 10px 28px rgba(58,49,33,.15);
+}
+body.light-mode .owner-buyer-preview-toggle:hover{
+  border-color:rgba(148,107,24,.58);
+  background:#fbf4e4;
+  color:#65470e;
+}
+body.light-mode .owner-buyer-preview-toggle.is-previewing{
+  border-color:rgba(23,111,104,.34);
+  background:#eaf5f2;
+  color:#176f68;
+}
+body.light-mode.owner-buyer-preview::after{
+  border-color:rgba(23,111,104,.24);
+  background:rgba(239,248,246,.96);
+  color:#176f68;
+  box-shadow:0 8px 22px rgba(58,49,33,.10);
+}
+
+@media(min-width:801px){
+  body.light-mode .home-hero{
+    border-color:#d5d0c7;
+    background:
+      radial-gradient(circle at 82% 12%,rgba(148,107,24,.10),transparent 34%),
+      linear-gradient(145deg,#ffffff,#f7f4ee);
+    box-shadow:0 14px 34px rgba(58,49,33,.08);
+  }
+  body.light-mode .home-section-head{border-bottom-color:#ddd8cf;}
+  body.light-mode .home-stat-card,
+  body.light-mode .home-feature{
+    border-color:#d7d1c7;
+    background:linear-gradient(180deg,#fff,#faf8f3);
+    color:#252b30;
+  }
+  body.light-mode .home-stat-card:hover,
+  body.light-mode .home-feature:hover{
+    border-color:rgba(148,107,24,.36);
+    background:#fbf5e7;
+  }
+  body.light-mode .home-stat-label,
+  body.light-mode .home-feature p{color:#626a72;}
+  body.light-mode .home-section-link{color:#176f68;}
+  body.light-mode .home-shipping{
+    border-color:#d7d1c7;
+    background:#faf8f3;
+  }
+  body.light-mode .home-shipping-item{color:#30363b;}
+}
+body.light-mode .about-panel{
+  border-color:#d3cec5 !important;
+  background:#fff !important;
+  color:#252b30 !important;
+  box-shadow:0 12px 30px rgba(58,49,33,.08) !important;
+}
+body.light-mode .about-subhead{border-top-color:#ded9d0;}
+body.light-mode .about-link,
+body.light-mode .contact-link{
+  border-color:#d6d0c6 !important;
+  background:#faf8f3 !important;
+  color:#2e3439 !important;
+}
+body.light-mode .about-link:hover,
+body.light-mode .contact-link:hover{
+  border-color:rgba(148,107,24,.40) !important;
+  background:#fbf3df !important;
+}
+body.light-mode .empty-state{
+  border-color:#d1cbc1 !important;
+  background:
+    radial-gradient(circle at 50% 22%,rgba(148,107,24,.07),transparent 34%),
+    #faf8f3 !important;
+  color:#5f676e !important;
+}
+body.light-mode .empty-state h2{color:#252b30 !important;}
+
+@media(min-width:981px){
+  body.light-mode .modal.card-details-modal .detail-section,
+  body.light-mode .modal.card-details-modal .detail-item,
+  body.light-mode .modal.card-details-modal .detail-notes{
+    border-color:#d8d2c8 !important;
+    background:#faf8f4 !important;
+  }
+  body.light-mode .modal.card-details-modal .detail-label{color:#6d747a !important;}
+  body.light-mode .modal.card-details-modal .detail-value{color:#2a3035 !important;}
+  body.light-mode .modal.card-details-modal .grade-entry{border-bottom-color:#dfdad1 !important;}
+}
+
+@media(max-width:800px){
+  .owner-buyer-preview-toggle{display:none !important;}
+  body.owner-buyer-preview::after{display:none !important;}
+}
+
+/* =========================================================
+   V115 BETA — CENTERED LOGO HEADER, STRUCTURE-SAFE VERSION
+   Beta experiment only.
+   - Wide desktop only (>= 1440px)
+   - One strict nav row
+   - Existing laptop/tablet/mobile navigation remains untouched
+   - Existing More menu / theme control / owner preview keep their JS
+   ========================================================= */
+@media (min-width:1440px){
+  .shell{
+    display:block !important;
+    min-height:100vh !important;
+  }
+
+  .sidebar{
+    position:sticky !important;
+    inset:auto !important;
+    top:0 !important;
+    width:100% !important;
+    height:88px !important;
+    max-height:none !important;
+    overflow:visible !important;
+    z-index:90 !important;
+    padding:0 24px !important;
+    border-right:0 !important;
+    border-bottom:1px solid var(--border) !important;
+    background:rgba(19,20,25,.955) !important;
+    backdrop-filter:blur(18px) saturate(135%) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(135%) !important;
+    box-shadow:0 8px 26px rgba(0,0,0,.14) !important;
+    display:block !important;
+  }
+
+  .main{
+    margin-left:0 !important;
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  /* True centred brand anchor. The fourth nav column below is reserved for it. */
+  .sidebar > div:first-child{
+    position:absolute !important;
+    left:50% !important;
+    top:8px !important;
+    transform:translateX(-50%) !important;
+    z-index:8 !important;
+    width:72px !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  .sidebar .shop-brand{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:72px !important;
+    min-width:72px !important;
+    height:72px !important;
+    gap:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  .sidebar .logo-click-target,
+  .sidebar .logo-click-target .shop-logo{
+    width:68px !important;
+    height:68px !important;
+    min-width:68px !important;
+    flex:0 0 68px !important;
+  }
+
+  .sidebar .logo-click-target{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    border-radius:50% !important;
+    transition:transform .16s ease,filter .16s ease !important;
+  }
+
+  .sidebar .logo-click-target:hover,
+  .sidebar .logo-click-target:focus-visible{
+    transform:translateY(-1px) scale(1.025) !important;
+    filter:drop-shadow(0 5px 12px rgba(227,179,65,.18)) !important;
+    outline:none !important;
+  }
+
+  .sidebar .text-click-target,
+  .sidebar .shop-brand-text,
+  .sidebar .mobile-header-social-links,
+  .sidebar .mobile-header-theme-toggle{
+    display:none !important;
+  }
+
+  /*
+     Critical V113 fix:
+     hide EVERY direct nav link first, then opt only six primary destinations in.
+     This prevents Reserved / Showcase / Favorite / owner tabs from auto-placing
+     into extra grid rows.
+  */
+  #mainnav{
+    position:relative !important;
+    left:50% !important;
+    transform:translateX(-50%) !important;
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(112px,1fr)) 92px repeat(3,minmax(112px,1fr)) !important;
+    align-items:center !important;
+    gap:5px !important;
+    width:min(940px,calc(100vw - 500px)) !important;
+    height:88px !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:visible !important;
+    white-space:nowrap !important;
+  }
+
+  #mainnav > a{
+    display:none !important;
+  }
+
+  #mainnav > a[data-route="inventory"],
+  #mainnav > a[data-route="collection"],
+  #mainnav > a[data-route="sold"],
+  #mainnav > a[data-route="giveaway"],
+  #mainnav > a[data-route="reviews"],
+  #mainnav > a[data-route="about"]{
+    position:relative !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    min-width:0 !important;
+    min-height:40px !important;
+    padding:7px 10px !important;
+    border:1px solid transparent !important;
+    border-radius:9px !important;
+    background:transparent !important;
+    color:var(--text-muted) !important;
+    font-size:12.5px !important;
+    font-weight:650 !important;
+    letter-spacing:.01em !important;
+    opacity:1 !important;
+    transition:color .15s ease,background .15s ease,border-color .15s ease !important;
+  }
+
+  #mainnav > a[data-route="inventory"]{grid-column:1 !important;}
+  #mainnav > a[data-route="collection"]{grid-column:2 !important;}
+  #mainnav > a[data-route="sold"]{grid-column:3 !important;}
+  #mainnav > a[data-route="giveaway"]{grid-column:5 !important;}
+  #mainnav > a[data-route="reviews"]{grid-column:6 !important;}
+  #mainnav > a[data-route="about"]{grid-column:7 !important;}
+
+  #mainnav > a[data-route] .ic{
+    display:none !important;
+  }
+
+  #mainnav > a[data-route]:hover,
+  #mainnav > a[data-route]:focus-visible{
+    color:var(--text) !important;
+    background:rgba(255,255,255,.035) !important;
+    border-color:rgba(255,255,255,.06) !important;
+    outline:none !important;
+  }
+
+  #mainnav > a[data-route].active,
+  #mainnav > a[data-route][aria-current="page"]{
+    color:var(--accent-gold) !important;
+    background:rgba(227,179,65,.065) !important;
+    border-color:rgba(227,179,65,.19) !important;
+    box-shadow:none !important;
+  }
+
+  #mainnav > a[data-route].active::before,
+  #mainnav > a[data-route][aria-current="page"]::before{
+    content:"" !important;
+    position:absolute !important;
+    left:28% !important;
+    right:28% !important;
+    top:auto !important;
+    bottom:3px !important;
+    width:auto !important;
+    height:2px !important;
+    border-radius:999px !important;
+    background:linear-gradient(90deg,transparent,var(--accent-gold),transparent) !important;
+  }
+
+  #mainnav .nav-count{
+    min-width:19px !important;
+    height:18px !important;
+    padding:0 5px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    border-radius:999px !important;
+    background:rgba(255,255,255,.055) !important;
+    color:var(--text-muted) !important;
+    font-size:9px !important;
+    line-height:1 !important;
+  }
+
+  #mainnav > a.active .nav-count{
+    background:rgba(227,179,65,.12) !important;
+    color:var(--accent-gold) !important;
+  }
+
+  /* Existing More button stays functional, but is outside the centre grid visually. */
+  #mainnav > .mobile-more-toggle{
+    display:flex !important;
+    position:fixed !important;
+    top:24px !important;
+    right:24px !important;
+    z-index:104 !important;
+    width:auto !important;
+    min-width:70px !important;
+    min-height:36px !important;
+    padding:6px 11px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:5px !important;
+    border:1px solid var(--border) !important;
+    border-radius:9px !important;
+    background:rgba(255,255,255,.035) !important;
+    color:var(--text-muted) !important;
+    font-size:11px !important;
+    font-weight:650 !important;
+    line-height:1 !important;
+  }
+
+  #mainnav > .mobile-more-toggle:hover,
+  #mainnav > .mobile-more-toggle:focus-visible,
+  #mainnav > .mobile-more-toggle[aria-expanded="true"]{
+    border-color:rgba(227,179,65,.28) !important;
+    background:rgba(227,179,65,.07) !important;
+    color:var(--accent-gold) !important;
+    outline:none !important;
+  }
+
+  #mainnav > .mobile-more-menu:not([hidden]){
+    display:grid !important;
+    position:fixed !important;
+    top:66px !important;
+    right:24px !important;
+    left:auto !important;
+    z-index:115 !important;
+    width:250px !important;
+    max-height:calc(100vh - 86px) !important;
+    overflow:auto !important;
+    grid-template-columns:1fr !important;
+    gap:3px !important;
+    padding:8px !important;
+    border:1px solid var(--border) !important;
+    border-radius:13px !important;
+    background:rgba(20,22,28,.985) !important;
+    box-shadow:0 18px 48px rgba(0,0,0,.34) !important;
+    backdrop-filter:blur(16px) !important;
+    -webkit-backdrop-filter:blur(16px) !important;
+  }
+
+  #mainnav > .mobile-more-menu:not([hidden]) a{
+    display:flex !important;
+    align-items:center !important;
+    gap:8px !important;
+    min-height:36px !important;
+    padding:7px 9px !important;
+    border-radius:8px !important;
+    border:0 !important;
+    background:transparent !important;
+    color:var(--text-muted) !important;
+    font-size:11.5px !important;
+  }
+
+  #mainnav > .mobile-more-menu:not([hidden]) a:hover,
+  #mainnav > .mobile-more-menu:not([hidden]) a:focus-visible{
+    background:rgba(255,255,255,.05) !important;
+    color:var(--text) !important;
+    outline:none !important;
+  }
+
+  /* Right utility zone. Social icons stay out of this premium header. */
+  .sidebar-footer{
+    position:fixed !important;
+    top:24px !important;
+    right:106px !important;
+    z-index:103 !important;
+    display:flex !important;
+    align-items:center !important;
+    width:auto !important;
+    min-width:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+  }
+
+  .sidebar-footer .header-social-links,
+  .sidebar-footer > div[style],
+  .sidebar-footer .owner-status,
+  .sidebar-footer .mobile-footer-currency{
+    display:none !important;
+  }
+
+  .sidebar-footer .theme-toggle{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    width:auto !important;
+    min-width:92px !important;
+    min-height:36px !important;
+    margin:0 !important;
+    padding:6px 10px !important;
+    border-radius:9px !important;
+    font-size:11px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  /* Preview is visually separated from buyer navigation. */
+  #ownerBuyerPreviewToggle{
+    top:18px !important;
+    left:20px !important;
+    right:auto !important;
+    bottom:auto !important;
+    min-height:44px !important;
+    z-index:106 !important;
+  }
+
+  /* Light mode counterpart. */
+  body.light-mode .sidebar{
+    background:rgba(251,250,247,.97) !important;
+    border-bottom-color:#d4cfc5 !important;
+    box-shadow:0 8px 24px rgba(71,59,38,.08) !important;
+  }
+
+  body.light-mode #mainnav > a[data-route]:hover,
+  body.light-mode #mainnav > a[data-route]:focus-visible{
+    background:#f5f1e8 !important;
+    border-color:#ded7ca !important;
+    color:#2b3035 !important;
+  }
+
+  body.light-mode #mainnav > a[data-route].active,
+  body.light-mode #mainnav > a[data-route][aria-current="page"]{
+    background:#f6eedc !important;
+    border-color:rgba(148,107,24,.27) !important;
+    color:#805b15 !important;
+  }
+
+  body.light-mode #mainnav .nav-count{
+    background:#ece8df !important;
+    color:#646a70 !important;
+  }
+
+  body.light-mode #mainnav > .mobile-more-toggle{
+    background:#fff !important;
+    border-color:#d4cfc5 !important;
+    color:#626970 !important;
+  }
+
+  body.light-mode #mainnav > .mobile-more-toggle:hover,
+  body.light-mode #mainnav > .mobile-more-toggle:focus-visible,
+  body.light-mode #mainnav > .mobile-more-toggle[aria-expanded="true"]{
+    background:#f6eedc !important;
+    border-color:rgba(148,107,24,.30) !important;
+    color:#805b15 !important;
+  }
+
+  body.light-mode #mainnav > .mobile-more-menu:not([hidden]){
+    background:rgba(255,255,255,.985) !important;
+    border-color:#d4cfc5 !important;
+    box-shadow:0 18px 44px rgba(71,59,38,.15) !important;
+  }
+
+  body.light-mode #mainnav > .mobile-more-menu:not([hidden]) a{
+    color:#59616a !important;
+  }
+
+  body.light-mode #mainnav > .mobile-more-menu:not([hidden]) a:hover,
+  body.light-mode #mainnav > .mobile-more-menu:not([hidden]) a:focus-visible{
+    background:#f4f0e7 !important;
+    color:#2b3035 !important;
+  }
+}
