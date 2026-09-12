@@ -1933,3 +1933,37 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   .modal.card-details-modal .mobile-buy-sticky{left:6px !important;right:6px !important;grid-template-columns:minmax(0,1fr) auto !important;}
   .modal.card-details-modal .mobile-buy-sticky-button{padding-left:11px !important;padding-right:11px !important;font-size:10.5px !important;}
 }
+
+/* ==========================================================
+   V129 BETA — MOBILE CONTACT CTA RELIABILITY FIX
+   Keep the contact sheet visible for both native summary taps and
+   the sticky Contact to Buy action. Desktop remains unchanged.
+   ========================================================== */
+@media (max-width:899px){
+  .modal.card-details-modal .detail-buy-cta.mobile-buy-force-open > .mobile-buy-backdrop{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:918 !important;
+    display:block !important;
+    width:100vw !important;
+    height:100vh !important;
+    padding:0 !important;
+    border:0 !important;
+    background:rgba(0,0,0,.56) !important;
+    backdrop-filter:blur(2px) !important;
+    -webkit-backdrop-filter:blur(2px) !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta.mobile-buy-force-open > .detail-buy-chooser{
+    display:grid !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+  }
+
+  .modal.card-details-modal .mobile-buy-sticky-button{
+    cursor:pointer !important;
+    pointer-events:auto !important;
+    touch-action:manipulation !important;
+  }
+}

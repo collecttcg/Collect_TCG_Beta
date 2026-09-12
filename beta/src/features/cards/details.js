@@ -1192,7 +1192,7 @@ async function openDetailsModal(card){
           ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
             <div class="details-desktop-contact-socials">
               <div class="details-contact-copy">
-                <strong>Interested in this card?</strong>
+                <strong>Contact to Buy</strong>
                 <span class="details-contact-description">Contact us to confirm current availability, transaction method and delivery / meetup options before payment.</span>
                 <span class="details-contact-location">📍 Malaysia &amp; Singapore</span>
               </div>
@@ -1301,14 +1301,39 @@ async function openDetailsModal(card){
     }));
 
     const mobileBuyDetails=appContext.detailsMount.querySelector(".detail-buy-cta");
-    appContext.detailsMount.querySelectorAll("[data-mobile-buy-open]").forEach(btn=>btn.addEventListener("click",()=>{
+    const mobileBuySummary=mobileBuyDetails?.querySelector(":scope > summary");
+    const openMobileBuyChooser=()=>{
       if(!mobileBuyDetails) return;
+      mobileBuyDetails.setAttribute("open","");
       mobileBuyDetails.open=true;
-    }));
-    appContext.detailsMount.querySelectorAll("[data-mobile-buy-close]").forEach(btn=>btn.addEventListener("click",()=>{
+      mobileBuyDetails.classList.add("mobile-buy-force-open");
+      requestAnimationFrame(()=>{
+        const closeBtn=mobileBuyDetails.querySelector("[data-mobile-buy-close]:not(.mobile-buy-backdrop)");
+        try{ closeBtn?.focus({preventScroll:true}); }catch{ closeBtn?.focus(); }
+      });
+    };
+    const closeMobileBuyChooser=()=>{
       if(!mobileBuyDetails) return;
       mobileBuyDetails.open=false;
+      mobileBuyDetails.removeAttribute("open");
+      mobileBuyDetails.classList.remove("mobile-buy-force-open");
+    };
+    appContext.detailsMount.querySelectorAll("[data-mobile-buy-open]").forEach(btn=>btn.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      openMobileBuyChooser();
     }));
+    appContext.detailsMount.querySelectorAll("[data-mobile-buy-close]").forEach(btn=>btn.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      closeMobileBuyChooser();
+    }));
+    mobileBuySummary?.addEventListener("click",()=>{
+      requestAnimationFrame(()=>{
+        if(mobileBuyDetails?.open) mobileBuyDetails.classList.add("mobile-buy-force-open");
+        else mobileBuyDetails?.classList.remove("mobile-buy-force-open");
+      });
+    });
 
     if(appContext.isOwnerMode() && appContext.ownerPrivateSupported){
       appContext.fetchOwnerPrivateMeta(card.id).then(meta=>{
