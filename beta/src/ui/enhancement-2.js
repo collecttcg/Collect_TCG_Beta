@@ -17,6 +17,7 @@ export function setup(appContext){
   if(!bar || !priceEl || !action || !contactOverlay || !contactSheet) return;
 
   let lastInterestFocus=null;
+  const mobileMedia=window.matchMedia("(max-width:800px)");
 
   function currentCardContext(){
     const nameSelectors=[
@@ -81,7 +82,7 @@ export function setup(appContext){
       }
       if(typeof window.collectTrackEngagement==="function"){
         const cardId=window.collectCurrentDetailsCardId?.()||"";
-        if(cardId) window.collectTrackEngagement("inquiry_copy",cardId,"Copy Inquiry").catch(()=>{});
+        if(cardId) Promise.resolve(window.collectTrackEngagement("inquiry_copy",cardId,"Copy Inquiry")).catch(()=>{});
       }
       if(typeof showToast==="function") showToast("Inquiry copied");
       if(copyInquiryBtn){
@@ -102,28 +103,36 @@ export function setup(appContext){
 
   function openContactChooser(){
     const ctx=currentCardContext();
-    if(typeof window.collectTrackEngagement==="function"){
-      const cardId=window.collectCurrentDetailsCardId?.()||"";
-      if(cardId) window.collectTrackEngagement("contact_open",cardId,"Interested CTA").catch(()=>{});
-    }
     if(contactCardName) contactCardName.textContent=ctx.name || "Card enquiry";
     if(contactCardRef){
       contactCardRef.textContent=ctx.reference || "Choose a platform to contact us.";
     }
 
+    // Open the UI first. Analytics must never be able to block buyer contact.
     lastInterestFocus=document.activeElement;
     contactOverlay.hidden=false;
+    contactOverlay.setAttribute("aria-hidden","false");
     document.body.classList.add("interest-contact-open");
 
     requestAnimationFrame(()=>{
       try{ contactClose?.focus({preventScroll:true}); }
       catch{ contactClose?.focus(); }
     });
+
+    try{
+      if(typeof window.collectTrackEngagement==="function"){
+        const cardId=window.collectCurrentDetailsCardId?.()||"";
+        if(cardId) Promise.resolve(window.collectTrackEngagement("contact_open",cardId,"Contact to Buy")).catch(()=>{});
+      }
+    }catch(error){
+      console.warn("Could not track contact-open event:",error);
+    }
   }
 
   function closeContactChooser(restoreFocus=true){
     if(contactOverlay.hidden) return;
     contactOverlay.hidden=true;
+    contactOverlay.setAttribute("aria-hidden","true");
     document.body.classList.remove("interest-contact-open");
 
     if(restoreFocus && lastInterestFocus && document.contains(lastInterestFocus)){
@@ -132,6 +141,9 @@ export function setup(appContext){
     }
     lastInterestFocus=null;
   }
+
+  window.collectOpenContactChooser=openContactChooser;
+  window.collectCloseContactChooser=closeContactChooser;
 
   function isDetailRoute(){
     const h=location.hash || "";
@@ -170,8 +182,6 @@ export function setup(appContext){
     }
     return "";
   }
-
-  const mobileMedia=window.matchMedia("(max-width:800px)");
 
   function update(){
     const mobile=mobileMedia.matches;
@@ -217,14 +227,28 @@ export function setup(appContext){
     }
 
     bar.dataset.state="available";
-    action.textContent="I'm Interested";
+    action.textContent="Contact to Buy";
+    action.setAttribute("aria-label","Contact to Buy");
     action.disabled=false;
   }
 
-  action.addEventListener("click",function(){
-    if(action.disabled) return;
+  // One delegated handler owns every mobile Contact-to-Buy trigger.
+  // It works for the fixed footer and for card-detail content that is re-rendered.
+  document.addEventListener("click",e=>{
+    const trigger=e.target.closest?.("[data-contact-buy-trigger]");
+    if(!trigger) return;
+
+    const isFixedTrigger=trigger===action || trigger.id==="mobileDetailCtaAction";
+    const isInlineSummary=trigger.matches?.(".detail-buy-cta > summary");
+
+    // Desktop keeps the native <details> contact chooser. Mobile uses one global sheet.
+    if(isInlineSummary && !mobileMedia.matches) return;
+    if(isFixedTrigger && action.disabled) return;
+
+    e.preventDefault();
+    e.stopPropagation();
     openContactChooser();
-  });
+  },true);
 
   contactClose?.addEventListener("click",()=>closeContactChooser(true));
 
@@ -239,7 +263,7 @@ export function setup(appContext){
       const platform=String(link.dataset.interestPlatform||"Contact");
       if(typeof window.collectTrackEngagement==="function"){
         const cardId=window.collectCurrentDetailsCardId?.()||"";
-        if(cardId) window.collectTrackEngagement("contact_platform",cardId,platform).catch(()=>{});
+        if(cardId) Promise.resolve(window.collectTrackEngagement("contact_platform",cardId,platform)).catch(()=>{});
       }
 
       // Copy the exact card context before opening the buyer's chosen platform.

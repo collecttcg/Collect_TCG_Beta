@@ -1126,7 +1126,7 @@ async function openDetailsModal(card){
                 </span>
               </div>
               <details class="detail-buy-cta">
-                <summary>
+                <summary data-contact-buy-trigger aria-label="Contact to Buy">
                   <span>Contact to Buy</span>
                   <small>Choose contact method</small>
                 </summary>
@@ -1205,17 +1205,6 @@ async function openDetailsModal(card){
         </div>
       </div>
 
-      ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
-        <div class="mobile-buy-sticky" aria-label="Purchase contact">
-          <div class="mobile-buy-sticky-copy">
-            <span>Available</span>
-            <div class="mobile-buy-sticky-price">${appContext.detailPriceDisplayHTML(card)}</div>
-          </div>
-          <button type="button" class="mobile-buy-sticky-button" data-mobile-buy-open>
-            Contact to Buy
-          </button>
-        </div>
-      ` : ""}
 
       ${(()=>{
         const nav=appContext.getSameSeriesNeighbors(card);
@@ -1300,53 +1289,8 @@ async function openDetailsModal(card){
       appContext.closeDetailsModal(false);
     }));
 
-    const mobileBuyDetails=appContext.detailsMount.querySelector(".detail-buy-cta");
-    const mobileBuySummary=mobileBuyDetails?.querySelector(":scope > summary");
-    const openMobileBuyChooser=()=>{
-      if(!mobileBuyDetails) return;
-      mobileBuyDetails.setAttribute("open","");
-      mobileBuyDetails.open=true;
-      mobileBuyDetails.classList.add("mobile-buy-force-open");
-      requestAnimationFrame(()=>{
-        const closeBtn=mobileBuyDetails.querySelector("[data-mobile-buy-close]:not(.mobile-buy-backdrop)");
-        try{ closeBtn?.focus({preventScroll:true}); }catch{ closeBtn?.focus(); }
-      });
-    };
-    const closeMobileBuyChooser=()=>{
-      if(!mobileBuyDetails) return;
-      mobileBuyDetails.open=false;
-      mobileBuyDetails.removeAttribute("open");
-      mobileBuyDetails.classList.remove("mobile-buy-force-open");
-    };
-    appContext.detailsMount.querySelectorAll("[data-mobile-buy-open]").forEach(btn=>btn.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      openMobileBuyChooser();
-    }));
-    appContext.detailsMount.querySelectorAll("[data-mobile-buy-close]").forEach(btn=>btn.addEventListener("click",e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      closeMobileBuyChooser();
-    }));
-
-    // The fixed mobile footer CTA lives in index.html (outside detailsMount).
-    // Wire that real visible button to the same Contact-to-Buy chooser.
-    const fixedMobileBuyButton=appContext.$("mobileDetailCtaAction");
-    if(fixedMobileBuyButton){
-      fixedMobileBuyButton.textContent="Contact to Buy";
-      fixedMobileBuyButton.setAttribute("aria-label","Contact to Buy");
-      fixedMobileBuyButton.onclick=e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        openMobileBuyChooser();
-      };
-    }
-    mobileBuySummary?.addEventListener("click",()=>{
-      requestAnimationFrame(()=>{
-        if(mobileBuyDetails?.open) mobileBuyDetails.classList.add("mobile-buy-force-open");
-        else mobileBuyDetails?.classList.remove("mobile-buy-force-open");
-      });
-    });
+    // Mobile purchase/contact triggers are delegated globally by enhancement-2.js.
+    // This avoids per-render handlers competing with the fixed mobile footer CTA.
 
     if(appContext.isOwnerMode() && appContext.ownerPrivateSupported){
       appContext.fetchOwnerPrivateMeta(card.id).then(meta=>{

@@ -1967,4 +1967,54 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     touch-action:manipulation !important;
   }
 }
-\n\n/* ==========================================================\n   V130 BETA — REAL MOBILE FOOTER CTA FIX\n   The app already has one fixed mobile CTA in index.html. Use it\n   as the single sticky purchase action and suppress V127's duplicate.\n   ========================================================== */\n@media (max-width:899px){\n  .modal.card-details-modal .mobile-buy-sticky{display:none !important;}\n\n  #mobileDetailCta .mobile-detail-cta-action{\n    background:linear-gradient(180deg,#e9bc4f,#dca632) !important;\n    border-color:#d5a735 !important;\n    color:#181611 !important;\n    font-weight:820 !important;\n    box-shadow:0 7px 18px rgba(218,164,48,.17),inset 0 1px 0 rgba(255,255,255,.34) !important;\n  }\n\n  #mobileDetailCta .mobile-detail-cta-action:active{\n    transform:translateY(1px) !important;\n  }\n\n  body.light-mode #mobileDetailCta .mobile-detail-cta-action{\n    background:linear-gradient(180deg,#e5b84a,#d7a130) !important;\n    color:#181611 !important;\n  }\n}\n
+
+
+/* ==========================================================
+   V131 BETA — SINGLE MOBILE CONTACT FLOW
+   The fixed footer and inline purchase CTA both open one global
+   contact sheet owned by enhancement-2.js. No competing handlers.
+   ========================================================== */
+@media (max-width:800px){
+  #mobileDetailCta{
+    pointer-events:auto !important;
+    z-index:1600 !important;
+  }
+
+  #mobileDetailCta .mobile-detail-cta-action{
+    pointer-events:auto !important;
+    touch-action:manipulation !important;
+    -webkit-tap-highlight-color:transparent !important;
+    background:linear-gradient(180deg,#e9bc4f,#dca632) !important;
+    border:1px solid #d5a735 !important;
+    color:#181611 !important;
+    font-weight:820 !important;
+    box-shadow:0 7px 18px rgba(218,164,48,.17),inset 0 1px 0 rgba(255,255,255,.34) !important;
+  }
+
+  #mobileDetailCta .mobile-detail-cta-action:active{
+    transform:translateY(1px) !important;
+  }
+
+  /* The inline summary is another trigger, not a second mobile chooser. */
+  .modal.card-details-modal .detail-buy-cta > .detail-buy-chooser,
+  .modal.card-details-modal .detail-buy-cta > .mobile-buy-backdrop,
+  .modal.card-details-modal .detail-buy-cta > .mobile-buy-close{
+    display:none !important;
+  }
+
+  .interest-contact-overlay{
+    pointer-events:auto !important;
+    z-index:2200 !important;
+  }
+  .interest-contact-overlay[hidden]{display:none !important;}
+  .interest-contact-sheet,
+  .interest-contact-option,
+  .interest-contact-close{
+    pointer-events:auto !important;
+  }
+
+  body.light-mode #mobileDetailCta .mobile-detail-cta-action{
+    background:linear-gradient(180deg,#e5b84a,#d7a130) !important;
+    color:#181611 !important;
+  }
+}
