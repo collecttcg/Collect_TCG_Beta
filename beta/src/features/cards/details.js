@@ -632,6 +632,20 @@ async function shareCurrentCard(){
     const preview=appContext.publicCardSharePreview(card);
 
     if(navigator.share){
+      let linkCopied=false;
+      try{
+        if(navigator.clipboard?.writeText){
+          await navigator.clipboard.writeText(url);
+          linkCopied=true;
+          appContext.showToast("Link copied — choose an app to share");
+          appContext.recordCardEngagement(card.id,"share","Copy Link").catch(()=>{});
+          // Keep the confirmation visible long enough to notice before the OS share sheet covers the page.
+          await new Promise(resolve=>setTimeout(resolve,900));
+        }
+      }catch(error){
+        console.warn("Could not pre-copy card link",error);
+      }
+
       try{
         await navigator.share({
           title:card.name||"Collect TCG MY & SG",
@@ -641,7 +655,15 @@ async function shareCurrentCard(){
         appContext.recordCardEngagement(card.id,"share","Native Share").catch(()=>{});
         return;
       }catch(error){
-        if(error?.name==="AbortError") return;
+        if(error?.name==="AbortError"){
+          if(linkCopied) appContext.showToast("Link copied to clipboard");
+          return;
+        }
+      }
+
+      if(linkCopied){
+        appContext.showToast("Link copied to clipboard");
+        return;
       }
     }
 
@@ -677,6 +699,18 @@ function publicContactSellerMessage(card){
       `Price: ${priceText}`,
       `Link: ${appContext.getCardShareUrl(card.id)}`
     ].filter(line=>line!=="").join("\n");
+  }
+
+function detailsContactSocialLinksHtml(extraClass=""){
+    const messengerUrl = appContext.COLLECT_TCG_FACEBOOK_MESSENGER_URL || "https://m.me/61590041416102";
+    return `
+      <div class="collect-social-links ${appContext.escapeHtml(extraClass)}" aria-label="Collect TCG contact links">
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.instagram}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Instagram" title="Instagram"><span aria-hidden="true">◎</span><small>IG</small></a>
+        <a href="${messengerUrl}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Message us on Facebook Messenger" title="Message us on Facebook Messenger"><span aria-hidden="true">f</span><small>FB</small></a>
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellMY}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Malaysia" title="Carousell Malaysia"><span aria-hidden="true">C</span><small>MY</small></a>
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellSG}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Singapore" title="Carousell Singapore"><span aria-hidden="true">C</span><small>SG</small></a>
+      </div>
+    `;
   }
 
 async function messageSellerOnFacebook(){
@@ -968,6 +1002,8 @@ async function openDetailsModal(card){
       const returnRoute=appContext.routeBase(String(appContext.detailsReturnHash||"").replace(/^#\/?/,""));
       const returningHome=returnRoute==="home";
       const returningInsights=returnRoute==="insights" && !!appContext.insightsDetailsReturnState;
+      detailsCloseButton.classList.toggle("is-return-action",returningToPage);
+      detailsCloseButton.classList.toggle("is-close-action",!returningToPage);
       detailsCloseButton.innerHTML=returningToPage
         ? `<span aria-hidden="true">←</span> ${returningHome ? "Back to home" : (returningInsights ? "Back to insights" : "Back to results")}`
         : `<span aria-hidden="true">×</span> Close`;
@@ -1045,6 +1081,23 @@ async function openDetailsModal(card){
       <div class="detail-layout">
         <div>${imageHTML}</div>
         <div class="detail-info">
+          <div class="detail-header detail-header-desktop">
+            <div class="detail-title">
+              <div class="eyebrow">Card details</div>
+              <h2 id="detailsTitleDesktop" class="${String(card.name||"").length>88?"detail-title-extra-long":(String(card.name||"").length>52?"detail-title-long":"")}">${appContext.escapeHtml(card.name)}</h2>
+              <div class="detail-meta">${appContext.escapeHtml(card.game || "—")}${card.set ? " · " + appContext.escapeHtml(card.set) : ""}</div>
+            </div>
+            ${!isNfsListing ? `
+              <label class="global-currency-control detail-currency-control" title="Your preferred currency is saved on this device.">
+                <span>Currency</span>
+                <select id="detailsCurrencyPreference" aria-label="Preferred display currency">
+                  <option value="USD" ${appContext.getPriceCurrencyPreference()==="USD"?"selected":""}>USD</option>
+                  <option value="MYR" ${appContext.getPriceCurrencyPreference()==="MYR"?"selected":""}>MYR</option>
+                  <option value="SGD" ${appContext.getPriceCurrencyPreference()==="SGD"?"selected":""}>SGD</option>
+                </select>
+              </label>
+            ` : ""}
+          </div>
           <div class="detail-summary-strip">
             <div class="detail-summary-card detail-summary-price">
               <span>Price</span>
@@ -1062,6 +1115,33 @@ async function openDetailsModal(card){
           </div>
 
           ${detailSlabBreakdown}
+
+          ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
+            <div class="detail-purchase-panel" aria-label="Purchase options">
+              <div class="detail-purchase-location">
+                <span class="detail-purchase-location-icon" aria-hidden="true">📍</span>
+                <span>
+                  <strong>Malaysia &amp; Singapore</strong>
+                  <small>Negotiable • Shipping / COD options available</small>
+                </span>
+              </div>
+              <details class="detail-buy-cta">
+                <summary>
+                  <span>Contact to Buy</span>
+                  <small>Choose contact method</small>
+                </summary>
+                <button type="button" class="mobile-buy-backdrop" data-mobile-buy-close aria-label="Close contact options"></button>
+                <div class="detail-buy-chooser">
+                  <button type="button" class="mobile-buy-close" data-mobile-buy-close aria-label="Close contact options">×</button>
+                  <div>
+                    <strong>Choose how to contact us</strong>
+                    <span>Confirm availability, payment and delivery / meetup options before payment.</span>
+                  </div>
+                  ${detailsContactSocialLinksHtml("details-buy-social-links")}
+                </div>
+              </details>
+            </div>
+          ` : ""}
 
           ${!isNfsListing ? `
             <div class="detail-buyer-confidence" aria-label="Buyer information">
@@ -1118,12 +1198,24 @@ async function openDetailsModal(card){
               </div>
               <div class="details-contact-actions">
                 <span class="details-contact-via-label">Contact via</span>
-                ${appContext.collectSocialLinksHtml("details-social-links")}
+                ${detailsContactSocialLinksHtml("details-social-links")}
               </div>
             </div>
           ` : ""}
         </div>
       </div>
+
+      ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
+        <div class="mobile-buy-sticky" aria-label="Purchase contact">
+          <div class="mobile-buy-sticky-copy">
+            <span>Available</span>
+            <div class="mobile-buy-sticky-price">${appContext.detailPriceDisplayHTML(card)}</div>
+          </div>
+          <button type="button" class="mobile-buy-sticky-button" data-mobile-buy-open>
+            Contact to Buy
+          </button>
+        </div>
+      ` : ""}
 
       ${(()=>{
         const nav=appContext.getSameSeriesNeighbors(card);
@@ -1144,7 +1236,7 @@ async function openDetailsModal(card){
       })()}
 
       ${(()=>{
-        const related = appContext.getRelatedCards(card, 6, {availableOnly:isSoldListing});
+        const related = appContext.getRelatedCards(card, 8, {availableOnly:isSoldListing});
         return related.length ? `
           <section class="related-cards-section ${isSoldListing ? "sold-alternatives-section" : ""}">
             <div class="related-cards-head">
@@ -1206,6 +1298,16 @@ async function openDetailsModal(card){
     appContext.detailsMount.querySelectorAll("[data-high-value-contact]").forEach(btn=>btn.addEventListener("click",()=>{
       appContext.goToRoute("contact");
       appContext.closeDetailsModal(false);
+    }));
+
+    const mobileBuyDetails=appContext.detailsMount.querySelector(".detail-buy-cta");
+    appContext.detailsMount.querySelectorAll("[data-mobile-buy-open]").forEach(btn=>btn.addEventListener("click",()=>{
+      if(!mobileBuyDetails) return;
+      mobileBuyDetails.open=true;
+    }));
+    appContext.detailsMount.querySelectorAll("[data-mobile-buy-close]").forEach(btn=>btn.addEventListener("click",()=>{
+      if(!mobileBuyDetails) return;
+      mobileBuyDetails.open=false;
     }));
 
     if(appContext.isOwnerMode() && appContext.ownerPrivateSupported){
