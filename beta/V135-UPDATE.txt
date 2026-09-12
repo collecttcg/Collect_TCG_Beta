@@ -1,0 +1,13 @@
+V135 PRODUCTION — QHD / 2K DESKTOP SCALE
+
+Built on V134 production.
+
+- 1080p/laptop desktop remains unchanged.
+- 1800px+ uses a wider 1720px centered content canvas.
+- 2300px+ (e.g. 2560x1440) uses a 1920px centered content canvas.
+- QHD header/logo/nav/social typography scale up proportionally.
+- Inventory grid gets additional room while preserving focused side margins.
+- 3000px+ growth is capped to prevent ultrawide edge-to-edge stretching.
+
+Changed file:
+- src/styles/26-compatibility.css

@@ -1,0 +1,18 @@
+Collect TCG V95 Production Candidate
+====================================
+
+This folder is the production-configured version of the accepted V93 modular beta.
+
+Important:
+- Deploy the ENTIRE contents of this folder to the root of Collect_TCG.
+- Do NOT upload only index.html: index.html imports ./src/main.js and the CSS/assets.
+- The production Supabase project is enabled, including normal owner auth/writes/analytics.
+- The beta read-only/sandbox guards, environment badge and noindex tag are removed.
+- Keep your current production repository/commit as a rollback point before replacing files.
+
+Primary entry point: index.html
+
+V95 image-safety merge:
+- Latest Version 4 saved-image cleanup protection merged from the newest production HTML.
+- After a database save attempt, photos are retained if confirmation or a follow-up step fails.
+- Storage deletion checks live card and variant references first; if that safety check fails, files are retained.

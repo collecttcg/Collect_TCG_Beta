@@ -1205,7 +1205,6 @@ async function openDetailsModal(card){
         </div>
       </div>
 
-
       ${(()=>{
         const nav=appContext.getSameSeriesNeighbors(card);
         if(nav.total<=1 || appContext.sameSeriesNavigationIsRedundant(nav,filteredResultNav)) return "";

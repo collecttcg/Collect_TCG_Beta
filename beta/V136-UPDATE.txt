@@ -1,0 +1,9 @@
+V136 PRODUCTION — MORE MENU NAVIGATION CAPITALIZATION
+
+Change:
+- Desktop navigation entries inside More are uppercase.
+- Social strip labels remain normal capitalization.
+- Mobile is unchanged.
+
+Changed file:
+- src/styles/26-compatibility.css

@@ -4,12 +4,69 @@ function isMobileOwnerBlocked(){
     return window.matchMedia("(max-width:800px)").matches;
   }
 
+function isOwnerAuthenticated(){
+    return !!appContext.ownerSession && appContext.ownerVerified === true;
+  }
+
+function isOwnerBuyerPreview(){
+    return !appContext.isMobileOwnerBlocked() && appContext.isOwnerAuthenticated() && appContext.ownerBuyerPreview === true;
+  }
+
 function isOwnerMode(){
-    return !appContext.isMobileOwnerBlocked() && !!appContext.ownerSession && appContext.ownerVerified === true;
+    return !appContext.isMobileOwnerBlocked() && appContext.isOwnerAuthenticated() && !appContext.isOwnerBuyerPreview();
   }
 
 function canManageCollectionOrder(){
-    return !!appContext.ownerSession && appContext.ownerVerified === true;
+    return appContext.isOwnerAuthenticated();
+  }
+
+function readOwnerBuyerPreviewPreference(){
+    try{return appContext.sessionStorage.getItem('collect_tcg_owner_buyer_preview')==='1';}catch{return false;}
+  }
+
+function writeOwnerBuyerPreviewPreference(enabled){
+    try{
+      if(enabled) appContext.sessionStorage.setItem('collect_tcg_owner_buyer_preview','1');
+      else appContext.sessionStorage.removeItem('collect_tcg_owner_buyer_preview');
+    }catch{}
+  }
+
+function ensureOwnerBuyerPreviewToggle(){
+    let button=document.getElementById('ownerBuyerPreviewToggle');
+    if(!button){
+      button=document.createElement('button');
+      button.id='ownerBuyerPreviewToggle';
+      button.type='button';
+      button.className='owner-buyer-preview-toggle';
+      button.addEventListener('click',()=>appContext.toggleOwnerBuyerPreview());
+      document.body.appendChild(button);
+    }
+    return button;
+  }
+
+function syncOwnerBuyerPreviewToggle(){
+    const button=appContext.ensureOwnerBuyerPreviewToggle();
+    const authenticated=appContext.isOwnerAuthenticated() && !appContext.isMobileOwnerBlocked();
+    const preview=appContext.isOwnerBuyerPreview();
+    button.hidden=!authenticated;
+    button.classList.toggle('is-previewing',preview);
+    button.setAttribute('aria-pressed',preview?'true':'false');
+    button.textContent=preview ? 'Exit buyer preview' : 'Preview buyer view';
+    button.title=preview ? 'Return to Owner View' : 'Hide owner controls and preview the public buyer experience';
+  }
+
+function setOwnerBuyerPreview(enabled,{rerender=true,notify=true}={}){
+    const next=!!enabled && appContext.isOwnerAuthenticated() && !appContext.isMobileOwnerBlocked();
+    appContext.ownerBuyerPreview=next;
+    appContext.writeOwnerBuyerPreviewPreference(next);
+    appContext.applyOwnerMode();
+    if(rerender && typeof appContext.router==='function') appContext.router();
+    if(notify) appContext.showToast(next ? 'Buyer preview enabled' : 'Owner view restored');
+    return next;
+  }
+
+function toggleOwnerBuyerPreview(){
+    return appContext.setOwnerBuyerPreview(!appContext.isOwnerBuyerPreview());
   }
 
 function requireCollectionOrderOwner(action="rearrange Collection"){
@@ -49,17 +106,21 @@ function clearOwnerOnlyClientState(){
 
 function applyOwnerMode(){
     const owner=appContext.isOwnerMode();
-    const authenticatedOwner=!!appContext.ownerSession && appContext.ownerVerified === true;
+    const authenticatedOwner=appContext.isOwnerAuthenticated();
+    const buyerPreview=appContext.isOwnerBuyerPreview();
     document.body.classList.toggle("owner-mode", owner);
     document.body.classList.toggle("owner-authenticated", authenticatedOwner);
+    document.body.classList.toggle("owner-buyer-preview", buyerPreview);
 
-    if(!owner){
+    // Keep owner analytics caches intact while merely previewing the buyer UI.
+    if(!authenticatedOwner){
       appContext.qualifiedViewTotalsByCard?.clear?.();
       appContext.qualifiedViewTotalsBackendState="unknown";
     }
 
     const b = appContext.$("ownerToggle");
     if(b) b.textContent = owner ? "Owner logout" : "Owner login";
+    appContext.syncOwnerBuyerPreviewToggle();
 
     // Fail closed in both desktop and mobile navigation. Responsive CSS must
     // never be the only thing deciding whether an owner tool is visible.
@@ -126,6 +187,8 @@ async function refreshOwnerSession(){
 
     if(appContext.isMobileOwnerBlocked()){
       appContext.ownerVerified=await appContext.verifyOwnerSession(appContext.ownerSession);
+      appContext.ownerBuyerPreview=false;
+      appContext.writeOwnerBuyerPreviewPreference(false);
       if(appContext.ownerSession && !appContext.ownerVerified){
         console.warn("Authenticated mobile session is not authorized for Collection ordering.");
       }
@@ -134,6 +197,7 @@ async function refreshOwnerSession(){
     }
 
     appContext.ownerVerified=await appContext.verifyOwnerSession(appContext.ownerSession);
+    appContext.ownerBuyerPreview=appContext.ownerVerified ? appContext.readOwnerBuyerPreviewPreference() : false;
 
     if(appContext.ownerSession && !appContext.ownerVerified){
       console.warn("Authenticated session is not authorized as an app owner.");
@@ -298,9 +362,16 @@ async function openOwnerAccess(){
       await appContext.supabaseClient.auth.signOut();
       appContext.ownerSession=null;
       appContext.ownerVerified=false;
+      appContext.ownerBuyerPreview=false;
+      appContext.writeOwnerBuyerPreviewPreference(false);
       appContext.applyOwnerMode();
       if(appContext.currentRoute()==="collection") appContext.router();
       appContext.showToast("Collection owner access logged out");
+      return;
+    }
+
+    if(appContext.isOwnerAuthenticated() && appContext.isOwnerBuyerPreview()){
+      appContext.setOwnerBuyerPreview(false,{rerender:true,notify:true});
       return;
     }
 
@@ -308,6 +379,8 @@ async function openOwnerAccess(){
       await appContext.supabaseClient.auth.signOut();
       appContext.ownerSession=null;
       appContext.ownerVerified=false;
+      appContext.ownerBuyerPreview=false;
+      appContext.writeOwnerBuyerPreviewPreference(false);
       appContext.clearOwnerOnlyClientState();
       appContext.applyOwnerMode();
       const loaded=await appContext.loadCards();
@@ -346,12 +419,16 @@ async function openOwnerAccess(){
       await appContext.supabaseClient.auth.signOut();
       appContext.ownerSession=null;
       appContext.ownerVerified=false;
+      appContext.ownerBuyerPreview=false;
+      appContext.writeOwnerBuyerPreviewPreference(false);
       appContext.clearOwnerOnlyClientState();
       appContext.applyOwnerMode();
       appContext.showToast("This account is not authorized as owner");
       return;
     }
 
+    appContext.ownerBuyerPreview=false;
+    appContext.writeOwnerBuyerPreviewPreference(false);
     appContext.applyOwnerMode();
 
     if(appContext.isMobileOwnerBlocked()){
@@ -379,5 +456,5 @@ async function openOwnerAccess(){
     appContext.showToast("Owner login successful");
   }
 
-  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerMode,canManageCollectionOrder,requireCollectionOrderOwner,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerAccess});
+  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerAuthenticated,isOwnerBuyerPreview,isOwnerMode,canManageCollectionOrder,readOwnerBuyerPreviewPreference,writeOwnerBuyerPreviewPreference,ensureOwnerBuyerPreviewToggle,syncOwnerBuyerPreviewToggle,setOwnerBuyerPreview,toggleOwnerBuyerPreview,requireCollectionOrderOwner,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerAccess});
 }

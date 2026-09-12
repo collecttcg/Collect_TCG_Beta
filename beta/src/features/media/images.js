@@ -741,18 +741,46 @@ async function uploadPendingCardImage(dataUrl,index){
 
 async function removeCardStoragePaths(paths){
     if(!appContext.isOwnerMode()) return false;
-    const unique=[...new Set((paths||[]).map(String).filter(Boolean))];
-    if(!unique.length) return true;
+    const candidates=new Set((paths||[]).map(String).filter(Boolean));
+    if(!candidates.size) return true;
 
-    const {error}=await appContext.supabaseClient.storage
-      .from(appContext.CARD_IMAGE_STORAGE_BUCKET)
-      .remove(unique);
+    // V4 image-safety fix: a later UI/metadata error must never remove an
+    // image that has already been saved or referenced by a card. Read every
+    // relevant page first; if references cannot be checked, retain the files.
+    try{
+      const protect=url=>candidates.delete(appContext.cardStoragePathFromUrl(url));
+      const scan=async(table,columns,order,visit)=>{
+        const pageSize=500;
+        for(let offset=0;;offset+=pageSize){
+          const {data,error}=await appContext.supabaseClient.from(table).select(columns)
+            .order(order,{ascending:true}).range(offset,offset+pageSize-1);
+          if(error || !Array.isArray(data)) throw error||new Error("Image reference check failed");
+          data.forEach(visit);
+          if(!candidates.size || data.length<pageSize) return;
+        }
+      };
 
-    if(error){
-      console.warn("Could not clean up card image Storage objects:",error);
+      await scan("cards",appContext.thumbnailUrlSupported ? "id,images,thumbnail_url" : "id,images","id",row=>{
+        (Array.isArray(row.images)?row.images:[]).forEach(protect);
+        if(row.thumbnail_url) protect(row.thumbnail_url);
+      });
+
+      if(candidates.size && appContext.cardImageVariantsSupported){
+        await scan("card_image_variants","image_key,original_url,watermarked_url","image_key",row=>{
+          protect(row.original_url);
+          protect(row.watermarked_url);
+        });
+      }
+
+      if(!candidates.size) return true;
+      const {error}=await appContext.supabaseClient.storage.from(appContext.CARD_IMAGE_STORAGE_BUCKET)
+        .remove([...candidates]);
+      if(error) throw error;
+      return true;
+    }catch(error){
+      console.warn("Image cleanup skipped; files retained for safety:",error);
       return false;
     }
-    return true;
   }
 
 function cardStoragePathFromUrl(value){

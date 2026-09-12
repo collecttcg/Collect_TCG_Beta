@@ -68,8 +68,8 @@ function renderContactPage(){
       <div class="panel contact-panel" style="max-width:680px;">
         <h3>Collect TCG MY & SG</h3>
         <div class="contact-links">
-          <a class="contact-link" href="https://www.facebook.com/profile.php?id=61590041416102" target="_blank" rel="noopener noreferrer">
-            <span>Facebook</span><span class="contact-arrow">↗</span>
+          <a class="contact-link" href="https://m.me/61590041416102" target="_blank" rel="noopener noreferrer">
+            <span>Facebook Messenger</span><span class="contact-arrow">↗</span>
           </a>
           <a class="contact-link" href="https://www.instagram.com/collecttcg.mysg" target="_blank" rel="noopener noreferrer">
             <span>Instagram</span><span class="contact-arrow">↗</span>

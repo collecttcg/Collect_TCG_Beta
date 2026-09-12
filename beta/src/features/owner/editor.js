@@ -142,6 +142,8 @@ appContext.editForm.addEventListener("submit", async (e)=>{
     const id = appContext.$("editId").value;
     const submitBtn=appContext.editForm.querySelector('button[type="submit"]');
     let preparedImages=null;
+    let saveAttempted=false;
+    let cardSaved=false;
 
     if(submitBtn){
       submitBtn.disabled=true;
@@ -161,13 +163,15 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       }
 
       if(submitBtn) submitBtn.textContent="Saving card…";
+      saveAttempted=true;
       const saved=await appContext.updateCardStorage(data);
       if(!saved){
-        await appContext.removeCardStoragePaths(preparedImages.uploadedPaths);
-        appContext.editFormState.images=preparedImages.originalImages;
+        appContext.showToast("Save could not be confirmed. Uploaded photos were retained. Refresh the inventory before trying again.");
         appContext.resetEditSubmitButton();
         return;
       }
+
+      cardSaved=true;
 
       const variantResult=await appContext.saveOwnerCardImageVariants(id,preparedImages.variantRecords||[]);
       const protectedVariantUrls=(preparedImages.variantRecords||[]).flatMap(v=>[
@@ -242,7 +246,14 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       }
     }catch(error){
       console.error("Edit save flow error:",error);
-      if(preparedImages?.uploadedPaths?.length){
+      if(saveAttempted){
+        appContext.showToast(cardSaved
+          ? "Card saved; a follow-up step failed. Photos were retained. Refresh the page to check the listing."
+          : "Save could not be confirmed. Photos were retained. Refresh the inventory before trying again.");
+        appContext.resetEditSubmitButton();
+        return;
+      }
+      if(!saveAttempted && preparedImages?.uploadedPaths?.length){
         await appContext.removeCardStoragePaths(preparedImages.uploadedPaths);
         appContext.editFormState.images=preparedImages.originalImages;
       }

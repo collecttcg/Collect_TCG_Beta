@@ -1,0 +1,12 @@
+V137 PRODUCTION — ZOOM-SAFE PREMIUM HEADER
+
+Fixes the center logo overlapping the social/secondary navigation when browser zoom-out causes the large-screen breakpoints to activate.
+
+Changes:
+- Main header row height now scales with the logo at 1800px+ and 2300px+ breakpoints.
+- Social strip is explicitly positioned below the main row.
+- Logo is constrained to its reserved row.
+- No mobile changes.
+
+Changed file:
+- src/styles/26-compatibility.css

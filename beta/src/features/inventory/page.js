@@ -80,17 +80,6 @@ function inventoryPageHTML(scopeMeta,scope){
         </div>
 
         <div class="inventory-display-tools ${isCollection ? "collection-display-tools" : ""}">
-          ${!isCollection ? `
-            <label class="currency-preference-control" title="Choose which stored currency is shown first. No currency conversion is performed.">
-              <span>Currency</span>
-              <select id="currencyPreference" aria-label="Preferred display currency">
-                <option value="USD" ${appContext.getPriceCurrencyPreference()==="USD"?"selected":""}>USD</option>
-                <option value="MYR" ${appContext.getPriceCurrencyPreference()==="MYR"?"selected":""}>MYR</option>
-                <option value="SGD" ${appContext.getPriceCurrencyPreference()==="SGD"?"selected":""}>SGD</option>
-              </select>
-            </label>
-          ` : ""}
-
           ${!isCollection && scope!=="inventory" ? `
             <label class="listing-per-page-control" title="Choose how many listings are shown on each page.">
               <span>Show</span>
@@ -2053,16 +2042,6 @@ function renderInventoryPage(scope = "inventory"){
 
     appContext.$("listingPaginationTop")?.addEventListener("click",handlePaginationClick);
     appContext.$("listingPaginationBottom")?.addEventListener("click",handlePaginationClick);
-
-    appContext.$("currencyPreference")?.addEventListener("change",e=>{
-      const currency=appContext.setPriceCurrencyPreference(e.target.value);
-      const priceLabel=document.querySelector(".price-range-label");
-      if(priceLabel) priceLabel.textContent=`Price (${appContext.getPriceCurrencyPreference()})`;
-      appContext.updateListingUrlFromControls();
-      draw();
-      appContext.syncCurrencyEverywhere(currency);
-      appContext.showToast(`${appContext.getPriceCurrencyPreference()} prices shown first`);
-    });
 
     appContext.$("compactViewToggle")?.addEventListener("click",()=>{
       if(appContext.isMobileInventoryLayout()) return;

@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Collect TCG V93 Beta",
-  "short_name": "TCG Beta",
+  "name": "Collect TCG MY & SG",
+  "short_name": "Collect TCG",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

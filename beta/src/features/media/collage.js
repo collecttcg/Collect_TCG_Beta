@@ -435,9 +435,11 @@ function chooseCollectionCollageGrid(count,areaW,areaH,gap){
   }
 
 function chooseCollectionCollageGridWithCenterGap(count,areaW,areaH,gap){
-    const desiredAspect=0.704;
+    const desiredCardAspect=0.704;
+    const desiredQrAspect=0.92;
     let best=null;
     const maxCols=Math.min(14,Math.max(4,count+2));
+
     for(let cols=2; cols<=maxCols; cols++){
       const minRows=Math.max(2,Math.ceil(count/cols));
       const maxRows=Math.min(18,Math.ceil((count+6)/cols)+4);
@@ -446,51 +448,85 @@ function chooseCollectionCollageGridWithCenterGap(count,areaW,areaH,gap){
         const cellH=(areaH-gap*(rows-1))/rows;
         if(cellW<=20 || cellH<=20) continue;
 
-        // Keep the reserved QR gap centered on the grid's true midpoint.
-        // A 2-column gap inside an odd-column grid is inherently off-center,
-        // so match the gap parity to the grid parity.
-        const reserveCols = (cols % 2 === 0) ? 2 : 1;
-        const reserveRows = (rows % 2 === 0) ? 2 : 1;
-        const startCol = Math.max(0,Math.floor((cols-reserveCols)/2));
-        const startRow = Math.max(0,Math.floor((rows-reserveRows)/2));
-        const capacity = cols*rows - reserveCols*reserveRows;
-        if(capacity < count) continue;
+        // Prefer a centre gap that stays visually centred in the collage.
+        // Matching grid/gap parity keeps the QR exactly on the true centre line,
+        // while tall portrait gaps such as 1x2 are discouraged.
+        const reserveShapes=[[1,1],[2,1],[1,2],[2,2]];
+        for(const [reserveCols,reserveRows] of reserveShapes){
+          if(reserveCols>cols || reserveRows>rows) continue;
 
-        const qrW = reserveCols*cellW + gap*(reserveCols-1);
-        const qrH = reserveRows*cellH + gap*(reserveRows-1);
-        const qrSize = Math.min(qrW,qrH);
-        if(qrSize < 120) continue;
+          const startCol=Math.max(0,Math.floor((cols-reserveCols)/2));
+          const startRow=Math.max(0,Math.floor((rows-reserveRows)/2));
+          const capacity=cols*rows-reserveCols*reserveRows;
+          if(capacity<count) continue;
 
-        const area=cellW*cellH;
-        const cellAspect=cellW/cellH;
-        const aspectPenalty=Math.abs(Math.log(Math.max(.01,cellAspect/desiredAspect)));
-        const unused=capacity-count;
-        const qrBonus=Math.log(Math.max(1,qrSize))*1.4;
-        const score=Math.log(Math.max(1,area))*5-aspectPenalty*2-unused*.03+qrBonus;
+          const qrW=reserveCols*cellW+gap*(reserveCols-1);
+          const qrH=reserveRows*cellH+gap*(reserveRows-1);
+          const qrSize=Math.min(qrW,qrH);
+          if(qrSize<120) continue;
 
-        if(!best || score>best.score){
-          const positions=[];
-          for(let r=0;r<rows;r++){
-            for(let c=0;c<cols;c++){
-              const inGap = c>=startCol && c<startCol+reserveCols && r>=startRow && r<startRow+reserveRows;
-              if(inGap) continue;
-              positions.push({x:c*(cellW+gap),y:r*(cellH+gap),col:c,row:r});
+          const area=cellW*cellH;
+          const cardAspect=cellW/cellH;
+          const cardAspectPenalty=Math.abs(Math.log(Math.max(.01,cardAspect/desiredCardAspect)));
+          const qrAspect=qrW/qrH;
+          const qrAspectPenalty=Math.abs(Math.log(Math.max(.01,qrAspect/desiredQrAspect)));
+          const unused=capacity-count;
+
+          const gapCenterCol=startCol+(reserveCols-1)/2;
+          const gapCenterRow=startRow+(reserveRows-1)/2;
+          const gridCenterCol=(cols-1)/2;
+          const gridCenterRow=(rows-1)/2;
+          const centerPenalty=Math.abs(gapCenterCol-gridCenterCol)+Math.abs(gapCenterRow-gridCenterRow);
+
+          const exactCenterX=((cols-reserveCols)%2)===0;
+          const exactCenterY=((rows-reserveRows)%2)===0;
+          const exactCenterBonus=(exactCenterX?1.45:0)+(exactCenterY?1.05:0);
+
+          const tallRatio=qrH/Math.max(1,qrW);
+          const wideRatio=qrW/Math.max(1,qrH);
+          const tallPenalty=Math.max(0,tallRatio-1.10)*6.4;
+          const widePenalty=Math.max(0,wideRatio-1.45)*1.6;
+          const shapePenalty=(reserveRows>reserveCols ? 0.45 : 0);
+
+          const qrBonus=Math.log(Math.max(1,qrSize))*1.25;
+          const score=
+            Math.log(Math.max(1,area))*5
+            -cardAspectPenalty*2
+            -qrAspectPenalty*5.0
+            -unused*.03
+            -centerPenalty*.42
+            -tallPenalty
+            -widePenalty
+            -shapePenalty
+            +exactCenterBonus
+            +qrBonus;
+
+          if(!best || score>best.score){
+            const positions=[];
+            for(let r=0;r<rows;r++){
+              for(let c=0;c<cols;c++){
+                const inGap=c>=startCol && c<startCol+reserveCols && r>=startRow && r<startRow+reserveRows;
+                if(inGap) continue;
+                positions.push({x:c*(cellW+gap),y:r*(cellH+gap),col:c,row:r});
+              }
             }
+            best={
+              cols,rows,cellW,cellH,score,
+              positions,
+              qrBox:{
+                x:startCol*(cellW+gap),
+                y:startRow*(cellH+gap),
+                w:qrW,
+                h:qrH,
+                reserveCols,
+                reserveRows,
+                startCol,
+                startRow,
+                exactCenterX,
+                exactCenterY
+              }
+            };
           }
-          best={
-            cols,rows,cellW,cellH,score,
-            positions,
-            qrBox:{
-              x:startCol*(cellW+gap),
-              y:startRow*(cellH+gap),
-              w:qrW,
-              h:qrH,
-              reserveCols,
-              reserveRows,
-              startCol,
-              startRow
-            }
-          };
         }
       }
     }
@@ -659,7 +695,7 @@ function openCollectionCollageSettingsModal(){
     appContext.closeCollectionCollageSettingsModal();
 
     const scopeLabel=appContext.collageScopeLabel();
-    const defaultTitle=`Collect TCG ${scopeLabel}`;
+    const defaultTitle="Collect TCG MY & SG Inventory";
     const overlay=document.createElement("div");
     overlay.id="collectionCollageSettingsOverlay";
     overlay.className="collection-collage-modal-overlay";
@@ -689,6 +725,10 @@ function openCollectionCollageSettingsModal(){
           <div class="collection-collage-field full">
             <span>Title</span>
             <input id="collectionCollageTitleInput" type="text" maxlength="90" value="${appContext.escapeHtml(defaultTitle)}" placeholder="Leave blank for no title">
+          </div>
+          <div class="collection-collage-field full">
+            <span>Subtitle</span>
+            <input id="collectionCollageSubtitleInput" type="text" maxlength="90" value="" placeholder="Optional second line under the title">
           </div>
 
           <div class="collection-collage-field">
@@ -768,6 +808,7 @@ function openCollectionCollageSettingsModal(){
       const settings={
         selectedCardIds,
         title:String(appContext.$("collectionCollageTitleInput")?.value||"").trim(),
+        subtitle:String(appContext.$("collectionCollageSubtitleInput")?.value||"").trim(),
         aspect:String(appContext.$("collectionCollageAspect")?.value||"portrait"),
         background:String(appContext.$("collectionCollageBackground")?.value||"geometric"),
         spacing:String(appContext.$("collectionCollageSpacing")?.value||"standard"),
@@ -800,6 +841,9 @@ async function exportCollectionCollage(settings={}){
     }
 
     const collageTitle=String(settings.title||"").trim();
+    const collageSubtitle=String(settings.subtitle||"").trim();
+    const hasHeading=!!(collageTitle || collageSubtitle);
+    const hasSubtitle=!!collageSubtitle;
 
     appContext.setCollectionCollageExportBusy(true,"Preparing…");
     appContext.showToast(`Preparing collage for ${items.length} ${scopeLabel} cards…`);
@@ -827,7 +871,9 @@ async function exportCollectionCollage(settings={}){
       const padding=Math.round(width*0.034);
       const gapRatio=settings.spacing==="tight" ? 0.0045 : (settings.spacing==="airy" ? 0.011 : 0.007);
       const gap=Math.max(12,Math.round(width*gapRatio));
-      const headerHeight=collageTitle ? Math.round(height*(settings.showLogo ? 0.064 : 0.055)) : Math.round(height*(settings.showLogo ? 0.046 : 0.022));
+      const headerHeight=hasHeading
+        ? Math.round(height*(settings.showLogo ? (hasSubtitle ? 0.145 : 0.112) : (hasSubtitle ? 0.128 : 0.098)))
+        : Math.round(height*(settings.showLogo ? 0.046 : 0.022));
       const footerHeight=settings.showWebsite ? Math.round(height*0.022) : 0;
       const cardsTop=padding+headerHeight;
       const cardsBottom=height-padding-footerHeight;
@@ -907,39 +953,108 @@ async function exportCollectionCollage(settings={}){
       }
 
       ctx.textBaseline="top";
-      if(collageTitle){
-        ctx.save();
-        ctx.shadowColor="rgba(0,0,0,0.38)";
-        ctx.shadowBlur=18;
-        ctx.shadowOffsetY=5;
-        ctx.fillStyle="#f8f8fb";
-        const titleFontSize=Math.round(width*0.021);
-        ctx.font=`700 ${titleFontSize}px Inter, system-ui, sans-serif`;
-        ctx.textAlign="center";
-        const titleY=padding-8;
-        ctx.fillText(collageTitle,width/2,titleY);
-        ctx.restore();
+      if(hasHeading){
+        const headerCenterX=width/2;
+        const titleTop=padding-8;
+        const headingMaxWidth=Math.round(width*(settings.showLogo ? 0.72 : 0.82));
 
-        const lineY=padding+Math.max(90,Math.round(width*0.025));
-        const lineGrad=ctx.createLinearGradient(width*0.32,0,width*0.68,0);
-        lineGrad.addColorStop(0,"rgba(236,192,87,0)");
-        lineGrad.addColorStop(0.22,"rgba(236,192,87,0.30)");
-        lineGrad.addColorStop(0.5,"rgba(255,255,255,0.18)");
-        lineGrad.addColorStop(0.78,"rgba(74,203,184,0.26)");
-        lineGrad.addColorStop(1,"rgba(74,203,184,0)");
-        ctx.strokeStyle=lineGrad;
-        ctx.lineWidth=4;
-        ctx.beginPath();
-        ctx.moveTo(width*0.31,lineY);
-        ctx.lineTo(width*0.69,lineY);
-        ctx.stroke();
+        const fitFont=(content,startSize,minSize,weight)=>{
+          let size=Math.max(minSize,startSize);
+          while(size>minSize){
+            ctx.font=`${weight} ${size}px Inter, system-ui, sans-serif`;
+            if(ctx.measureText(content).width<=headingMaxWidth) break;
+            size-=2;
+          }
+          return size;
+        };
+
+        const drawGoldText=(content,x,y,size,weight,{shadow='rgba(255,196,72,0.45)',shadowBlur=20,stroke='rgba(66,42,0,0.42)',lineWidth=3}={})=>{
+          const gradient=ctx.createLinearGradient(0,y,0,y+size);
+          gradient.addColorStop(0,'#fff7c8');
+          gradient.addColorStop(0.2,'#ffe895');
+          gradient.addColorStop(0.45,'#ffd24f');
+          gradient.addColorStop(0.72,'#f1b52d');
+          gradient.addColorStop(1,'#b97912');
+          ctx.save();
+          ctx.textAlign='center';
+          ctx.textBaseline='top';
+          ctx.font=`${weight} ${size}px Inter, system-ui, sans-serif`;
+          ctx.lineJoin='round';
+          ctx.shadowColor=shadow;
+          ctx.shadowBlur=shadowBlur;
+          ctx.shadowOffsetY=4;
+          ctx.lineWidth=lineWidth;
+          ctx.strokeStyle=stroke;
+          ctx.strokeText(content,x,y);
+          ctx.fillStyle=gradient;
+          ctx.fillText(content,x,y);
+          ctx.restore();
+        };
+
+        let headingBottom=titleTop;
+        if(collageTitle){
+          const titleFontSize=fitFont(collageTitle,Math.round(width*0.05),Math.round(width*0.024),900);
+          drawGoldText(collageTitle,headerCenterX,titleTop,titleFontSize,900,{shadow:'rgba(255,198,84,0.52)',shadowBlur:28,stroke:'rgba(72,44,0,0.50)',lineWidth:Math.max(3,Math.round(titleFontSize*0.038))});
+          headingBottom=titleTop+titleFontSize;
+        }
+
+        if(collageSubtitle){
+          const subtitleY=headingBottom+Math.max(18,Math.round(width*0.008));
+          const subtitleFontSize=fitFont(collageSubtitle,Math.round(width*0.026),Math.round(width*0.014),800);
+          drawGoldText(collageSubtitle,headerCenterX,subtitleY,subtitleFontSize,800,{shadow:'rgba(255,208,96,0.34)',shadowBlur:16,stroke:'rgba(72,44,0,0.34)',lineWidth:Math.max(2,Math.round(subtitleFontSize*0.034))});
+          ctx.font=`800 ${subtitleFontSize}px Inter, system-ui, sans-serif`;
+          const subtitleWidth=Math.min(headingMaxWidth*0.62,Math.max(220,ctx.measureText(collageSubtitle).width));
+          const lineY=subtitleY+subtitleFontSize*0.62;
+          const sideGap=Math.max(24,Math.round(width*0.018));
+          const lineStart=Math.max(padding+10,headerCenterX-subtitleWidth/2-sideGap-Math.round(width*0.13));
+          const leftEnd=headerCenterX-subtitleWidth/2-sideGap;
+          const rightStart=headerCenterX+subtitleWidth/2+sideGap;
+          const lineEnd=Math.min(width-padding-10,headerCenterX+subtitleWidth/2+sideGap+Math.round(width*0.13));
+          const lineGradLeft=ctx.createLinearGradient(lineStart,0,leftEnd,0);
+          lineGradLeft.addColorStop(0,'rgba(255,210,79,0)');
+          lineGradLeft.addColorStop(1,'rgba(255,210,79,0.72)');
+          const lineGradRight=ctx.createLinearGradient(rightStart,0,lineEnd,0);
+          lineGradRight.addColorStop(0,'rgba(255,210,79,0.72)');
+          lineGradRight.addColorStop(1,'rgba(255,210,79,0)');
+          ctx.save();
+          ctx.lineWidth=Math.max(3,Math.round(width*0.0012));
+          ctx.lineCap='round';
+          ctx.strokeStyle=lineGradLeft;
+          ctx.beginPath();
+          ctx.moveTo(lineStart,lineY);
+          ctx.lineTo(leftEnd,lineY);
+          ctx.stroke();
+          ctx.strokeStyle=lineGradRight;
+          ctx.beginPath();
+          ctx.moveTo(rightStart,lineY);
+          ctx.lineTo(lineEnd,lineY);
+          ctx.stroke();
+          ctx.restore();
+        }else if(collageTitle){
+          const lineY=headingBottom+Math.max(24,Math.round(width*0.012));
+          const lineGrad=ctx.createLinearGradient(width*0.28,0,width*0.72,0);
+          lineGrad.addColorStop(0,'rgba(255,210,79,0)');
+          lineGrad.addColorStop(0.18,'rgba(255,210,79,0.32)');
+          lineGrad.addColorStop(0.50,'rgba(255,247,200,0.22)');
+          lineGrad.addColorStop(0.82,'rgba(255,210,79,0.32)');
+          lineGrad.addColorStop(1,'rgba(255,210,79,0)');
+          ctx.save();
+          ctx.strokeStyle=lineGrad;
+          ctx.lineWidth=4;
+          ctx.lineCap='round';
+          ctx.beginPath();
+          ctx.moveTo(width*0.30,lineY);
+          ctx.lineTo(width*0.70,lineY);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
       if(settings.showDate){
         ctx.textAlign="right";
         ctx.fillStyle="rgba(247,248,251,0.62)";
         ctx.font=`500 ${Math.max(20,Math.round(width*0.0078))}px Inter, system-ui, sans-serif`;
-        ctx.fillText(new Date().toLocaleDateString(),width-padding,padding+(collageTitle ? Math.round(width*.005) : 8));
+        ctx.fillText(new Date().toLocaleDateString(),width-padding,padding+(hasHeading ? Math.round(width*.005) : 8));
         ctx.textAlign="left";
       }
 
@@ -967,10 +1082,15 @@ async function exportCollectionCollage(settings={}){
       }
 
       if(collageQr && qrBox){
-        const panelW=qrBox.w;
-        const panelH=qrBox.h;
-        const panelX=Math.round(gridOffsetX+qrBox.x);
-        const panelY=Math.round(gridOffsetY+qrBox.y);
+        // Keep the visible QR panel compact and centred inside its reserved area.
+        const reservedW=qrBox.w;
+        const reservedH=qrBox.h;
+        const compactPanelW=Math.min(reservedW,Math.round(Math.min(reservedW,reservedH)*1.04));
+        const compactPanelH=Math.min(reservedH,Math.round(compactPanelW*1.18));
+        const panelW=Math.round(compactPanelW);
+        const panelH=Math.round(compactPanelH);
+        const panelX=Math.round(gridOffsetX+qrBox.x+(reservedW-panelW)/2);
+        const panelY=Math.round(gridOffsetY+qrBox.y+(reservedH-panelH)/2);
         const panelRadius=settings.corners==="square" ? 8 : Math.max(20,Math.round(Math.min(panelW,panelH)*0.09));
         const panelBg=ctx.createLinearGradient(panelX,panelY,panelX,panelY+panelH);
         panelBg.addColorStop(0,"rgba(255,255,255,0.13)");

@@ -59,6 +59,8 @@ function renderAddPage(){
       const submitBtn=form.querySelector('button[type="submit"]');
       const originalSubmitText=submitBtn?.textContent||"Save card";
       let preparedImages=null;
+      let saveAttempted=false;
+      let cardSaved=false;
 
       if(submitBtn){
         submitBtn.disabled=true;
@@ -78,12 +80,14 @@ function renderAddPage(){
         }
 
         if(submitBtn) submitBtn.textContent="Saving card…";
+        saveAttempted=true;
         const saved=await appContext.createCardStorage(data);
         if(!saved){
-          await appContext.removeCardStoragePaths(preparedImages.uploadedPaths);
-          formState.images=preparedImages.originalImages;
+          appContext.showToast("Save could not be confirmed. Uploaded photos were retained. Refresh the inventory before trying again.");
           return;
         }
+
+        cardSaved=true;
 
         let imageVariantsSaved=true;
         if(preparedImages.variantRecords?.length){
@@ -122,7 +126,13 @@ function renderAddPage(){
         appContext.goToRoute("inventory");
       }catch(error){
         console.error("Add card submit error:",error);
-        if(preparedImages?.uploadedPaths?.length){
+        if(saveAttempted){
+          appContext.showToast(cardSaved
+            ? "Card saved; a follow-up step failed. Photos were retained. Refresh the page to check the listing."
+            : "Save could not be confirmed. Photos were retained. Refresh the inventory before trying again.");
+          return;
+        }
+        if(!saveAttempted && preparedImages?.uploadedPaths?.length){
           await appContext.removeCardStoragePaths(preparedImages.uploadedPaths);
           formState.images=preparedImages.originalImages;
         }

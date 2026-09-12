@@ -257,7 +257,7 @@ async function sendQualifiedCardViewEvent(card,token){
 
       // Owner/testing activity and explicitly excluded personal browsers
       // must never inflate buyer-facing analytics.
-      if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+      if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
 
       // A qualified view requires the same card to still be open, visible and
       // in the foreground after the engagement delay.
@@ -304,7 +304,7 @@ function recordCardViewEvent(card){
     // but the frontend submits only meaningful buyer views:
     // 2+ seconds open and Owner Mode excluded. No frontend repeat-view cooldown.
     appContext.cancelPendingCardViewQualification();
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
 
     const token=appContext.cardViewQualificationToken;
     window.setTimeout(()=>{
@@ -349,7 +349,7 @@ function shouldSkipEngagementEvent(cardId,eventType,platform=""){
 
 async function recordCardEngagement(cardId,eventType,platform=""){
     try{
-      if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+      if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
 
       const id=appContext.safeCardId(cardId);
       const type=String(eventType||"").trim().toLowerCase();
@@ -413,7 +413,7 @@ function markOverviewPhotoInteractionRecorded(cardId){
 
 async function recordOverviewPhotoInteraction(cardId){
     try{
-      if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+      if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
 
       const id=appContext.safeCardId(cardId);
       if(!id || appContext.overviewPhotoInteractionAlreadyRecorded(id)) return false;
@@ -706,7 +706,7 @@ function getAnalyticsSessionId(){
   }
 
 async function recordAnalyticsSession(){
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
     const sessionId=appContext.getAnalyticsSessionId();
     const visitorId=appContext.getVisitorId();
     if(!sessionId || !visitorId) return false;
@@ -728,7 +728,7 @@ async function recordAnalyticsSession(){
   }
 
 async function incrementAnalyticsSessionQualifiedView(){
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
     const sessionId=appContext.getAnalyticsSessionId();
     if(!sessionId) return false;
 
@@ -760,7 +760,7 @@ function sessionDurationPayload(seconds){
   }
 
 async function recordSessionActiveSeconds(seconds,{allowHidden=false}={}){
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice() || (!allowHidden && document.hidden)) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice() || (!allowHidden && document.hidden)) return false;
     if(appContext.sessionDurationBackendState==="unavailable") return false;
     const payload=appContext.sessionDurationPayload(seconds);
     if(!payload) return false;
@@ -784,7 +784,7 @@ async function recordSessionActiveSeconds(seconds,{allowHidden=false}={}){
   }
 
 function beaconSessionActiveSeconds(seconds){
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice() || appContext.sessionDurationBackendState==="unavailable") return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice() || appContext.sessionDurationBackendState==="unavailable") return false;
     const payload=appContext.sessionDurationPayload(seconds);
     if(!payload) return false;
 
@@ -853,7 +853,7 @@ function sessionDurationHeartbeatTick({flushVisibleTime=false,useBeacon=false}={
   }
 
 function startSessionDurationTracking(){
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return;
     if(appContext.sessionDurationHeartbeatTimer) clearInterval(appContext.sessionDurationHeartbeatTimer);
     appContext.sessionDurationLastTick=Date.now();
     appContext.sessionDurationHeartbeatTimer=setInterval(appContext.sessionDurationHeartbeatTick,appContext.SESSION_DURATION_HEARTBEAT_MS);
@@ -885,7 +885,7 @@ function normalizedInventorySearchTerm(value){
 function scheduleInventorySearchAnalytics(){
     clearTimeout(appContext.inventorySearchAnalyticsTimer);
     appContext.inventorySearchAnalyticsTimer=setTimeout(async()=>{
-      if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return;
+      if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return;
 
       const term=appContext.normalizedInventorySearchTerm(appContext.$("search")?.value);
       if(term.length<2) return;
@@ -953,7 +953,7 @@ function currentVisitorDeviceType(){
 async function recordWebsiteVisit(){
     // Owner activity and explicitly excluded personal browsers should not
     // inflate buyer-facing traffic analytics.
-    if(appContext.isOwnerMode() || appContext.isAnalyticsExcludedDevice()) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice()) return false;
 
     try{
       if(appContext.sessionStorage.getItem(appContext.WEBSITE_VISIT_SESSION_KEY)==="1") return true;
