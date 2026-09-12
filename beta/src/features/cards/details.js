@@ -1328,6 +1328,19 @@ async function openDetailsModal(card){
       e.stopPropagation();
       closeMobileBuyChooser();
     }));
+
+    // The fixed mobile footer CTA lives in index.html (outside detailsMount).
+    // Wire that real visible button to the same Contact-to-Buy chooser.
+    const fixedMobileBuyButton=appContext.$("mobileDetailCtaAction");
+    if(fixedMobileBuyButton){
+      fixedMobileBuyButton.textContent="Contact to Buy";
+      fixedMobileBuyButton.setAttribute("aria-label","Contact to Buy");
+      fixedMobileBuyButton.onclick=e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        openMobileBuyChooser();
+      };
+    }
     mobileBuySummary?.addEventListener("click",()=>{
       requestAnimationFrame(()=>{
         if(mobileBuyDetails?.open) mobileBuyDetails.classList.add("mobile-buy-force-open");
