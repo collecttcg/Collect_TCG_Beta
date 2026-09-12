@@ -15,6 +15,8 @@ function shouldHighlightMore(route){
         "reserved",
         "showcase",
         "favorites",
+        "reviews",
+        "about",
         "recent",
         "contact",
         "by-game",

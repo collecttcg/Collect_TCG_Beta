@@ -710,14 +710,14 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
 }
 
 /* ==========================================================
-   V118 BETA — TRUE PREMIUM CENTERED DESKTOP HEADER
-   Dedicated desktop markup; original navigation remains the
-   responsive fallback below 1180px.
+   V119 BETA — SPACIOUS PREMIUM DESKTOP HEADER
+   Four primary destinations only. Secondary destinations live
+   in More so the logo and utilities keep generous breathing room.
    ========================================================== */
 .premium-desktop-nav{display:none;}
 
 @media (min-width:1180px){
-  :root{--premium-header-h:82px;}
+  :root{--premium-header-h:78px;}
 
   .sidebar{
     position:sticky !important;
@@ -730,30 +730,28 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     display:block !important;
     overflow:visible !important;
     border-right:0 !important;
-    border-bottom:1px solid rgba(255,255,255,.075) !important;
-    background:rgba(13,15,18,.94) !important;
-    box-shadow:0 10px 34px rgba(0,0,0,.22) !important;
-    backdrop-filter:blur(18px) saturate(118%) !important;
-    -webkit-backdrop-filter:blur(18px) saturate(118%) !important;
+    border-bottom:1px solid rgba(255,255,255,.065) !important;
+    background:linear-gradient(180deg,rgba(14,16,19,.975),rgba(13,15,18,.945)) !important;
+    box-shadow:0 12px 34px rgba(0,0,0,.20) !important;
+    backdrop-filter:blur(20px) saturate(116%) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(116%) !important;
     z-index:100 !important;
   }
 
-  /* The old brand is retained in the DOM for responsive fallback only. */
   .sidebar > div:first-child{display:none !important;}
 
-  /* ---------- dedicated central navigation ---------- */
   .premium-desktop-nav{
     position:absolute !important;
     top:0 !important;
     left:50% !important;
     transform:translateX(-50%) !important;
     z-index:102 !important;
-    width:min(820px,calc(100vw - 430px)) !important;
+    width:min(650px,calc(100vw - 560px)) !important;
     height:var(--premium-header-h) !important;
     display:grid !important;
-    grid-template-columns:minmax(0,1fr) 82px minmax(0,1fr) !important;
+    grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr) !important;
     align-items:center !important;
-    gap:14px !important;
+    gap:22px !important;
     padding:0 !important;
     margin:0 !important;
   }
@@ -761,26 +759,26 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   .premium-nav-side{
     min-width:0 !important;
     display:grid !important;
-    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
     align-items:center !important;
-    gap:4px !important;
+    gap:8px !important;
   }
 
   .premium-desktop-nav a{
     position:relative !important;
     min-width:0 !important;
-    min-height:42px !important;
-    padding:0 8px !important;
+    min-height:40px !important;
+    padding:0 10px !important;
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
     border:1px solid transparent !important;
     border-radius:10px !important;
     background:transparent !important;
-    color:#8f929a !important;
+    color:#989ba3 !important;
     font-size:12px !important;
     font-weight:680 !important;
-    letter-spacing:.005em !important;
+    letter-spacing:.01em !important;
     line-height:1 !important;
     text-decoration:none !important;
     white-space:nowrap !important;
@@ -789,36 +787,36 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
 
   .premium-desktop-nav .premium-nav-side > a:hover,
   .premium-desktop-nav .premium-nav-side > a:focus-visible{
-    color:#f2f1ed !important;
-    background:rgba(255,255,255,.035) !important;
-    border-color:rgba(255,255,255,.06) !important;
+    color:#f4f2ec !important;
+    background:rgba(255,255,255,.028) !important;
+    border-color:rgba(255,255,255,.055) !important;
     outline:none !important;
   }
 
   .premium-desktop-nav .premium-nav-side > a.active,
   .premium-desktop-nav .premium-nav-side > a[aria-current="page"]{
     color:#f0c65b !important;
-    background:linear-gradient(180deg,rgba(227,179,65,.08),rgba(227,179,65,.025)) !important;
-    border-color:rgba(227,179,65,.18) !important;
+    background:linear-gradient(180deg,rgba(227,179,65,.075),rgba(227,179,65,.018)) !important;
+    border-color:rgba(227,179,65,.16) !important;
   }
 
   .premium-desktop-nav .premium-nav-side > a.active::after,
   .premium-desktop-nav .premium-nav-side > a[aria-current="page"]::after{
     content:"" !important;
     position:absolute !important;
-    left:28% !important;
-    right:28% !important;
+    left:31% !important;
+    right:31% !important;
     bottom:4px !important;
     height:2px !important;
     border-radius:999px !important;
     background:linear-gradient(90deg,transparent,#e3b341,transparent) !important;
-    box-shadow:0 0 10px rgba(227,179,65,.38) !important;
+    box-shadow:0 0 9px rgba(227,179,65,.32) !important;
   }
 
   .premium-nav-home{
-    width:72px !important;
-    height:72px !important;
-    min-height:72px !important;
+    width:68px !important;
+    height:68px !important;
+    min-height:68px !important;
     justify-self:center !important;
     align-self:center !important;
     padding:0 !important;
@@ -829,34 +827,34 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   }
 
   .premium-nav-home img{
-    width:68px !important;
-    height:68px !important;
+    width:64px !important;
+    height:64px !important;
     display:block !important;
     object-fit:contain !important;
-    filter:drop-shadow(0 3px 12px rgba(0,0,0,.42)) drop-shadow(0 0 7px rgba(227,179,65,.12)) !important;
+    filter:drop-shadow(0 3px 11px rgba(0,0,0,.44)) drop-shadow(0 0 6px rgba(227,179,65,.11)) !important;
     transition:transform .18s ease,filter .18s ease !important;
   }
 
   .premium-nav-home:hover img,
   .premium-nav-home:focus-visible img{
     transform:translateY(-1px) scale(1.025) !important;
-    filter:drop-shadow(0 4px 14px rgba(0,0,0,.48)) drop-shadow(0 0 10px rgba(227,179,65,.24)) !important;
+    filter:drop-shadow(0 4px 14px rgba(0,0,0,.48)) drop-shadow(0 0 9px rgba(227,179,65,.22)) !important;
   }
 
   .premium-nav-home.active::before{
     content:"" !important;
     position:absolute !important;
-    inset:3px !important;
+    inset:4px !important;
     border-radius:50% !important;
-    border:1px solid rgba(227,179,65,.28) !important;
-    box-shadow:0 0 18px rgba(227,179,65,.12) !important;
+    border:1px solid rgba(227,179,65,.24) !important;
+    box-shadow:0 0 16px rgba(227,179,65,.10) !important;
   }
 
-  /* ---------- original nav is now utility-only ---------- */
+  /* Original nav becomes one small Explore utility only. */
   #mainnav{
     position:fixed !important;
     top:0 !important;
-    right:120px !important;
+    right:116px !important;
     z-index:106 !important;
     width:auto !important;
     min-width:0 !important;
@@ -873,29 +871,27 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
 
   #mainnav > a,
   #mainnav > .reviews-desktop-nav,
-  #mainnav > .mobile-secondary-nav{
-    display:none !important;
-  }
+  #mainnav > .mobile-secondary-nav{display:none !important;}
 
   #mainnav > .mobile-more-toggle{
     pointer-events:auto !important;
     position:static !important;
     inset:auto !important;
     width:auto !important;
-    min-width:70px !important;
-    min-height:38px !important;
+    min-width:72px !important;
+    min-height:36px !important;
     margin:0 !important;
     padding:7px 11px !important;
     display:inline-flex !important;
     align-items:center !important;
     justify-content:center !important;
     gap:6px !important;
-    border:1px solid rgba(255,255,255,.085) !important;
-    border-radius:10px !important;
-    background:rgba(255,255,255,.025) !important;
-    color:#8f929a !important;
-    box-shadow:none !important;
-    font-size:11.5px !important;
+    border:1px solid rgba(255,255,255,.075) !important;
+    border-radius:11px !important;
+    background:rgba(255,255,255,.022) !important;
+    color:#94979f !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.018) !important;
+    font-size:11px !important;
     font-weight:680 !important;
     line-height:1 !important;
     white-space:nowrap !important;
@@ -906,42 +902,36 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   #mainnav > .mobile-more-toggle[aria-expanded="true"],
   #mainnav > .mobile-more-toggle.active{
     color:#f0c65b !important;
-    border-color:rgba(227,179,65,.22) !important;
-    background:rgba(227,179,65,.055) !important;
+    border-color:rgba(227,179,65,.20) !important;
+    background:rgba(227,179,65,.05) !important;
     outline:none !important;
   }
 
-  #mainnav > .mobile-more-menu{
-    pointer-events:auto !important;
-  }
+  #mainnav > .mobile-more-menu{pointer-events:auto !important;}
 
   #mainnav > .mobile-more-menu:not([hidden]){
     position:fixed !important;
-    top:68px !important;
-    right:18px !important;
+    top:64px !important;
+    right:16px !important;
     left:auto !important;
     z-index:140 !important;
     width:286px !important;
-    max-height:calc(100vh - 92px) !important;
+    max-height:calc(100vh - 84px) !important;
     display:grid !important;
     grid-template-columns:1fr !important;
     gap:3px !important;
     padding:8px !important;
     overflow:auto !important;
-    border:1px solid rgba(255,255,255,.095) !important;
+    border:1px solid rgba(255,255,255,.09) !important;
     border-radius:14px !important;
-    background:rgba(18,20,24,.985) !important;
+    background:rgba(18,20,24,.99) !important;
     box-shadow:0 22px 58px rgba(0,0,0,.42) !important;
     backdrop-filter:blur(20px) !important;
     -webkit-backdrop-filter:blur(20px) !important;
   }
 
-  /* Direct premium destinations should not be duplicated in More. */
-  #mainnav > .mobile-more-menu > a[data-route="giveaway"],
-  #mainnav > .mobile-more-menu > a[data-route="reviews"],
-  #mainnav > .mobile-more-menu > a[data-route="about"]{
-    display:none !important;
-  }
+  /* Giveaway remains primary. Everything else secondary stays in Explore. */
+  #mainnav > .mobile-more-menu > a[data-route="giveaway"]{display:none !important;}
 
   #mainnav > .mobile-more-menu > a{
     min-height:38px !important;
@@ -965,11 +955,11 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     outline:none !important;
   }
 
-  /* ---------- right-side theme utility ---------- */
+  /* Compact theme utility; no competing navigation label. */
   .sidebar-footer{
     position:fixed !important;
     top:0 !important;
-    right:18px !important;
+    right:14px !important;
     z-index:105 !important;
     width:auto !important;
     height:var(--premium-header-h) !important;
@@ -985,25 +975,23 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   .sidebar-footer .header-social-links,
   .sidebar-footer > div[style],
   .sidebar-footer .owner-status,
-  .sidebar-footer .mobile-footer-currency{
-    display:none !important;
-  }
+  .sidebar-footer .mobile-footer-currency{display:none !important;}
 
   .sidebar-footer .theme-toggle{
     width:auto !important;
     min-width:88px !important;
-    min-height:38px !important;
+    min-height:36px !important;
     margin:0 !important;
-    padding:7px 11px !important;
+    padding:7px 10px !important;
     display:inline-flex !important;
     align-items:center !important;
     justify-content:center !important;
-    border:1px solid rgba(255,255,255,.085) !important;
-    border-radius:10px !important;
-    background:rgba(255,255,255,.025) !important;
+    border:1px solid rgba(255,255,255,.075) !important;
+    border-radius:11px !important;
+    background:rgba(255,255,255,.022) !important;
     color:#9b9ea6 !important;
-    box-shadow:none !important;
-    font-size:11.5px !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.018) !important;
+    font-size:11px !important;
     font-weight:650 !important;
     line-height:1 !important;
     white-space:nowrap !important;
@@ -1011,43 +999,39 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
 
   .sidebar-footer .theme-toggle:hover,
   .sidebar-footer .theme-toggle:focus-visible{
-    border-color:rgba(227,179,65,.20) !important;
-    background:rgba(255,255,255,.04) !important;
+    border-color:rgba(227,179,65,.18) !important;
+    background:rgba(255,255,255,.035) !important;
     color:#f2f1ed !important;
     outline:none !important;
   }
 
-  /* Buyer preview is kept clearly separate from storefront navigation. */
   #ownerBuyerPreviewToggle{
     position:fixed !important;
-    top:21px !important;
-    left:18px !important;
+    top:19px !important;
+    left:14px !important;
     right:auto !important;
     bottom:auto !important;
     z-index:108 !important;
-    min-height:40px !important;
-    max-width:172px !important;
-    padding:8px 14px !important;
-    border-radius:12px !important;
+    min-height:38px !important;
+    max-width:154px !important;
+    padding:7px 12px !important;
+    border-radius:11px !important;
+    font-size:10.75px !important;
   }
 
-  /* Keep content immediately below a clean, single-row header. */
   .main{
     margin-left:0 !important;
     width:100% !important;
     max-width:none !important;
   }
 
-  /* ---------- light mode ---------- */
   body.light-mode .sidebar{
-    background:rgba(250,249,246,.965) !important;
-    border-bottom-color:#d7d1c6 !important;
-    box-shadow:0 9px 28px rgba(61,50,30,.09) !important;
+    background:linear-gradient(180deg,rgba(252,251,248,.98),rgba(249,247,242,.96)) !important;
+    border-bottom-color:#d8d2c7 !important;
+    box-shadow:0 9px 28px rgba(61,50,30,.085) !important;
   }
 
-  body.light-mode .premium-desktop-nav a{
-    color:#697078 !important;
-  }
+  body.light-mode .premium-desktop-nav a{color:#697078 !important;}
 
   body.light-mode .premium-desktop-nav .premium-nav-side > a:hover,
   body.light-mode .premium-desktop-nav .premium-nav-side > a:focus-visible{
@@ -1065,7 +1049,7 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
 
   body.light-mode #mainnav > .mobile-more-toggle,
   body.light-mode .sidebar-footer .theme-toggle{
-    background:rgba(255,255,255,.72) !important;
+    background:rgba(255,255,255,.76) !important;
     border-color:#d8d2c7 !important;
     color:#656c73 !important;
   }
@@ -1087,14 +1071,12 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   }
 
   body.light-mode #mainnav > .mobile-more-menu:not([hidden]){
-    background:rgba(255,255,255,.99) !important;
+    background:rgba(255,255,255,.995) !important;
     border-color:#d7d1c6 !important;
     box-shadow:0 20px 48px rgba(61,50,30,.16) !important;
   }
 
-  body.light-mode #mainnav > .mobile-more-menu > a{
-    color:#626970 !important;
-  }
+  body.light-mode #mainnav > .mobile-more-menu > a{color:#626970 !important;}
 
   body.light-mode #mainnav > .mobile-more-menu > a:hover,
   body.light-mode #mainnav > .mobile-more-menu > a:focus-visible,
@@ -1104,33 +1086,33 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   }
 }
 
-/* Laptop compression without changing the structure. */
 @media (min-width:1180px) and (max-width:1299px){
   .premium-desktop-nav{
-    width:min(740px,calc(100vw - 398px)) !important;
-    grid-template-columns:minmax(0,1fr) 70px minmax(0,1fr) !important;
-    gap:9px !important;
+    width:min(570px,calc(100vw - 500px)) !important;
+    grid-template-columns:minmax(0,1fr) 66px minmax(0,1fr) !important;
+    gap:14px !important;
   }
   .premium-desktop-nav a{
-    padding-left:5px !important;
-    padding-right:5px !important;
+    padding-left:6px !important;
+    padding-right:6px !important;
     font-size:11px !important;
   }
   .premium-nav-home{
-    width:62px !important;
-    height:62px !important;
-    min-height:62px !important;
-  }
-  .premium-nav-home img{
     width:60px !important;
     height:60px !important;
+    min-height:60px !important;
+  }
+  .premium-nav-home img{
+    width:58px !important;
+    height:58px !important;
   }
   #ownerBuyerPreviewToggle{
-    max-width:150px !important;
-    padding-left:11px !important;
-    padding-right:11px !important;
-    font-size:10.75px !important;
+    max-width:138px !important;
+    padding-left:10px !important;
+    padding-right:10px !important;
+    font-size:10.25px !important;
   }
-  #mainnav{right:112px !important;}
-  .sidebar-footer{right:14px !important;}
+  #mainnav{right:108px !important;}
+  .sidebar-footer{right:12px !important;}
+  .sidebar-footer .theme-toggle{min-width:82px !important;}
 }
