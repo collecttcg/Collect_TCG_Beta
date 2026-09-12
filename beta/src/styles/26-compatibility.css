@@ -2511,3 +2511,311 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     letter-spacing:normal !important;
   }
 }
+
+/* ==========================================================
+   V141 BETA — VERIFIED DESKTOP FILTER SYSTEM FIX
+   Uses the actual current markup selectors from inventory/page.js.
+   Desktop only; mobile remains unchanged.
+   ========================================================== */
+@media (min-width:801px){
+  /* There is already a persistent desktop search above the filter drawer.
+     Keep #search in the DOM as the filtering source-of-truth, but never render
+     its duplicate visual field inside the expanded desktop drawer. */
+  #filterDrawerShell .filter-row > .inventory-search-wrap{
+    display:none !important;
+  }
+
+  /* ---------- MAIN FILTER / ACTION TOOLBAR ---------- */
+  .desktop-filter-toggle-row,
+  .listing-filter-tools{
+    font-size:clamp(14px,.78vw,18px) !important;
+  }
+
+  .desktop-inline-search input{
+    min-height:clamp(52px,3vw,64px) !important;
+    padding:11px 48px 11px 17px !important;
+    font-size:clamp(14px,.82vw,18px) !important;
+    font-weight:620 !important;
+  }
+
+  .desktop-inline-search input::placeholder{
+    text-transform:uppercase !important;
+    letter-spacing:.035em !important;
+    font-size:inherit !important;
+    font-weight:650 !important;
+  }
+
+  .desktop-filter-toggle-btn{
+    min-height:clamp(52px,3vw,64px) !important;
+    padding:10px clamp(16px,1vw,22px) !important;
+    gap:clamp(8px,.55vw,12px) !important;
+    font-size:clamp(14px,.8vw,18px) !important;
+    font-weight:800 !important;
+    text-transform:uppercase !important;
+    letter-spacing:.055em !important;
+  }
+
+  .desktop-filter-toggle-summary{
+    font-size:clamp(11px,.64vw,14px) !important;
+    font-weight:680 !important;
+    text-transform:uppercase !important;
+    letter-spacing:.035em !important;
+  }
+
+  /* Currency now visually belongs to the same toolbar. */
+  .desktop-listing-currency-control{
+    min-height:clamp(52px,3vw,64px) !important;
+    padding:6px 7px 6px clamp(14px,.9vw,19px) !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:clamp(9px,.6vw,13px) !important;
+    border:1px solid rgba(255,255,255,.085) !important;
+    border-radius:12px !important;
+    background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.012)),var(--surface) !important;
+    box-shadow:0 5px 18px rgba(0,0,0,.10) !important;
+    color:#c9cbd1 !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-listing-currency-control > span{
+    color:#b8bbc3 !important;
+    font-size:clamp(13px,.74vw,17px) !important;
+    font-weight:800 !important;
+    letter-spacing:.055em !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-listing-currency-control select{
+    appearance:none !important;
+    -webkit-appearance:none !important;
+    min-width:78px !important;
+    min-height:clamp(38px,2.25vw,46px) !important;
+    padding:7px 31px 7px 12px !important;
+    border:1px solid rgba(227,179,65,.24) !important;
+    border-radius:9px !important;
+    background:
+      linear-gradient(45deg,transparent 50%,#b8a15f 50%) calc(100% - 15px) 50%/5px 5px no-repeat,
+      linear-gradient(135deg,#b8a15f 50%,transparent 50%) calc(100% - 11px) 50%/5px 5px no-repeat,
+      rgba(255,255,255,.025) !important;
+    color:#f0c65b !important;
+    font-family:inherit !important;
+    font-size:clamp(13px,.76vw,17px) !important;
+    font-weight:820 !important;
+    line-height:1 !important;
+    letter-spacing:.045em !important;
+    text-transform:uppercase !important;
+    box-shadow:none !important;
+  }
+
+  .desktop-listing-currency-control select:focus-visible{
+    outline:none !important;
+    border-color:rgba(227,179,65,.52) !important;
+    box-shadow:0 0 0 3px rgba(227,179,65,.075) !important;
+  }
+
+  /* ---------- TOP QUICK FILTER / ACTION ROW ---------- */
+  .listing-filter-tools button,
+  .listing-filter-tools a,
+  .desktop-filter-add-card{
+    text-transform:uppercase !important;
+    letter-spacing:.04em !important;
+  }
+
+  .listing-filter-tools .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-toggle,
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .desktop-filter-add-card{
+    font-size:clamp(13px,.74vw,17px) !important;
+    font-weight:740 !important;
+  }
+
+  .listing-filter-tools .quick-filter{
+    min-height:clamp(38px,2.15vw,46px) !important;
+    padding:7px clamp(11px,.72vw,16px) !important;
+  }
+
+  /* ---------- EXPANDED FILTER DRAWER ---------- */
+  #filterDrawerShell:not(.desktop-collapsed){
+    padding:clamp(18px,1.15vw,27px) !important;
+    border-radius:16px !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head strong,
+  #filterDrawerShell .filter-drawer-head span,
+  #filterDrawerShell .filter-drawer-head button,
+  #filterDrawerShell .overview-select-btn,
+  #filterDrawerShell .overview-select-btn span,
+  #filterDrawerShell .overview-select-menu button,
+  #filterDrawerShell .price-range-label,
+  #filterDrawerShell .grade-shortcuts-label,
+  #filterDrawerShell .grade-shortcuts button,
+  #filterDrawerShell .filter-drawer-footer strong,
+  #filterDrawerShell .filter-drawer-footer span,
+  #filterDrawerShell .filter-drawer-footer button,
+  #filterDrawerShell .btn-primary.owner-only{
+    text-transform:uppercase !important;
+    letter-spacing:.04em !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head strong{
+    font-size:clamp(15px,.9vw,20px) !important;
+    font-weight:820 !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head span{
+    font-size:clamp(12px,.68vw,15px) !important;
+    font-weight:650 !important;
+  }
+
+  #filterDrawerShell .clear-all-filters-btn{
+    min-height:clamp(38px,2.15vw,46px) !important;
+    padding:7px 13px !important;
+    font-size:clamp(12px,.7vw,15px) !important;
+    font-weight:760 !important;
+  }
+
+  #filterDrawerShell:not(.desktop-collapsed) .filter-row{
+    grid-template-columns:repeat(auto-fit,minmax(clamp(205px,12.5vw,285px),1fr)) !important;
+    gap:clamp(12px,.75vw,18px) !important;
+  }
+
+  #filterDrawerShell .overview-select-btn{
+    min-height:clamp(52px,3vw,64px) !important;
+    padding:10px clamp(14px,.9vw,19px) !important;
+    font-size:clamp(14px,.82vw,18px) !important;
+    font-weight:720 !important;
+    border-radius:11px !important;
+  }
+
+  #filterDrawerShell .overview-select-btn span{
+    font-size:inherit !important;
+    font-weight:inherit !important;
+  }
+
+  #filterDrawerShell .overview-select-menu button{
+    min-height:clamp(42px,2.35vw,50px) !important;
+    padding:8px 12px !important;
+    font-size:clamp(13px,.76vw,17px) !important;
+    font-weight:650 !important;
+  }
+
+  #filterDrawerShell .price-range-filter{
+    min-height:clamp(52px,3vw,64px) !important;
+    padding:7px 10px !important;
+    gap:8px !important;
+  }
+
+  #filterDrawerShell .price-range-label{
+    font-size:clamp(11px,.66vw,14px) !important;
+    font-weight:760 !important;
+  }
+
+  #filterDrawerShell .price-range-filter input{
+    min-height:38px !important;
+    font-size:clamp(13px,.76vw,17px) !important;
+    font-weight:650 !important;
+  }
+
+  #filterDrawerShell .price-range-filter input::placeholder{
+    text-transform:uppercase !important;
+  }
+
+  #filterDrawerShell .grade-shortcuts-label{
+    font-size:clamp(12px,.68vw,15px) !important;
+    font-weight:780 !important;
+  }
+
+  #filterDrawerShell .grade-shortcuts button{
+    min-height:clamp(36px,2vw,44px) !important;
+    padding:6px 11px !important;
+    font-size:clamp(11.5px,.68vw,15px) !important;
+    font-weight:700 !important;
+  }
+
+  #filterDrawerShell .btn-primary.owner-only{
+    min-height:clamp(46px,2.7vw,56px) !important;
+    padding:9px 16px !important;
+    font-size:clamp(13px,.76vw,17px) !important;
+    font-weight:820 !important;
+  }
+
+  /* Light mode: remove native-looking white select treatment. */
+  body.light-mode .desktop-listing-currency-control{
+    border-color:#d5cec2 !important;
+    background:linear-gradient(180deg,#fff,#f7f3eb) !important;
+    color:#454b51 !important;
+    box-shadow:0 5px 17px rgba(61,50,30,.08) !important;
+  }
+
+  body.light-mode .desktop-listing-currency-control > span{
+    color:#565d63 !important;
+  }
+
+  body.light-mode .desktop-listing-currency-control select{
+    border-color:rgba(148,107,24,.26) !important;
+    background:
+      linear-gradient(45deg,transparent 50%,#8c691d 50%) calc(100% - 15px) 50%/5px 5px no-repeat,
+      linear-gradient(135deg,#8c691d 50%,transparent 50%) calc(100% - 11px) 50%/5px 5px no-repeat,
+      #fbf7ed !important;
+    color:#805b15 !important;
+  }
+}
+
+/* 2K / zoom-out compensation. Browser zoom-out raises the effective CSS
+   viewport width, so these steps counter the visual shrink deliberately. */
+@media (min-width:1800px){
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control{
+    min-height:60px !important;
+  }
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control > span,
+  .desktop-listing-currency-control select,
+  #filterDrawerShell .overview-select-btn{
+    font-size:16px !important;
+  }
+  .listing-filter-tools .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-toggle,
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .desktop-filter-add-card{
+    font-size:15px !important;
+  }
+}
+
+@media (min-width:2300px){
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control{
+    min-height:66px !important;
+  }
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control > span,
+  .desktop-listing-currency-control select,
+  #filterDrawerShell .overview-select-btn{
+    font-size:18px !important;
+  }
+  #filterDrawerShell .filter-drawer-head strong{font-size:20px !important;}
+  #filterDrawerShell .filter-drawer-head span,
+  #filterDrawerShell .clear-all-filters-btn{font-size:15px !important;}
+  .listing-filter-tools .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-toggle,
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .desktop-filter-add-card{
+    font-size:16px !important;
+  }
+}
