@@ -3971,3 +3971,1027 @@ body.owner-buyer-preview #inventoryMobileCollageBtn{
     gap:12px !important;
   }
 }
+
+/* ==========================================================
+   V152 PRODUCTION — SHOW PER PAGE CONTROL STANDARDIZATION
+   Keep the sold/reserved desktop page-size control visually in the
+   same premium button family as the rest of the action row.
+   ========================================================== */
+@media (min-width:1180px){
+  .listing-filter-tools .listing-per-page-control{
+    width:clamp(220px,15vw,248px) !important;
+    min-width:clamp(220px,15vw,248px) !important;
+    max-width:clamp(220px,15vw,248px) !important;
+    min-height:56px !important;
+    padding:0 12px 0 18px !important;
+    gap:10px !important;
+    justify-content:space-between !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control > span{
+    font-size:clamp(13px,.82vw,15px) !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+    color:inherit !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control > span:first-child,
+  .listing-filter-tools .listing-per-page-control > span:last-child{
+    flex:0 0 auto !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control select{
+    flex:0 0 auto !important;
+    width:88px !important;
+    min-width:88px !important;
+    height:40px !important;
+    min-height:40px !important;
+    padding:0 32px 0 12px !important;
+    border-radius:12px !important;
+    font-size:clamp(13px,.82vw,15px) !important;
+    font-weight:800 !important;
+    text-align:center !important;
+  }
+}
+
+@media (min-width:1700px){
+  .listing-filter-tools .listing-per-page-control{
+    width:252px !important;
+    min-width:252px !important;
+    max-width:252px !important;
+    min-height:60px !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control select{
+    height:42px !important;
+    min-height:42px !important;
+    width:92px !important;
+    min-width:92px !important;
+  }
+}
+
+@media (min-width:2300px){
+  .listing-filter-tools .listing-per-page-control{
+    width:264px !important;
+    min-width:264px !important;
+    max-width:264px !important;
+    min-height:64px !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control select{
+    height:44px !important;
+    min-height:44px !important;
+    width:96px !important;
+    min-width:96px !important;
+  }
+}
+
+body.light-mode .listing-filter-tools .listing-per-page-control select{
+  background:#fff !important;
+  border-color:#d8d2c7 !important;
+  color:#2c3136 !important;
+}
+
+
+/* ==========================================================
+   V153 PRODUCTION — DESKTOP TOOLBAR CONSISTENCY PASS
+   One visual system for listing toolbar controls across
+   Inventory / Sold / Reserved / Collection.
+   Category pills remain intentionally smaller.
+   ========================================================== */
+@media (min-width:1180px){
+  :root{
+    --listing-toolbar-h:clamp(42px,2.75vw,50px);
+    --listing-toolbar-radius:clamp(12px,.9vw,16px);
+    --listing-toolbar-font:clamp(10px,.67vw,13px);
+    --listing-toolbar-gap:clamp(6px,.45vw,9px);
+    --listing-toolbar-pad:clamp(10px,.72vw,16px);
+  }
+
+  /* ---------- Top context/action row ---------- */
+  .listing-filter-tools .inventory-toolbar-context,
+  .listing-filter-tools .inventory-display-tools{
+    gap:var(--listing-toolbar-gap) !important;
+    align-items:center !important;
+  }
+
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .listing-per-page-control,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    min-height:var(--listing-toolbar-h) !important;
+    height:var(--listing-toolbar-h) !important;
+    border-radius:var(--listing-toolbar-radius) !important;
+    padding:0 var(--listing-toolbar-pad) !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-sizing:border-box !important;
+    font-size:var(--listing-toolbar-font) !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+  }
+
+  .listing-filter-tools .inventory-result-count{
+    min-width:0 !important;
+    gap:6px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count strong{
+    font-size:inherit !important;
+    line-height:1 !important;
+  }
+
+  /* Show-per-page now behaves like a normal toolbar control,
+     not a larger panel. */
+  .listing-filter-tools .listing-per-page-control{
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+    gap:8px !important;
+    padding-left:var(--listing-toolbar-pad) !important;
+    padding-right:6px !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control > span{
+    font-size:inherit !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+    color:inherit !important;
+  }
+
+  .listing-filter-tools .listing-per-page-control select{
+    width:clamp(66px,4.7vw,78px) !important;
+    min-width:clamp(66px,4.7vw,78px) !important;
+    height:calc(var(--listing-toolbar-h) - 10px) !important;
+    min-height:calc(var(--listing-toolbar-h) - 10px) !important;
+    padding:0 27px 0 9px !important;
+    border-radius:calc(var(--listing-toolbar-radius) - 3px) !important;
+    font-size:inherit !important;
+    font-weight:800 !important;
+    letter-spacing:.02em !important;
+    text-transform:none !important;
+  }
+
+  /* Common action icons should not visually change the button height. */
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn{
+    gap:7px !important;
+  }
+
+  /* ---------- Search / Filters / Currency / Add Card row ---------- */
+  .desktop-filter-toggle-row{
+    gap:var(--listing-toolbar-gap) !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    gap:var(--listing-toolbar-gap) !important;
+  }
+
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-filter-add-card{
+    min-height:var(--listing-toolbar-h) !important;
+    height:var(--listing-toolbar-h) !important;
+    border-radius:var(--listing-toolbar-radius) !important;
+    box-sizing:border-box !important;
+    font-size:var(--listing-toolbar-font) !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+  }
+
+  .desktop-inline-search input{
+    padding-left:var(--listing-toolbar-pad) !important;
+    padding-right:42px !important;
+  }
+
+  .desktop-inline-search input::placeholder{
+    font-size:inherit !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-filter-toggle-btn{
+    padding:0 var(--listing-toolbar-pad) !important;
+    gap:7px !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-filter-toggle-summary{
+    font-size:clamp(8.5px,.55vw,10.5px) !important;
+    font-weight:650 !important;
+    letter-spacing:.035em !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-listing-currency-control{
+    padding:0 6px 0 var(--listing-toolbar-pad) !important;
+    gap:8px !important;
+  }
+
+  .desktop-listing-currency-control > span{
+    font-size:inherit !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    text-transform:uppercase !important;
+  }
+
+  .desktop-listing-currency-control select{
+    width:clamp(68px,4.8vw,80px) !important;
+    min-width:clamp(68px,4.8vw,80px) !important;
+    height:calc(var(--listing-toolbar-h) - 10px) !important;
+    min-height:calc(var(--listing-toolbar-h) - 10px) !important;
+    padding:0 28px 0 10px !important;
+    border-radius:calc(var(--listing-toolbar-radius) - 3px) !important;
+    font-size:inherit !important;
+    font-weight:800 !important;
+    text-transform:none !important;
+  }
+
+  .desktop-filter-add-card{
+    padding:0 var(--listing-toolbar-pad) !important;
+    text-transform:uppercase !important;
+  }
+}
+
+/* Common 1440-ish desktop: slightly compact but still one coherent system. */
+@media (min-width:1180px) and (max-width:1499px){
+  :root{
+    --listing-toolbar-h:40px;
+    --listing-toolbar-radius:12px;
+    --listing-toolbar-font:9.5px;
+    --listing-toolbar-gap:5px;
+    --listing-toolbar-pad:8px;
+  }
+
+  .listing-filter-tools .listing-per-page-control select,
+  .desktop-listing-currency-control select{
+    height:32px !important;
+    min-height:32px !important;
+  }
+}
+
+/* QHD / 2K: grow everything together, not individual controls. */
+@media (min-width:2200px){
+  :root{
+    --listing-toolbar-h:50px;
+    --listing-toolbar-radius:16px;
+    --listing-toolbar-font:13px;
+    --listing-toolbar-gap:9px;
+    --listing-toolbar-pad:16px;
+  }
+
+  .listing-filter-tools .listing-per-page-control select,
+  .desktop-listing-currency-control select{
+    height:40px !important;
+    min-height:40px !important;
+  }
+}
+
+/* Light-mode parity for embedded toolbar selects. */
+body.light-mode .listing-filter-tools .listing-per-page-control select,
+body.light-mode .desktop-listing-currency-control select{
+  background:#fff !important;
+  border-color:#d8d2c7 !important;
+  color:#2c3136 !important;
+}
+
+/* ==========================================================
+   V154 BETA — COMPREHENSIVE MOBILE PARITY / POLISH PASS
+   Mobile-only. Desktop remains exactly V153 production.
+   Goals:
+   - cleaner compact navigation
+   - search/filter hierarchy with no duplicate search
+   - larger touch targets and readable controls
+   - 2-column card marketplace layout on normal phones
+   - tighter Card Details hierarchy + contact flow
+   - related-card and light-mode parity
+   ========================================================== */
+
+@media (max-width:800px){
+  /* ---------- Compact premium mobile header ---------- */
+  .sidebar{
+    padding:8px 10px 9px !important;
+    gap:8px !important;
+  }
+
+  .shop-brand{
+    position:relative !important;
+    min-height:52px !important;
+    justify-content:center !important;
+    align-items:center !important;
+    padding:0 48px !important;
+  }
+
+  .shop-brand-text,
+  .mobile-header-social-links{
+    display:none !important;
+  }
+
+  .logo-click-target .shop-logo{
+    width:52px !important;
+    height:52px !important;
+    flex:0 0 52px !important;
+  }
+
+  .mobile-header-theme-toggle{
+    position:absolute !important;
+    right:0 !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    width:40px !important;
+    height:40px !important;
+    min-width:40px !important;
+    min-height:40px !important;
+    border-radius:12px !important;
+  }
+
+  /* Logo is Home on mobile. Keep four useful primary destinations. */
+  nav.mainnav{
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:5px !important;
+    width:100% !important;
+    padding:0 !important;
+    overflow:visible !important;
+  }
+
+  nav.mainnav > a[data-route="home"],
+  nav.mainnav > a[data-route="reserved"],
+  nav.mainnav > a[data-route="showcase"],
+  nav.mainnav > a[data-route="giveaway"],
+  nav.mainnav > a[data-route="favorites"],
+  nav.mainnav > a[data-route="reviews"],
+  nav.mainnav > a[data-route="about"],
+  nav.mainnav > a[data-route="contact"],
+  nav.mainnav > a[data-route="recent"],
+  nav.mainnav > a[data-route="by-game"],
+  nav.mainnav > a.owner-only{
+    display:none !important;
+  }
+
+  nav.mainnav > a[data-route="inventory"],
+  nav.mainnav > a[data-route="collection"],
+  nav.mainnav > a[data-route="sold"],
+  nav.mainnav > .mobile-more-toggle{
+    display:flex !important;
+    grid-column:auto !important;
+    order:initial !important;
+    min-width:0 !important;
+    width:100% !important;
+    min-height:44px !important;
+    height:44px !important;
+    padding:0 5px !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap:4px !important;
+    border-radius:11px !important;
+    font-size:10px !important;
+    font-weight:760 !important;
+    letter-spacing:.045em !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+  }
+
+  nav.mainnav > a[data-route="inventory"] .nav-count,
+  nav.mainnav > a[data-route="collection"] .nav-count,
+  nav.mainnav > a[data-route="sold"] .nav-count{
+    display:none !important;
+  }
+
+  nav.mainnav > .mobile-more-menu{
+    order:5 !important;
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    margin-top:2px !important;
+    padding:7px !important;
+    border-radius:13px !important;
+  }
+
+  nav.mainnav > .mobile-more-menu > a{
+    min-height:44px !important;
+    padding:9px 11px !important;
+    border-radius:9px !important;
+    font-size:12px !important;
+  }
+
+  nav.mainnav > .mobile-more-menu > a[data-route="collection"]{
+    display:none !important;
+  }
+  nav.mainnav > .mobile-more-menu > a[data-route="favorites"]{
+    display:flex !important;
+  }
+
+  /* Header footer is utility-only on phones; avoid duplicated social rows. */
+  .sidebar-footer .header-social-links,
+  .sidebar-footer > div:nth-child(2){
+    display:none !important;
+  }
+
+  /* ---------- Mobile page hierarchy ---------- */
+  .main{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  .listing-page-head{
+    margin:0 0 8px !important;
+    align-items:center !important;
+    gap:8px !important;
+  }
+
+  .listing-page-head .eyebrow,
+  .listing-page-head p{
+    display:none !important;
+  }
+
+  .listing-page-head h2{
+    margin:0 !important;
+    font-size:20px !important;
+    line-height:1.05 !important;
+  }
+
+  .listing-page-head .mobile-page-currency-control{
+    min-height:40px !important;
+    height:40px !important;
+    padding:4px 5px 4px 8px !important;
+    border-radius:11px !important;
+    gap:6px !important;
+  }
+
+  .listing-page-head .mobile-page-currency-control > span:not(.sr-only){
+    font-size:9px !important;
+    font-weight:700 !important;
+    text-transform:uppercase !important;
+  }
+
+  .listing-page-head .mobile-page-currency-control select{
+    min-height:31px !important;
+    height:31px !important;
+    padding:3px 22px 3px 7px !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+  }
+
+  /* ---------- Quick category filters ---------- */
+  .listing-filter-tools .quick-filters,
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:6px !important;
+    width:100% !important;
+    margin:0 0 8px !important;
+    padding:0 0 2px !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+
+  .listing-filter-tools .quick-filters::-webkit-scrollbar,
+  .listing-filter-tools .desktop-quick-filters-collapsible::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .listing-filter-tools .quick-filter{
+    flex:0 0 auto !important;
+    min-height:38px !important;
+    padding:0 12px !important;
+    border-radius:999px !important;
+    font-size:10px !important;
+    font-weight:720 !important;
+    letter-spacing:.035em !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+  }
+
+  /* ---------- Search + Filters: one clear row ---------- */
+  .mobile-search-filter-row{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) 92px !important;
+    gap:7px !important;
+    width:100% !important;
+    margin:0 0 8px !important;
+  }
+
+  .mobile-search-filter-row .mobile-inventory-search{
+    grid-column:1 !important;
+    min-width:0 !important;
+    width:100% !important;
+    margin:0 !important;
+  }
+
+  .mobile-search-filter-row .mobile-inventory-search input[type="search"]{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:48px !important;
+    height:48px !important;
+    padding-left:36px !important;
+    padding-right:38px !important;
+    border-radius:12px !important;
+    font-size:13px !important;
+  }
+
+  .mobile-search-filter-row .mobile-inventory-search input[type="search"]::placeholder{
+    font-size:11.5px !important;
+  }
+
+  .mobile-search-filter-row .mobile-search-filter-btn{
+    grid-column:2 !important;
+    min-width:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    min-height:48px !important;
+    height:48px !important;
+    padding:0 10px !important;
+    border-radius:12px !important;
+    font-size:11px !important;
+    font-weight:760 !important;
+    letter-spacing:.04em !important;
+    text-transform:uppercase !important;
+  }
+
+  /* Main search already exists above the drawer; never duplicate it inside Filters. */
+  #filterDrawerShell .filter-row > .inventory-search-wrap{
+    display:none !important;
+  }
+
+  /* ---------- Filter drawer: proper mobile bottom sheet ---------- */
+  #filterDrawerShell{
+    border-radius:20px 20px 0 0 !important;
+  }
+
+  #filterDrawerShell.mobile-open,
+  #filterDrawerShell:not(.desktop-collapsed){
+    max-height:min(84dvh,760px) !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head{
+    padding:14px 14px 11px !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head strong{
+    font-size:16px !important;
+    font-weight:800 !important;
+  }
+
+  #filterDrawerShell .filter-drawer-head span{
+    font-size:10px !important;
+  }
+
+  #filterDrawerShell .filter-row{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:9px !important;
+    padding:12px 14px !important;
+  }
+
+  #filterDrawerShell .overview-select,
+  #filterDrawerShell .price-range-filter,
+  #filterDrawerShell .mobile-cards-per-page-control{
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  #filterDrawerShell .overview-select-btn{
+    width:100% !important;
+    min-height:48px !important;
+    padding:0 13px !important;
+    border-radius:11px !important;
+    font-size:12px !important;
+    font-weight:680 !important;
+  }
+
+  #filterDrawerShell .overview-select-menu button{
+    min-height:44px !important;
+    padding:9px 12px !important;
+    font-size:12px !important;
+  }
+
+  #filterDrawerShell .price-range-filter{
+    min-height:50px !important;
+    padding:7px 9px !important;
+    border-radius:11px !important;
+  }
+
+  #filterDrawerShell .price-range-label{
+    font-size:10px !important;
+    font-weight:720 !important;
+  }
+
+  #filterDrawerShell .price-range-filter input{
+    min-width:0 !important;
+    min-height:36px !important;
+    font-size:12px !important;
+  }
+
+  #filterDrawerShell .mobile-cards-per-page-control{
+    min-height:52px !important;
+    padding:8px 10px !important;
+    border-radius:11px !important;
+  }
+
+  #filterDrawerShell .mobile-cards-per-page-control strong{
+    font-size:11px !important;
+  }
+
+  #filterDrawerShell .mobile-cards-per-page-control small{
+    font-size:8.5px !important;
+  }
+
+  #filterDrawerShell .mobile-cards-per-page-control select{
+    min-width:70px !important;
+    min-height:36px !important;
+    font-size:12px !important;
+    font-weight:800 !important;
+  }
+
+  #filterDrawerShell .grade-shortcuts{
+    padding:0 14px 12px !important;
+    gap:6px !important;
+  }
+
+  #filterDrawerShell .grade-shortcuts button{
+    min-height:38px !important;
+    padding:6px 10px !important;
+    font-size:10px !important;
+  }
+
+  #filterDrawerShell .filter-drawer-footer{
+    position:sticky !important;
+    bottom:0 !important;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom)) !important;
+    background:rgba(16,18,22,.98) !important;
+    backdrop-filter:blur(14px) !important;
+    -webkit-backdrop-filter:blur(14px) !important;
+  }
+
+  #filterDrawerShell .filter-drawer-apply{
+    min-height:44px !important;
+    border-radius:11px !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+  }
+
+  /* ---------- Mobile cards: marketplace-style 2-column layout ---------- */
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    gap:9px !important;
+  }
+
+  #invGrid .clean-notes,
+  #invGrid .clean-era-pill,
+  #invGrid .clean-series-pill{
+    display:none !important;
+  }
+
+  /* Keep bottom result controls readable and consistent. */
+  .sticky-mobile-results-bar{
+    min-height:58px !important;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom)) !important;
+    gap:6px !important;
+    border-top-color:rgba(255,255,255,.10) !important;
+  }
+
+  .sticky-mobile-results-action{
+    min-height:44px !important;
+    border-radius:10px !important;
+  }
+
+  .sticky-mobile-results-action > span{
+    font-size:9px !important;
+    font-weight:800 !important;
+    text-transform:uppercase !important;
+  }
+
+  .sticky-mobile-results-action > small{
+    font-size:8px !important;
+  }
+
+  /* ---------- Card Details mobile hierarchy ---------- */
+  .modal.card-details-modal{
+    border-radius:0 !important;
+  }
+
+  .modal.card-details-modal #detailsMount{
+    padding-bottom:calc(92px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .modal.card-details-modal .detail-header-mobile{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    align-items:start !important;
+    gap:9px !important;
+    margin-bottom:10px !important;
+  }
+
+  .modal.card-details-modal .detail-header-mobile .eyebrow{
+    font-size:8px !important;
+    letter-spacing:.12em !important;
+  }
+
+  .modal.card-details-modal .detail-header-mobile h2{
+    margin:3px 0 4px !important;
+    font-size:clamp(21px,6.3vw,28px) !important;
+    line-height:.98 !important;
+  }
+
+  .modal.card-details-modal .detail-header-mobile .detail-meta{
+    font-size:10px !important;
+  }
+
+  .modal.card-details-modal .detail-currency-control{
+    min-height:38px !important;
+    padding:4px 5px 4px 7px !important;
+    border-radius:10px !important;
+  }
+
+  .modal.card-details-modal .detail-currency-control > span{
+    display:none !important;
+  }
+
+  .modal.card-details-modal .detail-currency-control select{
+    min-height:29px !important;
+    height:29px !important;
+    font-size:10px !important;
+    font-weight:800 !important;
+  }
+
+  .modal.card-details-modal .filtered-result-nav{
+    min-height:48px !important;
+    margin-bottom:10px !important;
+    padding:5px !important;
+    gap:5px !important;
+    border-radius:12px !important;
+  }
+
+  .modal.card-details-modal .filtered-result-nav-btn{
+    min-height:38px !important;
+    padding:6px 9px !important;
+    font-size:9px !important;
+  }
+
+  .modal.card-details-modal .filtered-result-position span{
+    font-size:7px !important;
+  }
+
+  .modal.card-details-modal .filtered-result-position strong{
+    font-size:10px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-strip{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px !important;
+    margin-bottom:10px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-price{
+    grid-column:1 / -1 !important;
+  }
+
+  .modal.card-details-modal .detail-summary-card{
+    padding:9px 10px !important;
+    border-radius:11px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-card span{
+    font-size:8px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-card strong{
+    font-size:12.5px !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-panel{
+    margin:10px 0 !important;
+    padding:9px !important;
+    gap:7px !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    min-height:50px !important;
+  }
+
+  .modal.card-details-modal .detail-buyer-confidence{
+    gap:6px !important;
+    margin-bottom:12px !important;
+  }
+
+  .modal.card-details-modal .detail-confidence-item{
+    min-height:0 !important;
+    padding:8px 9px !important;
+  }
+
+  .modal.card-details-modal .detail-confidence-item strong{
+    font-size:10px !important;
+  }
+
+  .modal.card-details-modal .detail-confidence-item small{
+    font-size:8.5px !important;
+  }
+
+  .modal.card-details-modal .details-info-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:7px !important;
+  }
+
+  .modal.card-details-modal .details-info-grid .detail-item{
+    padding:10px 11px !important;
+    border-radius:10px !important;
+  }
+
+  .modal.card-details-modal .details-info-grid .detail-label{
+    margin-bottom:4px !important;
+    font-size:8px !important;
+  }
+
+  .modal.card-details-modal .details-info-grid .detail-value{
+    font-size:12px !important;
+  }
+
+  .modal.card-details-modal .related-cards-section{
+    margin-top:20px !important;
+    padding-top:14px !important;
+  }
+
+  .modal.card-details-modal .related-cards-head h3{
+    font-size:18px !important;
+  }
+
+  .modal.card-details-modal .related-cards-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:8px !important;
+  }
+
+  /* The existing global fixed Contact-to-Buy bar is the single mobile CTA. */
+  #mobileDetailCta{
+    min-height:66px !important;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+    gap:9px !important;
+  }
+
+  #mobileDetailCta .mobile-detail-cta-price small{
+    font-size:8px !important;
+  }
+
+  #mobileDetailCta .mobile-detail-cta-price strong{
+    font-size:18px !important;
+  }
+
+  #mobileDetailCta .mobile-detail-cta-action{
+    min-height:46px !important;
+    padding:0 15px !important;
+    border-radius:12px !important;
+    font-size:11.5px !important;
+    text-transform:none !important;
+  }
+
+  /* ---------- Mobile light-mode parity ---------- */
+  body.light-mode #filterDrawerShell .filter-drawer-footer{
+    background:rgba(255,255,255,.98) !important;
+    border-top-color:#ddd7cc !important;
+  }
+
+  body.light-mode .mobile-search-filter-row .mobile-search-filter-btn,
+  body.light-mode #filterDrawerShell .overview-select-btn,
+  body.light-mode #filterDrawerShell .mobile-cards-per-page-control{
+    background:#fff !important;
+    border-color:#d5d0c6 !important;
+    color:#343a40 !important;
+  }
+
+  body.light-mode .sticky-mobile-results-bar{
+    background:rgba(250,249,246,.97) !important;
+    border-top-color:#d7d2c8 !important;
+  }
+
+  body.light-mode nav.mainnav > a[data-route="inventory"],
+  body.light-mode nav.mainnav > a[data-route="collection"],
+  body.light-mode nav.mainnav > a[data-route="sold"],
+  body.light-mode nav.mainnav > .mobile-more-toggle{
+    color:#5e656c !important;
+  }
+}
+
+/* Normal phones: two cards per row, vertical image-first cards. */
+@media (min-width:360px) and (max-width:800px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card{
+    display:flex !important;
+    flex-direction:column !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    height:auto !important;
+    max-height:none !important;
+    overflow:hidden !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card > .thumb-wrap,
+  #invGrid.grid:not(.compact-list) .card > .thumb-placeholder{
+    position:relative !important;
+    display:block !important;
+    width:100% !important;
+    min-height:0 !important;
+    height:auto !important;
+    aspect-ratio:3 / 4.35 !important;
+    overflow:hidden !important;
+    flex:0 0 auto !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card > .thumb-wrap .thumb{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    object-fit:cover !important;
+    object-position:center !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-body{
+    display:flex !important;
+    flex-direction:column !important;
+    grid-column:auto !important;
+    grid-row:auto !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    height:auto !important;
+    padding:9px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    font-size:11px !important;
+    line-height:1.15 !important;
+    min-height:25px !important;
+    -webkit-line-clamp:2 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-reference{
+    font-size:8.5px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-price-block{
+    margin-top:7px !important;
+    padding-top:7px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-price-primary{
+    font-size:14px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-price-secondary{
+    font-size:8px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-all-pills{
+    gap:4px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-all-pills .clean-grade-badge,
+  #invGrid.grid:not(.compact-list) .clean-all-pills .clean-meta-pill{
+    padding:3px 5px !important;
+    font-size:7.5px !important;
+  }
+}
+
+/* Very narrow phones keep the proven single-card horizontal layout. */
+@media (max-width:359px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:1fr !important;
+  }
+
+  .modal.card-details-modal .details-info-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  nav.mainnav{
+    gap:3px !important;
+  }
+
+  nav.mainnav > a[data-route="inventory"],
+  nav.mainnav > a[data-route="collection"],
+  nav.mainnav > a[data-route="sold"],
+  nav.mainnav > .mobile-more-toggle{
+    font-size:9px !important;
+    padding:0 2px !important;
+  }
+}
