@@ -2819,3 +2819,168 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     font-size:16px !important;
   }
 }
+
+/* ==========================================================
+   V142 BETA — ZOOM-STABLE DESKTOP INVENTORY TOOLBARS
+   Use explicit grid geometry instead of free-form flex wrapping.
+   Wide desktop keeps the same balanced structure at 100% that
+   previously only appeared around 90% browser zoom.
+   ========================================================== */
+@media (min-width:1180px){
+  /* Top listing controls: categories | result context | actions. */
+  .listing-filter-tools{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:minmax(420px,max-content) max-content minmax(0,1fr) !important;
+    grid-template-areas:"categories context actions" !important;
+    align-items:center !important;
+    column-gap:clamp(14px,1vw,22px) !important;
+    row-gap:12px !important;
+    margin-bottom:14px !important;
+  }
+
+  .listing-filter-tools .desktop-category-filter-block{
+    display:contents !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    grid-area:categories !important;
+    width:max-content !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:clamp(7px,.5vw,11px) !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:visible !important;
+  }
+
+  .listing-filter-tools .quick-filter{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    grid-area:context !important;
+    min-width:max-content !important;
+    margin:0 !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:8px !important;
+    justify-self:start !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    grid-area:actions !important;
+    min-width:0 !important;
+    width:100% !important;
+    margin:0 !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:clamp(8px,.55vw,12px) !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools > *{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+  }
+
+  /* Search row: search | filters | currency || add card. */
+  .desktop-filter-toggle-row{
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) max-content !important;
+    align-items:stretch !important;
+    gap:clamp(12px,.85vw,18px) !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    min-width:0 !important;
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:minmax(360px,1fr) max-content max-content !important;
+    align-items:stretch !important;
+    gap:clamp(10px,.7vw,15px) !important;
+  }
+
+  .desktop-inline-search{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    flex:none !important;
+  }
+
+  .desktop-inline-search input{
+    width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-filter-add-card{
+    align-self:stretch !important;
+    height:auto !important;
+    margin:0 !important;
+  }
+}
+
+/* Mid-size desktop: intentional two-row composition, never random wrapping. */
+@media (min-width:1180px) and (max-width:1699px){
+  .listing-filter-tools{
+    grid-template-columns:minmax(0,1fr) max-content !important;
+    grid-template-areas:
+      "categories context"
+      "actions actions" !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    width:100% !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+  }
+  .listing-filter-tools .desktop-quick-filters-collapsible::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    justify-self:end !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    justify-content:flex-end !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    grid-template-columns:minmax(300px,1fr) max-content max-content !important;
+  }
+}
+
+/* Wide desktop / QHD: force the single-row composition seen at 90% zoom. */
+@media (min-width:1700px){
+  .listing-filter-tools{
+    grid-template-columns:minmax(430px,max-content) max-content minmax(0,1fr) !important;
+    grid-template-areas:"categories context actions" !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    overflow:visible !important;
+  }
+}
+
+/* 2K and zoomed-out desktop get a little extra breathing room without wrap. */
+@media (min-width:2200px){
+  .listing-filter-tools{
+    grid-template-columns:minmax(500px,max-content) max-content minmax(0,1fr) !important;
+    column-gap:clamp(18px,1vw,26px) !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    grid-template-columns:minmax(520px,1fr) max-content max-content !important;
+  }
+}
