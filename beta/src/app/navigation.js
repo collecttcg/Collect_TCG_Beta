@@ -97,4 +97,15 @@ function isOwnerOnlyRoute(route){
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
   appContext.OWNER_POST_HANDOFF_MESSAGE = "collect-tcg-beta-owner-post-handoff-v93";
+  const premiumMore=document.getElementById("premiumDesktopMore");
+  const premiumMoreMenu=document.getElementById("premiumDesktopMoreMenu");
+  if(premiumMore && premiumMoreMenu){
+    premiumMoreMenu.addEventListener("click",event=>{
+      if(event.target.closest("a")) premiumMore.removeAttribute("open");
+    });
+    document.addEventListener("click",event=>{
+      if(premiumMore.open && !premiumMore.contains(event.target)) premiumMore.removeAttribute("open");
+    });
+  }
+
 }

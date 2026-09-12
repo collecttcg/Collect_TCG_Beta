@@ -103,7 +103,7 @@ function canReusePreservedListing(hash){
 
 function setNavigationActiveRoute(route){
     const safeRoute=String(route||"");
-    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route]").forEach(a=>{
+    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route], #premiumDesktopMoreMenu a[data-route]").forEach(a=>{
       a.classList.toggle("active",a.dataset.route===safeRoute);
     });
 
@@ -113,6 +113,11 @@ function setNavigationActiveRoute(route){
         "active",
         appContext.shouldHighlightMore(safeRoute)
       );
+    }
+
+    const premiumMore=document.getElementById("premiumDesktopMore");
+    if(premiumMore){
+      premiumMore.classList.toggle("active",appContext.shouldHighlightMore(safeRoute));
     }
 
     const moreMenu=appContext.mobileMoreMenuEl;
@@ -460,7 +465,7 @@ function router(){
       ? "home"
       : cardParentRoute;
 
-    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route]").forEach(a=>{
+    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route], #premiumDesktopMoreMenu a[data-route]").forEach(a=>{
       a.classList.toggle("active", isCardRoute ? a.dataset.route === cardActiveRoute : a.dataset.route === route);
     });
     const moreToggle = appContext.$("mobileMoreToggle");
@@ -469,6 +474,10 @@ function router(){
         "active",
         appContext.shouldHighlightMore(route)
       );
+    }
+    const premiumMore = document.getElementById("premiumDesktopMore");
+    if(premiumMore){
+      premiumMore.classList.toggle("active", appContext.shouldHighlightMore(route));
     }
     const moreMenu = appContext.mobileMoreMenuEl;
     if(moreMenu){

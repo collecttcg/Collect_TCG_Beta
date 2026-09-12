@@ -172,6 +172,35 @@
       </div>
     </nav>
 
+    <!-- V120 beta: completely independent wide-desktop utility navigation.
+         #mainnav is hidden at premium desktop widths so legacy links cannot leak into the header. -->
+    <div class="premium-desktop-utilities" id="premiumDesktopUtilities">
+      <details class="premium-more" id="premiumDesktopMore">
+        <summary class="premium-more-toggle" aria-label="Open additional navigation">
+          <span class="premium-more-dots" aria-hidden="true">•••</span>
+          <span>More</span>
+          <span class="premium-more-caret" aria-hidden="true">⌄</span>
+        </summary>
+        <div class="premium-more-menu" id="premiumDesktopMoreMenu">
+          <a href="#/reserved" data-route="reserved"><span class="ic">◷</span><span>Reserved</span></a>
+          <a href="#/showcase" data-route="showcase"><span class="ic">▶</span><span>Showcase</span></a>
+          <a href="#/favorites" data-route="favorites"><span class="ic">♡</span><span>Favorite</span></a>
+          <div class="premium-more-divider" aria-hidden="true"></div>
+          <a href="#/reviews" data-route="reviews"><span class="ic">☆</span><span>Reviews</span></a>
+          <a href="#/about" data-route="about"><span class="ic">◎</span><span>About Us</span></a>
+          <a href="#/contact" data-route="contact"><span class="ic">✉</span><span>Contact</span></a>
+          <a href="#/recent" data-route="recent"><span class="ic">↻</span><span>Recently Viewed</span></a>
+          <div class="premium-more-divider owner-only" aria-hidden="true"></div>
+          <a href="#/insights" data-route="insights" class="owner-only"><span class="ic">◔</span><span>Insights</span></a>
+          <a href="#/fb-tools" data-route="fb-tools" class="owner-only"><span class="ic">ƒ</span><span>Post Generator Tools</span></a>
+          <a href="#/quality" data-route="quality" class="owner-only"><span class="ic">✓</span><span>Data Quality</span></a>
+          <a href="#/inventory-tools" data-route="inventory-tools" class="owner-only"><span class="ic">≡</span><span>Inventory Tools</span></a>
+          <a href="#/export" data-route="export" class="owner-only"><span class="ic">⇩</span><span>Export</span></a>
+          <a href="#/add" data-route="add" class="owner-only"><span class="ic">+</span><span>Add Card</span></a>
+        </div>
+      </details>
+    </div>
+
     <nav class="mainnav" id="mainnav">
       <a href="#/home" data-route="home"><span class="ic">⌂</span> Home</a>
       <a href="#/inventory" data-route="inventory"><span class="ic">▦</span> <span>Inventory</span><span class="nav-count" id="inventoryNavCount">0</span></a>
