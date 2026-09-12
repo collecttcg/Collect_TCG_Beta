@@ -2984,3 +2984,140 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     grid-template-columns:minmax(520px,1fr) max-content max-content !important;
   }
 }
+
+
+/* ==========================================================
+   V143 BETA — DESKTOP ACTION ROW STANDARDIZATION
+   Unify the top inventory action pills so Results / Recently Viewed /
+   Compact View / Rearrange / Export / Copy Link feel like one system.
+   ========================================================== */
+@media (min-width:1180px){
+  .inventory-filter-tools.listing-filter-tools{
+    align-items:start !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context,
+  .listing-filter-tools .inventory-display-tools{
+    gap:12px !important;
+    align-items:center !important;
+  }
+
+  /* Shared pill geometry across the desktop action row */
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .listing-per-page-control{
+    min-height:56px !important;
+    border-radius:18px !important;
+    padding:0 18px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-sizing:border-box !important;
+    font-size:clamp(14px,.9vw,17px) !important;
+    font-weight:700 !important;
+    letter-spacing:.045em !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  .listing-filter-tools .inventory-result-count{
+    min-width:126px !important;
+    justify-content:flex-start !important;
+    gap:8px !important;
+    padding-inline:18px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count strong{
+    font-size:inherit !important;
+    line-height:1 !important;
+  }
+
+  .listing-filter-tools .inventory-recent-link{
+    padding-inline:20px !important;
+  }
+
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    gap:10px !important;
+    padding-inline:22px !important;
+  }
+
+  .listing-filter-tools .copy-filter-link-btn{
+    min-width:286px !important;
+  }
+
+  .listing-filter-tools .collection-rearrange-btn{
+    min-width:290px !important;
+  }
+
+  .listing-filter-tools .collection-export-collage-btn{
+    min-width:266px !important;
+  }
+
+  .listing-filter-tools .desktop-compact-view-toggle{
+    min-width:262px !important;
+  }
+
+  /* Clean icon rhythm for text buttons that include glyphs */
+  .listing-filter-tools .desktop-compact-view-toggle::first-letter,
+  .listing-filter-tools .collection-rearrange-btn::first-letter,
+  .listing-filter-tools .collection-export-collage-btn::first-letter{
+    letter-spacing:normal !important;
+  }
+
+  /* Recently viewed and result count should visually align with the action buttons */
+  .listing-filter-tools .inventory-toolbar-context{
+    min-height:56px !important;
+  }
+}
+
+@media (min-width:1700px){
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .listing-per-page-control{
+    min-height:60px !important;
+    border-radius:19px !important;
+    font-size:16px !important;
+    padding-inline:22px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count{
+    min-width:138px !important;
+  }
+}
+
+@media (min-width:2300px){
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .listing-per-page-control{
+    min-height:64px !important;
+    border-radius:20px !important;
+    font-size:17px !important;
+    padding-inline:24px !important;
+  }
+}
+
+/* Keep widths flexible on intermediate desktop widths so the row can still
+   wrap intentionally rather than overflow. */
+@media (min-width:1180px) and (max-width:1699px){
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .desktop-compact-view-toggle{
+    min-width:0 !important;
+  }
+}
