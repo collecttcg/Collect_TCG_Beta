@@ -1401,3 +1401,139 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
   .sidebar-footer .theme-toggle{min-width:82px !important;font-size:10.25px !important;}
   #ownerBuyerPreviewToggle{max-width:132px !important;}
 }
+
+
+/* ==========================================================
+   V121 BETA — PREMIUM SOCIAL STRIP
+   Keep primary navigation intentionally sparse while exposing
+   the four established social destinations below the main row.
+   ========================================================== */
+.premium-social-strip{display:none;}
+
+@media (min-width:1180px){
+  :root{
+    --premium-main-row-h:74px;
+    --premium-social-row-h:30px;
+    --premium-header-h:104px;
+  }
+
+  /* Keep the premium navigation and utilities in the upper row. */
+  .premium-desktop-nav,
+  .premium-desktop-utilities,
+  .sidebar-footer{
+    height:var(--premium-main-row-h) !important;
+  }
+
+  .premium-social-strip{
+    position:absolute !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    z-index:101 !important;
+    height:var(--premium-social-row-h) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+    padding:0 16px !important;
+    border-top:1px solid rgba(255,255,255,.035) !important;
+    background:rgba(8,10,12,.25) !important;
+    box-sizing:border-box !important;
+  }
+
+  .premium-social-label{
+    margin-right:5px !important;
+    color:#62666e !important;
+    font-size:9px !important;
+    font-weight:760 !important;
+    letter-spacing:.16em !important;
+    text-transform:uppercase !important;
+  }
+
+  .premium-social-strip > a{
+    min-height:22px !important;
+    padding:2px 8px 2px 6px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:5px !important;
+    border:1px solid transparent !important;
+    border-radius:999px !important;
+    color:#787d85 !important;
+    background:transparent !important;
+    text-decoration:none !important;
+    font-size:9.5px !important;
+    font-weight:620 !important;
+    line-height:1 !important;
+    transition:color .16s ease,border-color .16s ease,background .16s ease,transform .16s ease !important;
+  }
+
+  .premium-social-mark{
+    width:16px !important;
+    height:16px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex:0 0 16px !important;
+    border:1px solid rgba(196,158,65,.23) !important;
+    border-radius:50% !important;
+    color:#b89643 !important;
+    background:rgba(196,158,65,.035) !important;
+    font-size:9px !important;
+    font-weight:800 !important;
+  }
+
+  .premium-social-mark-facebook{
+    font-family:Arial,sans-serif !important;
+    font-size:10px !important;
+  }
+
+  .premium-social-strip > a:hover,
+  .premium-social-strip > a:focus-visible{
+    color:#e8e6df !important;
+    border-color:rgba(227,179,65,.12) !important;
+    background:rgba(255,255,255,.025) !important;
+    transform:translateY(-1px) !important;
+    outline:none !important;
+  }
+
+  .premium-social-strip > a:hover .premium-social-mark,
+  .premium-social-strip > a:focus-visible .premium-social-mark{
+    color:#e7bd53 !important;
+    border-color:rgba(227,179,65,.32) !important;
+    background:rgba(227,179,65,.065) !important;
+  }
+
+  /* More dropdown should begin below both header rows. */
+  .premium-more-menu{
+    top:46px !important;
+  }
+
+  body.light-mode .premium-social-strip{
+    border-top-color:rgba(83,72,52,.08) !important;
+    background:rgba(245,242,235,.52) !important;
+  }
+
+  body.light-mode .premium-social-label{color:#8d8a83 !important;}
+  body.light-mode .premium-social-strip > a{color:#70757a !important;}
+  body.light-mode .premium-social-mark{
+    color:#8c691d !important;
+    border-color:rgba(140,105,29,.20) !important;
+    background:rgba(140,105,29,.035) !important;
+  }
+  body.light-mode .premium-social-strip > a:hover,
+  body.light-mode .premium-social-strip > a:focus-visible{
+    color:#292e33 !important;
+    border-color:rgba(140,105,29,.15) !important;
+    background:rgba(140,105,29,.045) !important;
+  }
+}
+
+@media (min-width:1180px) and (max-width:1299px){
+  .premium-social-strip{gap:3px !important;}
+  .premium-social-label{display:none !important;}
+  .premium-social-strip > a{
+    padding-left:5px !important;
+    padding-right:6px !important;
+    font-size:9px !important;
+  }
+}
