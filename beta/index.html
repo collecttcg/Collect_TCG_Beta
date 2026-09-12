@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- V95 PRODUCTION: latest V4 image-safety fixes merged -->
 <!-- UX PHASE 2: consolidated overrides and storefront polish -->
 <!-- UX PHASE 3: mobile browsing clarity and conversion polish -->
 <!-- MOBILE FIX: normal taps use click; swipes alone use touchend; recursive CTA observer removed -->
@@ -28,7 +29,6 @@
 <!-- MOBILE OVERVIEW FIX: all pill rows visible; price remains below complete pill group -->
 <!-- MOBILE CARD HEIGHT FIX: content controls height; image crops to match -->
 <meta charset="UTF-8">
-<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,7 @@
   <link rel="manifest" href="./collect-tcg-manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./assets/shop-logo.png">
 <link rel="icon" type="image/png" sizes="32x32" href="./assets/shop-logo.png">
-<title>Collect TCG MY & SG — V93 Beta</title>
+<title>Collect TCG MY & SG</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./src/styles/01-foundation.css">
@@ -116,7 +116,6 @@
   <!-- v56: Fixes the collage settings modal being hidden by the global owner-auth-only display:none rule. Owner access remains enforced before the modal can open. -->
   <!-- v50: Overview/listing thumbnails dimmed a little more for eye comfort. -->
   <!-- v83: Built from working v62. Only Post Generator formatting, session-duration Insights (10s heartbeat + Beacon/keepalive flush), and Post Generator ZIP final Inventory QR were added. Listing/Add/Edit/watermark code remains v62. -->
-<link rel="stylesheet" href="./src/styles/beta.css">
 </head>
 <body>
 
@@ -156,6 +155,25 @@
 
 
     </div>
+
+    <!-- V118 beta: dedicated premium desktop navigation.
+         The original #mainnav remains the responsive/mobile source of truth and fallback. -->
+    <nav class="premium-desktop-nav" id="premiumDesktopNav" aria-label="Primary desktop navigation">
+      <div class="premium-nav-side premium-nav-left">
+        <a href="#/inventory" data-route="inventory">Inventory</a>
+        <a href="#/collection" data-route="collection">Collection</a>
+        <a href="#/sold" data-route="sold">Sold</a>
+      </div>
+      <a href="#/home" data-route="home" class="premium-nav-home" aria-label="Collect TCG home">
+        <img src="./assets/shop-logo.png" alt="Collect TCG MY &amp; SG">
+      </a>
+      <div class="premium-nav-side premium-nav-right">
+        <a href="#/giveaway" data-route="giveaway">Giveaway</a>
+        <a href="#/reviews" data-route="reviews">Reviews</a>
+        <a href="#/about" data-route="about">About</a>
+      </div>
+    </nav>
+
     <nav class="mainnav" id="mainnav">
       <a href="#/home" data-route="home"><span class="ic">⌂</span> Home</a>
       <a href="#/inventory" data-route="inventory"><span class="ic">▦</span> <span>Inventory</span><span class="nav-count" id="inventoryNavCount">0</span></a>

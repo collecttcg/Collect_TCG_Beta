@@ -103,7 +103,7 @@ function canReusePreservedListing(hash){
 
 function setNavigationActiveRoute(route){
     const safeRoute=String(route||"");
-    document.querySelectorAll("#mainnav a").forEach(a=>{
+    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route]").forEach(a=>{
       a.classList.toggle("active",a.dataset.route===safeRoute);
     });
 
@@ -460,7 +460,7 @@ function router(){
       ? "home"
       : cardParentRoute;
 
-    document.querySelectorAll("#mainnav a").forEach(a=>{
+    document.querySelectorAll("#mainnav a, #premiumDesktopNav a[data-route]").forEach(a=>{
       a.classList.toggle("active", isCardRoute ? a.dataset.route === cardActiveRoute : a.dataset.route === route);
     });
     const moreToggle = appContext.$("mobileMoreToggle");

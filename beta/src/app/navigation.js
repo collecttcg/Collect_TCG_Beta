@@ -6,8 +6,28 @@ function routeBase(route){
 
 function shouldHighlightMore(route){
     const base=appContext.routeBase(route);
+    const premiumDesktop=window.matchMedia("(min-width:1180px)").matches;
 
-    // Routes that genuinely live under More on both desktop and mobile.
+    // V118 premium desktop has a deliberately small primary navigation.
+    // Highlight More only for destinations that really live there at this width.
+    if(premiumDesktop){
+      return new Set([
+        "reserved",
+        "showcase",
+        "favorites",
+        "recent",
+        "contact",
+        "by-game",
+        "insights",
+        "fb-tools",
+        "quality",
+        "inventory-tools",
+        "export",
+        "add"
+      ]).has(base);
+    }
+
+    // Routes that genuinely live under More on the standard desktop/mobile header.
     const alwaysMore=new Set([
       "recent",
       "about",
@@ -23,7 +43,6 @@ function shouldHighlightMore(route){
 
     if(alwaysMore.has(base)) return true;
 
-    // These are direct tabs on PC, but are inside More on mobile.
     if(
       window.matchMedia("(max-width:800px)").matches &&
       ["reserved","showcase","giveaway","favorites"].includes(base)
