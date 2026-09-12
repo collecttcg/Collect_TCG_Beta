@@ -3823,3 +3823,79 @@ body.owner-buyer-preview #inventoryMobileCollageBtn{
     gap:9px !important;
   }
 }
+
+
+/* ==========================================================
+   V149 BETA — HEADER UTILITIES INSIDE CENTERED CANVAS
+   Align More + Theme to the same right edge used by the
+   storefront content instead of the browser viewport edge.
+   ========================================================== */
+@media (min-width:1180px){
+  :root{
+    /*
+      The page content sits inside --site-content-max and then uses
+      --site-content-gutter internally. This resolves the true inner
+      right edge of that same canvas at every desktop width.
+    */
+    --desktop-canvas-right:
+      max(
+        var(--site-content-gutter),
+        calc(((100vw - var(--site-content-max)) / 2) + var(--site-content-gutter))
+      );
+    --desktop-theme-width:92px;
+    --desktop-utility-gap:8px;
+  }
+
+  /* Theme button anchors directly to the inner right canvas edge. */
+  .sidebar-footer{
+    right:var(--desktop-canvas-right) !important;
+  }
+
+  .sidebar-footer .theme-toggle{
+    width:var(--desktop-theme-width) !important;
+    min-width:var(--desktop-theme-width) !important;
+    max-width:var(--desktop-theme-width) !important;
+  }
+
+  /* More sits immediately to the left of Theme as one compact cluster. */
+  .premium-desktop-utilities{
+    right:calc(
+      var(--desktop-canvas-right) +
+      var(--desktop-theme-width) +
+      var(--desktop-utility-gap)
+    ) !important;
+  }
+
+  .premium-more-toggle{
+    min-width:78px !important;
+  }
+
+  /* Keep the dropdown aligned to the More button/canvas cluster. */
+  .premium-more-menu{
+    right:0 !important;
+  }
+}
+
+/* Slightly tighter cluster on laptop-width desktop. */
+@media (min-width:1180px) and (max-width:1399px){
+  :root{
+    --desktop-theme-width:84px;
+    --desktop-utility-gap:6px;
+  }
+
+  .premium-more-toggle{
+    min-width:70px !important;
+  }
+}
+
+/* Slightly roomier utility controls on QHD / 2K. */
+@media (min-width:2200px){
+  :root{
+    --desktop-theme-width:98px;
+    --desktop-utility-gap:10px;
+  }
+
+  .premium-more-toggle{
+    min-width:82px !important;
+  }
+}
