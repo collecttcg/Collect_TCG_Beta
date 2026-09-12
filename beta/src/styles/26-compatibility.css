@@ -3321,3 +3321,218 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     font-size:13px !important;
   }
 }
+
+
+/* ==========================================================
+   V145 BETA — UNIFIED TOOLBAR TYPOGRAPHY + SIX-CARD GRID CAP
+   Desktop filter row now uses the same type scale as the top
+   action row. Inventory/listing grids use explicit responsive
+   column counts with six cards as the absolute maximum.
+   ========================================================== */
+
+/* ---------- Desktop: unify the lower toolbar with V144 top row ---------- */
+@media (min-width:1180px){
+  .desktop-filter-toggle-row{
+    align-items:center !important;
+    gap:clamp(8px,.7vw,16px) !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    min-width:0 !important;
+    flex:1 1 auto !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto auto !important;
+    align-items:center !important;
+    gap:clamp(6px,.5vw,10px) !important;
+  }
+
+  .desktop-inline-search{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    flex:none !important;
+  }
+
+  /* Same primary typography scale as the V144 top toolbar. */
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-listing-currency-control > span,
+  .desktop-listing-currency-control select,
+  .desktop-filter-add-card{
+    font-size:clamp(10px,.67vw,13px) !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+  }
+
+  .desktop-inline-search input{
+    min-height:clamp(42px,2.75vw,50px) !important;
+    height:clamp(42px,2.75vw,50px) !important;
+    padding:0 44px 0 clamp(13px,.9vw,18px) !important;
+    border-radius:clamp(12px,.9vw,16px) !important;
+  }
+
+  .desktop-inline-search input::placeholder{
+    font-size:inherit !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+  }
+
+  .desktop-filter-toggle-btn{
+    min-height:clamp(42px,2.75vw,50px) !important;
+    height:clamp(42px,2.75vw,50px) !important;
+    padding:0 clamp(11px,.8vw,16px) !important;
+    border-radius:clamp(12px,.9vw,16px) !important;
+    gap:clamp(5px,.38vw,8px) !important;
+  }
+
+  .desktop-filter-toggle-summary{
+    font-size:clamp(9px,.58vw,11px) !important;
+    font-weight:650 !important;
+    letter-spacing:.025em !important;
+  }
+
+  .desktop-filter-toggle-icon,
+  .desktop-filter-toggle-chevron{
+    font-size:clamp(9px,.62vw,12px) !important;
+  }
+
+  .desktop-listing-currency-control{
+    min-height:clamp(42px,2.75vw,50px) !important;
+    height:clamp(42px,2.75vw,50px) !important;
+    padding:0 6px 0 clamp(11px,.8vw,16px) !important;
+    border-radius:clamp(12px,.9vw,16px) !important;
+    gap:clamp(6px,.45vw,9px) !important;
+  }
+
+  .desktop-listing-currency-control > span{
+    font-size:inherit !important;
+  }
+
+  .desktop-listing-currency-control select{
+    min-height:calc(clamp(42px,2.75vw,50px) - 10px) !important;
+    height:calc(clamp(42px,2.75vw,50px) - 10px) !important;
+    padding:0 30px 0 11px !important;
+    border-radius:10px !important;
+    font-size:inherit !important;
+  }
+
+  .desktop-filter-add-card{
+    min-height:clamp(42px,2.75vw,50px) !important;
+    height:clamp(42px,2.75vw,50px) !important;
+    padding:0 clamp(14px,1vw,20px) !important;
+    border-radius:clamp(12px,.9vw,16px) !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    white-space:nowrap !important;
+  }
+}
+
+/* Tight desktop: preserve the exact same hierarchy, just compress spacing. */
+@media (min-width:1180px) and (max-width:1399px){
+  .desktop-filter-toggle-actions{
+    gap:5px !important;
+  }
+
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-listing-currency-control > span,
+  .desktop-listing-currency-control select,
+  .desktop-filter-add-card{
+    font-size:9.5px !important;
+    letter-spacing:.025em !important;
+  }
+
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-filter-add-card{
+    min-height:40px !important;
+    height:40px !important;
+  }
+
+  .desktop-listing-currency-control select{
+    min-height:32px !important;
+    height:32px !important;
+  }
+
+  .desktop-filter-toggle-summary{
+    font-size:8.5px !important;
+  }
+}
+
+/* QHD / 2K: readable, but still matched to the top toolbar. */
+@media (min-width:2200px){
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-listing-currency-control > span,
+  .desktop-listing-currency-control select,
+  .desktop-filter-add-card{
+    font-size:13px !important;
+  }
+
+  .desktop-inline-search input,
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control,
+  .desktop-filter-add-card{
+    min-height:50px !important;
+    height:50px !important;
+  }
+
+  .desktop-listing-currency-control select{
+    min-height:40px !important;
+    height:40px !important;
+  }
+}
+
+/* ---------- Inventory/listing grid: explicit responsive columns ---------- */
+/* Never let auto-fit/auto-fill create a seventh column when zooming out. */
+@media (min-width:1440px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:clamp(12px,.8vw,18px) !important;
+  }
+}
+
+@media (min-width:1200px) and (max-width:1439px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+    gap:14px !important;
+  }
+}
+
+@media (min-width:992px) and (max-width:1199px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:13px !important;
+  }
+}
+
+@media (min-width:801px) and (max-width:991px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:12px !important;
+  }
+}
+
+@media (min-width:481px) and (max-width:800px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media (max-width:480px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:1fr !important;
+  }
+}
