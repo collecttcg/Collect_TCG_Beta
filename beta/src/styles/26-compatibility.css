@@ -2018,3 +2018,174 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     color:#181611 !important;
   }
 }
+
+
+/* ==========================================================
+   V133 BETA — DESKTOP HEADER / PAGE HIERARCHY CLEANUP
+   Desktop only:
+   - primary nav uses uppercase labels
+   - secondary navigation keeps normal capitalization
+   - social strip removes "Follow" and gets larger typography
+   - repeated page-level .page-head blocks are hidden
+   - centered brand mark is enlarged
+   Mobile remains unchanged.
+   ========================================================== */
+@media (min-width:1180px){
+  :root{
+    --premium-main-row-h:86px !important;
+    --premium-social-row-h:34px !important;
+    --premium-header-h:120px !important;
+  }
+
+  .sidebar{
+    height:var(--premium-header-h) !important;
+    min-height:var(--premium-header-h) !important;
+  }
+
+  .premium-desktop-nav,
+  .premium-desktop-utilities,
+  .sidebar-footer{
+    height:var(--premium-main-row-h) !important;
+  }
+
+  /* Only the four primary desktop destinations are uppercase. */
+  .premium-desktop-nav .premium-nav-side > a{
+    text-transform:uppercase !important;
+    font-size:12.5px !important;
+    font-weight:720 !important;
+    letter-spacing:.075em !important;
+  }
+
+  /* Secondary navigation intentionally remains normal case. */
+  .premium-more-menu > a,
+  .premium-more-toggle,
+  .premium-social-strip > a{
+    text-transform:none !important;
+    letter-spacing:normal !important;
+  }
+
+  /* Larger, more prominent center brand mark. */
+  .premium-desktop-nav{
+    width:min(690px,calc(100vw - 500px)) !important;
+    grid-template-columns:minmax(0,1fr) 94px minmax(0,1fr) !important;
+    gap:28px !important;
+  }
+
+  .premium-nav-home{
+    width:86px !important;
+    height:86px !important;
+    min-height:86px !important;
+  }
+
+  .premium-nav-home img{
+    width:82px !important;
+    height:82px !important;
+    filter:drop-shadow(0 5px 16px rgba(0,0,0,.48))
+           drop-shadow(0 0 11px rgba(227,179,65,.18)) !important;
+  }
+
+  /* The social strip is now its own clearer secondary row. */
+  .premium-social-strip{
+    height:var(--premium-social-row-h) !important;
+    gap:14px !important;
+    padding:0 20px !important;
+  }
+
+  .premium-social-label{
+    display:none !important;
+  }
+
+  .premium-social-strip > a{
+    min-height:26px !important;
+    padding:3px 10px 3px 7px !important;
+    gap:7px !important;
+    font-size:11.5px !important;
+    font-weight:660 !important;
+  }
+
+  .premium-social-mark{
+    width:18px !important;
+    height:18px !important;
+    flex-basis:18px !important;
+    font-size:10px !important;
+  }
+
+  .premium-social-mark-facebook{
+    font-size:11px !important;
+  }
+
+  /*
+   The global desktop navigation already identifies the current page.
+   Remove only the repeated page-level header block, not section headings,
+   card headings, modal headings, filters, or owner tool section labels.
+  */
+  #view > .page-head{
+    display:none !important;
+  }
+
+  /* Remove the gap that was reserved beneath the now-hidden page header. */
+  #view > .page-head + *{
+    margin-top:0 !important;
+  }
+}
+
+@media (min-width:1180px) and (max-width:1299px){
+  .premium-desktop-nav{
+    width:min(620px,calc(100vw - 420px)) !important;
+    grid-template-columns:minmax(0,1fr) 82px minmax(0,1fr) !important;
+    gap:20px !important;
+  }
+
+  .premium-nav-side{
+    gap:12px !important;
+  }
+
+  .premium-desktop-nav .premium-nav-side > a{
+    font-size:11.25px !important;
+    letter-spacing:.055em !important;
+  }
+
+  .premium-nav-home{
+    width:76px !important;
+    height:76px !important;
+    min-height:76px !important;
+  }
+
+  .premium-nav-home img{
+    width:73px !important;
+    height:73px !important;
+  }
+
+  .premium-social-strip{
+    gap:8px !important;
+  }
+
+  .premium-social-strip > a{
+    font-size:10.75px !important;
+    padding-left:7px !important;
+    padding-right:8px !important;
+  }
+}
+
+@media (min-width:1500px){
+  .premium-desktop-nav{
+    width:min(740px,calc(100vw - 540px)) !important;
+    grid-template-columns:minmax(0,1fr) 102px minmax(0,1fr) !important;
+    gap:32px !important;
+  }
+
+  .premium-nav-home{
+    width:94px !important;
+    height:94px !important;
+    min-height:94px !important;
+  }
+
+  .premium-nav-home img{
+    width:90px !important;
+    height:90px !important;
+  }
+
+  .premium-social-strip > a{
+    font-size:12px !important;
+  }
+}
