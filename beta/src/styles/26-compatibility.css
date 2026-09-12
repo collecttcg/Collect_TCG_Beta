@@ -3121,3 +3121,203 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     min-width:0 !important;
   }
 }
+
+
+/* ==========================================================
+   V144 BETA — SINGLE-ROW RESPONSIVE DESKTOP TOOLBAR
+   Keep categories + context + actions on one row at every
+   desktop width. Controls shrink fluidly instead of wrapping.
+   ========================================================== */
+@media (min-width:1180px){
+  .inventory-filter-tools.listing-filter-tools{
+    width:100% !important;
+    min-width:0 !important;
+    display:grid !important;
+    grid-template-columns:minmax(250px,31vw) max-content minmax(0,1fr) !important;
+    grid-template-areas:"categories context actions" !important;
+    align-items:center !important;
+    column-gap:clamp(8px,.7vw,16px) !important;
+    row-gap:0 !important;
+    overflow:visible !important;
+  }
+
+  .listing-filter-tools .desktop-category-filter-block{
+    grid-area:categories !important;
+    min-width:0 !important;
+    width:100% !important;
+    overflow:hidden !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    gap:clamp(5px,.42vw,9px) !important;
+    overflow-x:auto !important;
+    overflow-y:hidden !important;
+    scrollbar-width:none !important;
+    -webkit-overflow-scrolling:touch !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible::-webkit-scrollbar{
+    display:none !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    flex:0 0 auto !important;
+    min-height:clamp(34px,2.35vw,42px) !important;
+    padding-inline:clamp(8px,.65vw,13px) !important;
+    font-size:clamp(10px,.68vw,13px) !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    grid-area:context !important;
+    min-width:0 !important;
+    width:auto !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:clamp(6px,.45vw,10px) !important;
+    margin:0 !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    grid-area:actions !important;
+    min-width:0 !important;
+    width:100% !important;
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    align-items:center !important;
+    gap:clamp(6px,.5vw,10px) !important;
+    margin:0 !important;
+  }
+
+  /* Unified geometry, deliberately smaller than V143. */
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    min-width:0 !important;
+    width:auto !important;
+    min-height:clamp(42px,2.75vw,50px) !important;
+    height:auto !important;
+    padding:0 clamp(9px,.72vw,15px) !important;
+    border-radius:clamp(12px,.9vw,16px) !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:clamp(5px,.38vw,8px) !important;
+    box-sizing:border-box !important;
+    font-size:clamp(10px,.67vw,13px) !important;
+    font-weight:700 !important;
+    letter-spacing:.04em !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+  }
+
+  .listing-filter-tools .inventory-result-count{
+    justify-content:center !important;
+    padding-inline:clamp(10px,.75vw,15px) !important;
+  }
+
+  .listing-filter-tools .inventory-result-count strong{
+    font-size:inherit !important;
+    line-height:1 !important;
+  }
+
+  .listing-filter-tools .inventory-recent-link{
+    padding-inline:clamp(11px,.82vw,17px) !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools > *{
+    min-width:0 !important;
+    width:100% !important;
+    flex:none !important;
+  }
+
+  /* Override the V143 fixed minimums that caused the second row. */
+  .listing-filter-tools .copy-filter-link-btn,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .desktop-compact-view-toggle{
+    min-width:0 !important;
+    max-width:none !important;
+  }
+}
+
+/* Very tight desktop widths: keep the row, compact typography a bit more. */
+@media (min-width:1180px) and (max-width:1399px){
+  .inventory-filter-tools.listing-filter-tools{
+    grid-template-columns:minmax(220px,28vw) max-content minmax(0,1fr) !important;
+    column-gap:7px !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    gap:5px !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    gap:5px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    min-height:40px !important;
+    padding-inline:8px !important;
+    border-radius:12px !important;
+    font-size:9.5px !important;
+    letter-spacing:.025em !important;
+  }
+
+  .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    min-height:32px !important;
+    padding-inline:8px !important;
+    font-size:9.5px !important;
+  }
+}
+
+/* Standard 1440p / common desktop: balanced readable sizing. */
+@media (min-width:1400px) and (max-width:2199px){
+  .inventory-filter-tools.listing-filter-tools{
+    grid-template-columns:minmax(300px,31vw) max-content minmax(0,1fr) !important;
+  }
+
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    font-size:clamp(10.5px,.64vw,12.5px) !important;
+  }
+}
+
+/* QHD / 2K: slightly roomier, but no oversized V143 typography. */
+@media (min-width:2200px){
+  .inventory-filter-tools.listing-filter-tools{
+    grid-template-columns:minmax(420px,30vw) max-content minmax(0,1fr) !important;
+    column-gap:16px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    min-height:50px !important;
+    padding-inline:16px !important;
+    border-radius:16px !important;
+    font-size:13px !important;
+  }
+}
