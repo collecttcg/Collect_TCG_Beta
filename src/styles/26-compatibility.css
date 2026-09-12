@@ -1041,14 +1041,14 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
 }
 
 /* =========================================================
-   V115 BETA — CENTERED LOGO HEADER, STRUCTURE-SAFE VERSION
+   V116 BETA — CENTERED LOGO HEADER, MACBOOK-SAFE VERSION
    Beta experiment only.
-   - Wide desktop only (>= 1440px)
+   - Desktop / MacBook widths (>= 1180px)
    - One strict nav row
    - Existing laptop/tablet/mobile navigation remains untouched
    - Existing More menu / theme control / owner preview keep their JS
    ========================================================= */
-@media (min-width:1440px){
+@media (min-width:1180px){
   .shell{
     display:block !important;
     min-height:100vh !important;
@@ -1059,11 +1059,11 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     inset:auto !important;
     top:0 !important;
     width:100% !important;
-    height:88px !important;
+    height:76px !important;
     max-height:none !important;
     overflow:visible !important;
     z-index:90 !important;
-    padding:0 24px !important;
+    padding:0 16px !important;
     border-right:0 !important;
     border-bottom:1px solid var(--border) !important;
     background:rgba(19,20,25,.955) !important;
@@ -1083,10 +1083,10 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
   .sidebar > div:first-child{
     position:absolute !important;
     left:50% !important;
-    top:8px !important;
+    top:7px !important;
     transform:translateX(-50%) !important;
     z-index:8 !important;
-    width:72px !important;
+    width:62px !important;
     margin:0 !important;
     padding:0 !important;
   }
@@ -1095,9 +1095,9 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     display:flex !important;
     align-items:center !important;
     justify-content:center !important;
-    width:72px !important;
-    min-width:72px !important;
-    height:72px !important;
+    width:62px !important;
+    min-width:62px !important;
+    height:62px !important;
     gap:0 !important;
     margin:0 !important;
     padding:0 !important;
@@ -1105,10 +1105,10 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
 
   .sidebar .logo-click-target,
   .sidebar .logo-click-target .shop-logo{
-    width:68px !important;
-    height:68px !important;
-    min-width:68px !important;
-    flex:0 0 68px !important;
+    width:58px !important;
+    height:58px !important;
+    min-width:58px !important;
+    flex:0 0 58px !important;
   }
 
   .sidebar .logo-click-target{
@@ -1144,11 +1144,11 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     left:50% !important;
     transform:translateX(-50%) !important;
     display:grid !important;
-    grid-template-columns:repeat(3,minmax(112px,1fr)) 92px repeat(3,minmax(112px,1fr)) !important;
+    grid-template-columns:repeat(3,minmax(88px,1fr)) 76px repeat(3,minmax(88px,1fr)) !important;
     align-items:center !important;
-    gap:5px !important;
-    width:min(940px,calc(100vw - 500px)) !important;
-    height:88px !important;
+    gap:3px !important;
+    width:min(820px,calc(100vw - 410px)) !important;
+    height:76px !important;
     margin:0 !important;
     padding:0 !important;
     overflow:visible !important;
@@ -1172,12 +1172,12 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     gap:6px !important;
     min-width:0 !important;
     min-height:40px !important;
-    padding:7px 10px !important;
+    padding:6px 7px !important;
     border:1px solid transparent !important;
     border-radius:9px !important;
     background:transparent !important;
     color:var(--text-muted) !important;
-    font-size:12.5px !important;
+    font-size:11.5px !important;
     font-weight:650 !important;
     letter-spacing:.01em !important;
     opacity:1 !important;
@@ -1248,13 +1248,13 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
   #mainnav > .mobile-more-toggle{
     display:flex !important;
     position:fixed !important;
-    top:24px !important;
-    right:24px !important;
+    top:20px !important;
+    right:16px !important;
     z-index:104 !important;
     width:auto !important;
-    min-width:70px !important;
-    min-height:36px !important;
-    padding:6px 11px !important;
+    min-width:62px !important;
+    min-height:34px !important;
+    padding:5px 9px !important;
     align-items:center !important;
     justify-content:center !important;
     gap:5px !important;
@@ -1279,8 +1279,8 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
   #mainnav > .mobile-more-menu:not([hidden]){
     display:grid !important;
     position:fixed !important;
-    top:66px !important;
-    right:24px !important;
+    top:58px !important;
+    right:16px !important;
     left:auto !important;
     z-index:115 !important;
     width:250px !important;
@@ -1320,8 +1320,8 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
   /* Right utility zone. Social icons stay out of this premium header. */
   .sidebar-footer{
     position:fixed !important;
-    top:24px !important;
-    right:106px !important;
+    top:20px !important;
+    right:90px !important;
     z-index:103 !important;
     display:flex !important;
     align-items:center !important;
@@ -1345,8 +1345,8 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     align-items:center !important;
     justify-content:center !important;
     width:auto !important;
-    min-width:92px !important;
-    min-height:36px !important;
+    min-width:82px !important;
+    min-height:34px !important;
     margin:0 !important;
     padding:6px 10px !important;
     border-radius:9px !important;
@@ -1357,11 +1357,11 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
 
   /* Preview is visually separated from buyer navigation. */
   #ownerBuyerPreviewToggle{
-    top:18px !important;
-    left:20px !important;
+    top:16px !important;
+    left:14px !important;
     right:auto !important;
     bottom:auto !important;
-    min-height:44px !important;
+    min-height:40px !important;
     z-index:106 !important;
   }
 
@@ -1420,4 +1420,38 @@ body.light-mode .empty-state h2{color:#252b30 !important;}
     background:#f4f0e7 !important;
     color:#2b3035 !important;
   }
+
+  /* Extra compression for 1180–1279px laptop viewports. */
+  @media (max-width:1279px){
+    #mainnav{
+      width:min(720px,calc(100vw - 390px)) !important;
+      grid-template-columns:repeat(3,minmax(78px,1fr)) 70px repeat(3,minmax(78px,1fr)) !important;
+      gap:2px !important;
+    }
+    #mainnav > a[data-route]{
+      padding:5px 5px !important;
+      font-size:10.75px !important;
+      letter-spacing:0 !important;
+    }
+    #mainnav .nav-count{
+      min-width:17px !important;
+      height:16px !important;
+      padding:0 4px !important;
+      font-size:8px !important;
+    }
+    .sidebar .logo-click-target,
+    .sidebar .logo-click-target .shop-logo{
+      width:54px !important;
+      height:54px !important;
+      min-width:54px !important;
+      flex-basis:54px !important;
+    }
+    #ownerBuyerPreviewToggle{
+      max-width:160px !important;
+      padding-left:12px !important;
+      padding-right:12px !important;
+      font-size:11px !important;
+    }
+  }
+
 }
