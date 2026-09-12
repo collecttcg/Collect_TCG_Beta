@@ -3571,3 +3571,107 @@ body.owner-buyer-preview #collectionMobileCollageBtn,
 body.owner-buyer-preview #inventoryMobileCollageBtn{
   display:none !important;
 }
+
+
+/* ==========================================================
+   V147 BETA — WIDER SIDE GUTTERS + RIGHT-ALIGNED BUYER ACTIONS
+   Give the storefront a more focused social/marketplace-style
+   centered canvas while preserving the six-card desktop grid.
+   Remove empty owner-control space in Buyer View.
+   ========================================================== */
+
+/* ---------- More intentional desktop side gutters ---------- */
+@media (min-width:1180px) and (max-width:1799px){
+  :root{
+    --site-content-max:1360px !important;
+    --site-content-gutter:clamp(20px,1.6vw,28px) !important;
+  }
+}
+
+@media (min-width:1800px) and (max-width:2299px){
+  :root{
+    --site-content-max:1560px !important;
+    --site-content-gutter:clamp(28px,1.7vw,36px) !important;
+  }
+}
+
+@media (min-width:2300px) and (max-width:2999px){
+  :root{
+    --site-content-max:1760px !important;
+    --site-content-gutter:40px !important;
+  }
+}
+
+@media (min-width:3000px){
+  :root{
+    --site-content-max:1840px !important;
+    --site-content-gutter:44px !important;
+  }
+}
+
+/*
+  V145 already hard-caps the card grid at six columns.
+  Keep those six columns flexible inside the narrower focused canvas.
+*/
+@media (min-width:1440px){
+  #invGrid.grid:not(.compact-list),
+  .inventory-grid:not(.compact-list){
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:clamp(10px,.68vw,16px) !important;
+  }
+}
+
+/* ---------- Buyer/owner action alignment ---------- */
+@media (min-width:1180px){
+  /*
+    Flex is better here than a fixed four-column grid because owner-only
+    controls may be hidden in Buyer Preview. Hidden controls should not
+    leave phantom columns behind.
+  */
+  .listing-filter-tools .inventory-display-tools{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:clamp(6px,.5vw,10px) !important;
+    min-width:0 !important;
+    width:100% !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools > *{
+    width:auto !important;
+    min-width:0 !important;
+    flex:0 1 auto !important;
+  }
+
+  /* Copy is always the final right-edge action. */
+  .listing-filter-tools .copy-filter-link-btn{
+    margin-left:auto !important;
+    flex:0 0 auto !important;
+  }
+
+  /*
+    Give the common buyer controls compact natural widths instead of
+    stretching them into owner-only grid slots.
+  */
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    padding-inline:clamp(10px,.72vw,16px) !important;
+  }
+}
+
+/* On tighter desktop widths, allow labels to compress without wrapping. */
+@media (min-width:1180px) and (max-width:1399px){
+  .listing-filter-tools .inventory-display-tools{
+    gap:5px !important;
+  }
+
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    padding-inline:8px !important;
+  }
+}
