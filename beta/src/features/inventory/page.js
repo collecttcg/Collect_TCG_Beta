@@ -107,7 +107,7 @@ function inventoryPageHTML(scopeMeta,scope){
               ⇅ Rearrange Cards
             </button>
             <button type="button"
-                    class="btn-ghost collection-export-collage-btn"
+                    class="btn-ghost collection-export-collage-btn owner-only"
                     id="collectionExportCollageBtn"
                     title="Download a high-resolution collage using the first image of each Collection card">
               ⬇ Export Collage
@@ -121,7 +121,7 @@ function inventoryPageHTML(scopeMeta,scope){
               ⇅ Rearrange Inventory
             </button>
             <button type="button"
-                    class="btn-ghost collection-export-collage-btn"
+                    class="btn-ghost collection-export-collage-btn owner-only"
                     id="inventoryExportCollageBtn"
                     title="Download a high-resolution collage using Inventory listing cover images">
               ⬇ Export Collage

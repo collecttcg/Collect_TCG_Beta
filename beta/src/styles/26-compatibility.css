@@ -3536,3 +3536,38 @@ body.light-mode .modal-overlay{background:rgba(54,48,40,.42) !important;}
     grid-template-columns:1fr !important;
   }
 }
+
+
+/* ==========================================================
+   V146 BETA — CARD DETAILS FOREGROUND + OWNER-ONLY COLLAGE
+   The premium sticky header must never cover Card Details.
+   Collage export remains an owner tool only.
+   ========================================================== */
+@media (min-width:801px){
+  /* The site header is z-index ~100. Card details must be a true modal above it. */
+  #detailsOverlay{
+    z-index:220 !important;
+    padding:clamp(12px,1vw,20px) !important;
+    align-items:center !important;
+  }
+
+  #detailsOverlay .modal.card-details-modal{
+    max-height:calc(100dvh - clamp(24px,2vw,40px)) !important;
+    margin:0 !important;
+  }
+}
+
+/* Defense in depth: collage actions are not buyer-facing, even if a future
+   rendering path accidentally emits them outside the normal owner condition. */
+body:not(.owner-mode) .collection-export-collage-btn,
+body:not(.owner-mode) #collectionExportCollageBtn,
+body:not(.owner-mode) #inventoryExportCollageBtn,
+body:not(.owner-mode) #collectionMobileCollageBtn,
+body:not(.owner-mode) #inventoryMobileCollageBtn,
+body.owner-buyer-preview .collection-export-collage-btn,
+body.owner-buyer-preview #collectionExportCollageBtn,
+body.owner-buyer-preview #inventoryExportCollageBtn,
+body.owner-buyer-preview #collectionMobileCollageBtn,
+body.owner-buyer-preview #inventoryMobileCollageBtn{
+  display:none !important;
+}
