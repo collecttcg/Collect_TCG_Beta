@@ -3675,3 +3675,151 @@ body.owner-buyer-preview #inventoryMobileCollageBtn{
     padding-inline:8px !important;
   }
 }
+
+
+/* ==========================================================
+   V148 BETA — RIGHT-ALIGN ENTIRE DESKTOP ACTION GROUP
+   Categories stay left. Everything else in the top toolbar is
+   grouped tightly together and anchored to the right edge.
+   ========================================================== */
+@media (min-width:1180px){
+  .inventory-filter-tools.listing-filter-tools{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-areas:"categories righttools" !important;
+    align-items:center !important;
+    column-gap:clamp(16px,1.2vw,28px) !important;
+    width:100% !important;
+  }
+
+  .listing-filter-tools .desktop-category-filter-block{
+    grid-area:categories !important;
+    min-width:0 !important;
+    width:100% !important;
+    overflow:hidden !important;
+  }
+
+  /*
+    Flatten the context + action wrappers so all buyer/owner controls behave
+    like one continuous right-aligned group.
+  */
+  .listing-filter-tools .inventory-toolbar-context,
+  .listing-filter-tools .inventory-display-tools{
+    grid-area:righttools !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    justify-self:end !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:clamp(6px,.45vw,9px) !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    justify-self:end !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:clamp(6px,.45vw,9px) !important;
+    margin:0 !important;
+    padding:0 !important;
+    width:auto !important;
+  }
+
+  /*
+    Visually pull the action wrapper immediately after the context wrapper.
+    Both occupy the same right-side track and are positioned as one toolbar.
+  */
+  .inventory-filter-tools.listing-filter-tools{
+    position:relative !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context{
+    position:absolute !important;
+    right:calc(var(--v148-actions-width, 0px) + clamp(6px,.45vw,9px)) !important;
+  }
+
+  .listing-filter-tools .inventory-display-tools{
+    position:relative !important;
+  }
+
+  /*
+    Use a single flex row by moving the context visually into the same line.
+    Modern browsers support :has(); fallback below still keeps right alignment.
+  */
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools){
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:clamp(16px,1.2vw,28px) !important;
+  }
+
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools) .desktop-category-filter-block{
+    flex:1 1 auto !important;
+    min-width:0 !important;
+  }
+
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools) .inventory-toolbar-context,
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools) .inventory-display-tools{
+    position:static !important;
+  }
+
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools) .inventory-toolbar-context{
+    margin-left:auto !important;
+    flex:0 0 auto !important;
+  }
+
+  .inventory-filter-tools.listing-filter-tools:has(.inventory-display-tools) .inventory-display-tools{
+    flex:0 0 auto !important;
+  }
+
+  /* Remove the V147 special margin from Copy; whole group handles alignment now. */
+  .listing-filter-tools .copy-filter-link-btn{
+    margin-left:0 !important;
+  }
+
+  /* Keep the whole right group compact and visually unified. */
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    flex:0 0 auto !important;
+    width:auto !important;
+  }
+}
+
+/* Tighter desktop widths: shrink the right group proportionally, never split it. */
+@media (min-width:1180px) and (max-width:1499px){
+  .inventory-filter-tools.listing-filter-tools{
+    gap:10px !important;
+  }
+
+  .listing-filter-tools .inventory-toolbar-context,
+  .listing-filter-tools .inventory-display-tools{
+    gap:5px !important;
+  }
+
+  .listing-filter-tools .inventory-result-count,
+  .listing-filter-tools .inventory-recent-link,
+  .listing-filter-tools .desktop-compact-view-toggle,
+  .listing-filter-tools .collection-rearrange-btn,
+  .listing-filter-tools .collection-export-collage-btn,
+  .listing-filter-tools .copy-filter-link-btn{
+    padding-inline:7px !important;
+    font-size:9px !important;
+  }
+}
+
+/* Large/QHD desktops: restore comfortable spacing while keeping one right cluster. */
+@media (min-width:2200px){
+  .listing-filter-tools .inventory-toolbar-context,
+  .listing-filter-tools .inventory-display-tools{
+    gap:9px !important;
+  }
+}
