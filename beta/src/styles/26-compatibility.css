@@ -3899,3 +3899,75 @@ body.owner-buyer-preview #inventoryMobileCollageBtn{
     min-width:82px !important;
   }
 }
+
+
+/* ==========================================================
+   V150 BETA — FULL-WIDTH SEARCH / FILTER / CURRENCY ROW
+   Search absorbs all remaining width so the row always fills
+   the centered canvas exactly. Owner Add Card remains appended
+   at the far right when visible.
+   ========================================================== */
+@media (min-width:1180px){
+  .desktop-filter-toggle-row{
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:stretch !important;
+    gap:clamp(8px,.65vw,12px) !important;
+  }
+
+  .desktop-filter-toggle-actions{
+    min-width:0 !important;
+    width:100% !important;
+    flex:1 1 0 !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) max-content max-content !important;
+    align-items:stretch !important;
+    gap:clamp(8px,.65vw,12px) !important;
+  }
+
+  .desktop-inline-search{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    flex:none !important;
+  }
+
+  .desktop-inline-search input{
+    width:100% !important;
+    max-width:none !important;
+    box-sizing:border-box !important;
+  }
+
+  .desktop-filter-toggle-btn,
+  .desktop-listing-currency-control{
+    width:auto !important;
+    min-width:max-content !important;
+    flex:none !important;
+  }
+
+  /* Owner-only Add Card appends to the same full-width row without
+     stealing unused space from the Search field. */
+  .desktop-filter-add-card{
+    flex:0 0 auto !important;
+    width:auto !important;
+    margin:0 !important;
+  }
+}
+
+/* Keep the same edge-to-edge behavior at tighter desktop widths. */
+@media (min-width:1180px) and (max-width:1399px){
+  .desktop-filter-toggle-row,
+  .desktop-filter-toggle-actions{
+    gap:6px !important;
+  }
+}
+
+/* QHD / 2K gets slightly more breathing room while remaining full width. */
+@media (min-width:2200px){
+  .desktop-filter-toggle-row,
+  .desktop-filter-toggle-actions{
+    gap:12px !important;
+  }
+}
