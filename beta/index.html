@@ -102,7 +102,7 @@
 <link rel="stylesheet" href="./src/styles/24-card-overview-pill-toggle-inline-v44.css" id="card-overview-pill-toggle-inline-v44">
 
 <link rel="stylesheet" href="./src/styles/25-compatibility.css">
-<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=158">
+<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=159">
 
 <!-- V47: Home Recently Added now uses the shared home-storefront-grid layout (same as High Value / Vintage / Recently Sold). -->
   <!-- v49: Inventory grouped catalogue uses no per-page selector or pagination. -->
@@ -150,7 +150,7 @@
     <a href="https://www.carousell.com.my/u/collect_tcg_my_sg/" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Malaysia" title="Carousell Malaysia"><span aria-hidden="true">C</span><small>MY</small></a>
     <a href="https://www.carousell.sg/u/collect_tcg_sg/" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Singapore" title="Carousell Singapore"><span aria-hidden="true">C</span><small>SG</small></a>
   </div>
-  <button class="mobile-header-theme-toggle" id="mobileHeaderThemeToggle" type="button" aria-label="Switch to light mode" title="Light mode">☀</button>
+  
 </div>
 
 
@@ -218,8 +218,8 @@
     </div>
 
     <nav class="mainnav" id="mainnav">
-      <a href="#/home" data-route="home" class="mobile-home-nav"><span class="ic">⌂</span> Home</a>
-      <a href="#/inventory" data-route="inventory"><span class="ic">▦</span> <span>Inventory</span><span class="nav-count" id="inventoryNavCount">0</span></a>
+      
+      <a href="#/inventory" data-route="inventory" class="mobile-primary-nav"><span class="ic">▦</span> <span>Inventory</span><span class="nav-count" id="inventoryNavCount">0</span></a>
       <a href="#/sold" data-route="sold" class="status-primary-nav mobile-primary-nav"><span class="ic">✓</span> <span>Sold</span><span class="nav-count" id="soldNavCount">0</span></a>
       <a href="#/collection" data-route="collection" class="collection-primary-nav mobile-primary-nav"><span class="ic">◆</span> <span>Collection</span><span class="nav-count collection-nav-count" id="collectionNavCount">0</span></a>
       <a href="#/reserved" data-route="reserved" class="status-primary-nav desktop-primary-mobile-hidden"><span class="ic">◷</span> <span>Reserved</span><span class="nav-count" id="reservedNavCount">0</span></a>
@@ -246,6 +246,8 @@
         <a href="#/export" data-route="export" class="owner-only desktop-more-owner"><span class="ic">⇩</span> Export</a>
         <a href="#/add" data-route="add" class="owner-only desktop-more-owner"><span class="ic">+</span> Add Card</a>
       
+        <button class="mobile-header-theme-toggle mobile-more-theme-toggle" id="mobileHeaderThemeToggle" type="button" aria-label="Switch to light mode" title="Light mode">☀</button>
+
       </div>
       <a href="#/reviews" data-route="reviews" class="reviews-desktop-nav"><span class="ic">☆</span> Reviews</a>
       <a href="#/insights" data-route="insights" class="owner-only"><span class="ic">◔</span> Insights</a>
