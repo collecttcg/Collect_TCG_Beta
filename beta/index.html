@@ -102,7 +102,7 @@
 <link rel="stylesheet" href="./src/styles/24-card-overview-pill-toggle-inline-v44.css" id="card-overview-pill-toggle-inline-v44">
 
 <link rel="stylesheet" href="./src/styles/25-compatibility.css">
-<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=163">
+<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=165">
 
 <!-- V47: Home Recently Added now uses the shared home-storefront-grid layout (same as High Value / Vintage / Recently Sold). -->
   <!-- v49: Inventory grouped catalogue uses no per-page selector or pagination. -->
@@ -230,24 +230,23 @@
         <span class="ic">⋯</span> More <span class="mobile-more-caret">⌄</span>
       </button>
       <div class="mobile-more-menu" id="mobileMoreMenu" hidden>
-        
-        <a href="#/reserved" data-route="reserved"><span class="ic">◷</span> Reserved</a>
-        <a href="#/showcase" data-route="showcase"><span class="ic">▶</span> Showcase</a>
-        <a href="#/giveaway" data-route="giveaway"><span class="ic">★</span> Giveaway</a>
-        <a href="#/favorites" data-route="favorites"><span class="ic">♡</span> Favorite</a>
-        <a href="#/reviews" data-route="reviews" class="reviews-more-nav"><span class="ic">☆</span> Reviews</a>
-        <a href="#/about" data-route="about"><span class="ic">◎</span> About Us</a>
-        <a href="#/contact" data-route="contact"><span class="ic">✉</span> Contact</a>
-        <a href="#/recent" data-route="recent"><span class="ic">↻</span> Recently Viewed</a>
-        <a href="#/insights" data-route="insights" class="owner-only desktop-more-owner"><span class="ic">◔</span> Insights</a>
-        <a href="#/fb-tools" data-route="fb-tools" class="owner-only desktop-more-owner"><span class="ic">ƒ</span> Post Generator Tools</a>
-        <a href="#/quality" data-route="quality" class="owner-only desktop-more-owner"><span class="ic">✓</span> Data Quality</a>
-        <a href="#/inventory-tools" data-route="inventory-tools" class="owner-only desktop-more-owner"><span class="ic">≡</span> Inventory Tools</a>
-        <a href="#/export" data-route="export" class="owner-only desktop-more-owner"><span class="ic">⇩</span> Export</a>
-        <a href="#/add" data-route="add" class="owner-only desktop-more-owner"><span class="ic">+</span> Add Card</a>
-      
-        <button class="mobile-header-theme-toggle mobile-more-theme-toggle" id="mobileHeaderThemeToggle" type="button" aria-label="Switch to light mode" title="Light mode"><span class="ic" aria-hidden="true">☀</span><span class="mobile-theme-label">Light mode</span></button>
-
+        <div class="mobile-more-links">
+          <a href="#/reserved" data-route="reserved"><span class="ic">◷</span> Reserved</a>
+          <a href="#/showcase" data-route="showcase"><span class="ic">▶</span> Showcase</a>
+          <a href="#/giveaway" data-route="giveaway"><span class="ic">★</span> Giveaway</a>
+          <a href="#/favorites" data-route="favorites"><span class="ic">♡</span> Favorite</a>
+          <a href="#/reviews" data-route="reviews" class="reviews-more-nav"><span class="ic">☆</span> Reviews</a>
+          <a href="#/about" data-route="about"><span class="ic">◎</span> About Us</a>
+          <a href="#/contact" data-route="contact"><span class="ic">✉</span> Contact</a>
+          <a href="#/recent" data-route="recent" class="mobile-more-recent"><span class="ic">↻</span> Recently Viewed</a>
+          <a href="#/insights" data-route="insights" class="owner-only desktop-more-owner"><span class="ic">◔</span> Insights</a>
+          <a href="#/fb-tools" data-route="fb-tools" class="owner-only desktop-more-owner"><span class="ic">ƒ</span> Post Generator Tools</a>
+          <a href="#/quality" data-route="quality" class="owner-only desktop-more-owner"><span class="ic">✓</span> Data Quality</a>
+          <a href="#/inventory-tools" data-route="inventory-tools" class="owner-only desktop-more-owner"><span class="ic">≡</span> Inventory Tools</a>
+          <a href="#/export" data-route="export" class="owner-only desktop-more-owner"><span class="ic">⇩</span> Export</a>
+          <a href="#/add" data-route="add" class="owner-only desktop-more-owner"><span class="ic">+</span> Add Card</a>
+          <button class="mobile-header-theme-toggle mobile-more-theme-toggle" id="mobileHeaderThemeToggle" type="button" aria-label="Switch to light mode" title="Light mode"><span class="ic" aria-hidden="true">☀</span><span class="mobile-theme-label">Light mode</span></button>
+        </div>
       </div>
       <a href="#/reviews" data-route="reviews" class="reviews-desktop-nav"><span class="ic">☆</span> Reviews</a>
       <a href="#/insights" data-route="insights" class="owner-only"><span class="ic">◔</span> Insights</a>
@@ -813,6 +812,6 @@
 
 
 <!-- V48: Recently Added uses the exact same storefront row structure/count as High Value/Vintage/Recently Sold. -->
-<script type="module" src="./src/main.js"></script>
+<script type="module" src="./src/main.js?v=165"></script>
 </body>
 </html>

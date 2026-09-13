@@ -6977,3 +6977,283 @@ body.light-mode .desktop-listing-currency-control select{
     padding-inline:4px !important;
   }
 }
+
+
+/* ==========================================================
+   V164 BETA — BALANCED MOBILE MORE + REMOVE PAGE RESULT COUNT
+   Buyer: 4 left / 4 right + full-width theme row.
+   Owner: 7 left / 7 right + full-width theme row.
+   Visible "N listings" line removed from mobile pages.
+   ========================================================== */
+@media (max-width:800px){
+
+  /* ---------- More menu: hard 2-column grid, no inherited flex direction ---------- */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+    grid-auto-rows:44px !important;
+
+    flex-direction:initial !important;
+    flex-wrap:initial !important;
+    align-content:start !important;
+    align-items:stretch !important;
+    justify-content:stretch !important;
+
+    width:min(342px,calc(100vw - 20px)) !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:min(70dvh,430px) !important;
+
+    gap:6px !important;
+    padding:8px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu[hidden]{
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a{
+    display:flex !important;
+
+    grid-column:auto !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+
+    flex:none !important;
+    margin:0 !important;
+    padding:8px 10px !important;
+
+    align-items:center !important;
+    justify-content:flex-start !important;
+    align-self:stretch !important;
+
+    position:static !important;
+    inset:auto !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+  }
+
+  /*
+    There are 8 buyer links (14 in owner mode). This final shared theme row
+    spans BOTH columns, so the left/right button count remains perfectly even.
+  */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    display:flex !important;
+
+    grid-column:1 / -1 !important;
+    grid-row:auto !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+
+    flex:none !important;
+    margin:0 !important;
+    padding:8px 12px !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+    align-self:stretch !important;
+
+    position:static !important;
+    inset:auto !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+  }
+
+  /* ---------- Remove visible mobile page result-count line ---------- */
+  .mobile-result-count-copy{
+    display:none !important;
+  }
+
+  .inventory-mobile-compact-result.inventory-mobile-currency-only{
+    min-height:0 !important;
+    height:auto !important;
+    margin:0 0 7px !important;
+    padding:0 !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+
+    border:0 !important;
+    background:transparent !important;
+  }
+
+  /* Collection has no currency control, so it now has no compact-result row at all. */
+}
+
+/* Compact phones */
+@media (max-width:390px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    grid-auto-rows:42px !important;
+    gap:5px !important;
+    padding:7px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+  }
+}
+
+
+/* ==========================================================
+   V165 BETA — STRUCTURAL MOBILE MORE + FRESH INVENTORY MODULE
+   Old foundation rules target direct children of #mobileMoreMenu.
+   The menu links now live inside .mobile-more-links, insulating the
+   balanced grid from those legacy rules.
+   ========================================================== */
+@media (max-width:800px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    display:block !important;
+    width:min(342px,calc(100vw - 20px)) !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:min(72dvh,430px) !important;
+    padding:8px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu[hidden]{
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+    grid-auto-rows:44px !important;
+    gap:6px !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle{
+    display:flex !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+    margin:0 !important;
+    padding:8px 10px !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    box-sizing:border-box !important;
+    border:1px solid #343941 !important;
+    border-radius:10px !important;
+    background:#1d2128 !important;
+    color:#d7dbe1 !important;
+    font-size:10px !important;
+    font-weight:650 !important;
+    line-height:1.15 !important;
+    white-space:normal !important;
+    overflow:hidden !important;
+    position:static !important;
+    inset:auto !important;
+    transform:none !important;
+    flex:none !important;
+    order:initial !important;
+  }
+
+  /* Exact balance including Theme: hide the least-essential Recent tile on
+     mobile. Buyer = 7 links + Theme = 8 (4x2). Owner = 13 links + Theme = 14. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-recent{
+    display:none !important;
+  }
+
+  body:not(.owner-mode) .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .owner-only{
+    display:none !important;
+  }
+
+  body.owner-mode .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .owner-only:not([hidden]){
+    display:flex !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle{
+    justify-content:flex-start !important;
+  }
+
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > a,
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle{
+    border-color:#e4ded4 !important;
+    background:#f7f4ee !important;
+    color:#4b5158 !important;
+  }
+
+  /* Never show a mobile result-count line; its hidden counter remains only
+     as a JS update target. */
+  #inventoryMobileCompactResultCount,
+  .mobile-result-count-copy{
+    display:none !important;
+  }
+}
+
+@media (max-width:390px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    padding:7px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links{
+    grid-auto-rows:42px !important;
+    gap:5px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle{
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+    padding-inline:8px !important;
+    font-size:9.5px !important;
+  }
+}
+
+/* V165 verification hotfix: Theme is a normal grid cell, not a full-width row. */
+@media (max-width:800px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle{
+    grid-column:auto !important;
+    grid-row:auto !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    margin:0 !important;
+  }
+}
+@media (max-width:800px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle::before,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-links > .mobile-more-theme-toggle::after{
+    content:none !important;
+    display:none !important;
+  }
+}
