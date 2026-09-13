@@ -102,7 +102,7 @@
 <link rel="stylesheet" href="./src/styles/24-card-overview-pill-toggle-inline-v44.css" id="card-overview-pill-toggle-inline-v44">
 
 <link rel="stylesheet" href="./src/styles/25-compatibility.css">
-<link rel="stylesheet" href="./src/styles/26-compatibility.css">
+<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=158">
 
 <!-- V47: Home Recently Added now uses the shared home-storefront-grid layout (same as High Value / Vintage / Recently Sold). -->
   <!-- v49: Inventory grouped catalogue uses no per-page selector or pagination. -->
@@ -160,7 +160,7 @@
          The original #mainnav remains the responsive/mobile source of truth and fallback. -->
     <nav class="premium-desktop-nav" id="premiumDesktopNav" aria-label="Primary desktop navigation">
       <div class="premium-nav-side premium-nav-left">
-        <a href="#/inventory" data-route="inventory">Inventory</a>
+        <a href="#/inventory" data-route="inventory" class="mobile-primary-nav">Inventory</a>
         <a href="#/collection" data-route="collection">Collection</a>
       </div>
       <a href="#/home" data-route="home" class="premium-nav-home" aria-label="Collect TCG home">
@@ -218,15 +218,15 @@
     </div>
 
     <nav class="mainnav" id="mainnav">
-      <a href="#/home" data-route="home"><span class="ic">⌂</span> Home</a>
+      <a href="#/home" data-route="home" class="mobile-home-nav"><span class="ic">⌂</span> Home</a>
       <a href="#/inventory" data-route="inventory"><span class="ic">▦</span> <span>Inventory</span><span class="nav-count" id="inventoryNavCount">0</span></a>
-      <a href="#/sold" data-route="sold" class="status-primary-nav"><span class="ic">✓</span> <span>Sold</span><span class="nav-count" id="soldNavCount">0</span></a>
-      <a href="#/collection" data-route="collection" class="collection-primary-nav"><span class="ic">◆</span> <span>Collection</span><span class="nav-count collection-nav-count" id="collectionNavCount">0</span></a>
+      <a href="#/sold" data-route="sold" class="status-primary-nav mobile-primary-nav"><span class="ic">✓</span> <span>Sold</span><span class="nav-count" id="soldNavCount">0</span></a>
+      <a href="#/collection" data-route="collection" class="collection-primary-nav mobile-primary-nav"><span class="ic">◆</span> <span>Collection</span><span class="nav-count collection-nav-count" id="collectionNavCount">0</span></a>
       <a href="#/reserved" data-route="reserved" class="status-primary-nav desktop-primary-mobile-hidden"><span class="ic">◷</span> <span>Reserved</span><span class="nav-count" id="reservedNavCount">0</span></a>
       <a href="#/showcase" data-route="showcase" class="desktop-primary-mobile-hidden"><span class="ic">▶</span> Showcase</a>
       <a href="#/giveaway" data-route="giveaway" class="desktop-primary-mobile-hidden"><span class="ic">★</span> Giveaway</a>
       <a href="#/favorites" data-route="favorites" class="desktop-primary-mobile-hidden"><span class="ic">♡</span> Favorite</a>
-      <button type="button" class="mobile-more-toggle" id="mobileMoreToggle" aria-expanded="false">
+      <button type="button" class="mobile-more-toggle mobile-primary-nav" id="mobileMoreToggle" aria-expanded="false">
         <span class="ic">⋯</span> More <span class="mobile-more-caret">⌄</span>
       </button>
       <div class="mobile-more-menu" id="mobileMoreMenu" hidden>
