@@ -6558,3 +6558,172 @@ body.light-mode .desktop-listing-currency-control select{
     max-height:42px !important;
   }
 }
+
+
+/* ==========================================================
+   V162 BETA — MOBILE MORE + SEARCH/FILTER FINAL CLEANUP
+   - More uses flex-wrap so it shrink-wraps real content
+   - Theme follows menu items immediately with no dead space
+   - Search + Filters are forced into one non-wrapping row
+   ========================================================== */
+@media (max-width:800px){
+
+  /* ---------- More: content-height only, no stretched grid ---------- */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:stretch !important;
+    align-content:flex-start !important;
+    justify-content:flex-start !important;
+
+    height:auto !important;
+    min-height:0 !important;
+    max-height:min(70dvh,420px) !important;
+
+    grid-template-columns:none !important;
+    grid-template-rows:none !important;
+    grid-auto-columns:auto !important;
+    grid-auto-rows:auto !important;
+    grid-auto-flow:initial !important;
+
+    gap:6px !important;
+    padding:8px !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    flex:0 0 calc(50% - 3px) !important;
+    width:calc(50% - 3px) !important;
+    min-width:0 !important;
+    max-width:calc(50% - 3px) !important;
+
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+
+    margin:0 !important;
+    padding:8px 10px !important;
+    box-sizing:border-box !important;
+
+    position:static !important;
+    inset:auto !important;
+    transform:none !important;
+    order:initial !important;
+  }
+
+  /* Theme is simply the next menu tile, never a footer. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+    align-self:stretch !important;
+  }
+
+  /* ---------- Search + Filters: one guaranteed row ---------- */
+  .listing-filter-tools .mobile-search-filter-row{
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    justify-content:stretch !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    gap:7px !important;
+    margin:0 0 8px !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row .mobile-inventory-search{
+    display:block !important;
+    position:relative !important;
+
+    flex:1 1 auto !important;
+    width:auto !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    grid-column:auto !important;
+    grid-row:auto !important;
+    order:1 !important;
+    margin:0 !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row .mobile-inventory-search input[type="search"]{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:46px !important;
+    min-height:46px !important;
+    max-height:46px !important;
+
+    margin:0 !important;
+    border-radius:11px !important;
+    box-sizing:border-box !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row .mobile-search-filter-btn{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    flex:0 0 92px !important;
+    width:92px !important;
+    min-width:92px !important;
+    max-width:92px !important;
+
+    height:46px !important;
+    min-height:46px !important;
+    max-height:46px !important;
+
+    grid-column:auto !important;
+    grid-row:auto !important;
+    order:2 !important;
+
+    margin:0 !important;
+    padding:0 10px !important;
+    border-radius:11px !important;
+    box-sizing:border-box !important;
+    white-space:nowrap !important;
+  }
+}
+
+@media (max-width:390px){
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    gap:5px !important;
+    padding:7px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    flex-basis:calc(50% - 2.5px) !important;
+    width:calc(50% - 2.5px) !important;
+    max-width:calc(50% - 2.5px) !important;
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+    padding-inline:8px !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row{
+    gap:6px !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row .mobile-inventory-search input[type="search"],
+  .listing-filter-tools .mobile-search-filter-row .mobile-search-filter-btn{
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+  }
+
+  .listing-filter-tools .mobile-search-filter-row .mobile-search-filter-btn{
+    flex-basis:84px !important;
+    width:84px !important;
+    min-width:84px !important;
+    max-width:84px !important;
+    padding-inline:8px !important;
+  }
+}
