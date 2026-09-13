@@ -28,6 +28,28 @@ function relatedCardNamesMatch(sourceTokens,candidate){
     return shared>0 && shared/union>=0.5;
   }
 
+function relatedCardIdentityKey(card){
+    if(!card) return "";
+    const norm=value=>appContext.normalizeFilterValue(value || "");
+    const game=norm(card.game);
+    const code=norm(card.card_code);
+    const language=norm(card.language);
+
+    // Card code is the most reliable identity signal. Keep language in the key
+    // because different-language printings can be meaningfully different items.
+    if(code) return `code|${game}|${code}|${language}`;
+
+    // Fallback for older/vintage listings without a card code: ignore grading /
+    // condition differences by using the normalized card name + series + language.
+    const name=norm(card.name)
+      .replace(/\b(psa|bgs|cgc|sgc)\s*\d+(?:\.\d+)?\b/g," ")
+      .replace(/\b(raw|graded|sealed|mint|near mint|lightly played|moderately played|heavily played|poor)\b/g," ")
+      .replace(/\s+/g," ")
+      .trim();
+    const series=norm(card.series);
+    return `name|${game}|${series}|${name}|${language}`;
+  }
+
 function getRelatedCards(card, limit = 4, options = {}){
     if(!card) return [];
     // Collection pages may recommend NFS pieces after available alternatives.
@@ -39,7 +61,7 @@ function getRelatedCards(card, limit = 4, options = {}){
     const sourceSeries=appContext.normalizeFilterValue(card.series);
     const sourceNameTokens=appContext.relatedCardNameTokens(card);
 
-    return appContext.cards
+    const ranked = appContext.cards
       .filter(c=>{
         if(!c || c.id === card.id || !appContext.isLiveLifecycle(c)) return false;
         const status = appContext.normalizeFilterValue(c.availability || "Available");
@@ -69,7 +91,14 @@ function getRelatedCards(card, limit = 4, options = {}){
         if(status === "available" || status === "collection (nfs)") score += 2;
         else if(status === "reserved") score += 1;
 
-        return {card:c, score, sameGame, sameSeries, sameName};
+        return {
+          card:c,
+          score,
+          sameGame,
+          sameSeries,
+          sameName,
+          identity:appContext.relatedCardIdentityKey(c) || `id|${String(c.id||"")}`
+        };
       })
       .filter(x=>x.score > 0)
       .sort((a,b)=>{
@@ -83,12 +112,34 @@ function getRelatedCards(card, limit = 4, options = {}){
           Number(b.sameName)-Number(a.sameName) ||
           Number(b.sameSeries)-Number(a.sameSeries) ||
           b.score - a.score || String(b.card.created_at || "").localeCompare(String(a.card.created_at || ""));
-      })
-      .slice(0, limit)
-      .map(x=>x.card);
+      });
+
+    // Recommendation diversity:
+    // 1) Prefer one listing per underlying card identity.
+    // 2) Only if there are not enough distinct cards, allow one extra condition /
+    //    grade of an identity. Never recommend three or more versions of one card.
+    const selected=[];
+    const selectedIds=new Set();
+    const identityCounts=new Map();
+
+    const addCandidate=(entry,maxPerIdentity)=>{
+      if(selected.length>=limit || selectedIds.has(entry.card.id)) return;
+      const count=identityCounts.get(entry.identity)||0;
+      if(count>=maxPerIdentity) return;
+      selected.push(entry.card);
+      selectedIds.add(entry.card.id);
+      identityCounts.set(entry.identity,count+1);
+    };
+
+    ranked.forEach(entry=>addCandidate(entry,1));
+    if(selected.length<limit){
+      ranked.forEach(entry=>addCandidate(entry,2));
+    }
+
+    return selected.slice(0,limit);
   }
 
-  Object.assign(appContext,{relatedCardNameTokens,relatedCardNamesMatch,getRelatedCards});
+  Object.assign(appContext,{relatedCardNameTokens,relatedCardNamesMatch,relatedCardIdentityKey,getRelatedCards});
 }
 
 /** State and event initialization; called in preserved startup order. */
