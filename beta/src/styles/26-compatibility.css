@@ -6393,3 +6393,168 @@ body.light-mode .desktop-listing-currency-control select{
     padding:7px !important;
   }
 }
+
+
+/* ==========================================================
+   V161 BETA — MOBILE HEADER CENTERING + COMPACT MORE
+   Exact symmetric header around the centered logo.
+   More menu shrink-wraps content with no dead vertical space.
+   ========================================================== */
+@media (max-width:800px){
+
+  /* True geometric center: equal-width navigation columns on both sides. */
+  body .shell .sidebar nav#mainnav{
+    grid-template-columns:
+      minmax(0,1fr)
+      minmax(0,1fr)
+      60px
+      minmax(0,1fr)
+      minmax(0,1fr) !important;
+    gap:4px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo{
+    width:56px !important;
+    height:56px !important;
+    min-width:56px !important;
+    min-height:56px !important;
+    max-width:56px !important;
+    max-height:56px !important;
+    justify-self:center !important;
+    align-self:center !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo img{
+    width:56px !important;
+    height:56px !important;
+    min-width:56px !important;
+    max-width:56px !important;
+  }
+
+  /* Keep labels compact enough that Collection never pushes the center. */
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"],
+  body .shell .sidebar nav#mainnav > a[data-route="collection"],
+  body .shell .sidebar nav#mainnav > a[data-route="sold"],
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle{
+    padding-inline:2px !important;
+    font-size:clamp(8.2px,2.25vw,9.7px) !important;
+    letter-spacing:0 !important;
+    overflow:visible !important;
+  }
+
+  /* Cleaner active state: no large outlined/fill boxes. */
+  body .shell .sidebar nav#mainnav > a[data-route].active{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:inset 0 -2px 0 rgba(240,189,67,.82) !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle.open,
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle.active{
+    background:rgba(240,189,67,.055) !important;
+    border:0 !important;
+    box-shadow:inset 0 -2px 0 rgba(240,189,67,.72) !important;
+  }
+
+  /*
+    Hard shrink-wrap for More. Explicit row sizing prevents any inherited
+    mobile rule from stretching the menu or pushing Theme to the bottom.
+  */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    top:calc(100% + 6px) !important;
+    height:max-content !important;
+    min-height:0 !important;
+    max-height:min(68dvh,390px) !important;
+    align-self:start !important;
+    align-content:start !important;
+    justify-content:stretch !important;
+    grid-auto-flow:row !important;
+    grid-auto-rows:minmax(44px,auto) !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:6px !important;
+    padding:8px !important;
+    overflow-y:auto !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    display:grid !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    min-height:44px !important;
+    height:44px !important;
+    max-height:44px !important;
+    padding:8px 10px !important;
+    margin:0 !important;
+    align-self:start !important;
+    grid-column:auto !important;
+    transform:none !important;
+  }
+
+  /* Theme is just another normal tile, immediately after the other items. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    order:initial !important;
+    position:static !important;
+  }
+
+  /* Kill the older generated duplicate "LIGHT MODE / DARK MODE" text. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle::before,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle::after{
+    content:none !important;
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle .mobile-theme-label{
+    display:inline !important;
+    font-size:10px !important;
+    font-weight:670 !important;
+    line-height:1.2 !important;
+    text-transform:none !important;
+    letter-spacing:0 !important;
+  }
+}
+
+@media (max-width:380px){
+  body .shell .sidebar nav#mainnav{
+    grid-template-columns:
+      minmax(0,1fr)
+      minmax(0,1fr)
+      56px
+      minmax(0,1fr)
+      minmax(0,1fr) !important;
+    gap:2px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo,
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo img{
+    width:52px !important;
+    height:52px !important;
+    min-width:52px !important;
+    min-height:52px !important;
+    max-width:52px !important;
+    max-height:52px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"],
+  body .shell .sidebar nav#mainnav > a[data-route="collection"],
+  body .shell .sidebar nav#mainnav > a[data-route="sold"],
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle{
+    font-size:7.8px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    gap:5px !important;
+    padding:7px !important;
+    grid-auto-rows:minmax(42px,auto) !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    min-height:42px !important;
+    height:42px !important;
+    max-height:42px !important;
+  }
+}
