@@ -161,6 +161,23 @@ function cardGradeSortScore(card){
     return rawRank[String(card.condition||"").toUpperCase()] ?? 0;
   }
 
+
+function trendingCardScore(card){
+    if(!card) return 0;
+
+    // Use the strongest catalogue-wide popularity signal available to public
+    // visitors, with a small recency boost so ties do not become permanently
+    // frozen. Owner mode can additionally use the qualified-view total map.
+    const legacyViews=Math.max(0,Number(card.view_count||0));
+    const qualifiedViews=Math.max(0,Number(appContext.qualifiedViewTotalsByCard?.get?.(String(card.id))||0));
+
+    const created=Date.parse(card.created_at||"")||0;
+    const ageDays=created>0 ? Math.max(0,(Date.now()-created)/(24*60*60*1000)) : 3650;
+    const recencyBoost=Math.max(0,30-Math.min(30,ageDays));
+
+    return qualifiedViews*120 + legacyViews*100 + recencyBoost;
+  }
+
 function compareNullableNumber(a,b,direction="asc"){
     const av=Number.isFinite(a)?a:null;
     const bv=Number.isFinite(b)?b:null;
@@ -262,6 +279,19 @@ function getFiltered(){
       return true;
     });
 
+    if(appContext.activeQuickFilter === "trending"){
+      list.sort((a,b)=>
+        appContext.trendingCardScore(b)-appContext.trendingCardScore(a) ||
+        (Date.parse(b.updated_at||b.created_at||"")||0)-(Date.parse(a.updated_at||a.created_at||"")||0) ||
+        a.name.localeCompare(b.name)
+      );
+
+      // Trending is a discovery subset rather than a permanent alternate sort
+      // mode. Keep the highest-signal listings while respecting every other
+      // active search/filter control.
+      return list.slice(0,Math.min(24,list.length));
+    }
+
     list.sort((a,b)=>{
       switch(sortBy){
         case "custom": {
@@ -305,7 +335,7 @@ function getFiltered(){
     return list;
   }
 
-  Object.assign(appContext,{isNewCard,cardLifecycle,isLiveLifecycle,cardMatchesListingScope,listingScopeMeta,normalizeFilterValue,titleCaseWords,giveawayDisplayTitle,normalizeStoredLabel,canonicalAvailability,selectedSetMatches,effectiveFormat,isChampionshipSeries,cardGradeSortScore,compareNullableNumber,getFiltered});
+  Object.assign(appContext,{isNewCard,cardLifecycle,isLiveLifecycle,cardMatchesListingScope,listingScopeMeta,normalizeFilterValue,titleCaseWords,giveawayDisplayTitle,normalizeStoredLabel,canonicalAvailability,selectedSetMatches,effectiveFormat,isChampionshipSeries,cardGradeSortScore,trendingCardScore,compareNullableNumber,getFiltered});
 }
 
 /** State and event initialization; called in preserved startup order. */
