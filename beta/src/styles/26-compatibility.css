@@ -6727,3 +6727,253 @@ body.light-mode .desktop-listing-currency-control select{
     padding-inline:8px !important;
   }
 }
+
+
+/* ==========================================================
+   V163 BETA — MOBILE RESPONSIVE CONTROL LAYOUT
+   Fix the ACTUAL rendered Search/Filters row, remove horizontal
+   category scrolling, and balance the More menu footer.
+   ========================================================== */
+@media (max-width:800px){
+
+  /* ---------- Category pills: all visible, no horizontal scrolling ---------- */
+  .listing-filter-tools .desktop-category-filter-block{
+    width:100% !important;
+    min-width:0 !important;
+    overflow:visible !important;
+  }
+
+  .listing-filter-tools #quickFilters,
+  .listing-filter-tools .quick-filters,
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    grid-auto-flow:row !important;
+    width:100% !important;
+    min-width:0 !important;
+    gap:6px !important;
+    margin:0 0 8px !important;
+    padding:0 !important;
+
+    overflow:visible !important;
+    overflow-x:visible !important;
+    overflow-y:visible !important;
+    scroll-snap-type:none !important;
+    -webkit-overflow-scrolling:auto !important;
+  }
+
+  .listing-filter-tools #quickFilters .quick-filter,
+  .listing-filter-tools .quick-filters .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:38px !important;
+    height:38px !important;
+
+    margin:0 !important;
+    padding:0 5px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    flex:none !important;
+    border-radius:999px !important;
+    box-sizing:border-box !important;
+
+    font-size:clamp(8.6px,2.35vw,10px) !important;
+    font-weight:740 !important;
+    letter-spacing:.015em !important;
+    line-height:1 !important;
+    text-align:center !important;
+    white-space:nowrap !important;
+
+    scroll-snap-align:none !important;
+  }
+
+  /* ---------- Search + Filters: target the actual sibling row ---------- */
+  .mobile-search-filter-row{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) clamp(82px,23vw,96px) !important;
+    grid-template-rows:46px !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+
+    gap:7px !important;
+    margin:0 0 8px !important;
+    padding:0 !important;
+
+    align-items:stretch !important;
+    justify-items:stretch !important;
+
+    position:relative !important;
+    float:none !important;
+    clear:both !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+  }
+
+  .mobile-search-filter-row > .mobile-inventory-search{
+    grid-column:1 !important;
+    grid-row:1 !important;
+
+    display:block !important;
+    position:relative !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:46px !important;
+    min-height:46px !important;
+    max-height:46px !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    float:none !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+  }
+
+  .mobile-search-filter-row > .mobile-inventory-search input[type="search"]{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:46px !important;
+    min-height:46px !important;
+    max-height:46px !important;
+
+    margin:0 !important;
+    padding:0 36px !important;
+
+    border-radius:11px !important;
+    box-sizing:border-box !important;
+    font-size:12px !important;
+    line-height:1 !important;
+  }
+
+  .mobile-search-filter-row > .mobile-inventory-search input[type="search"]::placeholder{
+    font-size:11px !important;
+  }
+
+  .mobile-search-filter-row > .mobile-search-filter-btn{
+    grid-column:2 !important;
+    grid-row:1 !important;
+
+    display:flex !important;
+    position:static !important;
+
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+
+    height:46px !important;
+    min-height:46px !important;
+    max-height:46px !important;
+
+    margin:0 !important;
+    padding:0 8px !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    float:none !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+
+    border-radius:11px !important;
+    font-size:10px !important;
+    font-weight:760 !important;
+    line-height:1 !important;
+    letter-spacing:.025em !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+  }
+
+  /* ---------- More: 8 nav tiles + one balanced full-width theme row ---------- */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    flex:0 0 100% !important;
+    width:100% !important;
+    min-width:100% !important;
+    max-width:100% !important;
+
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+
+    margin:0 !important;
+    justify-content:center !important;
+    text-align:center !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle .mobile-theme-label{
+    text-align:center !important;
+  }
+}
+
+/* Common compact phones: keep three category columns but tighten controls. */
+@media (max-width:390px){
+  .listing-filter-tools #quickFilters,
+  .listing-filter-tools .quick-filters,
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    gap:5px !important;
+  }
+
+  .listing-filter-tools #quickFilters .quick-filter,
+  .listing-filter-tools .quick-filters .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    min-height:36px !important;
+    height:36px !important;
+    padding-inline:3px !important;
+    font-size:clamp(8px,2.3vw,9.2px) !important;
+  }
+
+  .mobile-search-filter-row{
+    grid-template-columns:minmax(0,1fr) clamp(78px,22vw,86px) !important;
+    grid-template-rows:44px !important;
+    gap:6px !important;
+  }
+
+  .mobile-search-filter-row > .mobile-inventory-search,
+  .mobile-search-filter-row > .mobile-inventory-search input[type="search"],
+  .mobile-search-filter-row > .mobile-search-filter-btn{
+    height:44px !important;
+    min-height:44px !important;
+    max-height:44px !important;
+  }
+
+  .mobile-search-filter-row > .mobile-search-filter-btn{
+    padding-inline:5px !important;
+    font-size:9.3px !important;
+  }
+}
+
+/* Very narrow phones: use two category columns so text never clips. */
+@media (max-width:340px){
+  .listing-filter-tools #quickFilters,
+  .listing-filter-tools .quick-filters,
+  .listing-filter-tools .desktop-quick-filters-collapsible{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .listing-filter-tools #quickFilters .quick-filter,
+  .listing-filter-tools .quick-filters .quick-filter,
+  .listing-filter-tools .desktop-quick-filters-collapsible .quick-filter{
+    font-size:8.5px !important;
+  }
+
+  .mobile-search-filter-row{
+    grid-template-columns:minmax(0,1fr) 76px !important;
+    gap:5px !important;
+  }
+
+  .mobile-search-filter-row > .mobile-search-filter-btn{
+    font-size:8.8px !important;
+    padding-inline:4px !important;
+  }
+}
