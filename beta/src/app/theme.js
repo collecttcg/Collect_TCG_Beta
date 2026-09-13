@@ -7,7 +7,10 @@ function applyTheme(theme){
     if(btn) btn.textContent = light ? "☾ Dark mode" : "☀ Light mode";
     const mobileBtn = appContext.$("mobileHeaderThemeToggle");
     if(mobileBtn){
-      mobileBtn.textContent = light ? "☾" : "☀";
+      const icon=mobileBtn.querySelector(".ic");
+      const label=mobileBtn.querySelector(".mobile-theme-label");
+      if(icon) icon.textContent = light ? "☾" : "☀";
+      if(label) label.textContent = light ? "Dark mode" : "Light mode";
       mobileBtn.setAttribute("aria-label", light ? "Switch to dark mode" : "Switch to light mode");
       mobileBtn.title = light ? "Dark mode" : "Light mode";
     }
@@ -43,7 +46,7 @@ function setupMobileMoreMenu(){
     });
 
     menu.addEventListener("click", e=>{
-      if(e.target.closest("a")) closeMenu();
+      if(e.target.closest("a, .mobile-more-theme-toggle")) closeMenu();
     });
 
     document.addEventListener("click", e=>{

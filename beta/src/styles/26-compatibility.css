@@ -6055,3 +6055,341 @@ body.light-mode .desktop-listing-currency-control select{
     max-width:calc(100vw - 14px) !important;
   }
 }
+
+/* ==========================================================
+   V160 BETA — CLEAN MOBILE HEADER + MORE PANEL
+   Structural mobile reset. The center logo owns a real column;
+   navigation no longer overlays it. More is a solid compact panel.
+   ========================================================== */
+@media (max-width:800px){
+  /* Retire the separate brand row on phones. The logo now lives inside nav. */
+  body .shell .sidebar > div:first-child{
+    display:none !important;
+  }
+
+  body .shell .sidebar{
+    position:relative !important;
+    min-height:72px !important;
+    height:72px !important;
+    padding:0 10px !important;
+    overflow:visible !important;
+    box-sizing:border-box !important;
+    border-bottom:1px solid rgba(255,255,255,.07) !important;
+    background:#111319 !important;
+    z-index:1200 !important;
+  }
+
+  /* One real five-column row: Inventory / Collection / Logo / Sold / More. */
+  body .shell .sidebar nav#mainnav{
+    position:relative !important;
+    inset:auto !important;
+    width:100% !important;
+    height:72px !important;
+    min-height:72px !important;
+    max-height:72px !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:grid !important;
+    grid-template-columns:minmax(0,1.05fr) minmax(0,1.18fr) 58px minmax(0,.72fr) minmax(0,.82fr) !important;
+    grid-template-rows:72px !important;
+    gap:4px !important;
+    align-items:center !important;
+    overflow:visible !important;
+    pointer-events:auto !important;
+    z-index:1210 !important;
+  }
+
+  /* Hide all legacy mobile/desktop links first. */
+  body .shell .sidebar nav#mainnav > a,
+  body .shell .sidebar nav#mainnav > button,
+  body .shell .sidebar nav#mainnav > .reviews-desktop-nav,
+  body .shell .sidebar nav#mainnav > .mobile-secondary-nav{
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"],
+  body .shell .sidebar nav#mainnav > a[data-route="collection"],
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo,
+  body .shell .sidebar nav#mainnav > a[data-route="sold"],
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle{
+    display:flex !important;
+    position:relative !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    height:42px !important;
+    min-height:42px !important;
+    max-height:42px !important;
+    margin:0 !important;
+    padding:0 3px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:3px !important;
+    border:0 !important;
+    border-radius:10px !important;
+    background:transparent !important;
+    color:#9ea4ae !important;
+    box-shadow:none !important;
+    box-sizing:border-box !important;
+    font-size:clamp(8.4px,2.3vw,10px) !important;
+    font-weight:760 !important;
+    letter-spacing:.018em !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    order:initial !important;
+    grid-column:auto !important;
+    grid-row:1 !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"]{ grid-column:1 !important; }
+  body .shell .sidebar nav#mainnav > a[data-route="collection"]{ grid-column:2 !important; }
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo{ grid-column:3 !important; }
+  body .shell .sidebar nav#mainnav > a[data-route="sold"]{ grid-column:4 !important; }
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle{ grid-column:5 !important; }
+
+  /* The logo is its own grid cell, so labels can never sit underneath it. */
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo{
+    width:58px !important;
+    height:58px !important;
+    min-width:58px !important;
+    min-height:58px !important;
+    max-width:58px !important;
+    max-height:58px !important;
+    padding:0 !important;
+    border-radius:50% !important;
+    overflow:visible !important;
+    z-index:3 !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo img{
+    display:block !important;
+    width:58px !important;
+    height:58px !important;
+    max-width:58px !important;
+    object-fit:contain !important;
+    filter:drop-shadow(0 3px 10px rgba(222,170,53,.18)) !important;
+  }
+
+  /* Keep the primary row text-only and compact. */
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"] .ic,
+  body .shell .sidebar nav#mainnav > a[data-route="collection"] .ic,
+  body .shell .sidebar nav#mainnav > a[data-route="sold"] .ic,
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"] .nav-count,
+  body .shell .sidebar nav#mainnav > a[data-route="collection"] .nav-count,
+  body .shell .sidebar nav#mainnav > a[data-route="sold"] .nav-count,
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle .ic{
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle .mobile-more-caret{
+    display:inline !important;
+    flex:0 0 auto !important;
+    font-size:7px !important;
+    opacity:.75 !important;
+  }
+
+  /* Premium active state: text + underline, no large filled box. */
+  body .shell .sidebar nav#mainnav > a[data-route].active{
+    background:transparent !important;
+    border:0 !important;
+    color:#f0bd43 !important;
+    box-shadow:inset 0 -2px 0 rgba(240,189,67,.85) !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle.active,
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle.open{
+    background:#1b1e25 !important;
+    color:#f0bd43 !important;
+    box-shadow:inset 0 -2px 0 rgba(240,189,67,.70) !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.active::before,
+  body .shell .sidebar nav#mainnav > a.active::after{
+    display:none !important;
+    content:none !important;
+  }
+
+  /* Solid compact More panel. Two columns on normal phones. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    position:absolute !important;
+    top:calc(100% + 8px) !important;
+    left:0 !important;
+    right:0 !important;
+    width:100% !important;
+    max-width:none !important;
+    height:auto !important;
+    max-height:min(62dvh,430px) !important;
+    margin:0 !important;
+    padding:8px !important;
+    border:1px solid #30353e !important;
+    border-radius:14px !important;
+    background:#15181e !important;
+    background-color:#15181e !important;
+    background-image:none !important;
+    opacity:1 !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    box-shadow:0 22px 55px rgba(0,0,0,.70) !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+    z-index:5000 !important;
+    grid-column:1 / -1 !important;
+    grid-row:auto !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu[hidden]{
+    display:none !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:6px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    display:flex !important;
+    position:static !important;
+    min-width:0 !important;
+    width:100% !important;
+    min-height:46px !important;
+    height:auto !important;
+    margin:0 !important;
+    padding:9px 10px !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:8px !important;
+    border:1px solid #292e36 !important;
+    border-radius:10px !important;
+    background:#1d2128 !important;
+    color:#d6dae1 !important;
+    box-shadow:none !important;
+    box-sizing:border-box !important;
+    font-size:10px !important;
+    font-weight:670 !important;
+    line-height:1.2 !important;
+    letter-spacing:0 !important;
+    text-transform:none !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    opacity:1 !important;
+    grid-column:auto !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a .ic,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle .ic{
+    display:inline-flex !important;
+    width:16px !important;
+    min-width:16px !important;
+    align-items:center !important;
+    justify-content:center !important;
+    color:#aab0ba !important;
+    font-size:12px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a:hover,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a:focus-visible,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a.active,
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle:focus-visible{
+    border-color:rgba(222,170,53,.40) !important;
+    background:#242933 !important;
+    color:#f0bd43 !important;
+  }
+
+  /* Hide routes already exposed in the primary row. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a[data-route="inventory"],
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a[data-route="collection"],
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > a[data-route="sold"]{
+    display:none !important;
+  }
+
+  /* Theme is a normal tile now — no overlay/floating row. */
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    transform:none !important;
+    top:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    left:auto !important;
+  }
+
+  /* Light mode parity. */
+  body.light-mode .shell .sidebar{
+    background:#fffdf8 !important;
+    border-bottom-color:#e5dfd5 !important;
+  }
+
+  body.light-mode .shell .sidebar nav#mainnav > a[data-route="inventory"],
+  body.light-mode .shell .sidebar nav#mainnav > a[data-route="collection"],
+  body.light-mode .shell .sidebar nav#mainnav > a[data-route="sold"],
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreToggle{
+    color:#636a72 !important;
+  }
+
+  body.light-mode .shell .sidebar nav#mainnav > a[data-route].active,
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreToggle.active,
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreToggle.open{
+    color:#8d6515 !important;
+  }
+
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu,
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    border-color:#d8d1c6 !important;
+    background:#fffdf9 !important;
+    background-color:#fffdf9 !important;
+    box-shadow:0 20px 46px rgba(42,35,24,.20) !important;
+  }
+
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu > a,
+  body.light-mode .shell .sidebar nav#mainnav > #mobileMoreMenu > .mobile-more-theme-toggle{
+    border-color:#e2dcd2 !important;
+    background:#f7f4ee !important;
+    color:#4c535b !important;
+  }
+
+  /* Desktop layers never participate in the phone header. */
+  .premium-desktop-nav,
+  .premium-desktop-utilities,
+  .premium-social-strip{
+    display:none !important;
+  }
+}
+
+@media (max-width:380px){
+  body .shell .sidebar{
+    padding-inline:7px !important;
+  }
+
+  body .shell .sidebar nav#mainnav{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.12fr) 54px minmax(0,.68fr) minmax(0,.78fr) !important;
+    gap:2px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo,
+  body .shell .sidebar nav#mainnav > a.mobile-nav-logo img{
+    width:54px !important;
+    height:54px !important;
+    min-width:54px !important;
+    min-height:54px !important;
+    max-width:54px !important;
+    max-height:54px !important;
+  }
+
+  body .shell .sidebar nav#mainnav > a[data-route="inventory"],
+  body .shell .sidebar nav#mainnav > a[data-route="collection"],
+  body .shell .sidebar nav#mainnav > a[data-route="sold"],
+  body .shell .sidebar nav#mainnav > #mobileMoreToggle{
+    padding-inline:1px !important;
+    font-size:8px !important;
+    letter-spacing:0 !important;
+  }
+
+  body .shell .sidebar nav#mainnav > #mobileMoreMenu:not([hidden]){
+    grid-template-columns:1fr 1fr !important;
+    gap:5px !important;
+    padding:7px !important;
+  }
+}
