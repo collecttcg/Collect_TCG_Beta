@@ -8019,3 +8019,26 @@ body.light-mode .desktop-listing-currency-control select{
     color:#7b570f !important;
   }
 }
+
+
+/* ==========================================================
+   V171 BETA — iOS MOBILE FORM FOCUS / AUTO-ZOOM HOTFIX
+   iOS Safari automatically zooms focused form controls whose computed
+   font-size is below 16px. Keep the existing compact control dimensions,
+   but use a Safari-safe 16px font size for focusable text fields/selects.
+   Pinch-to-zoom remains enabled; viewport accessibility is unchanged.
+   ========================================================== */
+@media (max-width:800px){
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="file"]):not([type="color"]),
+  textarea,
+  select{
+    font-size:16px !important;
+  }
+
+  /* Keep the compact search placeholder appearance from the current UI.
+     Safari's focus zoom decision uses the input's 16px computed size. */
+  .mobile-search-filter-row > .mobile-inventory-search input[type="search"]::placeholder,
+  .mobile-inventory-search input[type="search"]::placeholder{
+    font-size:11px !important;
+  }
+}
