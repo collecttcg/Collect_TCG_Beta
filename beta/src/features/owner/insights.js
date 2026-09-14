@@ -229,8 +229,20 @@ async function renderInsightsPage(){
       };
     }
 
-    function contactActions(row){
-      return Number(row.contact_opens||0)+Number(row.platform_clicks||0)+Number(row.inquiry_copies||0);
+    function contactIntentMetrics(row){
+      return appContext.insightContactMetrics(row||{});
+    }
+
+    function contactIntentCount(row){
+      return Number(contactIntentMetrics(row).intent_count||0);
+    }
+
+    function contactIntentStage(row){
+      const metrics=contactIntentMetrics(row);
+      if(metrics.strongest_stage==="platform") return "Platform clicked";
+      if(metrics.strongest_stage==="copy") return "Inquiry copied";
+      if(metrics.strongest_stage==="open") return "Contact options opened";
+      return "No contact intent";
     }
 
     function recommendationFor(row){
@@ -239,21 +251,21 @@ async function renderInsightsPage(){
 
       const unique=Number(row.unique_views||0);
       const fav=Number(row.favorite_adds||0);
-      const contacts=row._contactActions;
+      const contacts=row._contactIntent;
       const days=row._daysListed;
       const usd=appContext.cardUsdListedPrice(card)||0;
 
       if(unique>=8 && contacts===0){
         return {
           level:"high",type:"Review price / confidence",card,
-          reason:`${unique} unique views but no contact actions`,
+          reason:`${unique} unique views but no contact intent`,
           action:"Check price against your market, improve description, or add stronger photos."
         };
       }
       if(contacts>=2 || (fav>=2 && unique>=3)){
         return {
           level:"good",type:"Strong demand",card,
-          reason:`${fav} favorite${fav===1?"":"s"} · ${contacts} contact action${contacts===1?"":"s"}`,
+          reason:`${fav} favorite${fav===1?"":"s"} · ${contacts} contact intent${contacts===1?"":"s"}`,
           action:"Avoid unnecessary discounting. Keep visible and respond quickly to inquiries."
         };
       }
@@ -611,14 +623,14 @@ async function renderInsightsPage(){
       const qualifiedViews=rows.reduce((s,r)=>s+Number(r.views||0),0);
       const unique=rows.reduce((s,r)=>s+Number(r.unique_views||0),0);
       const favorites=rows.reduce((s,r)=>s+Number(r.favorite_adds||0),0);
-      const contacts=rows.reduce((s,r)=>s+r._contactActions,0);
+      const contacts=rows.reduce((s,r)=>s+r._contactIntent,0);
       const top=rows.slice().sort((a,b)=>b._interestScore-a._interestScore)[0];
       const contactRate=unique?contacts/unique:0;
 
       const hottest=rows.slice().sort((a,b)=>b._trend.score-a._trend.score)[0];
       const mostFav=rows.slice().sort((a,b)=>Number(b.favorite_adds||0)-Number(a.favorite_adds||0))[0];
       const mostPhoto=rows.slice().sort((a,b)=>Number(b.overview_photo_interactions||0)-Number(a.overview_photo_interactions||0))[0];
-      const mostContact=rows.slice().sort((a,b)=>b._contactActions-a._contactActions)[0];
+      const mostContact=rows.slice().sort((a,b)=>b._contactIntent-a._contactIntent)[0];
 
       appContext.$("insightsOverview").innerHTML=`
         <div class="insights-v4-grid-2 insights-v4-traffic-primary">
@@ -824,9 +836,9 @@ async function renderInsightsPage(){
           <article><span>Website Visits</span><strong>${websiteVisits.toLocaleString()}</strong><small>Site sessions</small></article>
           <article><span>Qualified Views</span><strong>${qualifiedViews.toLocaleString()}</strong><small>Card open 2+ seconds</small></article>
           <article><span>Favorites</span><strong>${favorites.toLocaleString()}</strong><small>Saved by visitors</small></article>
-          <article><span>Contact Actions</span><strong>${contacts.toLocaleString()}</strong><small>Strong buying intent</small></article>
-          <article><span>Contact Rate</span><strong>${Math.round(contactRate*100)}%</strong><small>Contact ÷ unique views</small></article>
-          <article class="highlight"><span>Strongest Interest</span><strong>${top?appContext.escapeHtml(top.name||top._card?.name||"—"):"—"}</strong><small>${top?`${top._interestScore} points`:"No activity"}</small></article>
+          <article><span>Contact Intent</span><strong>${contacts.toLocaleString()}</strong><small>Estimated buyer contact intent</small></article>
+          <article><span>Contact Intent Rate</span><strong>${Math.round(contactRate*100)}%</strong><small>Contact intent ÷ unique views</small></article>
+          <article class="highlight"><span>Strongest Interest</span><strong>${top?appContext.escapeHtml(top.name||top._card?.name||"—"):"—"}</strong><small>${top?`${top._interestScore} points`:"No activity"} · revised V184 weighting</small></article>
         </div>
 
         <div class="insights-v4-grid-2">
@@ -836,7 +848,7 @@ async function renderInsightsPage(){
               ["Website visits",websiteVisits],
               ["Qualified card views",qualifiedViews],
               ["Favorites",favorites],
-              ["Contact actions",contacts]
+              ["Contact intent",contacts]
             ].map(([label,value],i,all)=>{
               const max=Math.max(1,...all.map(x=>x[1]));
               return `<div class="insights-v4-funnel-row">
@@ -862,8 +874,8 @@ async function renderInsightsPage(){
               <small>${mostFav?`${Number(mostFav.favorite_adds||0)} favorites`:"—"}</small>
             </div>
             <div class="insights-v4-winner">
-              <span>Most contact activity</span><strong>${mostContact&&mostContact._contactActions>0?appContext.escapeHtml(mostContact.name||"—"):"No contacts yet"}</strong>
-              <small>${mostContact?`${mostContact._contactActions} actions`:"—"}</small>
+              <span>Most contact intent</span><strong>${mostContact&&mostContact._contactIntent>0?appContext.escapeHtml(mostContact.name||"—"):"No contact intent yet"}</strong>
+              <small>${mostContact?`${mostContact._contactIntent} intent${mostContact._contactIntent===1?"":"s"} · ${contactIntentStage(mostContact)}`:"—"}</small>
             </div>
           </section>
         </div>
@@ -964,7 +976,7 @@ async function renderInsightsPage(){
           </div>
           <div class="insights-table-wrap">
             <table class="insights-table insights-v4-table">
-              <thead><tr><th>#</th><th>Card</th><th>Status</th><th>Photo</th><th>Detail</th><th>Fav</th><th>Contact</th><th>Score</th><th>Trend</th></tr></thead>
+              <thead><tr><th>#</th><th>Card</th><th>Status</th><th>Photo</th><th>Detail</th><th>Fav</th><th>Contact intent</th><th>Score</th><th>Trend</th></tr></thead>
               <tbody>${(()=>{
                 const ranked=rows.slice().sort((a,b)=>b._interestScore-a._interestScore);
                 const shown=topCardPerformanceLimit==="all"
@@ -1011,7 +1023,7 @@ async function renderInsightsPage(){
                   <td title="Overview photo interaction">${Number(row.overview_photo_interactions||0)}</td>
                   <td title="Unique Card Detail opens">${Number(row.unique_views||0)}</td>
                   <td>${Number(row.favorite_adds||0)}</td>
-                  <td>${row._contactActions}</td><td><strong class="insights-v3-score">${row._interestScore}</strong></td>
+                  <td title="${appContext.escapeHtml(contactIntentStage(row))}">${row._contactIntent}</td><td><strong class="insights-v3-score">${row._interestScore}</strong></td>
                   <td><span class="trend-tag ${row._trend.className}">${appContext.escapeHtml(row._trend.label)}</span></td>
                 </tr>`).join("") || `<tr><td colspan="9" class="hint">No activity for this period.</td></tr>`;
               })()}
@@ -1278,7 +1290,7 @@ async function renderInsightsPage(){
             <article><span>Current price</span><strong>${appContext.cardUsdListedPrice(card)!=null?appContext.fmtMoney(appContext.cardUsdListedPrice(card)):"—"}</strong></article>
             <article><span>Unique views</span><strong>${Number(insight?.unique_views||0)}</strong></article>
             <article><span>Favorites</span><strong>${Number(insight?.favorite_adds||0)}</strong></article>
-            <article><span>Contact actions</span><strong>${insight?contactActions(insight):0}</strong></article>
+            <article><span>Contact intent</span><strong>${insight?contactIntentCount(insight):0}</strong></article>
           </div>
 
           <div class="insights-v4-grid-2">
@@ -1331,15 +1343,15 @@ async function renderInsightsPage(){
           <article><span>Sold listings</span><strong>${soldCards.length}</strong><small>Currently marked Sold</small></article>
           <article><span>Snapshots captured</span><strong>${snapshots.length}</strong><small>Since V4 tracking</small></article>
           <article><span>Avg. days to sale</span><strong>${snapshotAvg==null?"—":Math.round(snapshotAvg)}</strong><small>Snapshot data</small></article>
-          <article><span>Had contact action</span><strong>${snapshots.length?Math.round(contactConverters/snapshots.length*100):0}%</strong><small>Before sale</small></article>
+          <article><span>Had contact intent</span><strong>${snapshots.length?Math.round(contactConverters/snapshots.length*100):0}%</strong><small>Before sale</small></article>
           <article><span>Had favorite</span><strong>${snapshots.length?Math.round(favoriteConverters/snapshots.length*100):0}%</strong><small>Before sale</small></article>
         </div>
 
         <section class="insights-v4-card">
-          <div class="insights-v4-card-head"><h3>Recent Sale Snapshots</h3><span>Historical cards sold before V4 cannot be reconstructed perfectly.</span></div>
+          <div class="insights-v4-card-head"><h3>Recent Sale Snapshots</h3><span>V184+ snapshots store Contact Intent; older snapshots may contain the previous stacked contact-action count.</span></div>
           <div class="insights-table-wrap">
             <table class="insights-table insights-v4-table">
-              <thead><tr><th>Sold</th><th>Card</th><th>Price</th><th>Days</th><th>Unique</th><th>Fav</th><th>Contact</th><th>Score</th></tr></thead>
+              <thead><tr><th>Sold</th><th>Card</th><th>Price</th><th>Days</th><th>Unique</th><th>Fav</th><th>Contact intent</th><th>Score</th></tr></thead>
               <tbody>${snapshots.length?snapshots.slice(0,50).map(row=>`
                 <tr>
                   <td>${appContext.escapeHtml(new Date(row.sold_at).toLocaleDateString())}</td>
@@ -1612,7 +1624,7 @@ async function renderInsightsPage(){
           _trend:previousRange
             ? appContext.insightTrendMeta(row,previousMap.get(appContext.insightRowKey(row)))
             : {className:"",label:"—",score:0,current:Number(row.unique_views||0),previous:0,pct:null},
-          _contactActions:contactActions(combined),
+          _contactIntent:contactIntentCount(combined),
           _interestScore:appContext.insightInterestScore(combined),
           _daysListed:cardDaysListed(card)
         };
@@ -1633,7 +1645,7 @@ async function renderInsightsPage(){
           ...combined,
           _card:card,_status:appContext.insightStatusLabel(combined),
           _trend:{className:"",label:"—",score:0,current:0,previous:0,pct:null},
-          _contactActions:contactActions(combined),
+          _contactIntent:contactIntentCount(combined),
           _interestScore:appContext.insightInterestScore(combined),
           _daysListed:cardDaysListed(card)
         });
@@ -1658,7 +1670,7 @@ async function renderInsightsPage(){
           ...combined,
           _card:card,_status:appContext.insightStatusLabel(combined),
           _trend:{className:"",label:"—",score:0,current:0,previous:0,pct:null},
-          _contactActions:0,
+          _contactIntent:0,
           _interestScore:appContext.insightInterestScore(combined),
           _daysListed:cardDaysListed(card)
         });

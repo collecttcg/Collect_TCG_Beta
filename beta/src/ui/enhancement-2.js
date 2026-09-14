@@ -65,7 +65,7 @@ export function setup(appContext){
     return `Hi, I'm interested in this card: ${ctx.name}${ref}\n${ctx.url}`;
   }
 
-  async function copyInquiry(){
+  async function copyInquiry(trackEngagement=true){
     const message=inquiryText();
     try{
       if(navigator.clipboard?.writeText){
@@ -80,7 +80,7 @@ export function setup(appContext){
         document.execCommand("copy");
         textarea.remove();
       }
-      if(typeof window.collectTrackEngagement==="function"){
+      if(trackEngagement && typeof window.collectTrackEngagement==="function"){
         const cardId=window.collectCurrentDetailsCardId?.()||"";
         if(cardId) Promise.resolve(window.collectTrackEngagement("inquiry_copy",cardId,"Copy Inquiry")).catch(()=>{});
       }
@@ -268,7 +268,7 @@ export function setup(appContext){
 
       // Copy the exact card context before opening the buyer's chosen platform.
       // Failure to access clipboard must never block navigation.
-      copyInquiry().catch(()=>{});
+      copyInquiry(false).catch(()=>{});
       setTimeout(()=>closeContactChooser(false),80);
     });
   });
