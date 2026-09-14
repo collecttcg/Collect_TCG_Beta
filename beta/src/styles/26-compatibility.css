@@ -10495,3 +10495,201 @@ body.light-mode .details-share-menu button:focus-visible{
     font-size:7.5px !important;
   }
 }
+
+
+/* ==========================================================
+   V204 — MOBILE COMPACTNESS PASS
+   Reduces dead space in inventory cards and Card Details
+   without shrinking critical tap targets.
+   ========================================================== */
+@media (max-width:800px){
+
+  /* ---------- Inventory / overview cards ---------- */
+  #invGrid.grid:not(.compact-list) .clean-card-body{
+    padding:7px 8px 8px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-main{
+    gap:4px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    line-height:1.12 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row{
+    min-height:20px !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row{
+    min-height:28px !important;
+    margin:1px 0 0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-title-actions{
+    gap:3px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn,
+  #invGrid.grid:not(.compact-list) .compare-card-btn,
+  #invGrid.grid:not(.compact-list) .title-favorite-btn{
+    min-height:28px !important;
+    height:28px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn,
+  #invGrid.grid:not(.compact-list) .compare-card-btn{
+    width:28px !important;
+    min-width:28px !important;
+    max-width:28px !important;
+    padding:0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .title-favorite-btn{
+    width:28px !important;
+    min-width:28px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-divider{
+    margin:1px 0 0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price-block{
+    padding-top:1px !important;
+    margin-top:0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price{
+    font-size:14.5px !important;
+    line-height:1 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price-secondary{
+    margin-top:1px !important;
+    line-height:1.08 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-terms,
+  #invGrid.grid:not(.compact-list) .price-terms{
+    margin-top:3px !important;
+    line-height:1.15 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) [class*="high-value"]{
+    margin-top:4px !important;
+  }
+
+  /* ---------- Card Details ---------- */
+  .modal.card-details-modal #detailsMount{
+    padding-bottom:88px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-strip{
+    margin-top:12px !important;
+    gap:8px !important;
+  }
+
+  .modal.card-details-modal .detail-summary-card,
+  .modal.card-details-modal .detail-price-card{
+    padding:12px 14px !important;
+  }
+
+  /* Inquiry becomes a small inline control inside purchase panel. */
+  .modal.card-details-modal .detail-purchase-panel{
+    position:relative !important;
+    margin-top:14px !important;
+    padding:10px !important;
+    gap:9px !important;
+  }
+
+  .modal.card-details-modal .detail-inquiry-basket-row{
+    position:absolute !important;
+    top:-39px !important;
+    right:0 !important;
+    width:auto !important;
+    margin:0 !important;
+    z-index:4 !important;
+  }
+
+  .modal.card-details-modal .detail-inquiry-basket-btn{
+    min-height:34px !important;
+    padding:7px 11px !important;
+    border-radius:10px !important;
+    font-size:10px !important;
+    white-space:nowrap !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location{
+    padding:12px 13px !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    min-height:66px !important;
+    padding:9px 12px !important;
+  }
+
+  .modal.card-details-modal .detail-assurance-grid{
+    margin-top:12px !important;
+    gap:8px !important;
+  }
+
+  .modal.card-details-modal .detail-assurance-card{
+    min-height:0 !important;
+    padding:11px 12px !important;
+  }
+
+  /* Card Information: compact vertical rhythm */
+  .modal.card-details-modal .detail-info-section{
+    margin-top:20px !important;
+  }
+
+  .modal.card-details-modal .detail-info-grid{
+    gap:8px !important;
+  }
+
+  .modal.card-details-modal .detail-info-item{
+    min-height:72px !important;
+    padding:12px 14px !important;
+  }
+
+  .modal.card-details-modal .detail-notes-card{
+    margin-top:12px !important;
+    padding:14px !important;
+  }
+
+  /* Same Series / contextual browsing */
+  .modal.card-details-modal .same-series-block,
+  .modal.card-details-modal .detail-same-series{
+    margin-top:14px !important;
+    padding:14px !important;
+  }
+
+  .modal.card-details-modal .contextual-browse-section{
+    margin-top:18px !important;
+    gap:9px !important;
+  }
+
+  .modal.card-details-modal .contextual-browse-head h3{
+    margin-top:2px !important;
+  }
+
+  .modal.card-details-modal .contextual-browse-links{
+    gap:7px !important;
+  }
+
+  .modal.card-details-modal .contextual-browse-links > a{
+    flex-basis:min(72vw,240px) !important;
+    padding:10px 11px !important;
+  }
+
+  /* Reduce excessive spacing before lower browse sections. */
+  .modal.card-details-modal .related-cards-section,
+  .modal.card-details-modal .details-related-section{
+    margin-top:18px !important;
+  }
+}
