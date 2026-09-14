@@ -701,14 +701,68 @@ function publicContactSellerMessage(card){
     ].filter(line=>line!=="").join("\n");
   }
 
+function contactInquiryIntent(){
+    const allowed=new Set(["availability","offer","photos","cod"]);
+    return allowed.has(appContext.contactInquiryIntentState)
+      ? appContext.contactInquiryIntentState
+      : "availability";
+  }
+
+function setContactInquiryIntent(intent){
+    const allowed=new Set(["availability","offer","photos","cod"]);
+    appContext.contactInquiryIntentState=allowed.has(intent) ? intent : "availability";
+    return appContext.contactInquiryIntentState;
+  }
+
+function contactInquiryMessage(card,intent=appContext.contactInquiryIntent()){
+    if(!card) return "";
+
+    const chosen=appContext.setContactInquiryIntent(intent);
+    const code=card.card_code ? ` (${card.card_code})` : "";
+    const name=`${card.name||"Trading card"}${code}`;
+    const url=appContext.getCardShareUrl(card.id);
+
+    const messages={
+      availability:`Hi, is this still available? I'm interested in: ${name}`,
+      offer:`Hi, I'm interested in: ${name}. Would you be open to an offer?`,
+      photos:`Hi, I'm interested in: ${name}. Could I get more photos or a short video of the card?`,
+      cod:`Hi, I'm interested in: ${name}. Is COD / meetup available in Malaysia or Singapore?`
+    };
+
+    return `${messages[chosen]||messages.availability}\n${url}`;
+  }
+
+function contactIntentButtonsHtml(extraClass=""){
+    const active=appContext.contactInquiryIntent();
+    const items=[
+      ["availability","Availability"],
+      ["offer","Make an offer"],
+      ["photos","More photos / video"],
+      ["cod","COD / meetup"]
+    ];
+    return `
+      <div class="details-contact-intents ${appContext.escapeHtml(extraClass)}" aria-label="What would you like to ask?">
+        <span>What would you like to ask?</span>
+        <div>
+          ${items.map(([value,label])=>`
+            <button type="button"
+                    class="${active===value?"active":""}"
+                    data-details-inquiry-intent="${value}"
+                    aria-pressed="${active===value?"true":"false"}">${label}</button>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
 function detailsContactSocialLinksHtml(extraClass=""){
     const messengerUrl = appContext.COLLECT_TCG_FACEBOOK_MESSENGER_URL || "https://m.me/61590041416102";
     return `
       <div class="collect-social-links ${appContext.escapeHtml(extraClass)}" aria-label="Collect TCG contact links">
-        <a href="${appContext.COLLECT_SOCIAL_LINKS.instagram}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Instagram" title="Instagram"><span aria-hidden="true">◎</span><small>IG</small></a>
-        <a href="${messengerUrl}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Message us on Facebook Messenger" title="Message us on Facebook Messenger"><span aria-hidden="true">f</span><small>FB</small></a>
-        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellMY}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Malaysia" title="Carousell Malaysia"><span aria-hidden="true">C</span><small>MY</small></a>
-        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellSG}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" aria-label="Carousell Singapore" title="Carousell Singapore"><span aria-hidden="true">C</span><small>SG</small></a>
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.instagram}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" data-details-contact-platform="Instagram" aria-label="Instagram" title="Instagram"><span aria-hidden="true">◎</span><small>IG</small></a>
+        <a href="${messengerUrl}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" data-details-contact-platform="Facebook Messenger" aria-label="Message us on Facebook Messenger" title="Message us on Facebook Messenger"><span aria-hidden="true">f</span><small>FB</small></a>
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellMY}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" data-details-contact-platform="Carousell Malaysia" aria-label="Carousell Malaysia" title="Carousell Malaysia"><span aria-hidden="true">C</span><small>MY</small></a>
+        <a href="${appContext.COLLECT_SOCIAL_LINKS.carousellSG}" target="_blank" rel="noopener noreferrer" class="collect-social-icon" data-details-contact-platform="Carousell Singapore" aria-label="Carousell Singapore" title="Carousell Singapore"><span aria-hidden="true">C</span><small>SG</small></a>
       </div>
     `;
   }
@@ -1145,7 +1199,10 @@ async function openDetailsModal(card){
                 <span class="detail-purchase-location-icon" aria-hidden="true">📍</span>
                 <span>
                   <strong>Malaysia &amp; Singapore</strong>
-                  <small>Negotiable • Shipping available on eligible orders • COD / meetup options in MY &amp; SG</small>
+                  <small>
+                    <span class="purchase-copy-mobile">Negotiable • Shipping available on eligible orders • COD / meetup options in MY &amp; SG</span>
+                    <span class="purchase-copy-desktop">Negotiable · Shipping · COD / meetup in MY &amp; SG</span>
+                  </small>
                 </span>
               </div>
               <details class="detail-buy-cta">
@@ -1158,8 +1215,9 @@ async function openDetailsModal(card){
                   <button type="button" class="mobile-buy-close" data-mobile-buy-close aria-label="Close contact options">×</button>
                   <div>
                     <strong>Choose how to contact us</strong>
-                    <span>Confirm availability, payment and delivery / meetup options before payment.</span>
+                    <span>Select what you want to ask, then choose a platform.</span>
                   </div>
+                  ${contactIntentButtonsHtml("details-buy-intents")}
                   ${detailsContactSocialLinksHtml("details-buy-social-links")}
                 </div>
               </details>
@@ -1308,6 +1366,35 @@ async function openDetailsModal(card){
         appContext.syncCurrencyEverywhere(currency);
 
         appContext.showToast(`Primary price set to ${appContext.getPriceCurrencyPreference()}`);
+      });
+    });
+
+    appContext.detailsMount.querySelectorAll("[data-details-inquiry-intent]").forEach(btn=>{
+      btn.addEventListener("click",event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const intent=appContext.setContactInquiryIntent(String(btn.dataset.detailsInquiryIntent||"availability"));
+        appContext.detailsMount.querySelectorAll("[data-details-inquiry-intent]").forEach(other=>{
+          const active=String(other.dataset.detailsInquiryIntent||"")===intent;
+          other.classList.toggle("active",active);
+          other.setAttribute("aria-pressed",active?"true":"false");
+        });
+      });
+    });
+
+    appContext.detailsMount.querySelectorAll("[data-details-contact-platform]").forEach(link=>{
+      link.addEventListener("click",()=>{
+        const platform=String(link.dataset.detailsContactPlatform||"Contact");
+        const message=appContext.contactInquiryMessage(card);
+        appContext.copyTextToClipboard(message)
+          .then(copied=>{
+            if(copied){
+              appContext.showToast(`${platform} opened · inquiry copied`);
+            }
+          })
+          .catch(()=>{});
+
+        appContext.recordCardEngagement(card.id,"contact_platform",platform).catch(()=>{});
       });
     });
 
@@ -1532,7 +1619,7 @@ function closeDetailsModal(navigateBack = true){
     }
   }
 
-  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
+  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -1542,6 +1629,7 @@ export function initialize(appContext,runtime){
   appContext.lightboxIndex = 0;
 
   appContext.COLLECT_TCG_FACEBOOK_MESSENGER_URL = "https://m.me/61590041416102";
+  appContext.contactInquiryIntentState = "availability";
 
   appContext.detailsCardTransitionTimer = null;
 

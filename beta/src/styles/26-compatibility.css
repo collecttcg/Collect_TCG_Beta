@@ -9716,3 +9716,138 @@ body.light-mode .interest-contact-assurance-icon{
   .contextual-browse-links::-webkit-scrollbar{display:none}
   .contextual-browse-links>a{flex:0 0 min(78vw,260px)}
 }
+
+
+/* ==========================================================
+   V199 — UNIFIED CONTACT INTENTS + SLIM DESKTOP PURCHASE CTA
+   Desktop uses the same buyer-intent flow as mobile while
+   keeping Safari-safe exact row alignment.
+   ========================================================== */
+.purchase-copy-desktop{display:none;}
+
+@media (min-width:900px){
+  .purchase-copy-mobile{display:none !important;}
+  .purchase-copy-desktop{display:inline !important;}
+
+  .modal.card-details-modal .detail-purchase-panel{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.02fr) !important;
+    gap:9px !important;
+    padding:9px !important;
+    margin:12px 0 4px !important;
+    border-radius:14px !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location{
+    padding:9px 11px !important;
+    gap:9px !important;
+    border-radius:11px !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location-icon{
+    width:31px !important;
+    height:31px !important;
+    flex-basis:31px !important;
+    border-radius:9px !important;
+    font-size:13px !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location > span:last-child{
+    gap:2px !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location strong{
+    font-size:12px !important;
+    line-height:1.18 !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location small{
+    max-width:none !important;
+    font-size:9px !important;
+    line-height:1.3 !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta{
+    min-height:58px !important;
+    border-radius:11px !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    border-radius:11px !important;
+    padding:8px 13px !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary > span{
+    font-size:13px !important;
+    line-height:1.12 !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary > small{
+    margin-top:2px !important;
+    font-size:9px !important;
+    line-height:1.15 !important;
+  }
+
+  .modal.card-details-modal .detail-buy-chooser{
+    width:min(390px,calc(100vw - 48px)) !important;
+    max-width:min(390px,calc(100vw - 48px)) !important;
+    padding:12px !important;
+    gap:9px !important;
+  }
+
+  .modal.card-details-modal .details-contact-intents{
+    display:grid !important;
+    gap:6px !important;
+  }
+
+  .modal.card-details-modal .details-contact-intents > span{
+    color:#8f949e !important;
+    font-size:9px !important;
+    font-weight:700 !important;
+  }
+
+  .modal.card-details-modal .details-contact-intents > div{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:6px !important;
+  }
+
+  .modal.card-details-modal .details-contact-intents button{
+    min-height:32px !important;
+    padding:6px 8px !important;
+    border:1px solid rgba(255,255,255,.10) !important;
+    border-radius:9px !important;
+    background:rgba(255,255,255,.025) !important;
+    color:#c9cbd0 !important;
+    font:inherit !important;
+    font-size:9px !important;
+    font-weight:700 !important;
+    cursor:pointer !important;
+  }
+
+  .modal.card-details-modal .details-contact-intents button.active{
+    border-color:rgba(227,179,65,.42) !important;
+    background:rgba(227,179,65,.10) !important;
+    color:#f0c454 !important;
+  }
+
+  .modal.card-details-modal .detail-buy-chooser .details-buy-social-links a{
+    min-height:36px !important;
+  }
+
+  body.light-mode .modal.card-details-modal .details-contact-intents button{
+    border-color:#ded9cf !important;
+    background:#fff !important;
+    color:#555b61 !important;
+  }
+
+  body.light-mode .modal.card-details-modal .details-contact-intents button.active{
+    border-color:rgba(148,107,24,.38) !important;
+    background:#fbf3e2 !important;
+    color:#8b6416 !important;
+  }
+}
+
+@media (max-width:899px){
+  .purchase-copy-mobile{display:inline !important;}
+  .purchase-copy-desktop{display:none !important;}
+}

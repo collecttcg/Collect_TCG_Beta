@@ -17,7 +17,9 @@ export function setup(appContext){
   if(!bar || !priceEl || !action || !contactOverlay || !contactSheet) return;
 
   let lastInterestFocus=null;
-  let selectedInquiryIntent="availability";
+  let selectedInquiryIntent=typeof appContext.contactInquiryIntent==="function"
+    ? appContext.contactInquiryIntent()
+    : "availability";
   const mobileMedia=window.matchMedia("(max-width:800px)");
 
   function currentCardContext(){
@@ -61,16 +63,14 @@ export function setup(appContext){
   }
 
   function inquiryText(){
+    const detailsCard=typeof appContext.getDetailsCard==="function" ? appContext.getDetailsCard() : null;
+    if(detailsCard && typeof appContext.contactInquiryMessage==="function"){
+      return appContext.contactInquiryMessage(detailsCard,selectedInquiryIntent);
+    }
+
     const ctx=currentCardContext();
     const ref=ctx.reference ? ` (${ctx.reference})` : "";
-    const card=`${ctx.name}${ref}`;
-    const messages={
-      availability:`Hi, is this still available? I'm interested in: ${card}`,
-      offer:`Hi, I'm interested in: ${card}. Would you be open to an offer?`,
-      photos:`Hi, I'm interested in: ${card}. Could I get more photos or a short video of the card?`,
-      cod:`Hi, I'm interested in: ${card}. Is COD / meetup available in Malaysia or Singapore?`
-    };
-    return `${messages[selectedInquiryIntent]||messages.availability}\n${ctx.url}`;
+    return `Hi, is this still available? I'm interested in: ${ctx.name}${ref}\n${ctx.url}`;
   }
 
   async function copyInquiry(trackEngagement=true){
@@ -281,6 +281,9 @@ export function setup(appContext){
   contactSheet.querySelectorAll("[data-inquiry-intent]").forEach(btn=>{
     btn.addEventListener("click",()=>{
       selectedInquiryIntent=String(btn.dataset.inquiryIntent||"availability");
+      if(typeof appContext.setContactInquiryIntent==="function"){
+        selectedInquiryIntent=appContext.setContactInquiryIntent(selectedInquiryIntent);
+      }
       contactSheet.querySelectorAll("[data-inquiry-intent]").forEach(other=>{
         other.classList.toggle("active",other===btn);
       });
