@@ -511,7 +511,7 @@ function renderBulkPsaPopPage(){
     if(!appContext.requireOwner("open PSA POP bulk updater")) return;
 
     const entries=appContext.psaPopEntries();
-    const normalDue=entries.filter(appContext.psaPopEntryIsDue);
+    const normalDue=entries.filter(entry=>appContext.psaPopEntryIsDue(entry));
     const withPop=entries.filter(entry=>entry.pop!=null && entry.pop!=="");
     const never=entries.filter(entry=>entry.pop==null || entry.pop==="");
 
