@@ -850,6 +850,7 @@ function getFbGiveawayPostPrefs(){
         prizeLine:safe(p.prizeLine,appContext.FB_GIVEAWAY_POST_DEFAULTS.prizeLine,350),
         facebookPageUrl:appContext.safeHttpUrl(p.facebookPageUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.facebookPageUrl,
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.instagramUrl,
+        facebookGroupUrl:appContext.safeHttpUrl(p.facebookGroupUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.facebookGroupUrl,
         commentText:safe(p.commentText,appContext.FB_GIVEAWAY_POST_DEFAULTS.commentText,250),
         claimHours:safe(p.claimHours,appContext.FB_GIVEAWAY_POST_DEFAULTS.claimHours,10),
         winnerTool:safe(p.winnerTool,appContext.FB_GIVEAWAY_POST_DEFAULTS.winnerTool,100),
@@ -875,6 +876,7 @@ function saveFbGiveawayPostPrefs(p){
         prizeLine:safe(p.prizeLine,350),
         facebookPageUrl:appContext.safeHttpUrl(p.facebookPageUrl),
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl),
+        facebookGroupUrl:appContext.safeHttpUrl(p.facebookGroupUrl),
         commentText:safe(p.commentText,250),
         claimHours:safe(p.claimHours,10),
         winnerTool:safe(p.winnerTool,100),
@@ -1285,11 +1287,13 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
       ""
     ];
 
-    if(sourceGiveaway){
+    {
       const bonusLines=[];
-      if(sourceGiveaway.bonus_share_facebook) bonusLines.push("➕ +1 BONUS: Share this Facebook post publicly");
-      if(sourceGiveaway.bonus_tag_friends) bonusLines.push("➕ +1 BONUS: Tag 2 friends");
-      if(sourceGiveaway.bonus_share_instagram_story) bonusLines.push("➕ +1 BONUS: Share to your IG Story and tag @collecttcg.mysg");
+      const facebookGroupUrl=appContext.safeHttpUrl(values.facebookGroupUrl);
+      if(facebookGroupUrl) bonusLines.push(`➕ +1 BONUS: Join our Facebook Group: ${facebookGroupUrl}`);
+      if(sourceGiveaway?.bonus_share_facebook) bonusLines.push("➕ +1 BONUS: Share this Facebook post publicly");
+      if(sourceGiveaway?.bonus_tag_friends) bonusLines.push("➕ +1 BONUS: Tag 2 friends");
+      if(sourceGiveaway?.bonus_share_instagram_story) bonusLines.push("➕ +1 BONUS: Share to your IG Story and tag @collecttcg.mysg");
 
       if(bonusLines.length){
         lines.push(
@@ -1416,6 +1420,15 @@ function renderFbGiveawayPostGeneratorPage(){
             </div>
           </div>
 
+          <div class="field">
+            <label for="fbGiveawayFacebookGroupUrl">Facebook Group URL <span class="field-optional">(+1 bonus action)</span></label>
+            <input id="fbGiveawayFacebookGroupUrl" type="url" maxlength="1000" value="${appContext.escapeHtml(prefs.facebookGroupUrl)}">
+            <div class="hint">
+              Included under “Extra Actions / Bonus Entries” as +1.
+              <a href="${appContext.escapeHtml(prefs.facebookGroupUrl)}" target="_blank" rel="noopener noreferrer">Open Facebook Group ↗</a>
+            </div>
+          </div>
+
           <div class="fb-giveaway-condition-card">
             <strong>Condition 2</strong>
             <span>Set the comment text participants must leave. They must also include their own Instagram handle.</span>
@@ -1517,6 +1530,7 @@ function renderFbGiveawayPostGeneratorPage(){
       prizeLine:appContext.$("fbGiveawayPrizeLine"),
       facebookPageUrl:appContext.$("fbGiveawayFacebookPageUrl"),
       instagramUrl:appContext.$("fbGiveawayInstagramUrl"),
+      facebookGroupUrl:appContext.$("fbGiveawayFacebookGroupUrl"),
       commentText:appContext.$("fbGiveawayCommentText"),
       claimHours:appContext.$("fbGiveawayClaimHours"),
       winnerTool:appContext.$("fbGiveawayWinnerTool"),
@@ -1538,6 +1552,7 @@ function renderFbGiveawayPostGeneratorPage(){
         prizeLine:inputs.prizeLine.value,
         facebookPageUrl:inputs.facebookPageUrl.value,
         instagramUrl:inputs.instagramUrl.value,
+        facebookGroupUrl:inputs.facebookGroupUrl.value,
         commentText:inputs.commentText.value,
         claimHours:inputs.claimHours.value,
         winnerTool:inputs.winnerTool.value,
@@ -1587,7 +1602,8 @@ function renderFbGiveawayPostGeneratorPage(){
               <span>${selectedGiveaway.require_comment ? "✓ Comment" : "— Comment"}</span>
               <span>${selectedGiveaway.require_website_code ? "✓ Website code" : "— Website code"}</span>
               <span>${appContext.safeHttpUrl(selectedGiveaway.entry_form_url) ? "✓ Entry form" : "— Entry form"}</span>
-              <span>${(selectedGiveaway.bonus_share_facebook||selectedGiveaway.bonus_tag_friends||selectedGiveaway.bonus_share_instagram_story) ? "✓ Bonus actions" : "— Bonus actions"}</span>
+              <span>✓ Facebook Group +1</span>
+              <span>${(selectedGiveaway.bonus_share_facebook||selectedGiveaway.bonus_tag_friends||selectedGiveaway.bonus_share_instagram_story) ? "✓ Other bonus actions" : "— Other bonus actions"}</span>
             </div>
           ` : ""}
         </div>
@@ -3179,6 +3195,7 @@ export function initialize(appContext,runtime){
     prizeLine:'[PSA10] LECAFIG GOLD TEXT LEADER "JEWELRY BONNEY" SHONEN JUMP',
     facebookPageUrl:"https://www.facebook.com/profile.php?id=61590041416102",
     instagramUrl:"https://www.instagram.com/collecttcg.mysg/",
+    facebookGroupUrl:"https://www.facebook.com/groups/1765445114770379",
     commentText:"That’s him officer!!! 🫵👮",
     claimHours:"24",
     winnerTool:"Wheel of Names",
