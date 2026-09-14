@@ -925,6 +925,94 @@ function syncDetailsFavoriteButton(card){
     if(mobile) mobile.textContent=fav ? "Saved" : "Fav";
   }
 
+function closeDetailsShareMenu(restoreFocus=false){
+    const menu=appContext.$("detailsShareMenu");
+    const btn=appContext.$("detailsShareBtn");
+    const wasOpen=!!menu && !menu.hidden;
+    if(menu) menu.hidden=true;
+    if(btn) btn.setAttribute("aria-expanded","false");
+    if(restoreFocus && wasOpen && btn && !appContext.detailsOverlay.hidden){
+      try{btn.focus({preventScroll:true});}catch{btn.focus();}
+    }
+  }
+
+function toggleDetailsShareMenu(){
+    const menu=appContext.$("detailsShareMenu");
+    const btn=appContext.$("detailsShareBtn");
+    if(!menu || !btn) return;
+    const willOpen=menu.hidden;
+    appContext.closeDetailsMoreMenu(false);
+    menu.hidden=!willOpen;
+    btn.setAttribute("aria-expanded",willOpen?"true":"false");
+    if(willOpen) menu.querySelector("button:not([hidden])")?.focus({preventScroll:true});
+  }
+
+async function copyCurrentCardLink(){
+    const card=appContext.getDetailsCard();
+    if(!card) return false;
+    const copied=await appContext.copyTextToClipboard(appContext.getCardShareUrl(card.id));
+    if(copied){
+      appContext.recordCardEngagement(card.id,"share","Copy Link").catch(()=>{});
+      appContext.showToast("Card link copied");
+    }
+    return copied;
+  }
+
+async function copyCurrentCardPostText(){
+    const card=appContext.getDetailsCard();
+    if(!card) return false;
+    const copied=await appContext.copySharePreview(card);
+    if(copied){
+      appContext.recordCardEngagement(card.id,"share","Copy Post Text").catch(()=>{});
+      appContext.showToast("Post text and link copied");
+    }
+    return copied;
+  }
+
+function openCurrentCardFacebookShare(){
+    const card=appContext.getDetailsCard();
+    if(!card) return;
+    const url=appContext.getCardShareUrl(card.id);
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+    appContext.recordCardEngagement(card.id,"share","Facebook").catch(()=>{});
+  }
+
+async function openCurrentCardMessenger(){
+    const card=appContext.getDetailsCard();
+    if(!card) return;
+    await appContext.copyTextToClipboard(`${appContext.publicCardSharePreview(card)}\n${appContext.getCardShareUrl(card.id)}`).catch(()=>false);
+    window.open(appContext.COLLECT_TCG_FACEBOOK_MESSENGER_URL||"https://m.me/61590041416102","_blank","noopener,noreferrer");
+    appContext.recordCardEngagement(card.id,"share","Messenger").catch(()=>{});
+    appContext.showToast("Post text copied · Messenger opened");
+  }
+
+async function nativeShareCurrentCard(){
+    const card=appContext.getDetailsCard();
+    if(!card) return;
+    const url=appContext.getCardShareUrl(card.id);
+    const preview=appContext.publicCardSharePreview(card);
+
+    if(navigator.share){
+      try{
+        await navigator.share({
+          title:card.name||"Collect TCG MY & SG",
+          text:preview,
+          url
+        });
+        appContext.recordCardEngagement(card.id,"share","Native Share").catch(()=>{});
+        return;
+      }catch(error){
+        if(error?.name==="AbortError") return;
+      }
+    }
+
+    await appContext.copyCurrentCardLink();
+  }
+
 function closeDetailsMoreMenu(restoreFocus=false){
     const menu=appContext.detailsMoreMenuEl;
     const btn=appContext.$("detailsMoreBtn");
@@ -944,6 +1032,7 @@ function toggleDetailsMoreMenu(){
     if(!menu || !btn) return;
 
     const willOpen=menu.hidden;
+    appContext.closeDetailsShareMenu(false);
     menu.hidden=!willOpen;
     btn.setAttribute("aria-expanded",willOpen ? "true" : "false");
 
@@ -1072,6 +1161,7 @@ async function openDetailsModal(card){
 
     appContext.syncDetailsFavoriteButton(card);
     appContext.closeDetailsMoreMenu();
+    appContext.closeDetailsShareMenu();
 
     const detailsCloseButton=appContext.$("detailsCloseBtn");
     if(detailsCloseButton){
@@ -1628,7 +1718,7 @@ function closeDetailsModal(navigateBack = true){
     }
   }
 
-  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
+  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsShareMenu,toggleDetailsShareMenu,copyCurrentCardLink,copyCurrentCardPostText,openCurrentCardFacebookShare,openCurrentCardMessenger,nativeShareCurrentCard,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -1698,7 +1788,35 @@ appContext.$("detailsFavoriteBtn").addEventListener("click",()=>{
     appContext.syncDetailsFavoriteButton(card);
   });
 
-appContext.$("detailsShareBtn").addEventListener("click",appContext.shareCurrentCard);
+appContext.$("detailsShareBtn").addEventListener("click",e=>{
+    e.stopPropagation();
+    appContext.toggleDetailsShareMenu();
+  });
+
+appContext.$("detailsCopyLinkBtn")?.addEventListener("click",async()=>{
+    appContext.closeDetailsShareMenu(false);
+    await appContext.copyCurrentCardLink();
+  });
+
+appContext.$("detailsFacebookShareBtn")?.addEventListener("click",()=>{
+    appContext.closeDetailsShareMenu(false);
+    appContext.openCurrentCardFacebookShare();
+  });
+
+appContext.$("detailsMessengerShareBtn")?.addEventListener("click",async()=>{
+    appContext.closeDetailsShareMenu(false);
+    await appContext.openCurrentCardMessenger();
+  });
+
+appContext.$("detailsCopyPostBtn")?.addEventListener("click",async()=>{
+    appContext.closeDetailsShareMenu(false);
+    await appContext.copyCurrentCardPostText();
+  });
+
+appContext.$("detailsNativeShareBtn")?.addEventListener("click",async()=>{
+    appContext.closeDetailsShareMenu(false);
+    await appContext.nativeShareCurrentCard();
+  });
 
 appContext.$("detailsMoreBtn").addEventListener("click",e=>{
     e.stopPropagation();
@@ -1738,9 +1856,8 @@ appContext.detailsMoreMenuEl.addEventListener("keydown",e=>{
 
 document.addEventListener("click",e=>{
     if(!e.target.closest(".details-more-wrap")) appContext.closeDetailsMoreMenu();
+    if(!e.target.closest(".details-share-wrap")) appContext.closeDetailsShareMenu();
   });
-
-appContext.$("detailsWhatsAppBtn").addEventListener("click",appContext.shareCurrentCardWhatsApp);
 
 appContext.$("compareOpenBtn").addEventListener("click",appContext.renderCompareModal);
 
@@ -1758,12 +1875,7 @@ appContext.$("compareOverlay").addEventListener("click",e=>{
     }
   });
 
-appContext.$("detailsSharePreviewBtn").addEventListener("click",async()=>{
-    const card = appContext.getDetailsCard();
-    if(!card || (!appContext.isOwnerMode() && !appContext.isLiveLifecycle(card))) return;
-    const downloaded=await appContext.downloadPublicCardSharePreview(card);
-    if(downloaded) appContext.recordCardEngagement(card.id,"download","Share Preview").catch(()=>{});
-  });
+
 
 appContext.$("detailsDownloadBtn").addEventListener("click", ()=>{
     const card = appContext.getDetailsCard();

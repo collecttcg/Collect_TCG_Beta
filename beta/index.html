@@ -113,7 +113,7 @@
 <link rel="stylesheet" href="./src/styles/24-card-overview-pill-toggle-inline-v44.css" id="card-overview-pill-toggle-inline-v44">
 
 <link rel="stylesheet" href="./src/styles/25-compatibility.css">
-<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=200">
+<link rel="stylesheet" href="./src/styles/26-compatibility.css?v=201">
 
 <!-- V47: Home Recently Added now uses the shared home-storefront-grid layout (same as High Value / Vintage / Recently Sold). -->
   <!-- v49: Inventory grouped catalogue uses no per-page selector or pagination. -->
@@ -327,7 +327,21 @@
           <span class="details-action-label-mobile" data-favorite-label-mobile>Fav</span>
         </button>
 
-        <button type="button" id="detailsShareBtn" aria-label="Share this card">Share</button>
+        <div class="details-share-wrap">
+          <button type="button"
+                  id="detailsShareBtn"
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                  aria-controls="detailsShareMenu"
+                  aria-label="Share this card">Share</button>
+          <div class="details-share-menu" id="detailsShareMenu" role="menu" hidden>
+            <button type="button" id="detailsCopyLinkBtn" role="menuitem">Copy link</button>
+            <button type="button" id="detailsFacebookShareBtn" role="menuitem">Facebook</button>
+            <button type="button" id="detailsMessengerShareBtn" role="menuitem">Messenger</button>
+            <button type="button" id="detailsCopyPostBtn" role="menuitem">Copy post text</button>
+            <button type="button" id="detailsNativeShareBtn" role="menuitem">More sharing options…</button>
+          </div>
+        </div>
 
         <div class="details-more-wrap">
           <button type="button"
@@ -339,9 +353,7 @@
           </button>
 
           <div class="details-more-menu" id="detailsMoreMenu" role="menu" hidden>
-            <button type="button" id="detailsWhatsAppBtn" role="menuitem">Share on WhatsApp</button>
             <button type="button" id="detailsDownloadBtn" role="menuitem">Download current image</button>
-            <button type="button" id="detailsSharePreviewBtn" role="menuitem">Download share preview</button>
             <button type="button" class="owner-only" id="detailsCloneBtn" role="menuitem" hidden>Clone card</button>
             <button type="button" class="owner-only details-delete-listing-btn" id="detailsDeleteBtn" role="menuitem" hidden>Delete listing permanently</button>
           </div>
@@ -845,6 +857,6 @@
 
 
 <!-- V48: Recently Added uses the exact same storefront row structure/count as High Value/Vintage/Recently Sold. -->
-<script type="module" src="./src/main.js?v=200"></script>
+<script type="module" src="./src/main.js?v=201"></script>
 </body>
 </html>

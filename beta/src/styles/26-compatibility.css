@@ -10065,3 +10065,149 @@ body.light-mode .interest-contact-assurance-icon{
     bottom:calc(150px + env(safe-area-inset-bottom));
   }
 }
+
+
+/* ==========================================================
+   V201 — SHARE MENU CLEANUP + CARD GRID DECLUTTER
+   ========================================================== */
+.details-share-wrap{
+  position:relative;
+  display:inline-flex;
+}
+.details-share-menu{
+  position:absolute;
+  z-index:90;
+  top:calc(100% + 8px);
+  right:0;
+  width:min(230px,calc(100vw - 28px));
+  padding:7px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:12px;
+  background:#15171c;
+  box-shadow:0 18px 48px rgba(0,0,0,.42);
+}
+.details-share-menu[hidden]{display:none !important}
+.details-share-menu button{
+  width:100%;
+  min-height:36px;
+  padding:8px 10px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-size:10px;
+  font-weight:650;
+  text-align:left;
+  cursor:pointer;
+}
+.details-share-menu button:hover,
+.details-share-menu button:focus-visible{
+  background:rgba(255,255,255,.06);
+  outline:none;
+}
+body.light-mode .details-share-menu{
+  border-color:#ddd7cd;
+  background:#fff;
+  box-shadow:0 18px 44px rgba(27,31,35,.16);
+}
+body.light-mode .details-share-menu button:hover,
+body.light-mode .details-share-menu button:focus-visible{
+  background:#f4f1eb;
+}
+
+/* Give the title its own horizontal space. */
+#invGrid.grid:not(.compact-list) .clean-card-title-row-v201{
+  display:block !important;
+  min-width:0 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-title-row-v201 .clean-card-name{
+  width:100% !important;
+  max-width:none !important;
+}
+
+/* Utility actions live below the reference instead of competing with the name. */
+#invGrid.grid:not(.compact-list) .card-utility-row{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:7px !important;
+  min-width:0 !important;
+  margin-top:4px !important;
+}
+
+#invGrid.grid:not(.compact-list) .card-utility-status{
+  display:flex !important;
+  align-items:center !important;
+  min-width:0 !important;
+}
+
+#invGrid.grid:not(.compact-list) .card-utility-row .card-title-actions{
+  margin-left:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:4px !important;
+  flex:0 0 auto !important;
+}
+
+/* Desktop: names get up to three lines for rare/long listing titles. */
+@media (min-width:801px){
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    min-height:42px !important;
+    max-height:42px !important;
+    display:-webkit-box !important;
+    -webkit-box-orient:vertical !important;
+    -webkit-line-clamp:3 !important;
+    overflow:hidden !important;
+    line-height:1.2 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn{
+    padding:5px 7px !important;
+  }
+}
+
+/* Mobile: preserve compact 2-column cards but still give title full width. */
+@media (max-width:800px){
+  #invGrid.grid:not(.compact-list) .clean-card-title-row{
+    display:block !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    min-height:37px !important;
+    max-height:37px !important;
+    -webkit-line-clamp:3 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row{
+    margin-top:2px !important;
+    gap:4px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row .inquiry-basket-btn{
+    width:30px !important;
+    min-width:30px !important;
+    max-width:30px !important;
+    height:30px !important;
+    padding:0 !important;
+    font-size:14px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row .inquiry-basket-btn span{
+    display:none !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-status:empty{
+    display:none !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-status:empty + .card-title-actions{
+    margin-left:0 !important;
+    width:100% !important;
+    justify-content:flex-end !important;
+  }
+}
