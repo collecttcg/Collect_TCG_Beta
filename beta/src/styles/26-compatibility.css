@@ -9162,3 +9162,56 @@ body.light-mode .interest-contact-assurance-icon{
     align-items:center !important;
   }
 }
+
+
+/* ==========================================================
+   V185 BETA — CARD DETAILS FLOATING MENU BOUNDS
+   Keep the desktop More menu inside the details modal.
+   Also harden floating contact/menu content against long labels.
+   Mobile behavior remains unchanged.
+   ========================================================== */
+@media (min-width:801px){
+  .modal.card-details-modal .details-more-wrap{
+    position:relative !important;
+    min-width:0 !important;
+    overflow:visible !important;
+  }
+
+  /* Override the older outward-opening left:0 rule.
+     The menu now opens inward from the right edge of More. */
+  .modal.card-details-modal .details-more-menu{
+    left:auto !important;
+    right:0 !important;
+    transform:none !important;
+    width:min(240px,calc(100vw - 48px)) !important;
+    min-width:min(190px,calc(100vw - 48px)) !important;
+    max-width:calc(100vw - 48px) !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+  }
+
+  .modal.card-details-modal .details-more-menu button{
+    min-width:0 !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+    line-height:1.28 !important;
+    text-align:left !important;
+  }
+
+  /* Other details popover: already right-anchored, but make its
+     width containment explicit so future copy cannot force overflow. */
+  .modal.card-details-modal .detail-buy-chooser{
+    right:0 !important;
+    left:auto !important;
+    max-width:min(344px,calc(100vw - 48px)) !important;
+    box-sizing:border-box !important;
+    overflow-x:hidden !important;
+  }
+
+  .modal.card-details-modal .detail-buy-chooser a,
+  .modal.card-details-modal .detail-buy-chooser button{
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+}
