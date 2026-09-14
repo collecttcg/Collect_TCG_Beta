@@ -9129,3 +9129,36 @@ body.light-mode .interest-contact-assurance-icon{
     box-sizing:border-box !important;
   }
 }
+
+
+/* ==========================================================
+   V183 BETA — DESKTOP CONTACT CTA HEIGHT FIT
+   Match CTA height to the location card in the purchase row.
+   Desktop only; mobile remains unchanged.
+   ========================================================== */
+@media (min-width:900px){
+  .modal.card-details-modal .detail-purchase-panel{
+    align-items:stretch !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location,
+  .modal.card-details-modal .detail-buy-cta{
+    height:100% !important;
+    align-self:stretch !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta{
+    display:flex !important;
+    flex-direction:column !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    flex:1 1 auto !important;
+    height:100% !important;
+    min-height:100% !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+}
