@@ -151,19 +151,37 @@ export function setup(appContext){
   }
 
   function findVisiblePrice(){
+    // Prefer the actual card data. Facebook's iOS in-app browser can report
+    // a valid underlying price element as 0x0 while the details view settles,
+    // which previously made the sticky bar fall back to "View price".
+    try{
+      const card=(typeof appContext.getDetailsCard==="function" ? appContext.getDetailsCard() : null) ||
+        (typeof window.collectCurrentDetailsCardId==="function" && typeof appContext.getCardById==="function"
+          ? appContext.getCardById(window.collectCurrentDetailsCardId()||"")
+          : null);
+
+      if(card && typeof appContext.orderedCardPrices==="function" && typeof appContext.formatCurrencyValue==="function"){
+        const prices=appContext.orderedCardPrices(card);
+        if(Array.isArray(prices) && prices.length){
+          const primary=prices[0];
+          const formatted=appContext.formatCurrencyValue(primary.currency,primary.value);
+          if(String(formatted||"").trim()) return String(formatted).trim();
+        }
+      }
+    }catch(error){
+      console.warn("Could not read sticky detail price from card data:",error);
+    }
+
+    // DOM fallback: accept valid price text even if an embedded browser has not
+    // assigned the element visible geometry yet.
     const selectors=[
-      // Card details use this exact class for the selected primary currency.
       "#detailsMount .detail-price-primary",
       "#detailsMount .detail-summary-price .detail-price-primary",
-
-      // Compatibility fallbacks for older detail layouts.
       "#detailsMount .detail-price",
       "#detailsMount .card-detail-price",
       "#detailsMount [data-detail-price]",
       "#detailsMount .clean-price-primary",
       "#detailsMount .price-primary",
-
-      // Only fall back outside the details modal as a last resort.
       ".detail-price-primary",
       ".detail-price",
       ".card-detail-price",
@@ -173,11 +191,7 @@ export function setup(appContext){
       ".price"
     ];
     for(const s of selectors){
-      const els=[...document.querySelectorAll(s)];
-      const el=els.find(x=>{
-        const r=x.getBoundingClientRect();
-        return r.width>0 && r.height>0 && x.textContent.trim();
-      });
+      const el=[...document.querySelectorAll(s)].find(x=>x.textContent.trim());
       if(el) return el.textContent.trim();
     }
     return "";
@@ -328,6 +342,14 @@ export function setup(appContext){
   });
 
   window.addEventListener("resize",()=>scheduleUpdate(20),{passive:true});
+
+  // Embedded Facebook/Instagram browsers may finish rendering card details
+  // after the initial route event. Refresh the sticky bar when that content changes.
+  const detailsMountObserver=new MutationObserver(()=>scheduleUpdate(20));
+  const detailsMount=document.getElementById("detailsMount");
+  if(detailsMount){
+    detailsMountObserver.observe(detailsMount,{childList:true,subtree:true,characterData:true});
+  }
 
   // Smooth previous/next card navigation uses history.replaceState and does
   // not emit hashchange, so refresh the CTA only after interactions inside
