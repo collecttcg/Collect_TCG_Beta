@@ -97,9 +97,9 @@ function cardThumbHTML(c, renderIndex=999){
         <img class="thumb"
              src="${appContext.escapeHtml(images[0])}"
              alt="${appContext.escapeHtml(c.name)} photo 1"
-             loading="${renderIndex < 6 ? "eager" : "lazy"}"
+             loading="${renderIndex < 2 ? "eager" : "lazy"}"
              decoding="async"
-             fetchpriority="${renderIndex < 4 ? "high" : "low"}"
+             fetchpriority="${renderIndex < 1 ? "high" : "low"}"
              style="border-color:${color}">
         ${appContext.overviewGradeOverlayHTML(c)}
         ${appContext.overviewRawConditionOverlayHTML(c)}

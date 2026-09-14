@@ -43,6 +43,8 @@ import { register as register41 } from '../features/cards/details.js';
 import { register as register42 } from '../features/owner/editor.js';
 import { register as register43 } from '../app/theme.js';
 import { register as register44 } from '../app/startup.js';
+import { register as register45 } from '../features/content/retention.js';
+
 
 export function registerFeatures(appContext){
   register0(appContext);
@@ -90,4 +92,5 @@ export function registerFeatures(appContext){
   register42(appContext);
   register43(appContext);
   register44(appContext);
+  register45(appContext);
 }

@@ -9539,3 +9539,180 @@ body.light-mode .interest-contact-assurance-icon{
     top:calc(100% + 10px) !important;
   }
 }
+
+
+/* ==========================================================
+   V198 — RETENTION / BUYER JOURNEY
+   ========================================================== */
+.retention-home-section{
+  display:grid;
+  gap:18px;
+  margin:26px 0;
+}
+.retention-resume-card{
+  width:100%;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:13px;
+  align-items:center;
+  padding:15px 17px;
+  border:1px solid rgba(241,188,57,.28);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(241,188,57,.09),rgba(255,255,255,.025));
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+.retention-resume-card:hover{border-color:rgba(241,188,57,.52)}
+.retention-resume-card>span:nth-child(2){display:grid;gap:3px}
+.retention-resume-card strong{font-size:13px}
+.retention-resume-card small{font-size:10px;color:var(--muted);line-height:1.35}
+.retention-resume-icon{font-size:20px;color:#f1bc39}
+.retention-recent-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:14px;
+}
+.retention-recent-head h3{margin:3px 0 0}
+.retention-recent-head>a{font-size:11px;font-weight:700}
+.retention-recent-rail{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+}
+.retention-recent-card{
+  display:grid;
+  gap:6px;
+  min-width:0;
+  color:inherit;
+  text-decoration:none;
+}
+.retention-recent-image{
+  position:relative;
+  aspect-ratio:4/5;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  background:#0c0e12;
+}
+.retention-recent-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.retention-recent-image>span{
+  display:grid;
+  width:100%;
+  height:100%;
+  place-items:center;
+  color:var(--muted);
+  font-size:22px;
+}
+.retention-recent-card>strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10.5px;
+}
+.retention-recent-card>small{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.contextual-browse-section{
+  display:grid;
+  gap:11px;
+  margin-top:22px;
+}
+.contextual-browse-head h3{margin:3px 0 0}
+.contextual-browse-links{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+.contextual-browse-links>a{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  padding:12px 13px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+  color:inherit;
+  text-decoration:none;
+}
+.contextual-browse-links>a:hover{border-color:rgba(241,188,57,.3)}
+.contextual-browse-links>a>span:first-child{display:grid;gap:3px;min-width:0}
+.contextual-browse-links strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10.5px;
+}
+.contextual-browse-links small{font-size:9px;color:var(--muted)}
+
+.interest-contact-intents{
+  display:grid;
+  gap:8px;
+  margin:12px 0 2px;
+}
+.interest-contact-intents>span{
+  font-size:10px;
+  font-weight:700;
+  color:var(--muted);
+}
+.interest-contact-intents>div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.interest-contact-intents button{
+  min-height:34px;
+  padding:7px 10px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  background:rgba(255,255,255,.03);
+  color:inherit;
+  font:inherit;
+  font-size:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.interest-contact-intents button.active{
+  border-color:rgba(241,188,57,.5);
+  background:rgba(241,188,57,.12);
+  color:#f4c64f;
+}
+
+@media (max-width:899px){
+  .retention-home-section{margin:20px 0}
+  .retention-recent-rail{
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    padding-bottom:4px;
+    scroll-snap-type:x proximity;
+    scrollbar-width:none;
+  }
+  .retention-recent-rail::-webkit-scrollbar{display:none}
+  .retention-recent-card{
+    flex:0 0 132px;
+    scroll-snap-align:start;
+  }
+  .contextual-browse-links{
+    display:flex;
+    overflow-x:auto;
+    gap:8px;
+    padding-bottom:3px;
+    scrollbar-width:none;
+  }
+  .contextual-browse-links::-webkit-scrollbar{display:none}
+  .contextual-browse-links>a{flex:0 0 min(78vw,260px)}
+}

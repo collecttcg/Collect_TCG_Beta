@@ -344,6 +344,8 @@ function renderHomePage(){
         </div>
       </section>
 
+      ${appContext.retentionHomeHTML()}
+
       <div id="homeTrendingShelf">
         <section class="home-premium-section home-premium-trending-loading">
           <div class="home-premium-section-head">

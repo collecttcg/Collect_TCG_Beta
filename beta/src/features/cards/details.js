@@ -1248,6 +1248,8 @@ async function openDetailsModal(card){
         `;
       })()}
 
+      ${appContext.contextualBrowseLinksHTML(card)}
+
       ${(()=>{
         const related = appContext.getRelatedCards(card, 8, {availableOnly:isSoldListing});
         return related.length ? `
@@ -1265,6 +1267,7 @@ async function openDetailsModal(card){
     `;
 
     appContext.detailsOverlay.hidden = false;
+    appContext.updateDynamicShareMeta(card);
 
     // The Card Details modal is reused between listings. Reset its actual
     // scrolling element only AFTER the new card has been rendered and the
@@ -1489,6 +1492,7 @@ function closeDetailsModal(navigateBack = true){
     );
     appContext.detailsOverlay.hidden = true;
     appContext.detailsMount.innerHTML = "";
+    appContext.resetDynamicShareMeta();
     appContext.detailsCardId = null;
 
     const focusTarget = appContext.detailsLastFocusedElement;
