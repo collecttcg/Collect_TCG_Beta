@@ -580,7 +580,7 @@ function renderBulkPsaPopPage(){
 
       <div class="psa-bulk-stats">
         <article><span>PSA listings</span><strong>${entries.length.toLocaleString()}</strong><small>Every eligible listing will be processed</small></article>
-        <article><span>Due today</span><strong>${due.length.toLocaleString()}</strong><small>${due.length.toLocaleString()} listing${due.length===1?"":"s"} to process</small></article>
+        <article><span>Due now</span><strong>${due.length.toLocaleString()}</strong><small>${due.length.toLocaleString()} listing${due.length===1?"":"s"} to process</small></article>
         <article><span>With POP</span><strong>${withPop.length.toLocaleString()}</strong><small>Current saved population</small></article>
         <article><span>Never synced</span><strong>${never.length.toLocaleString()}</strong><small>No POP saved yet</small></article>
       </div>
@@ -597,7 +597,7 @@ function renderBulkPsaPopPage(){
 
         <div class="psa-bulk-note">
           <strong>PSA refresh workflow</strong>
-          <span><b>Update Due PSA POPs</b> includes normal due/stale listings plus failed or interrupted items from the latest bulk run, so you can resume after PSA rate limits.</span>
+          <span><b>Update Due PSA POPs</b> includes listings whose POP refresh is 3+ days old, plus failed or interrupted items from the latest bulk run, so you can resume after PSA rate limits.</span>
         </div>
 
         ${activeState ? `
@@ -610,7 +610,8 @@ function renderBulkPsaPopPage(){
         <div class="psa-bulk-list">
           ${entries.length ? entries.map((entry,index)=>{
             const dueNow=dueSet.has(entry);
-            const updated=entry.updatedAt ? new Date(entry.updatedAt).toLocaleString() : "Never";
+            const updatedMs=appContext.psaPopEntryUpdatedMs(entry);
+            const updated=updatedMs ? new Date(updatedMs).toLocaleString() : "Never";
             const pop=entry.pop!=null && entry.pop!=="" && Number.isFinite(Number(entry.pop))
               ? Number(entry.pop).toLocaleString()
               : "—";
