@@ -76,34 +76,12 @@ function cardTileHTML(c, renderIndex=999){
           </div>
 
           <div class="clean-card-main">
-            <div class="clean-card-title-row clean-card-title-row-v201">
+            <div class="clean-card-title-row">
               <div class="card-name clean-card-name">${appContext.escapeHtml(c.name).toUpperCase()}</div>
               ${appContext.isOwnerMode() && appContext.cardLifecycle(c)==="draft"
                 ? `<span class="owner-hidden-listing-badge" title="Hidden from normal visitors">HIDDEN</span>`
                 : ""}
-            </div>
-            <div class="clean-card-reference-toggle-row">
-              ${(c.card_code || c.year) ? `<div class="clean-card-reference">${c.card_code ? `<span>${appContext.escapeHtml(c.card_code)}</span>` : ""}${c.card_code && c.year ? `<span class="clean-card-reference-dot">·</span>` : ""}${c.year ? `<span>${appContext.escapeHtml(c.year)}</span>` : ""}</div>` : `<span class="clean-card-reference-spacer" aria-hidden="true"></span>`}
-              <button type="button"
-                      class="card-overview-pill-toggle"
-                      data-card-pill-toggle
-                      aria-expanded="false"
-                      title="Show card metadata">
-                <span>Details</span><span class="pill-toggle-chevron" aria-hidden="true">▾</span>
-              </button>
-            </div>
-            <div class="card-utility-row">
-              <div class="card-utility-status">
-                ${appContext.priceMovementBadgeHTML(c,{compact:true})}
-              </div>
               <div class="card-title-actions">
-                <button type="button"
-                  class="inquiry-basket-btn ${appContext.inquiryBasketHas(c.id)?"active":""}"
-                  data-inquiry-basket-toggle="${appContext.escapeHtml(c.id)}"
-                  aria-pressed="${appContext.inquiryBasketHas(c.id)?"true":"false"}"
-                  title="Add to multi-card inquiry">
-                  ＋ <span data-basket-label>${appContext.inquiryBasketHas(c.id)?"Added":"Inquiry"}</span>
-                </button>
                 <button type="button"
                   class="compare-card-btn ${appContext.isCompareSelected(c.id) ? "active" : ""}"
                   data-compare-id="${appContext.escapeHtml(c.id)}"
@@ -117,6 +95,16 @@ function cardTileHTML(c, renderIndex=999){
                   title="${appContext.isFavorite(c.id) ? "Remove from favorites" : "Add to favorites"}"
                   aria-label="${appContext.isFavorite(c.id) ? "Remove from favorites" : "Add to favorites"}">${appContext.isFavorite(c.id) ? "♥" : "♡"}</button>
               </div>
+            </div>
+            <div class="clean-card-reference-toggle-row">
+              ${(c.card_code || c.year) ? `<div class="clean-card-reference">${c.card_code ? `<span>${appContext.escapeHtml(c.card_code)}</span>` : ""}${c.card_code && c.year ? `<span class="clean-card-reference-dot">·</span>` : ""}${c.year ? `<span>${appContext.escapeHtml(c.year)}</span>` : ""}</div>` : `<span class="clean-card-reference-spacer" aria-hidden="true"></span>`}
+              <button type="button"
+                      class="card-overview-pill-toggle"
+                      data-card-pill-toggle
+                      aria-expanded="false"
+                      title="Show card metadata">
+                <span>Details</span><span class="pill-toggle-chevron" aria-hidden="true">▾</span>
+              </button>
             </div>
             ${appContext.normalizeFilterValue(c.availability) === "sold" && c.sold_at ? `<div class="sold-archive-date">Sold ${appContext.escapeHtml(appContext.formatSoldDate(c.sold_at))}</div>` : ""}
             <div class="clean-card-subrow clean-all-pills card-overview-collapsible-pills" hidden>
