@@ -514,8 +514,6 @@ function renderBulkPsaPopPage(){
     const due=entries.filter(appContext.psaPopEntryIsDue);
     const withPop=entries.filter(entry=>entry.pop!=null && entry.pop!=="");
     const never=entries.filter(entry=>entry.pop==null || entry.pop==="");
-    const uniqueCertCount=new Set(entries.map(entry=>appContext.normalizePsaCertInput(entry.cert)).filter(Boolean)).size;
-    const dueUniqueCertCount=new Set(due.map(entry=>appContext.normalizePsaCertInput(entry.cert)).filter(Boolean)).size;
 
     let previousResult=null;
     try{
@@ -541,8 +539,8 @@ function renderBulkPsaPopPage(){
       ` : ""}
 
       <div class="psa-bulk-stats">
-        <article><span>PSA listings</span><strong>${entries.length.toLocaleString()}</strong><small>${uniqueCertCount.toLocaleString()} unique PSA cert${uniqueCertCount===1?"":"s"}</small></article>
-        <article><span>Due today</span><strong>${due.length.toLocaleString()}</strong><small>${dueUniqueCertCount.toLocaleString()} unique cert${dueUniqueCertCount===1?"":"s"} to look up</small></article>
+        <article><span>PSA listings</span><strong>${entries.length.toLocaleString()}</strong><small>Every eligible listing will be processed</small></article>
+        <article><span>Due today</span><strong>${due.length.toLocaleString()}</strong><small>${due.length.toLocaleString()} listing${due.length===1?"":"s"} to process</small></article>
         <article><span>With POP</span><strong>${withPop.length.toLocaleString()}</strong><small>Current saved population</small></article>
         <article><span>Never synced</span><strong>${never.length.toLocaleString()}</strong><small>No POP saved yet</small></article>
       </div>
@@ -559,7 +557,7 @@ function renderBulkPsaPopPage(){
 
         <div class="psa-bulk-note">
           <strong>Daily workflow</strong>
-          <span><b>Update Due PSA POPs</b> counts each due listing separately. If multiple listings share the same cert, PSA is still opened only once for that cert and the returned POP is applied to every matching listing.</span>
+          <span><b>Update Due PSA POPs</b> counts each due listing separately. Every eligible listing is processed, including listings that share the same PSA certificate number.</span>
         </div>
 
         ${activeState ? `
@@ -647,12 +645,12 @@ function renderBulkPsaPopPage(){
 
         const ok=confirm(
           `Update ${due.length} due listing${due.length===1?"":"s"} now?\n\n` +
-          `${dueUniqueCertCount} unique PSA cert${dueUniqueCertCount===1?"":"s"} will be looked up. Shared certs are queried once and applied to every matching listing.`
+          `${due.length} PSA listing${due.length===1?"":"s"} will be processed. Duplicate certificate numbers are included separately.`
         );
         if(!ok) return;
 
         button.disabled=true;
-        appContext.showToast(`Starting PSA POP refresh · ${due.length} listing${due.length===1?"":"s"} · ${dueUniqueCertCount} unique cert${dueUniqueCertCount===1?"":"s"}…`);
+        appContext.showToast(`Starting PSA POP refresh · ${due.length} listing${due.length===1?"":"s"}…`);
 
         requestAnimationFrame(()=>{
           appContext.startBulkPsaPopSync(due,"Daily PSA POP");

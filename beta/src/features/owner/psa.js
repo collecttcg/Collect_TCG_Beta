@@ -180,11 +180,9 @@ function openPsaPopAutoSync(cert,{bulk=false,bulkState=null}={}){
 function startBulkPsaPopSync(entries,label="PSA POP"){
     if(!appContext.requireOwner("bulk update PSA POP")) return;
 
-    const certs=[...new Set(
-      (Array.isArray(entries)?entries:[])
-        .map(entry=>appContext.normalizePsaCertInput(entry?.cert||""))
-        .filter(Boolean)
-    )];
+    const certs=(entries||[])
+      .map(entry=>normalizePsaCertInput(entry?.cert))
+      .filter(Boolean);
 
     if(!certs.length){
       appContext.showToast("No PSA certs need updating");
