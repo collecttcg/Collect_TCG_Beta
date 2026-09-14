@@ -9215,3 +9215,41 @@ body.light-mode .interest-contact-assurance-icon{
     max-width:100% !important;
   }
 }
+
+
+/* ==========================================================
+   V191 — SAFARI-SAFE DESKTOP CONTACT CTA HEIGHT
+   Avoid percentage-height resolution against the tall details column.
+   Let the purchase grid row define the shared height instead.
+   ========================================================== */
+@media (min-width:900px){
+  .modal.card-details-modal .detail-purchase-panel{
+    align-items:stretch !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location{
+    height:auto !important;
+    min-height:0 !important;
+    align-self:stretch !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta{
+    height:auto !important;
+    min-height:0 !important;
+    align-self:stretch !important;
+    display:flex !important;
+    flex-direction:column !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    flex:1 1 auto !important;
+    height:auto !important;
+    min-height:74px !important;
+    max-height:none !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+    box-sizing:border-box !important;
+  }
+}
