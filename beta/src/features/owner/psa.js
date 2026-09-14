@@ -221,6 +221,13 @@ function finishPsaBulkSync(state){
     };
 
     appContext.sessionStorage.setItem(appContext.PSA_BULK_RESULT_KEY,JSON.stringify(result));
+    try{
+      if(result.failed.length){
+        appContext.localStorage.setItem(appContext.PSA_BULK_RETRY_KEY,JSON.stringify(result));
+      }else{
+        appContext.localStorage.removeItem(appContext.PSA_BULK_RETRY_KEY);
+      }
+    }catch{}
     appContext.clearPsaBulkState();
 
     appContext.showToast(
@@ -272,6 +279,20 @@ function continuePsaBulkSync(cert,{ok=true,reason="",encodedState=""}={}){
 
     setTimeout(()=>appContext.openPsaPopAutoSync(nextCert,{bulk:true,bulkState:state}),250);
     return true;
+  }
+
+function readPsaBulkRetryResult(){
+    try{
+      const parsed=JSON.parse(appContext.localStorage.getItem(appContext.PSA_BULK_RETRY_KEY)||"null");
+      if(!parsed || !Array.isArray(parsed.failed)) return null;
+      return parsed;
+    }catch{
+      return null;
+    }
+  }
+
+function clearPsaBulkRetryResult(){
+    try{ appContext.localStorage.removeItem(appContext.PSA_BULK_RETRY_KEY); }catch{}
   }
 
 function hasPsaCert(card){
@@ -453,7 +474,7 @@ async function handleIncomingPsaPopSync(){
     else appContext.goToRoute("inventory");
   }
 
-  Object.assign(appContext,{normalizePsaCertInput,psaCertUrl,gradePopLabel,gradePopDetailLabel,validGradingEntries,gradingSummaryLabel,gradingPopSummaryLabel,slabLabel,psaPopEntries,psaPopEntryIsDue,encodePsaBulkState,decodePsaBulkState,readPsaBulkState,writePsaBulkState,clearPsaBulkState,openPsaPopAutoSync,startBulkPsaPopSync,finishPsaBulkSync,continuePsaBulkSync,hasPsaCert,refreshPsaPopForCard,handleIncomingPsaPopSync});
+  Object.assign(appContext,{normalizePsaCertInput,psaCertUrl,gradePopLabel,gradePopDetailLabel,validGradingEntries,gradingSummaryLabel,gradingPopSummaryLabel,slabLabel,psaPopEntries,psaPopEntryIsDue,encodePsaBulkState,decodePsaBulkState,readPsaBulkState,writePsaBulkState,clearPsaBulkState,openPsaPopAutoSync,startBulkPsaPopSync,finishPsaBulkSync,continuePsaBulkSync,readPsaBulkRetryResult,clearPsaBulkRetryResult,hasPsaCert,refreshPsaPopForCard,handleIncomingPsaPopSync});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -461,6 +482,7 @@ export function initialize(appContext,runtime){
   appContext.PSA_BULK_SYNC_KEY = "collect_tcg_psa_bulk_sync_v2";
 
   appContext.PSA_BULK_RESULT_KEY = "collect_tcg_psa_bulk_result_v1";
+  appContext.PSA_BULK_RETRY_KEY = "collect_tcg_psa_bulk_retry_v1";
 
   appContext.PSA_POP_DAILY_MS = 24*60*60*1000;
 

@@ -515,12 +515,43 @@ function renderBulkPsaPopPage(){
     const withPop=entries.filter(entry=>entry.pop!=null && entry.pop!=="");
     const never=entries.filter(entry=>entry.pop==null || entry.pop==="");
 
+    // Recovery queue is deliberately separate from the normal Due calculation.
+    // It tracks failures/remaining work from the most recent bulk run even when
+    // those cards already had POP values before the run.
+    const retryResult=appContext.readPsaBulkRetryResult?.()||null;
+
     let previousResult=null;
     try{
       previousResult=JSON.parse(appContext.sessionStorage.getItem(appContext.PSA_BULK_RESULT_KEY)||"null");
     }catch{}
 
     const activeState=appContext.readPsaBulkState();
+
+    const recoveryCertQueue=activeState
+      ? activeState.certs.slice(Math.max(0,Number(activeState.index||0)))
+      : (Array.isArray(retryResult?.failed)
+          ? retryResult.failed.map(item=>appContext.normalizePsaCertInput(item?.cert||"")).filter(Boolean)
+          : []);
+
+    // Preserve repeated cert occurrences so V186's "every listing" behavior is
+    // also respected when retrying failed/remaining work.
+    const entryPools=new Map();
+    entries.forEach(entry=>{
+      const cert=appContext.normalizePsaCertInput(entry?.cert||"");
+      if(!cert) return;
+      if(!entryPools.has(cert)) entryPools.set(cert,[]);
+      entryPools.get(cert).push(entry);
+    });
+    const poolIndexes=new Map();
+    const recoveryEntries=recoveryCertQueue.map(cert=>{
+      const normalized=appContext.normalizePsaCertInput(cert||"");
+      const pool=entryPools.get(normalized)||[];
+      if(!pool.length) return null;
+      const index=Number(poolIndexes.get(normalized)||0);
+      const entry=pool[Math.min(index,pool.length-1)];
+      poolIndexes.set(normalized,index+1);
+      return entry;
+    }).filter(Boolean);
 
     appContext.view.innerHTML=`
       <div class="page-head">
@@ -543,6 +574,7 @@ function renderBulkPsaPopPage(){
         <article><span>Due today</span><strong>${due.length.toLocaleString()}</strong><small>${due.length.toLocaleString()} listing${due.length===1?"":"s"} to process</small></article>
         <article><span>With POP</span><strong>${withPop.length.toLocaleString()}</strong><small>Current saved population</small></article>
         <article><span>Never synced</span><strong>${never.length.toLocaleString()}</strong><small>No POP saved yet</small></article>
+        <article><span>Retry / remaining</span><strong>${recoveryEntries.length.toLocaleString()}</strong><small>Failed or interrupted last bulk run</small></article>
       </div>
 
       <section class="panel psa-bulk-panel">
@@ -553,11 +585,14 @@ function renderBulkPsaPopPage(){
           <button type="button" class="btn-ghost" id="psaBulkAllBtn" data-psa-bulk-action="all" aria-label="Update all PSA POPs" ${entries.length?"":"disabled"}>
             Update All PSA POPs (${entries.length})
           </button>
+          <button type="button" class="btn-secondary" id="psaBulkRetryBtn" data-psa-bulk-action="retry" aria-label="Retry failed or remaining PSA POPs" ${recoveryEntries.length?"":"disabled"}>
+            Retry Failed / Remaining (${recoveryEntries.length})
+          </button>
         </div>
 
         <div class="psa-bulk-note">
-          <strong>Daily workflow</strong>
-          <span><b>Update Due PSA POPs</b> counts each due listing separately. Every eligible listing is processed, including listings that share the same PSA certificate number.</span>
+          <strong>PSA refresh workflow</strong>
+          <span><b>Due</b> keeps the normal freshness schedule. <b>Retry Failed / Remaining</b> resumes the last bulk run, including cards that already had POP values before that run.</span>
         </div>
 
         ${activeState ? `
@@ -654,6 +689,30 @@ function renderBulkPsaPopPage(){
 
         requestAnimationFrame(()=>{
           appContext.startBulkPsaPopSync(due,"Daily PSA POP");
+        });
+        return;
+      }
+
+      if(button.id==="psaBulkRetryBtn"){
+        event.preventDefault();
+
+        if(!recoveryEntries.length){
+          appContext.showToast("No failed or remaining PSA POP updates");
+          return;
+        }
+
+        const sourceLabel=activeState ? "interrupted bulk run" : "failed items from the last bulk run";
+        const ok=confirm(
+          `Retry ${recoveryEntries.length} PSA listing${recoveryEntries.length===1?"":"s"}?\n\n` +
+          `This resumes ${sourceLabel}. Cards that refreshed successfully are skipped, even if they already had POP values before.`
+        );
+        if(!ok) return;
+
+        button.disabled=true;
+        appContext.showToast(`Retrying ${recoveryEntries.length} PSA listing${recoveryEntries.length===1?"":"s"}…`);
+
+        requestAnimationFrame(()=>{
+          appContext.startBulkPsaPopSync(recoveryEntries,"Retry PSA POP");
         });
         return;
       }
