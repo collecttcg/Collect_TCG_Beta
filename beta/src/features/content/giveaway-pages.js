@@ -513,7 +513,7 @@ function openGiveawayDetails(g){
           </div>
 
           ${appContext.giveawayDetailRequirementsHTML(g)}
-          ${!winner ? `
+          ${!winner && g.bonus_join_facebook_group ? `
             <div class="giveaway-detail-entry-actions">
               <a class="btn-ghost"
                  href="${appContext.escapeHtml(appContext.COLLECT_SOCIAL_LINKS.facebookGroup)}"
@@ -612,18 +612,20 @@ function renderGiveawayPage(){
                 </a>
               ` : ""}
 
-              ${`
+              ${(g.bonus_join_facebook_group || g.bonus_share_facebook || g.bonus_tag_friends || g.bonus_share_instagram_story) ? `
                 <div class="giveaway-bonus-actions">
                   <div class="giveaway-bonus-actions-head">
                     <strong>Extra Actions</strong>
                     <span>Optional bonus entries</span>
                   </div>
-                  <a href="${appContext.escapeHtml(appContext.COLLECT_SOCIAL_LINKS.facebookGroup)}"
-                     target="_blank" rel="noopener noreferrer"
-                     data-giveaway-growth-action="bonus_facebook_group_click"
-                     data-giveaway-id="${appContext.escapeHtml(g.id)}">
-                    <span>Join Collect TCG Facebook Group</span><b>+1</b>
-                  </a>
+                  ${g.bonus_join_facebook_group ? `
+                    <a href="${appContext.escapeHtml(appContext.COLLECT_SOCIAL_LINKS.facebookGroup)}"
+                       target="_blank" rel="noopener noreferrer"
+                       data-giveaway-growth-action="bonus_facebook_group_click"
+                       data-giveaway-id="${appContext.escapeHtml(g.id)}">
+                      <span>Join Collect TCG Facebook Group</span><b>+1</b>
+                    </a>
+                  ` : ""}
                   ${g.bonus_share_facebook ? `
                     <a href="${appContext.escapeHtml(appContext.safeHttpUrl(g.facebook_post_url)||appContext.COLLECT_SOCIAL_LINKS.facebook)}"
                        target="_blank" rel="noopener noreferrer"
@@ -649,7 +651,7 @@ function renderGiveawayPage(){
                     </a>
                   ` : ""}
                 </div>
-              `}
+              ` : ""}
 
               <div class="giveaway-explore-title">Explore Collect TCG</div>
               <div class="giveaway-growth-links">
@@ -1047,9 +1049,18 @@ function openGiveawayForm(g=null){
     appContext.$("giveawayRequireWebsiteCode").checked = g ? g.require_website_code !== false : true;
     appContext.$("giveawayFacebookPostUrl").value = g ? (g.facebook_post_url || "") : "";
     appContext.$("giveawayInstagramPostUrl").value = g ? (g.instagram_post_url || "") : "";
+    appContext.$("giveawayBonusFacebookGroup").checked = g ? g.bonus_join_facebook_group === true : false;
     appContext.$("giveawayBonusShareFacebook").checked = g ? g.bonus_share_facebook === true : false;
     appContext.$("giveawayBonusTagFriends").checked = g ? g.bonus_tag_friends === true : false;
     appContext.$("giveawayBonusInstagramStory").checked = g ? g.bonus_share_instagram_story === true : false;
+
+    const facebookGroupBonusInput=appContext.$("giveawayBonusFacebookGroup");
+    if(facebookGroupBonusInput){
+      facebookGroupBonusInput.disabled=appContext.giveawayFacebookGroupBonusSupported===false;
+      facebookGroupBonusInput.title=appContext.giveawayFacebookGroupBonusSupported===false
+        ? "Run the V208 Facebook Group bonus migration first."
+        : "";
+    }
 
     const growthBlock=appContext.$(".giveaway-growth-owner-block");
     if(growthBlock){
@@ -1405,6 +1416,7 @@ appContext.$("giveawayForm").addEventListener("submit", async e=>{
       require_website_code:appContext.$("giveawayRequireWebsiteCode").checked,
       facebook_post_url:appContext.safeHttpUrl(facebookPostRaw) || null,
       instagram_post_url:appContext.safeHttpUrl(instagramPostRaw) || null,
+      bonus_join_facebook_group:appContext.$("giveawayBonusFacebookGroup").checked,
       bonus_share_facebook:appContext.$("giveawayBonusShareFacebook").checked,
       bonus_tag_friends:appContext.$("giveawayBonusTagFriends").checked,
       bonus_share_instagram_story:appContext.$("giveawayBonusInstagramStory").checked,

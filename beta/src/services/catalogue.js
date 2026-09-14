@@ -764,9 +764,11 @@ export function initialize(appContext,runtime){
 
   appContext.GIVEAWAY_PUBLIC_COLUMNS_PROFILE = "id,title,card_name,image_url,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_announced_at,created_at";
 
-  appContext.GIVEAWAY_PUBLIC_COLUMNS_MULTI = "id,title,card_name,image_url,images,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,gave_away_date,winner_announced_at,created_at";
+  appContext.GIVEAWAY_PUBLIC_COLUMNS_MULTI = "id,title,card_name,image_url,images,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_join_facebook_group,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,gave_away_date,winner_announced_at,created_at";
 
-  appContext.GIVEAWAY_PUBLIC_COLUMNS = "id,title,card_name,image_url,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,gave_away_date,winner_announced_at,created_at";
+  appContext.GIVEAWAY_PUBLIC_COLUMNS = "id,title,card_name,image_url,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_join_facebook_group,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,gave_away_date,winner_announced_at,created_at";
+
+  appContext.GIVEAWAY_PUBLIC_COLUMNS_PRE_FB_GROUP_BONUS = "id,title,card_name,image_url,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,gave_away_date,winner_announced_at,created_at";
 
   appContext.GIVEAWAY_PUBLIC_COLUMNS_PRE_GAVE_AWAY_DATE = "id,title,card_name,image_url,status,ends_at,how_to_enter,details,winner_name,winner_profile_url,winner_sort_order,is_hidden,giveaway_code,entry_form_url,require_facebook,require_instagram,require_comment,require_website_code,facebook_post_url,instagram_post_url,bonus_share_facebook,bonus_tag_friends,bonus_share_instagram_story,winner_announced_at,created_at";
 
@@ -783,6 +785,8 @@ export function initialize(appContext,runtime){
   appContext.giveawayGrowthFieldsSupported = "unknown";
 
   appContext.giveawayBonusFieldsSupported = "unknown";
+
+  appContext.giveawayFacebookGroupBonusSupported = "unknown";
 
   appContext.giveawayGaveAwayDateSupported = "unknown";
 

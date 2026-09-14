@@ -34,6 +34,7 @@ function giveawayFromDb(row){
       require_website_code: row.require_website_code !== false,
       facebook_post_url: appContext.safeHttpUrl(row.facebook_post_url || ""),
       instagram_post_url: appContext.safeHttpUrl(row.instagram_post_url || ""),
+      bonus_join_facebook_group: row.bonus_join_facebook_group === true,
       bonus_share_facebook: row.bonus_share_facebook === true,
       bonus_tag_friends: row.bonus_tag_friends === true,
       bonus_share_instagram_story: row.bonus_share_instagram_story === true,
@@ -152,6 +153,7 @@ async function loadGiveaways(){
         hidden:true,
         growth:true,
         bonus:true,
+        facebookGroupBonus:true,
         gaveAwayDate:true,
         images:true
       },
@@ -162,6 +164,18 @@ async function loadGiveaways(){
         hidden:true,
         growth:true,
         bonus:true,
+        facebookGroupBonus:true,
+        gaveAwayDate:true,
+        images:false
+      },
+      {
+        columns:appContext.GIVEAWAY_PUBLIC_COLUMNS_PRE_FB_GROUP_BONUS,
+        profile:true,
+        sort:true,
+        hidden:true,
+        growth:true,
+        bonus:true,
+        facebookGroupBonus:false,
         gaveAwayDate:true,
         images:false
       },
@@ -172,6 +186,7 @@ async function loadGiveaways(){
         hidden:true,
         growth:true,
         bonus:true,
+        facebookGroupBonus:false,
         gaveAwayDate:false
       },
       {
@@ -180,7 +195,8 @@ async function loadGiveaways(){
         sort:true,
         hidden:true,
         growth:true,
-        bonus:false
+        bonus:false,
+        facebookGroupBonus:false
       },
       {
         columns:appContext.GIVEAWAY_PUBLIC_COLUMNS_PRE_GROWTH,
@@ -245,6 +261,7 @@ async function loadGiveaways(){
         appContext.optionalColumnUnavailable(error,"require_website_code") ||
         appContext.optionalColumnUnavailable(error,"facebook_post_url") ||
         appContext.optionalColumnUnavailable(error,"instagram_post_url") ||
+        appContext.optionalColumnUnavailable(error,"bonus_join_facebook_group") ||
         appContext.optionalColumnUnavailable(error,"bonus_share_facebook") ||
         appContext.optionalColumnUnavailable(error,"bonus_tag_friends") ||
         appContext.optionalColumnUnavailable(error,"bonus_share_instagram_story") ||
@@ -265,6 +282,7 @@ async function loadGiveaways(){
     appContext.giveawayHiddenSupported=!!selected?.hidden;
     appContext.giveawayGrowthFieldsSupported=!!selected?.growth;
     appContext.giveawayBonusFieldsSupported=!!selected?.bonus;
+    appContext.giveawayFacebookGroupBonusSupported=!!selected?.facebookGroupBonus;
     appContext.giveawayGaveAwayDateSupported=!!selected?.gaveAwayDate;
     appContext.giveawayImagesSupported=!!selected?.images;
 
@@ -313,6 +331,9 @@ async function saveGiveaway(payload, id){
           "require_comment","facebook_post_url","instagram_post_url",
           "bonus_share_facebook","bonus_tag_friends","bonus_share_instagram_story"
         );
+        if(appContext.giveawayFacebookGroupBonusSupported!==false){
+          cols.push("bonus_join_facebook_group");
+        }
       }
       if(appContext.giveawayGaveAwayDateSupported!==false) cols.push("gave_away_date");
 
@@ -336,9 +357,13 @@ async function saveGiveaway(payload, id){
       delete writePayload.require_comment;
       delete writePayload.facebook_post_url;
       delete writePayload.instagram_post_url;
+      delete writePayload.bonus_join_facebook_group;
       delete writePayload.bonus_share_facebook;
       delete writePayload.bonus_tag_friends;
       delete writePayload.bonus_share_instagram_story;
+    }
+    if(appContext.giveawayFacebookGroupBonusSupported===false){
+      delete writePayload.bonus_join_facebook_group;
     }
     if(appContext.giveawayGaveAwayDateSupported===false) delete writePayload.gave_away_date;
     if(appContext.giveawayImagesSupported===false) delete writePayload.images;
@@ -357,6 +382,7 @@ async function saveGiveaway(payload, id){
       ["require_comment","giveawayBonusFieldsSupported"],
       ["facebook_post_url","giveawayBonusFieldsSupported"],
       ["instagram_post_url","giveawayBonusFieldsSupported"],
+      ["bonus_join_facebook_group","giveawayFacebookGroupBonusSupported"],
       ["bonus_share_facebook","giveawayBonusFieldsSupported"],
       ["bonus_tag_friends","giveawayBonusFieldsSupported"],
       ["bonus_share_instagram_story","giveawayBonusFieldsSupported"],
@@ -375,6 +401,7 @@ async function saveGiveaway(payload, id){
         if(stateName==="giveawayWinnerProfileUrlSupported") appContext.giveawayWinnerProfileUrlSupported=false;
         if(stateName==="giveawayGrowthFieldsSupported") appContext.giveawayGrowthFieldsSupported=false;
         if(stateName==="giveawayBonusFieldsSupported") appContext.giveawayBonusFieldsSupported=false;
+        if(stateName==="giveawayFacebookGroupBonusSupported") appContext.giveawayFacebookGroupBonusSupported=false;
         if(stateName==="giveawayGaveAwayDateSupported") appContext.giveawayGaveAwayDateSupported=false;
         if(stateName==="giveawayImagesSupported") appContext.giveawayImagesSupported=false;
 
@@ -389,6 +416,7 @@ async function saveGiveaway(payload, id){
           delete writePayload.require_comment;
           delete writePayload.facebook_post_url;
           delete writePayload.instagram_post_url;
+          delete writePayload.bonus_join_facebook_group;
           delete writePayload.bonus_share_facebook;
           delete writePayload.bonus_tag_friends;
           delete writePayload.bonus_share_instagram_story;
@@ -421,6 +449,9 @@ async function saveGiveaway(payload, id){
         Object.prototype.hasOwnProperty.call(writePayload,"instagram_post_url")
       ){
         appContext.giveawayBonusFieldsSupported=true;
+      }
+      if(Object.prototype.hasOwnProperty.call(writePayload,"bonus_join_facebook_group")){
+        appContext.giveawayFacebookGroupBonusSupported=true;
       }
       if(Object.prototype.hasOwnProperty.call(writePayload,"gave_away_date")){
         appContext.giveawayGaveAwayDateSupported=true;

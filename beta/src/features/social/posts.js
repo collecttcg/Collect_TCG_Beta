@@ -851,6 +851,7 @@ function getFbGiveawayPostPrefs(){
         facebookPageUrl:appContext.safeHttpUrl(p.facebookPageUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.facebookPageUrl,
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.instagramUrl,
         facebookGroupUrl:appContext.safeHttpUrl(p.facebookGroupUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.facebookGroupUrl,
+        includeFacebookGroupBonus:p.includeFacebookGroupBonus!==false,
         commentText:safe(p.commentText,appContext.FB_GIVEAWAY_POST_DEFAULTS.commentText,250),
         claimHours:safe(p.claimHours,appContext.FB_GIVEAWAY_POST_DEFAULTS.claimHours,10),
         winnerTool:safe(p.winnerTool,appContext.FB_GIVEAWAY_POST_DEFAULTS.winnerTool,100),
@@ -877,6 +878,7 @@ function saveFbGiveawayPostPrefs(p){
         facebookPageUrl:appContext.safeHttpUrl(p.facebookPageUrl),
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl),
         facebookGroupUrl:appContext.safeHttpUrl(p.facebookGroupUrl),
+        includeFacebookGroupBonus:p.includeFacebookGroupBonus!==false,
         commentText:safe(p.commentText,250),
         claimHours:safe(p.claimHours,10),
         winnerTool:safe(p.winnerTool,100),
@@ -1290,7 +1292,9 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
     {
       const bonusLines=[];
       const facebookGroupUrl=appContext.safeHttpUrl(values.facebookGroupUrl);
-      if(facebookGroupUrl) bonusLines.push(`➕ +1 BONUS: Join our Facebook Group: ${facebookGroupUrl}`);
+      if(values.includeFacebookGroupBonus && facebookGroupUrl){
+        bonusLines.push(`➕ +1 BONUS: Join our Facebook Group: ${facebookGroupUrl}`);
+      }
       if(sourceGiveaway?.bonus_share_facebook) bonusLines.push("➕ +1 BONUS: Share this Facebook post publicly");
       if(sourceGiveaway?.bonus_tag_friends) bonusLines.push("➕ +1 BONUS: Tag 2 friends");
       if(sourceGiveaway?.bonus_share_instagram_story) bonusLines.push("➕ +1 BONUS: Share to your IG Story and tag @collecttcg.mysg");
@@ -1421,10 +1425,13 @@ function renderFbGiveawayPostGeneratorPage(){
           </div>
 
           <div class="field">
-            <label for="fbGiveawayFacebookGroupUrl">Facebook Group URL <span class="field-optional">(+1 bonus action)</span></label>
+            <label class="fb-giveaway-check">
+              <input id="fbGiveawayFacebookGroupBonus" type="checkbox" ${prefs.includeFacebookGroupBonus?"checked":""}>
+              <span>Include “Join / Follow our Facebook Group” as +1 bonus entry</span>
+            </label>
+            <label for="fbGiveawayFacebookGroupUrl">Facebook Group URL</label>
             <input id="fbGiveawayFacebookGroupUrl" type="url" maxlength="1000" value="${appContext.escapeHtml(prefs.facebookGroupUrl)}">
             <div class="hint">
-              Included under “Extra Actions / Bonus Entries” as +1.
               <a href="${appContext.escapeHtml(prefs.facebookGroupUrl)}" target="_blank" rel="noopener noreferrer">Open Facebook Group ↗</a>
             </div>
           </div>
@@ -1531,6 +1538,7 @@ function renderFbGiveawayPostGeneratorPage(){
       facebookPageUrl:appContext.$("fbGiveawayFacebookPageUrl"),
       instagramUrl:appContext.$("fbGiveawayInstagramUrl"),
       facebookGroupUrl:appContext.$("fbGiveawayFacebookGroupUrl"),
+      includeFacebookGroupBonus:appContext.$("fbGiveawayFacebookGroupBonus"),
       commentText:appContext.$("fbGiveawayCommentText"),
       claimHours:appContext.$("fbGiveawayClaimHours"),
       winnerTool:appContext.$("fbGiveawayWinnerTool"),
@@ -1553,6 +1561,7 @@ function renderFbGiveawayPostGeneratorPage(){
         facebookPageUrl:inputs.facebookPageUrl.value,
         instagramUrl:inputs.instagramUrl.value,
         facebookGroupUrl:inputs.facebookGroupUrl.value,
+        includeFacebookGroupBonus:inputs.includeFacebookGroupBonus.checked,
         commentText:inputs.commentText.value,
         claimHours:inputs.claimHours.value,
         winnerTool:inputs.winnerTool.value,
@@ -1602,7 +1611,7 @@ function renderFbGiveawayPostGeneratorPage(){
               <span>${selectedGiveaway.require_comment ? "✓ Comment" : "— Comment"}</span>
               <span>${selectedGiveaway.require_website_code ? "✓ Website code" : "— Website code"}</span>
               <span>${appContext.safeHttpUrl(selectedGiveaway.entry_form_url) ? "✓ Entry form" : "— Entry form"}</span>
-              <span>✓ Facebook Group +1</span>
+              <span>${selectedGiveaway.bonus_join_facebook_group ? "✓ Facebook Group +1" : "— Facebook Group +1"}</span>
               <span>${(selectedGiveaway.bonus_share_facebook||selectedGiveaway.bonus_tag_friends||selectedGiveaway.bonus_share_instagram_story) ? "✓ Other bonus actions" : "— Other bonus actions"}</span>
             </div>
           ` : ""}
@@ -1620,6 +1629,7 @@ function renderFbGiveawayPostGeneratorPage(){
 
         const ends=appContext.formatGiveawayEndsGmt8(selectedGiveaway.ends_at);
         if(ends) inputs.giveawayEnds.value=ends;
+        inputs.includeFacebookGroupBonus.checked=selectedGiveaway.bonus_join_facebook_group===true;
       }
 
       renderSelectedGiveaway();
@@ -3196,6 +3206,7 @@ export function initialize(appContext,runtime){
     facebookPageUrl:"https://www.facebook.com/profile.php?id=61590041416102",
     instagramUrl:"https://www.instagram.com/collecttcg.mysg/",
     facebookGroupUrl:"https://www.facebook.com/groups/1765445114770379",
+    includeFacebookGroupBonus:true,
     commentText:"That’s him officer!!! 🫵👮",
     claimHours:"24",
     winnerTool:"Wheel of Names",
