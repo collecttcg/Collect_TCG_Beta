@@ -9087,3 +9087,45 @@ body.light-mode .interest-contact-assurance-icon{
     color:#35383d !important;
   }
 }
+
+
+/* ==========================================================
+   V182 BETA — DESKTOP CONTACT CTA BOUNDS FIX
+   Prevent the purchase CTA from overflowing the detail panel.
+   Desktop only; mobile remains unchanged.
+   ========================================================== */
+@media (min-width:900px){
+  .modal.card-details-modal .detail-purchase-panel{
+    grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr) !important;
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    overflow:visible !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location,
+  .modal.card-details-modal .detail-buy-cta{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    box-sizing:border-box !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary > span,
+  .modal.card-details-modal .detail-buy-cta > summary > small{
+    max-width:100% !important;
+    overflow-wrap:anywhere !important;
+  }
+
+  .modal.card-details-modal .detail-buy-chooser{
+    max-width:min(344px,calc(100vw - 48px)) !important;
+    box-sizing:border-box !important;
+  }
+}
