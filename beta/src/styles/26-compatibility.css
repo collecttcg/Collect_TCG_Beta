@@ -10211,3 +10211,37 @@ body.light-mode .details-share-menu button:focus-visible{
     justify-content:flex-end !important;
   }
 }
+
+
+/* ==========================================================
+   V202 — MOBILE SHARE MENU BOUNDS
+   Keep the Share popover inside the Card Details modal/header.
+   Desktop keeps the compact right-anchored dropdown.
+   ========================================================== */
+@media (max-width:800px){
+  .modal.card-details-modal .details-share-wrap{
+    position:static !important;
+  }
+
+  .modal.card-details-modal .details-secondary-actions{
+    position:relative !important;
+  }
+
+  .modal.card-details-modal .details-share-menu{
+    position:absolute !important;
+    top:calc(100% + 8px) !important;
+    left:8px !important;
+    right:8px !important;
+    width:auto !important;
+    max-width:none !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+    margin:0 !important;
+    z-index:120 !important;
+  }
+
+  .modal.card-details-modal .details-share-menu button{
+    min-height:40px !important;
+    font-size:11px !important;
+  }
+}
