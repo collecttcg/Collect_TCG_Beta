@@ -8804,3 +8804,103 @@ body.light-mode .home-premium-card-price{color:#8d651b;}
 body.light-mode .home-premium-trust{border-color:#dfd7c7;background:#faf7f0;}
 body.light-mode .home-premium-trust-points span{border-color:#e3ddd3;background:#fff;}
 body.light-mode .home-premium-trust-points strong{color:#43464b;}
+
+
+/* ==========================================================
+   V179 BETA — PREMIUM MOBILE CONTACT ASSURANCE
+   ========================================================== */
+.interest-contact-assurance{
+  display:grid !important;
+  grid-template-columns:34px minmax(0,1fr) !important;
+  align-items:center !important;
+  gap:10px !important;
+  margin:0 0 11px !important;
+  padding:9px 10px !important;
+  border:1px solid rgba(78,210,199,.18) !important;
+  border-radius:12px !important;
+  background:rgba(78,210,199,.035) !important;
+  text-align:left !important;
+}
+.interest-contact-assurance-icon{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  display:grid !important;
+  place-items:center !important;
+  align-self:center !important;
+  border:1px solid rgba(78,210,199,.28) !important;
+  border-radius:10px !important;
+  background:rgba(78,210,199,.065) !important;
+  color:#62d5c9 !important;
+}
+.interest-contact-assurance-icon svg{
+  width:17px !important;
+  height:17px !important;
+  display:block !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.75 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+.interest-contact-assurance-copy{
+  display:block !important;
+  min-width:0 !important;
+}
+.interest-contact-assurance .interest-contact-assurance-copy > strong{
+  display:block !important;
+  margin:0 !important;
+  color:var(--text) !important;
+  font-size:12.5px !important;
+  font-weight:650 !important;
+  line-height:1.2 !important;
+  letter-spacing:.005em !important;
+  text-transform:none !important;
+}
+.interest-contact-assurance .interest-contact-assurance-copy > span{
+  display:block !important;
+  margin:3px 0 0 !important;
+  color:var(--text-muted) !important;
+  font-size:10.5px !important;
+  font-weight:400 !important;
+  line-height:1.35 !important;
+  letter-spacing:0 !important;
+  text-transform:none !important;
+}
+@media(max-width:800px){
+  .interest-contact-assurance{
+    grid-template-columns:32px minmax(0,1fr) !important;
+    gap:9px !important;
+    margin-bottom:10px !important;
+    padding:9px 10px !important;
+  }
+  .interest-contact-assurance-icon{
+    width:32px !important;
+    height:32px !important;
+    min-width:32px !important;
+    border-radius:9px !important;
+  }
+  .interest-contact-assurance-icon svg{
+    width:16px !important;
+    height:16px !important;
+  }
+  .interest-contact-assurance .interest-contact-assurance-copy > strong{
+    font-size:13px !important;
+  }
+  .interest-contact-assurance .interest-contact-assurance-copy > span{
+    font-size:11px !important;
+  }
+}
+@media(max-width:350px){
+  .interest-contact-assurance .interest-contact-assurance-copy > strong{font-size:12.5px !important;}
+  .interest-contact-assurance .interest-contact-assurance-copy > span{font-size:10.5px !important;}
+}
+body.light-mode .interest-contact-assurance{
+  border-color:rgba(30,145,133,.20) !important;
+  background:rgba(30,145,133,.045) !important;
+}
+body.light-mode .interest-contact-assurance-icon{
+  border-color:rgba(30,145,133,.25) !important;
+  background:rgba(30,145,133,.07) !important;
+  color:#168f83 !important;
+}
