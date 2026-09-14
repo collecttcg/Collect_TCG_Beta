@@ -9491,3 +9491,51 @@ body.light-mode .interest-contact-assurance-icon{
     grid-column:1/-1;
   }
 }
+
+
+/* ==========================================================
+   V197 — SAFARI DESKTOP PURCHASE ROW EXACT HEIGHT ALIGNMENT
+   The location card defines the grid row height. The <details>
+   CTA stretches to that row, while its summary fills the row
+   via absolute positioning. This avoids Safari percentage-height
+   bugs and removes the empty space under Contact to Buy.
+   ========================================================== */
+@media (min-width:900px){
+  .modal.card-details-modal .detail-purchase-panel{
+    align-items:stretch !important;
+  }
+
+  .modal.card-details-modal .detail-purchase-location{
+    align-self:stretch !important;
+    height:auto !important;
+    min-height:0 !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta{
+    position:relative !important;
+    align-self:stretch !important;
+    display:block !important;
+    height:auto !important;
+    min-height:74px !important;
+    max-height:none !important;
+  }
+
+  .modal.card-details-modal .detail-buy-cta > summary{
+    position:absolute !important;
+    inset:0 !important;
+    width:auto !important;
+    height:auto !important;
+    min-height:0 !important;
+    max-height:none !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  .modal.card-details-modal .detail-buy-chooser{
+    top:calc(100% + 10px) !important;
+  }
+}
