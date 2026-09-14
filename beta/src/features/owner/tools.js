@@ -445,13 +445,53 @@ function storageAuditFileSize(item){
       metadata.size,
       metadata.contentLength,
       metadata.content_length,
+      metadata["content-length"],
       item?.size
     ];
     for(const value of candidates){
       const n=Number(value);
       if(Number.isFinite(n) && n>=0) return n;
     }
-    return 0;
+    return null;
+  }
+
+async function storageAuditResolveFileSize(file){
+    const current=Number(file?.size);
+    if(Number.isFinite(current) && current>0) return current;
+
+    try{
+      const {data}=appContext.supabaseClient.storage
+        .from(appContext.CARD_IMAGE_STORAGE_BUCKET)
+        .getPublicUrl(file.path);
+      const url=appContext.safeHttpUrl(data?.publicUrl||"");
+      if(!url) return null;
+
+      // HEAD is cheap and avoids downloading image bodies. Some embedded
+      // browsers/storage CDNs may block HEAD, so fall back to a one-byte range.
+      try{
+        const response=await appContext.fetch(url,{method:"HEAD",cache:"no-store"});
+        const length=Number(response.headers.get("content-length"));
+        if(response.ok && Number.isFinite(length) && length>0) return length;
+      }catch{}
+
+      try{
+        const response=await appContext.fetch(url,{
+          method:"GET",
+          headers:{Range:"bytes=0-0"},
+          cache:"no-store"
+        });
+        const range=String(response.headers.get("content-range")||"");
+        const match=range.match(/\/(\d+)$/);
+        if(match){
+          const total=Number(match[1]);
+          if(Number.isFinite(total) && total>0) return total;
+        }
+        const length=Number(response.headers.get("content-length"));
+        if(Number.isFinite(length) && length>1) return length;
+      }catch{}
+    }catch{}
+
+    return null;
   }
 
 function storageAuditFileEtag(item){
@@ -516,6 +556,23 @@ async function listOwnerCardStorageObjects(){
     };
 
     await walk("");
+
+    // Some Supabase Storage responses omit per-file size metadata. Resolve only
+    // unknown sizes from the public object headers so the audit never silently
+    // counts an unknown file as 0 bytes.
+    const unknown=files.filter(file=>!Number.isFinite(Number(file.size)) || Number(file.size)<=0);
+    const concurrency=6;
+    let cursor=0;
+    const worker=async()=>{
+      while(cursor<unknown.length){
+        const index=cursor++;
+        const file=unknown[index];
+        const size=await appContext.storageAuditResolveFileSize(file);
+        file.size=Number.isFinite(Number(size)) && Number(size)>0 ? Number(size) : null;
+      }
+    };
+    await Promise.all(Array.from({length:Math.min(concurrency,unknown.length)},worker));
+
     return files;
   }
 
@@ -599,15 +656,16 @@ async function buildOwnerStorageAudit(){
     const rows=files.map(file=>({
       ...file,
       referenced:referenced.has(file.path),
-      oversized:file.size>=3*1024*1024
+      oversized:Number.isFinite(Number(file.size)) && Number(file.size)>=3*1024*1024
     }));
 
     const orphans=rows.filter(file=>!file.referenced);
     const oversized=rows.filter(file=>file.oversized).sort((a,b)=>b.size-a.size);
     const largest=rows.slice().sort((a,b)=>b.size-a.size).slice(0,50);
     const duplicates=appContext.storageAuditDuplicateGroups(rows);
-    const orphanBytes=orphans.reduce((sum,file)=>sum+file.size,0);
-    const ownerFolderBytes=rows.reduce((sum,file)=>sum+file.size,0);
+    const orphanBytes=orphans.reduce((sum,file)=>sum+(Number.isFinite(Number(file.size))?Number(file.size):0),0);
+    const ownerFolderBytes=rows.reduce((sum,file)=>sum+(Number.isFinite(Number(file.size))?Number(file.size):0),0);
+    const unknownSizeCount=rows.filter(file=>!Number.isFinite(Number(file.size)) || Number(file.size)<=0).length;
 
     return {
       files:rows,
@@ -618,6 +676,7 @@ async function buildOwnerStorageAudit(){
       possibleDuplicateGroups:duplicates.possibleGroups,
       orphanBytes,
       ownerFolderBytes,
+      unknownSizeCount,
       usage
     };
   }
@@ -651,7 +710,7 @@ function storageAuditTableRows(rows,{checkboxes=false,limit=50}={}){
                   <strong title="${appContext.escapeHtml(file.path)}">${appContext.escapeHtml(file.name)}</strong>
                   <small>${appContext.escapeHtml(file.path)}</small>
                 </td>
-                <td>${appContext.escapeHtml(appContext.formatApproxBytes(file.size))}</td>
+                <td>${Number.isFinite(Number(file.size)) && Number(file.size)>0 ? appContext.escapeHtml(appContext.formatApproxBytes(file.size)) : "Size unavailable"}</td>
                 <td>${file.updatedAt ? appContext.escapeHtml(new Date(file.updatedAt).toLocaleString()) : "—"}</td>
               </tr>
             `).join("")}
@@ -989,16 +1048,18 @@ async function ownerCardStorageReferenceMap(){
   }
 
 function storageOptimizerTargetBytes(size){
-    const bytes=Number(size||0);
-    if(!Number.isFinite(bytes) || bytes<=0) return 0;
+    const bytes=Number(size);
+    if(!Number.isFinite(bytes) || bytes<=0) return null;
     const target=1.5*1024*1024;
     return Math.min(bytes,target);
   }
 
 function storageOptimizerSavingsBytes(size){
-    const bytes=Number(size||0);
-    if(!Number.isFinite(bytes) || bytes<=0) return 0;
-    return Math.max(0,bytes-appContext.storageOptimizerTargetBytes(bytes));
+    const bytes=Number(size);
+    if(!Number.isFinite(bytes) || bytes<=0) return null;
+    const target=appContext.storageOptimizerTargetBytes(bytes);
+    if(!Number.isFinite(Number(target))) return null;
+    return Math.max(0,bytes-Number(target));
   }
 
 function storageOptimizerReferenceLabel(ref){
@@ -1042,7 +1103,7 @@ function storageOptimizerCardGroups(files,referenceMap){
         if(group.paths.has(file.path)) return;
         group.paths.add(file.path);
         group.bytes+=Number(file.size||0);
-        group.estimatedSavings+=appContext.storageOptimizerSavingsBytes(file.size);
+        group.estimatedSavings+=Number(appContext.storageOptimizerSavingsBytes(file.size)||0);
       });
     });
 
@@ -1080,8 +1141,8 @@ function storageOptimizerVariantPairs(files,referenceMap){
         ...pair,
         bytes:Number(pair.original?.size||0)+Number(pair.watermarked?.size||0),
         estimatedSavings:
-          appContext.storageOptimizerSavingsBytes(pair.original?.size||0)+
-          appContext.storageOptimizerSavingsBytes(pair.watermarked?.size||0)
+          Number(appContext.storageOptimizerSavingsBytes(pair.original?.size)||0)+
+          Number(appContext.storageOptimizerSavingsBytes(pair.watermarked?.size)||0)
       }))
       .sort((a,b)=>b.bytes-a.bytes);
   }
@@ -1102,15 +1163,17 @@ async function buildOwnerStorageOptimizer(){
         estimatedSavings:appContext.storageOptimizerSavingsBytes(file.size)
       }));
 
-    const over2=referencedFiles.filter(file=>file.size>=2*1024*1024).sort((a,b)=>b.size-a.size);
-    const over3=referencedFiles.filter(file=>file.size>=3*1024*1024).sort((a,b)=>b.size-a.size);
-    const over5=referencedFiles.filter(file=>file.size>=5*1024*1024).sort((a,b)=>b.size-a.size);
-    const opportunities=referencedFiles
-      .filter(file=>file.estimatedSavings>0)
+    const knownFiles=referencedFiles.filter(file=>Number.isFinite(Number(file.size)) && Number(file.size)>0);
+    const unknownSizeFiles=referencedFiles.filter(file=>!Number.isFinite(Number(file.size)) || Number(file.size)<=0);
+    const over2=knownFiles.filter(file=>file.size>=2*1024*1024).sort((a,b)=>b.size-a.size);
+    const over3=knownFiles.filter(file=>file.size>=3*1024*1024).sort((a,b)=>b.size-a.size);
+    const over5=knownFiles.filter(file=>file.size>=5*1024*1024).sort((a,b)=>b.size-a.size);
+    const opportunities=knownFiles
+      .filter(file=>Number(file.estimatedSavings)>0)
       .sort((a,b)=>b.estimatedSavings-a.estimatedSavings);
 
-    const estimatedSavings=opportunities.reduce((sum,file)=>sum+file.estimatedSavings,0);
-    const referencedBytes=referencedFiles.reduce((sum,file)=>sum+Number(file.size||0),0);
+    const estimatedSavings=opportunities.reduce((sum,file)=>sum+Number(file.estimatedSavings||0),0);
+    const referencedBytes=knownFiles.reduce((sum,file)=>sum+Number(file.size||0),0);
     const cards=appContext.storageOptimizerCardGroups(referencedFiles,referenceMap);
     const variantPairs=appContext.storageOptimizerVariantPairs(referencedFiles,referenceMap);
 
@@ -1122,6 +1185,7 @@ async function buildOwnerStorageOptimizer(){
       opportunities,
       estimatedSavings,
       referencedBytes,
+      unknownSizeFiles,
       cards,
       variantPairs,
       usage
@@ -1152,9 +1216,9 @@ function storageOptimizerTableRows(rows,{limit=50,showReference=true}={}){
                   <strong title="${appContext.escapeHtml(file.path)}">${appContext.escapeHtml(file.name)}</strong>
                   <small>${appContext.escapeHtml(file.path)}</small>
                 </td>
-                <td>${appContext.escapeHtml(appContext.formatApproxBytes(file.size))}</td>
-                <td>${appContext.escapeHtml(appContext.formatApproxBytes(file.targetBytes))}</td>
-                <td><strong>${appContext.escapeHtml(appContext.formatApproxBytes(file.estimatedSavings))}</strong></td>
+                <td>${Number.isFinite(Number(file.size)) && Number(file.size)>0 ? appContext.escapeHtml(appContext.formatApproxBytes(file.size)) : "Size unavailable"}</td>
+                <td>${Number.isFinite(Number(file.targetBytes)) && Number(file.targetBytes)>0 ? appContext.escapeHtml(appContext.formatApproxBytes(file.targetBytes)) : "—"}</td>
+                <td><strong>${Number.isFinite(Number(file.estimatedSavings)) ? appContext.escapeHtml(appContext.formatApproxBytes(file.estimatedSavings)) : "—"}</strong></td>
                 ${showReference?`
                   <td>
                     ${(file.references||[]).slice(0,2).map(ref=>
@@ -1244,6 +1308,13 @@ function renderStorageOptimizerPage(){
               <span>Watermark variant pairs</span>
               <small>Original + watermarked reversible pairs</small>
             </article>
+            ${audit.unknownSizeFiles.length ? `
+              <article class="needs-attention">
+                <strong>${audit.unknownSizeFiles.length.toLocaleString()}</strong>
+                <span>Sizes unavailable</span>
+                <small>These files are excluded from the savings estimate</small>
+              </article>
+            ` : ""}
           </div>
 
           <section class="storage-audit-section">
@@ -1437,7 +1508,7 @@ function renderSupabaseHealthPage(){
     refresh();
   }
 
-  Object.assign(appContext,{currentInventoryToolMode,currentInventoryToolSubmode,inventoryToolsSwitcher,getStoredImageHealthSummary,saveStoredImageHealthSummary,ownerInventoryHealthSummary,ownerHealthClass,invalidateOwnerReservedAgeCache,ownerReservedAgeDays,ownerReservedAgeLabel,loadOwnerReservedAges,ownerReservedAgeSummary,hydrateOwnerReservedAgeUI,refreshOwnerReservedAgeUI,ownerAlertSummary,ownerAlertsDashboardHTML,storageAuditFileSize,storageAuditFileEtag,listOwnerCardStorageObjects,ownerCardStorageReferencePaths,storageAuditDuplicateGroups,buildOwnerStorageAudit,storageAuditTableRows,renderStorageAuditPage,ownerCardStorageReferenceMap,storageOptimizerTargetBytes,storageOptimizerSavingsBytes,storageOptimizerReferenceLabel,storageOptimizerCardGroups,storageOptimizerVariantPairs,buildOwnerStorageOptimizer,storageOptimizerTableRows,renderStorageOptimizerPage,renderSupabaseHealthPage});
+  Object.assign(appContext,{currentInventoryToolMode,currentInventoryToolSubmode,inventoryToolsSwitcher,getStoredImageHealthSummary,saveStoredImageHealthSummary,ownerInventoryHealthSummary,ownerHealthClass,invalidateOwnerReservedAgeCache,ownerReservedAgeDays,ownerReservedAgeLabel,loadOwnerReservedAges,ownerReservedAgeSummary,hydrateOwnerReservedAgeUI,refreshOwnerReservedAgeUI,ownerAlertSummary,ownerAlertsDashboardHTML,storageAuditFileSize,storageAuditResolveFileSize,storageAuditFileEtag,listOwnerCardStorageObjects,ownerCardStorageReferencePaths,storageAuditDuplicateGroups,buildOwnerStorageAudit,storageAuditTableRows,renderStorageAuditPage,ownerCardStorageReferenceMap,storageOptimizerTargetBytes,storageOptimizerSavingsBytes,storageOptimizerReferenceLabel,storageOptimizerCardGroups,storageOptimizerVariantPairs,buildOwnerStorageOptimizer,storageOptimizerTableRows,renderStorageOptimizerPage,renderSupabaseHealthPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
