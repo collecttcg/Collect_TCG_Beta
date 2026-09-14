@@ -22,7 +22,7 @@ function currentInventoryToolSubmode(mode){
       activity:["recent","history"],
       quality:["audit","images","duplicates","reprocess"],
       lifecycle:["lifecycle"],
-      storage:["health","storage-audit","migration","backup"]
+      storage:["health","storage-audit","storage-optimizer","migration","backup"]
     };
     if(allowed[mode]?.includes(requested)) return requested;
 
@@ -38,7 +38,7 @@ function inventoryToolsSwitcher(mode,submode){
       ["activity","Activity","Recent · history","recent"],
       ["quality","Quality","Audit · images · duplicates · reprocess","audit"],
       ["lifecycle","Lifecycle","Drafts · archive","lifecycle"],
-      ["storage","Storage","Capacity · audit · migration · backup","health"]
+      ["storage","Storage","Capacity · audit · optimizer · migration · backup","health"]
     ];
 
     const subtabs={
@@ -46,7 +46,7 @@ function inventoryToolsSwitcher(mode,submode){
       activity:[["recent","Recently Edited"],["history","Edit History"]],
       quality:[["audit","Catalogue Audit"],["images","Image Health"],["duplicates","Duplicates"],["reprocess","Reprocess Images"]],
       lifecycle:[["lifecycle","Drafts & Archive"]],
-      storage:[["health","Database & Storage"],["storage-audit","Storage Audit"],["migration","Image Migration"],["backup","Backup"]]
+      storage:[["health","Database & Storage"],["storage-audit","Storage Audit"],["storage-optimizer","Storage Optimizer"],["migration","Image Migration"],["backup","Backup"]]
     };
 
     return `
@@ -910,6 +910,442 @@ function renderStorageAuditPage(){
     appContext.$("storageAuditRunBtn")?.addEventListener("click",runAudit);
   }
 
+
+async function ownerCardStorageReferenceMap(){
+    if(!appContext.requireOwner("analyze card image Storage references")) return new Map();
+
+    const references=new Map();
+    const add=(url,info)=>{
+      const path=appContext.cardStoragePathFromUrl(url);
+      if(!path) return;
+      if(!references.has(path)) references.set(path,[]);
+      references.get(path).push(info);
+    };
+
+    const scan=async(table,columns,order,visit)=>{
+      const pageSize=500;
+      for(let offset=0;;offset+=pageSize){
+        const {data,error}=await appContext.supabaseClient
+          .from(table)
+          .select(columns)
+          .order(order,{ascending:true})
+          .range(offset,offset+pageSize-1);
+        if(error) throw error;
+        const rows=Array.isArray(data)?data:[];
+        rows.forEach(visit);
+        if(rows.length<pageSize) break;
+      }
+    };
+
+    await scan(
+      "cards",
+      appContext.thumbnailUrlSupported ? "id,name,card_code,images,thumbnail_url" : "id,name,card_code,images",
+      "id",
+      row=>{
+        (Array.isArray(row.images)?row.images:[]).forEach((url,index)=>{
+          add(url,{
+            type:"card-image",
+            cardId:String(row.id||""),
+            cardName:String(row.name||"Card"),
+            cardCode:String(row.card_code||""),
+            imageIndex:index+1
+          });
+        });
+        if(row.thumbnail_url){
+          add(row.thumbnail_url,{
+            type:"thumbnail",
+            cardId:String(row.id||""),
+            cardName:String(row.name||"Card"),
+            cardCode:String(row.card_code||""),
+            imageIndex:0
+          });
+        }
+      }
+    );
+
+    if(appContext.cardImageVariantsSupported){
+      await scan(
+        "card_image_variants",
+        "image_key,card_id,original_url,watermarked_url,active_variant",
+        "image_key",
+        row=>{
+          add(row.original_url,{
+            type:"variant-original",
+            cardId:String(row.card_id||""),
+            imageKey:String(row.image_key||""),
+            activeVariant:String(row.active_variant||"")
+          });
+          add(row.watermarked_url,{
+            type:"variant-watermarked",
+            cardId:String(row.card_id||""),
+            imageKey:String(row.image_key||""),
+            activeVariant:String(row.active_variant||"")
+          });
+        }
+      );
+    }
+
+    return references;
+  }
+
+function storageOptimizerTargetBytes(size){
+    const bytes=Number(size||0);
+    if(!Number.isFinite(bytes) || bytes<=0) return 0;
+    const target=1.5*1024*1024;
+    return Math.min(bytes,target);
+  }
+
+function storageOptimizerSavingsBytes(size){
+    const bytes=Number(size||0);
+    if(!Number.isFinite(bytes) || bytes<=0) return 0;
+    return Math.max(0,bytes-appContext.storageOptimizerTargetBytes(bytes));
+  }
+
+function storageOptimizerReferenceLabel(ref){
+    if(!ref) return "Referenced";
+    if(ref.type==="card-image"){
+      return `${ref.cardName||"Card"}${ref.cardCode?` · ${ref.cardCode}`:""} · image ${ref.imageIndex||1}`;
+    }
+    if(ref.type==="thumbnail"){
+      return `${ref.cardName||"Card"}${ref.cardCode?` · ${ref.cardCode}`:""} · thumbnail`;
+    }
+    if(ref.type==="variant-original"){
+      return `Reversible watermark original${ref.cardId?` · card ${ref.cardId}`:""}`;
+    }
+    if(ref.type==="variant-watermarked"){
+      return `Reversible watermark copy${ref.cardId?` · card ${ref.cardId}`:""}`;
+    }
+    return "Referenced";
+  }
+
+function storageOptimizerCardGroups(files,referenceMap){
+    const cards=new Map();
+
+    files.forEach(file=>{
+      const refs=referenceMap.get(file.path)||[];
+      refs.forEach(ref=>{
+        const cardId=String(ref.cardId||"");
+        if(!cardId || !["card-image","thumbnail"].includes(ref.type)) return;
+
+        if(!cards.has(cardId)){
+          cards.set(cardId,{
+            cardId,
+            cardName:ref.cardName||"Card",
+            cardCode:ref.cardCode||"",
+            paths:new Set(),
+            bytes:0,
+            estimatedSavings:0
+          });
+        }
+
+        const group=cards.get(cardId);
+        if(group.paths.has(file.path)) return;
+        group.paths.add(file.path);
+        group.bytes+=Number(file.size||0);
+        group.estimatedSavings+=appContext.storageOptimizerSavingsBytes(file.size);
+      });
+    });
+
+    return [...cards.values()].sort((a,b)=>b.bytes-a.bytes);
+  }
+
+function storageOptimizerVariantPairs(files,referenceMap){
+    const byKey=new Map();
+
+    files.forEach(file=>{
+      const refs=referenceMap.get(file.path)||[];
+      refs.forEach(ref=>{
+        if(!["variant-original","variant-watermarked"].includes(ref.type)) return;
+        const key=String(ref.imageKey||"");
+        if(!key) return;
+
+        if(!byKey.has(key)){
+          byKey.set(key,{
+            imageKey:key,
+            cardId:String(ref.cardId||""),
+            original:null,
+            watermarked:null
+          });
+        }
+
+        const group=byKey.get(key);
+        if(ref.type==="variant-original") group.original=file;
+        else group.watermarked=file;
+      });
+    });
+
+    return [...byKey.values()]
+      .filter(pair=>pair.original || pair.watermarked)
+      .map(pair=>({
+        ...pair,
+        bytes:Number(pair.original?.size||0)+Number(pair.watermarked?.size||0),
+        estimatedSavings:
+          appContext.storageOptimizerSavingsBytes(pair.original?.size||0)+
+          appContext.storageOptimizerSavingsBytes(pair.watermarked?.size||0)
+      }))
+      .sort((a,b)=>b.bytes-a.bytes);
+  }
+
+async function buildOwnerStorageOptimizer(){
+    const [files,referenceMap,usage]=await Promise.all([
+      appContext.listOwnerCardStorageObjects(),
+      appContext.ownerCardStorageReferenceMap(),
+      appContext.fetchSupabaseCapacityUsage()
+    ]);
+
+    const referencedFiles=files
+      .filter(file=>referenceMap.has(file.path))
+      .map(file=>({
+        ...file,
+        references:referenceMap.get(file.path)||[],
+        targetBytes:appContext.storageOptimizerTargetBytes(file.size),
+        estimatedSavings:appContext.storageOptimizerSavingsBytes(file.size)
+      }));
+
+    const over2=referencedFiles.filter(file=>file.size>=2*1024*1024).sort((a,b)=>b.size-a.size);
+    const over3=referencedFiles.filter(file=>file.size>=3*1024*1024).sort((a,b)=>b.size-a.size);
+    const over5=referencedFiles.filter(file=>file.size>=5*1024*1024).sort((a,b)=>b.size-a.size);
+    const opportunities=referencedFiles
+      .filter(file=>file.estimatedSavings>0)
+      .sort((a,b)=>b.estimatedSavings-a.estimatedSavings);
+
+    const estimatedSavings=opportunities.reduce((sum,file)=>sum+file.estimatedSavings,0);
+    const referencedBytes=referencedFiles.reduce((sum,file)=>sum+Number(file.size||0),0);
+    const cards=appContext.storageOptimizerCardGroups(referencedFiles,referenceMap);
+    const variantPairs=appContext.storageOptimizerVariantPairs(referencedFiles,referenceMap);
+
+    return {
+      files:referencedFiles,
+      over2,
+      over3,
+      over5,
+      opportunities,
+      estimatedSavings,
+      referencedBytes,
+      cards,
+      variantPairs,
+      usage
+    };
+  }
+
+function storageOptimizerTableRows(rows,{limit=50,showReference=true}={}){
+    if(!rows.length){
+      return `<div class="empty compact"><p>No matching referenced files.</p></div>`;
+    }
+
+    return `
+      <div class="storage-audit-table-wrap">
+        <table class="storage-audit-table storage-optimizer-table">
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Current</th>
+              <th>Est. target</th>
+              <th>Est. saving</th>
+              ${showReference?`<th>Referenced by</th>`:""}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.slice(0,limit).map(file=>`
+              <tr>
+                <td>
+                  <strong title="${appContext.escapeHtml(file.path)}">${appContext.escapeHtml(file.name)}</strong>
+                  <small>${appContext.escapeHtml(file.path)}</small>
+                </td>
+                <td>${appContext.escapeHtml(appContext.formatApproxBytes(file.size))}</td>
+                <td>${appContext.escapeHtml(appContext.formatApproxBytes(file.targetBytes))}</td>
+                <td><strong>${appContext.escapeHtml(appContext.formatApproxBytes(file.estimatedSavings))}</strong></td>
+                ${showReference?`
+                  <td>
+                    ${(file.references||[]).slice(0,2).map(ref=>
+                      `<span class="storage-optimizer-ref">${appContext.escapeHtml(appContext.storageOptimizerReferenceLabel(ref))}</span>`
+                    ).join("")}
+                    ${(file.references||[]).length>2?`<small>+${(file.references||[]).length-2} more reference(s)</small>`:""}
+                  </td>`:""}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        ${rows.length>limit?`<div class="hint">Showing ${limit.toLocaleString()} of ${rows.length.toLocaleString()} files.</div>`:""}
+      </div>
+    `;
+  }
+
+function renderStorageOptimizerPage(){
+    if(!appContext.requireOwner("open Storage optimizer")) return;
+
+    appContext.view.innerHTML=`
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Inventory Tools · Storage</div>
+          <h2>Storage Optimizer</h2>
+          <p>Analyze referenced card images and estimate how much File Storage could be recovered by recompressing oversized files.</p>
+        </div>
+      </div>
+
+      <section class="panel storage-audit-panel">
+        <div id="storageOptimizerStatus" class="storage-audit-status">
+          <strong>Analysis only</strong>
+          <span>This version does not modify, replace or delete referenced images.</span>
+        </div>
+        <div class="storage-audit-actions">
+          <button type="button" class="btn-primary" id="storageOptimizerRunBtn">Analyze Referenced Images</button>
+        </div>
+        <div id="storageOptimizerResults"></div>
+      </section>
+    `;
+
+    const setStatus=(title,message,kind="")=>{
+      const el=appContext.$("storageOptimizerStatus");
+      if(!el) return;
+      el.className=`storage-audit-status ${kind}`.trim();
+      el.innerHTML=`<strong>${appContext.escapeHtml(title)}</strong><span>${appContext.escapeHtml(message)}</span>`;
+    };
+
+    const run=async()=>{
+      const btn=appContext.$("storageOptimizerRunBtn");
+      if(btn){
+        btn.disabled=true;
+        btn.textContent="Analyzing…";
+      }
+      setStatus("Analyzing referenced images","Reading Storage metadata and matching it to cards and reversible watermark records…");
+
+      try{
+        const audit=await appContext.buildOwnerStorageOptimizer();
+        const storageUsed=audit.usage?.ok ? audit.usage.storageBytes : null;
+        const estimatedAfter=storageUsed!=null
+          ? Math.max(0,storageUsed-audit.estimatedSavings)
+          : null;
+
+        appContext.$("storageOptimizerResults").innerHTML=`
+          <div class="storage-audit-summary">
+            <article>
+              <strong>${audit.files.length.toLocaleString()}</strong>
+              <span>Referenced files</span>
+              <small>${appContext.formatApproxBytes(audit.referencedBytes)} tracked</small>
+            </article>
+            <article class="${audit.over2.length?"needs-attention":""}">
+              <strong>${audit.over2.length.toLocaleString()}</strong>
+              <span>Files ≥ 2 MB</span>
+              <small>${audit.over3.length.toLocaleString()} ≥ 3 MB · ${audit.over5.length.toLocaleString()} ≥ 5 MB</small>
+            </article>
+            <article class="${audit.estimatedSavings>0?"needs-attention":""}">
+              <strong>${appContext.formatApproxBytes(audit.estimatedSavings)}</strong>
+              <span>Estimated savings</span>
+              <small>Using a ~1.5 MB target per oversized referenced file</small>
+            </article>
+            <article>
+              <strong>${audit.cards.length.toLocaleString()}</strong>
+              <span>Cards with Storage files</span>
+              <small>Ranked below by current Storage usage</small>
+            </article>
+            <article>
+              <strong>${audit.variantPairs.length.toLocaleString()}</strong>
+              <span>Watermark variant pairs</span>
+              <small>Original + watermarked reversible pairs</small>
+            </article>
+          </div>
+
+          <section class="storage-audit-section">
+            <div class="storage-audit-section-head">
+              <div>
+                <h3>Projected Storage Impact</h3>
+                <p>This is a planning estimate only. No files have been changed.</p>
+              </div>
+            </div>
+            <div class="storage-optimizer-projection">
+              <div><span>Current total File Storage</span><strong>${storageUsed!=null?appContext.formatApproxBytes(storageUsed):"Unavailable"}</strong></div>
+              <div><span>Estimated recoverable</span><strong>${appContext.formatApproxBytes(audit.estimatedSavings)}</strong></div>
+              <div><span>Estimated total after optimization</span><strong>${estimatedAfter!=null?appContext.formatApproxBytes(estimatedAfter):"Unavailable"}</strong></div>
+            </div>
+            <div class="hint">Estimate assumes each referenced file above roughly 1.5 MB can be recompressed toward 1.5 MB. Actual results will depend on image dimensions, format and image complexity.</div>
+          </section>
+
+          <section class="storage-audit-section">
+            <div class="storage-audit-section-head">
+              <div>
+                <h3>Biggest Optimization Opportunities</h3>
+                <p>Referenced files with the largest estimated savings first.</p>
+              </div>
+            </div>
+            ${appContext.storageOptimizerTableRows(audit.opportunities,{limit:60})}
+          </section>
+
+          <section class="storage-audit-section">
+            <div class="storage-audit-section-head">
+              <div>
+                <h3>Cards Using the Most Storage</h3>
+                <p>Counts unique Storage files referenced by each card.</p>
+              </div>
+            </div>
+            ${audit.cards.length ? `
+              <div class="storage-optimizer-card-list">
+                ${audit.cards.slice(0,50).map((card,index)=>`
+                  <article>
+                    <span>${index+1}</span>
+                    <div>
+                      <strong>${appContext.escapeHtml(card.cardName)}</strong>
+                      <small>${appContext.escapeHtml(card.cardCode||card.cardId)}</small>
+                    </div>
+                    <div>
+                      <strong>${appContext.escapeHtml(appContext.formatApproxBytes(card.bytes))}</strong>
+                      <small>${card.paths.size.toLocaleString()} file${card.paths.size===1?"":"s"} · est. ${appContext.escapeHtml(appContext.formatApproxBytes(card.estimatedSavings))} recoverable</small>
+                    </div>
+                  </article>
+                `).join("")}
+              </div>
+            ` : `<div class="empty compact"><p>No referenced card Storage files found.</p></div>`}
+          </section>
+
+          <section class="storage-audit-section">
+            <div class="storage-audit-section-head">
+              <div>
+                <h3>Reversible Watermark Pairs</h3>
+                <p>These pairs intentionally retain both the original and watermarked copy. Do not delete originals if you want watermark reversal to remain available.</p>
+              </div>
+            </div>
+            ${audit.variantPairs.length ? `
+              <div class="storage-optimizer-pair-list">
+                ${audit.variantPairs.slice(0,50).map((pair,index)=>`
+                  <article>
+                    <div>
+                      <strong>Pair ${index+1}</strong>
+                      <small>${appContext.escapeHtml(pair.cardId||pair.imageKey)}</small>
+                    </div>
+                    <div><span>Original</span><strong>${appContext.formatApproxBytes(pair.original?.size||0)}</strong></div>
+                    <div><span>Watermarked</span><strong>${appContext.formatApproxBytes(pair.watermarked?.size||0)}</strong></div>
+                    <div><span>Total</span><strong>${appContext.formatApproxBytes(pair.bytes)}</strong></div>
+                    <div><span>Est. saving</span><strong>${appContext.formatApproxBytes(pair.estimatedSavings)}</strong></div>
+                  </article>
+                `).join("")}
+              </div>
+            ` : `<div class="empty compact"><p>No reversible watermark pairs found.</p></div>`}
+          </section>
+        `;
+
+        setStatus(
+          "Analysis complete",
+          `${audit.files.length.toLocaleString()} referenced files checked · estimated ${appContext.formatApproxBytes(audit.estimatedSavings)} potentially recoverable`,
+          audit.estimatedSavings>0?"warn":"ok"
+        );
+      }catch(error){
+        console.error("Storage optimizer analysis failed:",error);
+        setStatus(
+          "Analysis unavailable",
+          appContext.errorText(error,"Could not analyze referenced Storage images. Nothing was changed."),
+          "warn"
+        );
+      }finally{
+        if(btn){
+          btn.disabled=false;
+          btn.textContent="Analyze Referenced Images";
+        }
+      }
+    };
+
+    appContext.$("storageOptimizerRunBtn")?.addEventListener("click",run);
+  }
+
 function renderSupabaseHealthPage(){
     if(!appContext.requireOwner("view Supabase health")) return;
 
@@ -1001,7 +1437,7 @@ function renderSupabaseHealthPage(){
     refresh();
   }
 
-  Object.assign(appContext,{currentInventoryToolMode,currentInventoryToolSubmode,inventoryToolsSwitcher,getStoredImageHealthSummary,saveStoredImageHealthSummary,ownerInventoryHealthSummary,ownerHealthClass,invalidateOwnerReservedAgeCache,ownerReservedAgeDays,ownerReservedAgeLabel,loadOwnerReservedAges,ownerReservedAgeSummary,hydrateOwnerReservedAgeUI,refreshOwnerReservedAgeUI,ownerAlertSummary,ownerAlertsDashboardHTML,storageAuditFileSize,storageAuditFileEtag,listOwnerCardStorageObjects,ownerCardStorageReferencePaths,storageAuditDuplicateGroups,buildOwnerStorageAudit,storageAuditTableRows,renderStorageAuditPage,renderSupabaseHealthPage});
+  Object.assign(appContext,{currentInventoryToolMode,currentInventoryToolSubmode,inventoryToolsSwitcher,getStoredImageHealthSummary,saveStoredImageHealthSummary,ownerInventoryHealthSummary,ownerHealthClass,invalidateOwnerReservedAgeCache,ownerReservedAgeDays,ownerReservedAgeLabel,loadOwnerReservedAges,ownerReservedAgeSummary,hydrateOwnerReservedAgeUI,refreshOwnerReservedAgeUI,ownerAlertSummary,ownerAlertsDashboardHTML,storageAuditFileSize,storageAuditFileEtag,listOwnerCardStorageObjects,ownerCardStorageReferencePaths,storageAuditDuplicateGroups,buildOwnerStorageAudit,storageAuditTableRows,renderStorageAuditPage,ownerCardStorageReferenceMap,storageOptimizerTargetBytes,storageOptimizerSavingsBytes,storageOptimizerReferenceLabel,storageOptimizerCardGroups,storageOptimizerVariantPairs,buildOwnerStorageOptimizer,storageOptimizerTableRows,renderStorageOptimizerPage,renderSupabaseHealthPage});
 }
 
 /** State and event initialization; called in preserved startup order. */

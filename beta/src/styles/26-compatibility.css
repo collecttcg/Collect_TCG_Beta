@@ -9384,3 +9384,110 @@ body.light-mode .interest-contact-assurance-icon{
   .storage-audit-section-head{display:grid}
   .storage-audit-inline-actions{width:100%}
 }
+
+
+/* ==========================================================
+   V195 BETA — STORAGE OPTIMIZER ANALYSIS
+   ========================================================== */
+.storage-optimizer-projection{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.storage-optimizer-projection>div{
+  display:grid;
+  gap:4px;
+  padding:13px 14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:13px;
+  background:rgba(255,255,255,.025);
+}
+.storage-optimizer-projection span{
+  font-size:10px;
+  color:var(--muted);
+}
+.storage-optimizer-projection strong{
+  font-size:17px;
+}
+.storage-optimizer-table .storage-optimizer-ref{
+  display:block;
+  max-width:320px;
+  margin-bottom:3px;
+  font-size:10px;
+  line-height:1.35;
+}
+.storage-optimizer-card-list{
+  display:grid;
+  gap:8px;
+}
+.storage-optimizer-card-list article{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) minmax(150px,.65fr);
+  gap:12px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid rgba(255,255,255,.065);
+  border-radius:12px;
+}
+.storage-optimizer-card-list article>span{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+}
+.storage-optimizer-card-list article>div{
+  display:grid;
+  gap:2px;
+  min-width:0;
+}
+.storage-optimizer-card-list strong{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+}
+.storage-optimizer-card-list small{
+  color:var(--muted);
+  font-size:9.5px;
+  line-height:1.35;
+}
+.storage-optimizer-pair-list{
+  display:grid;
+  gap:8px;
+}
+.storage-optimizer-pair-list article{
+  display:grid;
+  grid-template-columns:minmax(150px,1fr) repeat(4,minmax(90px,.55fr));
+  gap:10px;
+  align-items:center;
+  padding:11px 12px;
+  border:1px solid rgba(255,255,255,.065);
+  border-radius:12px;
+}
+.storage-optimizer-pair-list article>div{
+  display:grid;
+  gap:2px;
+  min-width:0;
+}
+.storage-optimizer-pair-list span,
+.storage-optimizer-pair-list small{
+  color:var(--muted);
+  font-size:9.5px;
+}
+.storage-optimizer-pair-list strong{
+  font-size:10.5px;
+}
+@media (max-width:899px){
+  .storage-optimizer-projection{grid-template-columns:1fr}
+  .storage-optimizer-card-list article{
+    grid-template-columns:28px minmax(0,1fr);
+  }
+  .storage-optimizer-card-list article>div:last-child{
+    grid-column:2;
+  }
+  .storage-optimizer-pair-list article{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .storage-optimizer-pair-list article>div:first-child{
+    grid-column:1/-1;
+  }
+}

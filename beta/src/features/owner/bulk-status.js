@@ -735,6 +735,7 @@ function renderInventoryToolsPage(){
     else if(submode==="missing-certs") appContext.renderBulkMissingCertsPage();
     else if(submode==="health") appContext.renderSupabaseHealthPage();
     else if(submode==="storage-audit") appContext.renderStorageAuditPage();
+    else if(submode==="storage-optimizer") appContext.renderStorageOptimizerPage();
     else if(submode==="backup") appContext.renderInventoryExportPage();
     else if(submode==="recent") appContext.renderRecentlyEditedOwnerPage(true);
     else if(submode==="history") appContext.renderEditHistoryPage();
