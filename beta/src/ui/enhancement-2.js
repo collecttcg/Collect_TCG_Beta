@@ -17,9 +17,7 @@ export function setup(appContext){
   if(!bar || !priceEl || !action || !contactOverlay || !contactSheet) return;
 
   let lastInterestFocus=null;
-  let selectedInquiryIntent=typeof appContext.contactInquiryIntent==="function"
-    ? appContext.contactInquiryIntent()
-    : "availability";
+  let selectedInquiryIntent=typeof appContext.contactInquiryIntent==="function" ? appContext.contactInquiryIntent() : "availability";
   const mobileMedia=window.matchMedia("(max-width:800px)");
 
   function currentCardContext(){
@@ -67,7 +65,6 @@ export function setup(appContext){
     if(detailsCard && typeof appContext.contactInquiryMessage==="function"){
       return appContext.contactInquiryMessage(detailsCard,selectedInquiryIntent);
     }
-
     const ctx=currentCardContext();
     const ref=ctx.reference ? ` (${ctx.reference})` : "";
     return `Hi, is this still available? I'm interested in: ${ctx.name}${ref}\n${ctx.url}`;
@@ -284,17 +281,10 @@ export function setup(appContext){
       if(typeof appContext.setContactInquiryIntent==="function"){
         selectedInquiryIntent=appContext.setContactInquiryIntent(selectedInquiryIntent);
       }
-      contactSheet.querySelectorAll("[data-inquiry-intent]").forEach(other=>{
-        other.classList.toggle("active",other===btn);
-      });
+      contactSheet.querySelectorAll("[data-inquiry-intent]").forEach(other=>other.classList.toggle("active",other===btn));
       const copySmall=copyInquiryBtn?.querySelector("small");
       if(copySmall){
-        const labels={
-          availability:"Copy an availability inquiry",
-          offer:"Copy an offer message",
-          photos:"Copy a photo / video request",
-          cod:"Copy a COD / meetup inquiry"
-        };
+        const labels={availability:"Copy an availability inquiry",offer:"Copy an offer message",photos:"Copy a photo / video request",cod:"Copy a COD / meetup inquiry"};
         copySmall.textContent=labels[selectedInquiryIntent]||"Copy the card name and listing link";
       }
     });
