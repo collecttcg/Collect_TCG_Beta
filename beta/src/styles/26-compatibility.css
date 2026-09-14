@@ -9253,3 +9253,134 @@ body.light-mode .interest-contact-assurance-icon{
     box-sizing:border-box !important;
   }
 }
+
+
+/* ==========================================================
+   V194 BETA — OWNER STORAGE AUDIT
+   ========================================================== */
+.storage-audit-panel{
+  display:grid;
+  gap:16px;
+}
+.storage-audit-status{
+  display:grid;
+  gap:4px;
+  padding:14px 16px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+}
+.storage-audit-status strong{font-size:14px}
+.storage-audit-status span{font-size:12px;color:var(--muted)}
+.storage-audit-status.ok{border-color:rgba(57,211,164,.26)}
+.storage-audit-status.warn{border-color:rgba(235,183,61,.34)}
+.storage-audit-actions,.storage-audit-inline-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.storage-audit-summary{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
+}
+.storage-audit-summary article{
+  display:grid;
+  gap:4px;
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+}
+.storage-audit-summary article.needs-attention{border-color:rgba(235,183,61,.32)}
+.storage-audit-summary strong{font-size:20px;line-height:1}
+.storage-audit-summary span{font-size:11px;font-weight:700}
+.storage-audit-summary small{font-size:10px;color:var(--muted);line-height:1.35}
+.storage-audit-section{
+  display:grid;
+  gap:12px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  background:rgba(255,255,255,.018);
+}
+.storage-audit-danger-zone{border-color:rgba(235,183,61,.22)}
+.storage-audit-section-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.storage-audit-section-head h3{margin:0 0 4px;font-size:15px}
+.storage-audit-section-head p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+.storage-audit-table-wrap{overflow:auto}
+.storage-audit-table{
+  width:100%;
+  min-width:680px;
+  border-collapse:collapse;
+}
+.storage-audit-table th,
+.storage-audit-table td{
+  padding:9px 10px;
+  border-bottom:1px solid rgba(255,255,255,.065);
+  text-align:left;
+  vertical-align:top;
+  font-size:11px;
+}
+.storage-audit-table th{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.storage-audit-table td strong{
+  display:block;
+  max-width:520px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.storage-audit-table td small{
+  display:block;
+  max-width:620px;
+  margin-top:3px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.storage-audit-check{width:32px}
+.storage-audit-safety-note{
+  display:grid;
+  gap:3px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:rgba(57,211,164,.06);
+  border:1px solid rgba(57,211,164,.18);
+}
+.storage-audit-safety-note strong{font-size:11px}
+.storage-audit-safety-note span{font-size:10px;color:var(--muted);line-height:1.4}
+.storage-audit-duplicate-summary{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+  font-size:11px;
+}
+.storage-audit-duplicate-summary span{color:var(--muted)}
+.storage-audit-duplicate-groups{display:grid;gap:8px}
+.storage-audit-duplicate-groups details{
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  padding:10px 12px;
+}
+.storage-audit-duplicate-groups summary{
+  cursor:pointer;
+  font-size:11px;
+  font-weight:700;
+}
+@media (max-width:899px){
+  .storage-audit-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .storage-audit-section-head{display:grid}
+  .storage-audit-inline-actions{width:100%}
+}
