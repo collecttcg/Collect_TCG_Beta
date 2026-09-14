@@ -81,7 +81,15 @@ function cardTileHTML(c, renderIndex=999){
               ${appContext.isOwnerMode() && appContext.cardLifecycle(c)==="draft"
                 ? `<span class="owner-hidden-listing-badge" title="Hidden from normal visitors">HIDDEN</span>`
                 : ""}
+              ${appContext.priceMovementBadgeHTML(c,{compact:true})}
               <div class="card-title-actions">
+                <button type="button"
+                  class="inquiry-basket-btn ${appContext.inquiryBasketHas(c.id)?"active":""}"
+                  data-inquiry-basket-toggle="${appContext.escapeHtml(c.id)}"
+                  aria-pressed="${appContext.inquiryBasketHas(c.id)?"true":"false"}"
+                  title="Add to multi-card inquiry">
+                  ＋ <span data-basket-label>${appContext.inquiryBasketHas(c.id)?"Added":"Inquiry"}</span>
+                </button>
                 <button type="button"
                   class="compare-card-btn ${appContext.isCompareSelected(c.id) ? "active" : ""}"
                   data-compare-id="${appContext.escapeHtml(c.id)}"

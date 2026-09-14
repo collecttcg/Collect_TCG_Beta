@@ -551,6 +551,10 @@ function renderInventoryPage(scope = "inventory"){
       ? requestedQuick
       : "all";
     appContext.view.innerHTML=appContext.inventoryPageHTML(scopeMeta,appContext.listingAvailabilityScope);
+    const retentionToolbar=appContext.view.querySelector(".inventory-toolbar-context");
+    if(retentionToolbar){
+      retentionToolbar.insertAdjacentHTML("beforeend",appContext.inventoryRetentionControlsHTML());
+    }
 
     // Desktop filter panel: compact by default, expandable in-place.
     // Mobile keeps using the existing bottom-sheet controls and ignores this class.

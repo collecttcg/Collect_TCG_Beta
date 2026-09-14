@@ -1179,6 +1179,7 @@ async function openDetailsModal(card){
             <div class="detail-summary-card detail-summary-price">
               <span>Price</span>
               ${appContext.detailPriceDisplayHTML(card)}
+              ${appContext.priceMovementBadgeHTML(card)}
             </div>
             <div class="detail-summary-card">
               <span>Grade / Condition</span>
@@ -1194,6 +1195,14 @@ async function openDetailsModal(card){
           ${detailSlabBreakdown}
 
           ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
+            <div class="detail-inquiry-basket-row">
+              <button type="button"
+                      class="detail-inquiry-basket-btn ${appContext.inquiryBasketHas(card.id)?"active":""}"
+                      data-inquiry-basket-toggle="${appContext.escapeHtml(card.id)}"
+                      aria-pressed="${appContext.inquiryBasketHas(card.id)?"true":"false"}">
+                ＋ <span data-basket-label>${appContext.inquiryBasketHas(card.id)?"Added":"Add to multi-card inquiry"}</span>
+              </button>
+            </div>
             <div class="detail-purchase-panel" aria-label="Purchase options">
               <div class="detail-purchase-location">
                 <span class="detail-purchase-location-icon" aria-hidden="true">📍</span>

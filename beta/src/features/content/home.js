@@ -245,6 +245,7 @@ function renderHomePage(){
               ${grade ? `<span class="home-premium-grade">${appContext.escapeHtml(grade)}</span>` : ""}
               ${isNew ? `<span class="home-premium-new">NEW</span>` : ""}
               ${trending ? `<span class="home-premium-trending">TRENDING</span>` : ""}
+              ${appContext.priceMovementBadgeHTML(card,{compact:true})}
             </div>
             <button type="button"
                     class="favorite-btn home-premium-favorite ${appContext.isFavorite(card.id)?"active":""}"
@@ -345,6 +346,8 @@ function renderHomePage(){
       </section>
 
       ${appContext.retentionHomeHTML()}
+      ${appContext.personalizedHomeHTML()}
+      ${appContext.savedSearchesHomeHTML()}
 
       <div id="homeTrendingShelf">
         <section class="home-premium-section home-premium-trending-loading">
