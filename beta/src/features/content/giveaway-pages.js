@@ -513,6 +513,18 @@ function openGiveawayDetails(g){
           </div>
 
           ${appContext.giveawayDetailRequirementsHTML(g)}
+          ${!winner ? `
+            <div class="giveaway-detail-entry-actions">
+              <a class="btn-ghost"
+                 href="${appContext.escapeHtml(appContext.COLLECT_SOCIAL_LINKS.facebookGroup)}"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 data-giveaway-growth-action="bonus_facebook_group_click"
+                 data-giveaway-id="${appContext.escapeHtml(g.id)}">
+                Join Facebook Group · Bonus +1 ↗
+              </a>
+            </div>
+          ` : ""}
           ${String(g.how_to_enter||"").trim()?`<div class="giveaway-detail-entry"><h3>Additional instructions</h3><p>${appContext.escapeHtml(g.how_to_enter)}</p></div>`:""}
           ${String(g.details||"").trim()?`<div class="giveaway-detail-entry"><h3>Details</h3><p>${appContext.escapeHtml(g.details)}</p></div>`:""}
           ${appContext.safeHttpUrl(g.entry_form_url) && !winner ? `<div class="giveaway-detail-entry-actions"><a class="btn-primary" href="${appContext.escapeHtml(appContext.safeHttpUrl(g.entry_form_url))}" target="_blank" rel="noopener noreferrer">Enter Giveaway ↗</a></div>`:""}
@@ -600,12 +612,18 @@ function renderGiveawayPage(){
                 </a>
               ` : ""}
 
-              ${(g.bonus_share_facebook || g.bonus_tag_friends || g.bonus_share_instagram_story) ? `
+              ${`
                 <div class="giveaway-bonus-actions">
                   <div class="giveaway-bonus-actions-head">
                     <strong>Extra Actions</strong>
                     <span>Optional bonus entries</span>
                   </div>
+                  <a href="${appContext.escapeHtml(appContext.COLLECT_SOCIAL_LINKS.facebookGroup)}"
+                     target="_blank" rel="noopener noreferrer"
+                     data-giveaway-growth-action="bonus_facebook_group_click"
+                     data-giveaway-id="${appContext.escapeHtml(g.id)}">
+                    <span>Join Collect TCG Facebook Group</span><b>+1</b>
+                  </a>
                   ${g.bonus_share_facebook ? `
                     <a href="${appContext.escapeHtml(appContext.safeHttpUrl(g.facebook_post_url)||appContext.COLLECT_SOCIAL_LINKS.facebook)}"
                        target="_blank" rel="noopener noreferrer"
@@ -631,7 +649,7 @@ function renderGiveawayPage(){
                     </a>
                   ` : ""}
                 </div>
-              ` : ""}
+              `}
 
               <div class="giveaway-explore-title">Explore Collect TCG</div>
               <div class="giveaway-growth-links">

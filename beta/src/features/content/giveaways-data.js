@@ -518,6 +518,7 @@ export function initialize(appContext,runtime){
   appContext.COLLECT_SOCIAL_LINKS = Object.freeze({
     instagram:"https://www.instagram.com/collecttcg.mysg/",
     facebook:"https://www.facebook.com/profile.php?id=61590041416102",
+    facebookGroup:"https://www.facebook.com/groups/1765445114770379",
     carousellMY:"https://www.carousell.com.my/u/collect_tcg_my_sg/",
     carousellSG:"https://www.carousell.sg/u/collect_tcg_sg/"
   });
