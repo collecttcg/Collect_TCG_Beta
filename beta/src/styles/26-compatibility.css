@@ -10245,3 +10245,253 @@ body.light-mode .details-share-menu button:focus-visible{
     font-size:11px !important;
   }
 }
+
+
+/* ==========================================================
+   V203 — COMPACT PREMIUM INVENTORY CARD BODY
+   Tightens vertical rhythm on desktop and mobile while keeping
+   image-led presentation, readable names and usable tap targets.
+   ========================================================== */
+
+/* Shared card-body rhythm */
+#invGrid.grid:not(.compact-list) .clean-card-body{
+  padding-top:10px !important;
+  padding-bottom:10px !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-main{
+  display:grid !important;
+  gap:7px !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-title-row{
+  margin:0 !important;
+  padding:0 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-name{
+  min-height:0 !important;
+  max-height:none !important;
+  margin:0 !important;
+  display:-webkit-box !important;
+  -webkit-box-orient:vertical !important;
+  -webkit-line-clamp:3 !important;
+  overflow:hidden !important;
+  line-height:1.14 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row{
+  margin:0 !important;
+  min-height:0 !important;
+  gap:6px !important;
+  align-items:center !important;
+}
+
+#invGrid.grid:not(.compact-list) .card-utility-row{
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+  min-height:0 !important;
+  gap:6px !important;
+}
+
+#invGrid.grid:not(.compact-list) .card-utility-row .card-title-actions{
+  gap:4px !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-divider{
+  margin:2px 0 0 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-price-block{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-price{
+  margin:0 !important;
+  line-height:1.05 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-price-secondary{
+  margin-top:3px !important;
+  line-height:1.2 !important;
+}
+
+#invGrid.grid:not(.compact-list) .clean-card-terms,
+#invGrid.grid:not(.compact-list) .price-terms{
+  margin-top:5px !important;
+  font-size:9px !important;
+  line-height:1.25 !important;
+  opacity:.78 !important;
+}
+
+/* Inquiry remains the primary card action. */
+#invGrid.grid:not(.compact-list) .inquiry-basket-btn{
+  border-color:rgba(241,188,57,.26) !important;
+  background:rgba(241,188,57,.06) !important;
+  color:#e7e2d8 !important;
+}
+
+/* Secondary actions are intentionally quieter. */
+#invGrid.grid:not(.compact-list) .compare-card-btn,
+#invGrid.grid:not(.compact-list) .title-favorite-btn{
+  background:rgba(255,255,255,.018) !important;
+  border-color:rgba(255,255,255,.075) !important;
+  color:var(--muted) !important;
+}
+
+/* High-value notice: compact premium treatment. */
+#invGrid.grid:not(.compact-list) .high-value-listing-badge,
+#invGrid.grid:not(.compact-list) .high-value-cod-badge,
+#invGrid.grid:not(.compact-list) [class*="high-value"]{
+  min-height:0 !important;
+  margin-top:6px !important;
+  padding:5px 8px !important;
+  border-radius:999px !important;
+  font-size:8.5px !important;
+  line-height:1.15 !important;
+}
+
+/* Desktop */
+@media (min-width:801px){
+  #invGrid.grid:not(.compact-list) .clean-card-body{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-main{
+    gap:7px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    font-size:15px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row{
+    min-height:28px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row{
+    min-height:34px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn{
+    min-height:31px !important;
+    padding:5px 9px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .compare-card-btn{
+    min-height:31px !important;
+    padding:5px 8px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .title-favorite-btn{
+    width:32px !important;
+    min-width:32px !important;
+    height:32px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price{
+    font-size:20px !important;
+  }
+}
+
+/* Mobile / narrow cards */
+@media (max-width:800px){
+  #invGrid.grid:not(.compact-list) .clean-card-body{
+    padding:8px 9px 9px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-main{
+    gap:5px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-name{
+    font-size:11.5px !important;
+    line-height:1.16 !important;
+    -webkit-line-clamp:3 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row{
+    min-height:24px !important;
+    gap:4px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row,
+  #invGrid.grid:not(.compact-list) .clean-card-reference-toggle-row *{
+    font-size:8.5px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .card-utility-row{
+    min-height:30px !important;
+    gap:4px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn,
+  #invGrid.grid:not(.compact-list) .compare-card-btn{
+    min-height:29px !important;
+    border-radius:8px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn{
+    width:auto !important;
+    min-width:30px !important;
+    max-width:none !important;
+    padding:0 7px !important;
+    font-size:12px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .inquiry-basket-btn span{
+    display:none !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .compare-card-btn{
+    width:30px !important;
+    min-width:30px !important;
+    max-width:30px !important;
+    padding:0 !important;
+    font-size:0 !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .compare-card-btn::before{
+    content:"⇄";
+    font-size:13px;
+  }
+
+  #invGrid.grid:not(.compact-list) .compare-card-btn span{
+    display:none !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .title-favorite-btn{
+    width:30px !important;
+    min-width:30px !important;
+    height:30px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-divider{
+    margin-top:1px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price{
+    font-size:15px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-price-secondary{
+    font-size:8px !important;
+    margin-top:2px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .clean-card-terms,
+  #invGrid.grid:not(.compact-list) .price-terms{
+    margin-top:4px !important;
+    font-size:8px !important;
+  }
+
+  #invGrid.grid:not(.compact-list) .high-value-listing-badge,
+  #invGrid.grid:not(.compact-list) .high-value-cod-badge,
+  #invGrid.grid:not(.compact-list) [class*="high-value"]{
+    margin-top:5px !important;
+    padding:4px 7px !important;
+    font-size:7.5px !important;
+  }
+}
