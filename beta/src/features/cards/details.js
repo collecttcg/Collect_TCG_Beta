@@ -1261,6 +1261,7 @@ async function openDetailsModal(card){
             ${card.card_code ? `<div class="detail-item"><div class="detail-label">Card Code</div><div class="detail-value">${appContext.escapeHtml(card.card_code)}</div></div>` : ""}
             ${card.year ? `<div class="detail-item"><div class="detail-label">Year</div><div class="detail-value">${appContext.escapeHtml(card.year)}</div></div>` : ""}
             ${card.language ? `<div class="detail-item"><div class="detail-label">Language</div><div class="detail-value">${appContext.escapeHtml(card.language)}</div></div>` : ""}
+            ${card.language_details ? `<div class="detail-item"><div class="detail-label">Language details</div><div class="detail-value">${appContext.escapeHtml(card.language_details)}</div></div>` : ""}
             ${card.era ? `<div class="detail-item"><div class="detail-label">Era</div><div class="detail-value">${appContext.escapeHtml(card.era)}</div></div>` : ""}
             ${card.series ? `<div class="detail-item"><div class="detail-label">Series</div><div class="detail-value">${appContext.escapeHtml(card.series)}</div></div>` : ""}
             <div class="detail-item"><div class="detail-label">Pictures</div><div class="detail-value">${images.length}</div></div>
