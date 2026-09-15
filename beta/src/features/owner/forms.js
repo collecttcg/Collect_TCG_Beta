@@ -201,6 +201,12 @@ function fieldsTemplate(p){
           </select>
         </div>
       </div>
+      <div class="field">
+        <label for="${p}LanguageDetails">Language details <span class="muted">(optional)</span></label>
+        <input type="text" id="${p}LanguageDetails" maxlength="120" placeholder="e.g. JP × 2 · ENG × 1">
+        <div class="hint">Use this only for a mixed-language lot or product. Keep Language as one filter value, such as Mixed / Multiple languages.</div>
+        ${appContext.languageDetailsSupported===false ? `<div class="hint">Run <code>2026-09-15-v10-LANGUAGE-DETAILS.sql</code> in Supabase before saving this field.</div>` : ""}
+      </div>
       <div class="field-row">
         <div class="field">
           <label for="${p}Series">Series / Collection</label>
@@ -1512,6 +1518,7 @@ function populateFields(p, card){
     appContext.$(p + "Year").value = card && card.year ? card.year : "";
     appContext.$(p + "Game").value = card ? card.game : "";
     appContext.$(p + "Language").value = card ? (card.language || "") : "";
+    appContext.$(p + "LanguageDetails").value = card ? (card.language_details || "") : "";
     appContext.$(p + "Series").value = card ? (card.series || "") : "";
     appContext.$(p + "Era").value = card ? (card.era || "") : "";
     if(appContext.$(p + "LifecycleStatus")){
@@ -1538,6 +1545,7 @@ function collectFields(p, id, formState){
       year: appContext.normalizeYearValue(appContext.$(p + "Year").value),
       game: appContext.$(p + "Game").value.trim(),
       language: appContext.$(p + "Language").value,
+      language_details: appContext.$(p + "LanguageDetails").value.trim().slice(0,120),
       series: appContext.normalizeStoredLabel(appContext.$(p + "Series").value),
       era: appContext.$(p + "Era").value,
       lifecycle_status: appContext.lifecycleSupported && appContext.$(p + "LifecycleStatus")
