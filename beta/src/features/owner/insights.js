@@ -1469,12 +1469,12 @@ async function renderInsightsPage(){
           </div>
 
           <p class="hint">
-            Generate a reusable 24-hour QR code on this owner-authenticated desktop and scan it with your phone.
+            Generate a reusable 1-year QR code on this owner-authenticated desktop and scan it with your phone.
             The browser or installed web app that actually opens the scanned link will exclude itself automatically.
           </p>
 
           <div class="analytics-exclusion-actions">
-            <button type="button" class="btn-primary" id="generateAnalyticsExclusionCodeBtn">Generate 24-Hour QR</button>
+            <button type="button" class="btn-primary" id="generateAnalyticsExclusionCodeBtn">Generate 1-Year QR</button>
           </div>
 
           <div class="analytics-pairing-code-output analytics-pairing-qr-output" id="analyticsPairingCodeOutput" hidden>
@@ -1482,7 +1482,7 @@ async function renderInsightsPage(){
               <div class="analytics-qr-canvas" id="analyticsExclusionQr" aria-label="Analytics exclusion QR code"></div>
             </div>
             <div class="analytics-qr-copy">
-              <span>24-HOUR REUSABLE CODE</span>
+              <span>1-YEAR REUSABLE CODE</span>
               <strong id="analyticsGeneratedPairingCode">—</strong>
               <small>Scan with your phone. The browser/app that opens the link will be excluded from Insights.</small>
               <div class="analytics-qr-actions">
@@ -1494,7 +1494,7 @@ async function renderInsightsPage(){
 
           <div class="analytics-exclusion-note">
             <strong>How long does the exclusion last?</strong>
-            <span>The same pairing code can be reused across your browsers/PWAs for 24 hours. After a browser/PWA is paired successfully, its exclusion stays indefinitely. Pair it again only if you clear its site data or reinstall/reset that app.</span>
+            <span>The same pairing code can be reused across your browsers/PWAs for 1 year. After a browser/PWA is paired successfully, its exclusion stays indefinitely. Pair it again only if you clear its site data or reinstall/reset that app.</span>
           </div>
         </section>
       `;
@@ -1539,7 +1539,7 @@ async function renderInsightsPage(){
             }
           }
 
-          appContext.showToast("24-hour exclusion QR created");
+          appContext.showToast("1-year exclusion QR created");
         }finally{
           exclusionGenerateBtn.disabled=false;
           exclusionGenerateBtn.textContent=original;

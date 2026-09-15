@@ -109,12 +109,12 @@ function renderAnalyticsExclusionPairingPage(){
           <strong>${excluded?"Excluded from Insights":"Currently included in Insights"}</strong>
           <span>${excluded
             ? `This browser/PWA will not record Website Visits, Qualified Views, Country, Device or engagement analytics. Persistent storage: ${appContext.hasAnalyticsExclusionLocalStorage()?"Local ✓":"Local —"} · ${appContext.hasAnalyticsExclusionCookie()?"Cookie ✓":"Cookie —"}`
-            :"Scan the Owner Mode QR code, or enter the 24-hour pairing code manually below."}</span>
+            :"Scan the Owner Mode QR code, or enter the 1-year pairing code manually below."}</span>
         </div>
 
         <div class="analytics-pairing-form">
           <div class="field">
-            <label for="analyticsPairingCode">24-hour pairing code</label>
+            <label for="analyticsPairingCode">1-year pairing code</label>
             <input id="analyticsPairingCode"
                    type="text"
                    maxlength="12"
