@@ -167,7 +167,7 @@ function renderBulkStatusPage(){
         if(q){
           const hay=[
             card.name,card.card_code,card.game,card.series,
-            card.year,card.language,card.availability
+            card.year,card.language,card.language_details,card.availability
           ].map(v=>appContext.normalizeFilterValue(v)).join(" ");
           if(!hay.includes(q)) return false;
         }
