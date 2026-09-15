@@ -106,7 +106,7 @@ function bulkMetadataFieldLabel(field){
 function bulkMetadataValueOptions(field){
     if(field==="game") return appContext.GAME_CHOICES.slice();
     if(field==="era") return appContext.ERA_OPTIONS.slice();
-    if(field==="language") return ["JP","ENG","KR","CN"];
+    if(field==="language") return appContext.LANGUAGE_OPTIONS.slice();
     if(field==="format") return ["Raw","Graded","Sealed"];
     if(field==="condition") return Object.keys(appContext.CONDITION_LABEL);
     if(field==="availability") return ["Available","Reserved","Sold","Collection (NFS)"];
@@ -408,7 +408,7 @@ function renderBulkMetadataPage(fromInventoryTools=false){
         }
 
         if(q){
-          const hay=[card.name,card.card_code,card.game,card.series,card.year,card.language]
+          const hay=[card.name,card.card_code,card.game,card.series,card.year,card.language,card.language_details]
             .map(v=>appContext.normalizeFilterValue(v)).join(" ");
           if(!hay.includes(q)) return false;
         }
