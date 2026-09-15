@@ -383,7 +383,7 @@ function inventoryPageHTML(scopeMeta,scope){
 
 function inventoryFilterOptions(scopedCards){
     const games=Array.from(new Set(scopedCards.map(c=>c.game).filter(Boolean))).sort();
-    const languages=["JP","ENG","KR","CN"].filter(lang=>scopedCards.some(c=>c.language===lang));
+    const languages=appContext.LANGUAGE_OPTIONS.filter(lang=>scopedCards.some(c=>c.language===lang));
     const eras=appContext.ERA_OPTIONS.filter(era=>scopedCards.some(c=>c.era===era));
     const series=Array.from(new Set(scopedCards.map(c=>c.series).filter(Boolean))).sort();
 
