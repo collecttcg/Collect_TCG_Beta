@@ -61,14 +61,31 @@ test('short card drop removes repeated series text and keeps price readable',()=
  a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
  a.collectSocialPostLines=()=>[];
  const card={
-  id:'buggy',year:'1999',series:'FIRST STAGE',name:'FIRST STAGE BUGGY',card_code:'C24',era:'VINTAGE',
+  id:'buggy',year:'1999',series:'FIRST STAGE',name:'FIRST STAGE BUGGY',card_code:'C24',era:'VINTAGE',language:'Mixed / Multiple languages',language_details:'JP × 2 · ENG × 1',
   grading:[{company:'PSA',grade:'9',pop_count:45}],price_myr:16000,price_usd:4000,price_sgd:5050,price_negotiability:'Negotiable'
  };
  const drop=a.buildFbCardDropPost([card],{listTitle:'AVAILABLE INVENTORY',dropLimit:5,hashtags:'#tcg'});
  assert.match(drop,/1\. Buggy · C24/);
- assert.match(drop,/1999 · First Stage · PSA 9 · POP 45 · Vintage/);
+ assert.match(drop,/1999 · First Stage · Mixed \/ Multiple languages: JP × 2 · ENG × 1 · PSA 9 · POP 45 · Vintage/);
  assert.match(drop,/RM 16,000 · US\$4,000 · S\$5,050 · negotiable/);
  assert.doesNotMatch(drop,/PRICE\s*:/);
+});
+
+test('language details preserve a single filter value and an optional exact breakdown',()=>{
+ const a=app();
+ a.LANGUAGE_OPTIONS=['JP','ENG','KR','CN','Mixed / Multiple languages','N/A'];
+ a.LIFECYCLE_OPTIONS=['live','draft','archived'];
+ assert.ok(a.LANGUAGE_OPTIONS.includes('Mixed / Multiple languages'));
+ assert.ok(a.LANGUAGE_OPTIONS.includes('N/A'));
+ a.languageDetailsSupported=true;
+ const db=a.cardToDb({
+  name:'Mixed-language lot',language:'Mixed / Multiple languages',language_details:'JP × 2 · ENG × 1',
+  grading:[],availability:'Available',format:'Raw',condition:'NM'
+ });
+ assert.equal(db.language,'Mixed / Multiple languages');
+ assert.equal(db.language_details,'JP × 2 · ENG × 1');
+ const card=a.dbToCard({id:'language-test',name:'Mixed-language lot',language:db.language,language_details:db.language_details});
+ assert.equal(card.language_details,'JP × 2 · ENG × 1');
 });
 
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
