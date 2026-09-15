@@ -8,7 +8,6 @@
   "beta/collect-tcg-manifest.webmanifest": "b521fe8b57d7fbb0c2e92df8b5078d31f2d38e6c25282a92acdf1b33b79e5ecc",
   "beta/index.html": "e576560a6c13feb8aba17118bdbf53d1550e94f6dbb5070744fac011d5876d72",
   "beta/src/app/beta-config.js": "4d10e937392c405f6eec6494b2b8824c470f9738e0f8f9ec26a8278def5a1d78",
-  "beta/src/app/beta-runtime.js": "97dc112a4d4847d4c0579f1212df55794ebc9f8ec5f2e7f5c0bf9a489611e4b4",
   "beta/src/app/initialize.js": "24d10fd5e1f398bb5af1775f5ff96565a4536ca357200989dc52a5037a5979a7",
   "beta/src/app/navigation.js": "928791798be3ec5ed599f127fdaf08d027f5b529110c78665688d3bb2743eeb1",
   "beta/src/app/register-features.js": "e000b654123597addbfffdaff4075de3ab2846b9a515c677dec87320e240cd9b",
