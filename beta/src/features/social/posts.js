@@ -2603,6 +2603,7 @@ function buildFbCardListPost(availableCards,prefs){
   function buildFbCardDropPost(selectedCards,prefs){
     const cards=selectedCards.slice(0,Number(prefs.dropLimit)||5);
     if(!cards.length) return "";
+    const divider="━━━━━━━━━━━━━━━━━━━━━━━━";
     const shown=cards.map((card,index)=>appContext.dropCardEntryLines(card,index).join("\n"));
     const lines=[
       `✨ CARD DROP · ${appContext.fbCardListDateLabel()}`,
@@ -2614,8 +2615,25 @@ function buildFbCardListPost(availableCards,prefs){
       "More cards are available beyond this drop.",
       `Browse the full inventory: ${appContext.getWebsiteShareUrl()}`,
       "",
-      "📍 Malaysia & Singapore · COD / meetup available depending on the item",
-      "📩 DM for availability, offers, or more photos / video.",
+      divider,
+      "",
+      "📍 COD / MEETUP: MALAYSIA OR SINGAPORE, DEPENDING ON THE ITEM",
+      "",
+      "🌏 INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY",
+      "",
+      "International shipping is available only for items valued below USD 6,000. Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped. For cards priced above USD 6,000, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.",
+      "",
+      "📩 DM your offer if interested",
+      "",
+      "💰 Serious buyers only",
+      "",
+      "👥 Can discuss meetup location",
+      "",
+      "📍 Located in KL 🇲🇾 / SG 🇲🇨",
+      "",
+      "❌ No lowball offers",
+      "",
+      divider,
       "",
       String(prefs.hashtags || "").trim()
     ];
