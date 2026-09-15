@@ -99,7 +99,7 @@ function cardSearchValues(card){
       : (format==="Sealed" ? "Sealed" : "");
     return [
       card?.name, card?.card_code, card?.year, card?.series, card?.game,
-      card?.set, card?.language, card?.era, card?.availability, format, condition,
+      card?.set, card?.language, card?.language_details, card?.era, card?.availability, format, condition,
       ...grades
     ].filter(v=>v!==null && v!==undefined && String(v).trim()!=="");
   }
