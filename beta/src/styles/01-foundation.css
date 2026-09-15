@@ -15399,6 +15399,27 @@ body.showcase-dragging-body{
   box-shadow:0 0 0 3px rgba(248,113,113,.08) !important;
 }
 
+/* A back arrow returns to a listing; it is not a destructive close action. */
+@media(max-width:800px){
+  .modal.card-details-modal .details-primary-actions #detailsCloseBtn.is-return-action{
+    border-color:rgba(227,179,65,.32) !important;
+    background:rgba(227,179,65,.055) !important;
+    color:#e8d39a !important;
+    outline:none !important;
+    box-shadow:none !important;
+  }
+
+  .modal.card-details-modal .details-primary-actions #detailsCloseBtn.is-return-action:hover,
+  .modal.card-details-modal .details-primary-actions #detailsCloseBtn.is-return-action:focus-visible{
+    border-color:rgba(227,179,65,.68) !important;
+    background:rgba(227,179,65,.11) !important;
+    color:#fff0bd !important;
+    outline:2px solid rgba(227,179,65,.28) !important;
+    outline-offset:2px !important;
+    box-shadow:0 0 0 3px rgba(227,179,65,.06) !important;
+  }
+}
+
 
 /* =========================================================
    COMPARE — DESKTOP SIZE IMPROVEMENTS
