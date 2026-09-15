@@ -730,7 +730,9 @@ async function updateCardStorage(card){
       return appContext.supabaseClient
         .from("cards")
         .update(payload)
-        .eq("id",card.id);
+        .eq("id",card.id)
+        .select("id")
+        .maybeSingle();
     }
 
     try{
@@ -753,6 +755,12 @@ async function updateCardStorage(card){
       if(result.error){
         console.error("Update card error:",result.error);
         appContext.showToast(appContext.cardWriteErrorText(result.error,"update"));
+        return null;
+      }
+
+      if(!result.data?.id){
+        console.error("Update card returned no matching row:",card.id);
+        appContext.showToast("Supabase did not confirm this card update. Please log out, log in again, and retry.");
         return null;
       }
 
