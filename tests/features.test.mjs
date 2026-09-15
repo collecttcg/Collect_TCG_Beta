@@ -100,10 +100,14 @@ test('card edits do not depend on a full REST row being returned after save',asy
  a.supabaseClient={
   from:table=>({
    update:payload=>({
-    eq:(field,value)=>{
-     calls.push({table,payload,field,value});
-     return {data:null,error:null};
-    }
+    eq:(field,value)=>({
+     select:columns=>({
+      maybeSingle:()=>{
+       calls.push({table,payload,field,value,columns});
+       return {data:{id:value},error:null};
+      }
+     })
+    })
    })
   })
  };
@@ -113,6 +117,7 @@ test('card edits do not depend on a full REST row being returned after save',asy
   availability:'Available',format:'Raw',condition:'NM',lifecycle_status:'live'
  });
  assert.equal(calls.length,1);
+ assert.equal(calls[0].columns,'id');
  assert.equal(calls[0].payload.language_details,'KR × 1, CN × 1');
  assert.equal(saved.language_details,'KR × 1, CN × 1');
  assert.equal(saved.name,'MIXED-LANGUAGE LOT');
