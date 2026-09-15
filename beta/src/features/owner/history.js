@@ -83,7 +83,7 @@ function renderRecentlyEditedOwnerPage(fromInventoryTools=false){
       let rows=recent.filter(card=>{
         if(s && appContext.normalizeFilterValue(card.availability)!==s) return false;
         if(q){
-          const hay=[card.name,card.card_code,card.game,card.series,card.year,card.language]
+          const hay=[card.name,card.card_code,card.game,card.series,card.year,card.language,card.language_details]
             .map(v=>appContext.normalizeFilterValue(v)).join(" ");
           if(!hay.includes(q)) return false;
         }
