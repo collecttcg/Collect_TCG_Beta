@@ -2326,6 +2326,7 @@ function getFbCardListPostPrefs(){
         listTitle:String(p.listTitle || "AVAILABLE INVENTORY").trim().slice(0,120),
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
+        dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl || p.carousellShopUrl) || "https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl) || "https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl) || "https://www.instagram.com/collecttcg.mysg",
@@ -2336,6 +2337,7 @@ function getFbCardListPostPrefs(){
         listTitle:"AVAILABLE INVENTORY",
         postFormat:"drop",
         dropLimit:5,
+        dropSelectionMode:"balanced",
         carousellMalaysiaUrl:"https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:"https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:"https://www.instagram.com/collecttcg.mysg",
@@ -2350,6 +2352,7 @@ function saveFbCardListPostPrefs(p){
         listTitle:String(p.listTitle || "").trim().slice(0,120),
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
+        dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl),
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl),
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl),
@@ -2568,6 +2571,37 @@ function buildFbCardListPost(availableCards,prefs){
       String(prefs.hashtags || "").trim()
     ];
     return appContext.compactGeneratedPostSpacing(lines.join("\n"));
+  }
+
+  function balancedCardDropCards(cards,limit){
+    const remaining=cards.slice();
+    const chosen=[];
+    const usedGames=new Set();
+    const usedSeries=new Set();
+    const usedEras=new Set();
+    const usedFormats=new Set();
+    const add=card=>{
+      chosen.push(card);
+      usedGames.add(appContext.normalizeFilterValue(card.game||""));
+      usedSeries.add(`${appContext.normalizeFilterValue(card.game||"")}|${appContext.normalizeFilterValue(card.series||"")}`);
+      usedEras.add(appContext.normalizeFilterValue(card.era||""));
+      usedFormats.add(appContext.cardListFormat(card));
+    };
+    if(remaining.length) add(remaining.shift());
+    while(remaining.length && chosen.length<limit){
+      let bestIndex=0;
+      let bestScore=-1;
+      remaining.forEach((card,index)=>{
+        const game=appContext.normalizeFilterValue(card.game||"");
+        const series=`${game}|${appContext.normalizeFilterValue(card.series||"")}`;
+        const era=appContext.normalizeFilterValue(card.era||"");
+        const format=appContext.cardListFormat(card);
+        const score=(usedGames.has(game)?0:1000)+(usedSeries.has(series)?0:100)+(usedEras.has(era)?0:10)+(usedFormats.has(format)?0:1);
+        if(score>bestScore){bestScore=score;bestIndex=index;}
+      });
+      add(remaining.splice(bestIndex,1)[0]);
+    }
+    return chosen;
   }
 
 function dataUrlToBlob(dataUrl){
@@ -2859,7 +2893,15 @@ function renderFbCardListGeneratorPage(){
               <select id="fbCardListDropLimit">
                 ${[3,4,5,6,8].map(n=>`<option value="${n}" ${prefs.dropLimit===n ? "selected" : ""}>${n} cards</option>`).join("")}
               </select>
-              <div class="hint">Uses the first selected cards in your chosen order.</div>
+              <div class="hint">Number of selected cards included in the post.</div>
+            </div>
+            <div class="field" id="fbCardListDropMixField">
+              <label for="fbCardListDropMix">Card mix</label>
+              <select id="fbCardListDropMix">
+                <option value="balanced" ${prefs.dropSelectionMode==="balanced" ? "selected" : ""}>Balanced mix (automatic)</option>
+                <option value="selected" ${prefs.dropSelectionMode==="selected" ? "selected" : ""}>Use selected order</option>
+              </select>
+              <div class="hint">Balanced mix avoids repeating the same game, series, era and card type where possible.</div>
             </div>
           </div>
 
@@ -2942,6 +2984,8 @@ function renderFbCardListGeneratorPage(){
     const postFormatInput=appContext.$("fbCardListPostFormat");
     const dropLimitInput=appContext.$("fbCardListDropLimit");
     const dropLimitField=appContext.$("fbCardListDropLimitField");
+    const dropMixInput=appContext.$("fbCardListDropMix");
+    const dropMixField=appContext.$("fbCardListDropMixField");
     const previewTitle=appContext.$("fbCardListPreviewTitle");
     const titleInput=appContext.$("fbCardListTitle");
     const carousellMYInput=appContext.$("fbCardListCarousellMY");
@@ -2961,6 +3005,7 @@ function renderFbCardListGeneratorPage(){
         listTitle:titleInput.value,
         postFormat:postFormatInput.value,
         dropLimit:Number(dropLimitInput.value),
+        dropSelectionMode:dropMixInput.value,
         carousellMalaysiaUrl:carousellMYInput.value,
         carousellSingaporeUrl:carousellSGInput.value,
         instagramUrl:instagramInput.value,
@@ -2971,6 +3016,7 @@ function renderFbCardListGeneratorPage(){
     function syncPostFormatUI(){
       const isDrop=postFormatInput.value!=="full";
       dropLimitField.hidden=!isDrop;
+      dropMixField.hidden=!isDrop;
       previewTitle.textContent=isDrop ? "Facebook Drop Post" : "Facebook Card List";
       copyBtn.textContent=isDrop ? "Copy Drop Post" : "Copy Full Post";
       prepareBtn.textContent=isDrop ? "Prepare Drop Post" : "Prepare Facebook Post";
@@ -3271,7 +3317,11 @@ function renderFbCardListGeneratorPage(){
 
     function cardsForPost(){
       const selected=orderedSelectedCards();
-      return postFormatInput.value==="full" ? selected : selected.slice(0,Number(dropLimitInput.value)||5);
+      if(postFormatInput.value==="full") return selected;
+      const limit=Number(dropLimitInput.value)||5;
+      return dropMixInput.value==="selected"
+        ? selected.slice(0,limit)
+        : appContext.balancedCardDropCards(selected,limit);
     }
 
     function updateSelectionStatus(){
@@ -3364,7 +3414,7 @@ function renderFbCardListGeneratorPage(){
       applyOrderPreset(orderPreset.value);
     });
 
-    [postFormatInput,dropLimitInput,titleInput,carousellMYInput,carousellSGInput,instagramInput,hashtagsInput].forEach(el=>{
+    [postFormatInput,dropLimitInput,dropMixInput,titleInput,carousellMYInput,carousellSGInput,instagramInput,hashtagsInput].forEach(el=>{
       el.addEventListener("input",regenerate);
       el.addEventListener("change",regenerate);
     });
@@ -3480,7 +3530,7 @@ function renderFbCardListGeneratorPage(){
     applyOrderPreset("default");
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
