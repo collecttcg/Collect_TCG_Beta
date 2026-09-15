@@ -730,9 +730,7 @@ async function updateCardStorage(card){
       return appContext.supabaseClient
         .from("cards")
         .update(payload)
-        .eq("id",card.id)
-        .select(appContext.cardMutationReturnColumns())
-        .single();
+        .eq("id",card.id);
     }
 
     try{
@@ -758,7 +756,24 @@ async function updateCardStorage(card){
         return null;
       }
 
-      return appContext.mergeOwnerOnlyCardFields(appContext.dbToCard(result.data),card);
+      // A successful update does not need to request the whole row back. That
+      // extra REST select can fail independently after a schema change even
+      // when the write itself is valid, which used to block every edit.
+      return {
+        ...card,
+        name:(card.name||"").toUpperCase(),
+        card_code:(card.card_code||"").trim().toUpperCase(),
+        language_details:Object.prototype.hasOwnProperty.call(payload,"language_details")
+          ? String(card.language_details||"").trim()
+          : "",
+        sold_at:Object.prototype.hasOwnProperty.call(payload,"sold_at")
+          ? (card.sold_at||null)
+          : null,
+        lifecycle_status:Object.prototype.hasOwnProperty.call(payload,"lifecycle_status")
+          ? appContext.cardLifecycle(card)
+          : (card.lifecycle_status||"live"),
+        updated_at:new Date().toISOString()
+      };
     }catch(error){
       console.error("Update card request failed:",error);
       appContext.showToast(appContext.cardWriteErrorText(error,"update"));
