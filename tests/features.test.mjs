@@ -21,3 +21,19 @@ test('all 30 V92 related-card results and availability rules are preserved',()=>
 test('feature registry has no missing cross-module dependencies',()=>{
  const a=app();const map=JSON.parse(fs.readFileSync(new URL('../docs/function-map.json',import.meta.url),'utf8'));for(const row of map)assert.equal(typeof a[row.name],'function',row.name);assert.equal(map.length,667);
 });
+
+test('critical retained features remain registered and their public intents remain available',()=>{
+ const map=JSON.parse(fs.readFileSync(new URL('../docs/function-map.json',import.meta.url),'utf8'));
+ const names=new Set(map.map(row=>row.name));
+ for(const name of ['isOwnerMode','requireOwner','applyOwnerMode','renderContactPage','publicContactSellerMessage','loadGiveaways','saveGiveaway','renderCarousellPostGeneratorPage','isAnalyticsExcludedDevice','createAnalyticsExclusionPairingCode'])assert.ok(names.has(name),name);
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const details=source('../beta/src/features/cards/details.js');
+ for(const intent of ['Availability','Make an offer','More photos / video','COD / meetup'])assert.ok(details.includes(intent),intent);
+ const giveaway=source('../beta/src/features/content/giveaways-data.js');
+ assert.match(giveaway,/bonus/i);
+ const posts=source('../beta/src/features/social/posts.js');
+ assert.match(posts,/Facebook Group/i);
+ assert.match(posts,/Carousell/i);
+ const analytics=source('../beta/src/services/analytics.js');
+ assert.match(analytics,/analyticsExclusionPairingUrl/);
+});
