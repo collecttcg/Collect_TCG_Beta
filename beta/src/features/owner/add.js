@@ -83,7 +83,6 @@ function renderAddPage(){
         saveAttempted=true;
         const saved=await appContext.createCardStorage(data);
         if(!saved){
-          appContext.showToast("Save could not be confirmed. Uploaded photos were retained. Refresh the inventory before trying again.");
           return;
         }
 
