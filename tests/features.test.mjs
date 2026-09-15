@@ -46,7 +46,8 @@ test('card list generator keeps the detailed format and limits the short drop po
  const prefs={listTitle:"TEST DROP",dropLimit:3,hashtags:"#tcg"};
  const drop=a.buildFbCardListPost(cards,{...prefs,postFormat:"drop"});
  assert.match(drop,/CARD DROP/);
- assert.match(drop,/Browse photos, prices & availability/);
+ assert.match(drop,/More cards are available beyond this drop/);
+ assert.match(drop,/Browse the full inventory/);
  for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.card_code));
  for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.card_code));
  const full=a.buildFbCardListPost(cards,{...prefs,postFormat:"full"});
