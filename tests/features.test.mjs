@@ -85,7 +85,37 @@ test('language details preserve a single filter value and an optional exact brea
  assert.equal(db.language,'Mixed / Multiple languages');
  assert.equal(db.language_details,'JP × 2 · ENG × 1');
  const card=a.dbToCard({id:'language-test',name:'Mixed-language lot',language:db.language,language_details:db.language_details});
- assert.equal(card.language_details,'JP × 2 · ENG × 1');
+  assert.equal(card.language_details,'JP × 2 · ENG × 1');
+});
+
+test('card edits do not depend on a full REST row being returned after save',async()=>{
+ const a=app();
+ a.owner=true;
+ a.requireOwner=()=>true;
+ a.LIFECYCLE_OPTIONS=['live','draft','archived'];
+ a.languageDetailsSupported=true;
+ a.lifecycleSupported=true;
+ a.soldAtSupported=false;
+ const calls=[];
+ a.supabaseClient={
+  from:table=>({
+   update:payload=>({
+    eq:(field,value)=>{
+     calls.push({table,payload,field,value});
+     return {data:null,error:null};
+    }
+   })
+  })
+ };
+ const saved=await a.updateCardStorage({
+  id:'language-test',name:'mixed-language lot',card_code:'don!!',game:'One Piece Card Game',
+  language:'Mixed / Multiple languages',language_details:'KR × 1, CN × 1',grading:[],
+  availability:'Available',format:'Raw',condition:'NM',lifecycle_status:'live'
+ });
+ assert.equal(calls.length,1);
+ assert.equal(calls[0].payload.language_details,'KR × 1, CN × 1');
+ assert.equal(saved.language_details,'KR × 1, CN × 1');
+ assert.equal(saved.name,'MIXED-LANGUAGE LOT');
 });
 
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
