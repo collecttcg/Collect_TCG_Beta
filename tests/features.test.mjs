@@ -52,3 +52,14 @@ test('card list generator keeps the detailed format and limits the short drop po
  const full=a.buildFbCardListPost(cards,{...prefs,postFormat:"full"});
  assert.match(full,/CARD LIST/);
 });
+
+test('balanced card drop mix prioritizes different games before repeating one',()=>{
+ const a=app();
+ const cards=[
+  {id:'a',game:'ONE PIECE',series:'Alpha',era:'Vintage',grading:[{company:'PSA',grade:'10'}]},
+  {id:'b',game:'ONE PIECE',series:'Beta',era:'Modern',grading:[{company:'PSA',grade:'9'}]},
+  {id:'c',game:'GUNDAM',series:'Gamma',era:'Modern',grading:[]},
+  {id:'d',game:'ZATCH BELL',series:'Delta',era:'Vintage',grading:[]}
+ ];
+ assert.deepEqual(a.balancedCardDropCards(cards,4).map(card=>card.id),['a','c','d','b']);
+});
