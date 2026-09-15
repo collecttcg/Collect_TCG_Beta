@@ -86,6 +86,10 @@ test('language details preserve a single filter value and an optional exact brea
  assert.equal(db.language_details,'JP × 2 · ENG × 1');
  const card=a.dbToCard({id:'language-test',name:'Mixed-language lot',language:db.language,language_details:db.language_details});
   assert.equal(card.language_details,'JP × 2 · ENG × 1');
+ assert.match(
+  a.cardWriteErrorText({message:'new row violates check constraint "cards_language_check"'},'update'),
+  /EXTEND-LANGUAGE-OPTIONS\.sql/
+ );
 });
 
 test('card edits do not depend on a full REST row being returned after save',async()=>{
