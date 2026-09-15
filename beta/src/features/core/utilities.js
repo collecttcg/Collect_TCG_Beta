@@ -48,7 +48,7 @@ export function initialize(appContext,runtime){
     "NOT APPLICABLE":"N/A"
   };
 
-  appContext.LANGUAGE_OPTIONS = ["JP","ENG","KR","CN"];
+  appContext.LANGUAGE_OPTIONS = ["JP","ENG","KR","CN","Mixed / Multiple languages","N/A"];
 
   appContext.ERA_OPTIONS = ["Modern","Mid-Era","Vintage"];
 
