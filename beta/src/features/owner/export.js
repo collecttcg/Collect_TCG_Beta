@@ -40,7 +40,7 @@ function downloadTextFile(filename,text,mime="text/plain;charset=utf-8"){
 
 function buildInventoryCsv(rows,includeCert){
     const header=[
-      "ID","Card Code","Name","Year","Game","Series","Set","Era","Language","Format",
+      "ID","Card Code","Name","Year","Game","Series","Set","Era","Language","Language Details","Format",
       "Rarity","Condition","Availability","Quantity","MYR","USD","SGD","Cost",
       "Grading",...(includeCert?["Certificate"]:[]),"Notes","Images","Created At","Updated At","Sold At"
     ];
@@ -58,6 +58,7 @@ function buildInventoryCsv(rows,includeCert){
         card.set,
         card.era,
         card.language,
+        card.language_details,
         appContext.effectiveFormat(card),
         card.rarity,
         card.condition,
@@ -90,6 +91,7 @@ function buildInventoryBackupJson(rows,includePrivate){
         year:card.year,
         game:card.game,
         language:card.language,
+        language_details:card.language_details,
         era:card.era,
         availability:card.availability,
         set:card.set,
