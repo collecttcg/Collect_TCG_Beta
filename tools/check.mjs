@@ -7,6 +7,7 @@ function files(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e
 let count=0;
 for(const file of files(fileURLToPath(root))){
  if(!file.endsWith('.js'))continue;
+ if(/-v\d+\.js$/i.test(path.basename(file)))throw new Error('Version-suffixed active JavaScript module: '+file);
  execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
  const source=fs.readFileSync(file,'utf8');
  for(const match of source.matchAll(/\bfrom\s+['"](\.[^'"]+)['"]/g)){
