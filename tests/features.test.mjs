@@ -46,11 +46,26 @@ test('card list generator keeps the detailed format and limits the short drop po
  const prefs={listTitle:"TEST DROP",dropLimit:3,hashtags:"#tcg"};
  const drop=a.buildFbCardListPost(cards,{...prefs,postFormat:"drop"});
  assert.match(drop,/CARD DROP/);
- assert.match(drop,/Full photos, prices & availability/);
- for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.name));
- for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.name));
+ assert.match(drop,/Browse photos, prices & availability/);
+ for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.card_code));
+ for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.card_code));
  const full=a.buildFbCardListPost(cards,{...prefs,postFormat:"full"});
  assert.match(full,/CARD LIST/);
+});
+
+test('short card drop removes repeated series text and keeps price readable',()=>{
+ const a=app();
+ a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
+ a.collectSocialPostLines=()=>[];
+ const card={
+  id:'buggy',year:'1999',series:'FIRST STAGE',name:'FIRST STAGE BUGGY',card_code:'C24',era:'VINTAGE',
+  grading:[{company:'PSA',grade:'9',pop_count:45}],price_myr:16000,price_usd:4000,price_sgd:5050,price_negotiability:'Negotiable'
+ };
+ const drop=a.buildFbCardDropPost([card],{listTitle:'AVAILABLE INVENTORY',dropLimit:5,hashtags:'#tcg'});
+ assert.match(drop,/1\. Buggy · C24/);
+ assert.match(drop,/1999 · First Stage · PSA 9 · POP 45 · Vintage/);
+ assert.match(drop,/RM 16,000 · US\$4,000 · S\$5,050 · negotiable/);
+ assert.doesNotMatch(drop,/PRICE\s*:/);
 });
 
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
