@@ -166,7 +166,6 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       saveAttempted=true;
       const saved=await appContext.updateCardStorage(data);
       if(!saved){
-        appContext.showToast("Save could not be confirmed. Uploaded photos were retained. Refresh the inventory before trying again.");
         appContext.resetEditSubmitButton();
         return;
       }
