@@ -326,47 +326,92 @@ async function createInventoryQrDownloadBlob(card){
     ctx.strokeStyle = "rgba(236,192,87,0.88)";
     ctx.stroke();
 
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = "#0f172a";
-    ctx.font = "700 92px Inter, Arial, sans-serif";
-    ctx.fillText("Scan to browse our Inventory", canvas.width/2, panelY + 84);
+    // Canvas text does not wrap automatically. Keep every line inside the
+    // white panel, including very long card names from the Inventory export.
+    const contentWidth = panelW - 180;
+    const fitLine = (text,maxWidth,ellipsis=false)=>{
+      let value = String(text || "").trim();
+      if(ctx.measureText(value).width <= maxWidth) return value;
+      const suffix = ellipsis ? "…" : "";
+      while(value && ctx.measureText(value + suffix).width > maxWidth){
+        value = value.slice(0,-1).trimEnd();
+      }
+      return value + suffix;
+    };
+    const drawCenteredLines = (text,y,{font,color,maxWidth=contentWidth,lineHeight,maxLines=2})=>{
+      ctx.font = font;
+      const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = "";
+      words.forEach(word=>{
+        const safeWord = fitLine(word,maxWidth,true);
+        const candidate = line ? `${line} ${safeWord}` : safeWord;
+        if(ctx.measureText(candidate).width <= maxWidth){
+          line = candidate;
+        }else if(line){
+          lines.push(line);
+          line = safeWord;
+        }else{
+          line = safeWord;
+        }
+      });
+      if(line) lines.push(line);
+      if(lines.length > maxLines){
+        lines.length = maxLines;
+        let finalLine = lines[maxLines-1];
+        while(finalLine && ctx.measureText(`${finalLine}…`).width > maxWidth){
+          finalLine = finalLine.slice(0,-1).trimEnd();
+        }
+        lines[maxLines-1] = `${finalLine}…`;
+      }
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color;
+      lines.forEach((entry,index)=>ctx.fillText(entry,canvas.width/2,y+index*lineHeight));
+      ctx.restore();
+      return y + lines.length*lineHeight;
+    };
 
-    ctx.fillStyle = "#111827";
-    ctx.font = "800 108px Inter, Arial, sans-serif";
-    ctx.fillText("Collect TCG", canvas.width/2, panelY + 188);
-    ctx.font = "700 62px Inter, Arial, sans-serif";
-    ctx.fillStyle = "rgba(17,24,39,0.78)";
-    ctx.fillText("More cards, prices and updates on our website", canvas.width/2, panelY + 320);
+    let copyY = panelY + 80;
+    copyY = drawCenteredLines("Scan to browse our Inventory",copyY,{
+      font:"800 88px Inter, Arial, sans-serif",color:"#0f172a",lineHeight:96,maxLines:2
+    }) + 14;
+    copyY = drawCenteredLines("Collect TCG",copyY,{
+      font:"800 106px Inter, Arial, sans-serif",color:"#111827",lineHeight:116,maxLines:1
+    }) + 16;
+    copyY = drawCenteredLines("More cards, prices and updates on our website",copyY,{
+      font:"700 48px Inter, Arial, sans-serif",color:"rgba(17,24,39,0.78)",lineHeight:62,maxLines:2
+    }) + 20;
 
     if(card){
       const line = [card.card_code, card.name].filter(Boolean).join(" • ");
       if(line){
-        ctx.fillStyle = "rgba(17,24,39,0.62)";
-        ctx.font = "600 42px Inter, Arial, sans-serif";
-        ctx.fillText(line, canvas.width/2, panelY + 405);
+        copyY = drawCenteredLines(line,copyY,{
+          font:"600 34px Inter, Arial, sans-serif",color:"rgba(17,24,39,0.62)",lineHeight:46,maxLines:2
+        }) + 18;
       }
     }
 
-    const qrSize = 760;
+    const qrSize = 720;
     const qrX = Math.round((canvas.width-qrSize)/2);
-    const qrY = panelY + 510;
+    const qrY = Math.max(panelY + 650,Math.round(copyY + 18));
     roundRect(qrX-24, qrY-24, qrSize+48, qrSize+48, 32);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
     ctx.drawImage(qrGraphic, qrX, qrY, qrSize, qrSize);
 
-    ctx.fillStyle = "rgba(17,24,39,0.92)";
-    ctx.font = "700 46px Inter, Arial, sans-serif";
-    ctx.fillText("Open the full website inventory", canvas.width/2, qrY + qrSize + 62);
+    let footerY = qrY + qrSize + 62;
+    footerY = drawCenteredLines("Open the full website inventory",footerY,{
+      font:"700 46px Inter, Arial, sans-serif",color:"rgba(17,24,39,0.92)",lineHeight:54,maxLines:1
+    }) + 10;
+    drawCenteredLines("collecttcg.github.io/Collect_TCG/#/inventory",footerY,{
+      font:"500 30px 'JetBrains Mono', monospace",color:"rgba(17,24,39,0.78)",lineHeight:38,maxLines:1
+    });
 
-    ctx.fillStyle = "rgba(17,24,39,0.78)";
-    ctx.font = "500 33px 'JetBrains Mono', monospace";
-    ctx.fillText("collecttcg.github.io/Collect_TCG/#/inventory", canvas.width/2, qrY + qrSize + 126);
-
-    ctx.fillStyle = "rgba(17,24,39,0.58)";
-    ctx.font = "500 28px Inter, Arial, sans-serif";
-    ctx.fillText("Thank you for supporting Collect TCG", canvas.width/2, panelY + panelH - 84);
+    drawCenteredLines("Thank you for supporting Collect TCG",panelY + panelH - 84,{
+      font:"500 28px Inter, Arial, sans-serif",color:"rgba(17,24,39,0.58)",lineHeight:34,maxLines:1
+    });
 
     if(logo){
       const logoSize = 152;
