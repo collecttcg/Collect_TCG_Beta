@@ -48,6 +48,8 @@ test('card list generator keeps the detailed format and limits the short drop po
  assert.match(drop,/CARD DROP/);
  assert.match(drop,/More cards are available beyond this drop/);
  assert.match(drop,/Browse the full inventory/);
+ assert.match(drop,/INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY/);
+ assert.match(drop,/COD \/ MEETUP: MALAYSIA OR SINGAPORE/);
  for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.card_code));
  for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.card_code));
  const full=a.buildFbCardListPost(cards,{...prefs,postFormat:"full"});
