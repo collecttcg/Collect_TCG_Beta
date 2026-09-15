@@ -37,3 +37,18 @@ test('critical retained features remain registered and their public intents rema
  const analytics=source('../beta/src/services/analytics.js');
  assert.match(analytics,/analyticsExclusionPairingUrl/);
 });
+
+test('card list generator keeps the detailed format and limits the short drop post',()=>{
+ const a=app();
+ a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
+ a.collectSocialPostLines=()=>[];
+ const cards=golden.cards.slice(0,6);
+ const prefs={listTitle:"TEST DROP",dropLimit:3,hashtags:"#tcg"};
+ const drop=a.buildFbCardListPost(cards,{...prefs,postFormat:"drop"});
+ assert.match(drop,/CARD DROP/);
+ assert.match(drop,/Full photos, prices & availability/);
+ for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.name));
+ for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.name));
+ const full=a.buildFbCardListPost(cards,{...prefs,postFormat:"full"});
+ assert.match(full,/CARD LIST/);
+});
