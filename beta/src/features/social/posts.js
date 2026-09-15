@@ -2478,8 +2478,8 @@ function cardListItemLine(card){
   function dropCardPriceLine(card){
     return appContext.cardListPriceLine(card)
       .replace(/^PRICE\s*:\s*/i,"")
-      .replace(/\$([\d,]+)\s+USD\b/g,(_match,amount)=>`US${amount}`)
-      .replace(/\bSGD\s*([\d,]+)/g,(_match,amount)=>`S${amount}`)
+      .replace(/\$([\d,]+)\s+USD\b/g,(_match,amount)=>"US$"+amount)
+      .replace(/\bSGD\s*([\d,]+)/g,(_match,amount)=>"S$"+amount)
       .replace(/\s*\/\s*/g," · ")
       .replace(/\s*\(([^)]+)\)\s*$/," · $1");
   }
