@@ -378,7 +378,7 @@ function facebookToolsHeaderHTML(mode){
           <span class="fb-tools-switch-icon">C</span>
           <span>
             <strong>Carousell Post</strong>
-            <small>Choose a card · edit Product Details · copy listing template</small>
+            <small>Choose a card or giveaway prize · edit Product Details · copy listing template</small>
           </span>
         </a>
       </div>
@@ -1802,6 +1802,87 @@ function buildCarousellPostText(productDetails){
     return appContext.compactGeneratedPostSpacing(lines.join("\n"));
   }
 
+
+function carousellGiveawayImages(giveaway){
+    if(!giveaway) return [];
+    const out=[];
+    const add=value=>{
+      const url=appContext.safeHttpUrl(value||"");
+      if(url && !out.includes(url)) out.push(url);
+    };
+    if(Array.isArray(giveaway.images)) giveaway.images.forEach(add);
+    add(giveaway.image_url);
+    return out.slice(0,10);
+  }
+
+function defaultCarousellGiveawayProductDetails(giveaway){
+    if(!giveaway) return "";
+    const lines=[];
+    const prize=String(giveaway.card_name||giveaway.title||"Giveaway prize").trim();
+    const title=String(giveaway.title||"").trim();
+    if(prize) lines.push(`【GIVEAWAY PRIZE】 ${prize}`);
+    if(title && title!==prize) lines.push(`Giveaway: ${title}`);
+    if(giveaway.status){
+      const status=String(giveaway.status).replace(/_/g," ").trim();
+      lines.push(`Giveaway Status: ${status.replace(/\b\w/g,c=>c.toUpperCase())}`);
+    }
+    if(giveaway.ends_at && typeof appContext.giveawayDateLabel==="function"){
+      const label=appContext.giveawayDateLabel(giveaway.ends_at);
+      if(label) lines.push(`Giveaway Ends: ${label}`);
+    }
+    const notes=String(giveaway.details||"").trim();
+    if(notes) lines.push("",notes);
+    return lines.join("\n");
+  }
+
+async function downloadCarousellGiveawayImagesZip(giveaway,progressCallback){
+    if(!giveaway) return {added:0,failed:[]};
+    const images=appContext.carousellGiveawayImages(giveaway);
+    if(!images.length) return {added:0,failed:[]};
+
+    const ZipCtor=await appContext.ensureJsZip();
+    const zip=new ZipCtor();
+    const failed=[];
+    let added=0;
+    const base=typeof appContext.safeDownloadName==="function"
+      ? appContext.safeDownloadName(giveaway.card_name||giveaway.title||"Collect-TCG-Giveaway")
+      : String(giveaway.card_name||giveaway.title||"Collect-TCG-Giveaway").replace(/[\\/:*?"<>|]+/g,"-").trim();
+
+    for(let i=0;i<images.length;i++){
+      try{
+        const blob=await appContext.imageSourceToBlob(images[i]);
+        const ext=appContext.imageExtensionFromBlob(blob);
+        zip.file(`${String(i+1).padStart(2,"0")} - ${base}.${ext}`,blob);
+        added++;
+      }catch(error){
+        failed.push({index:i+1,reason:error?.message||"Image could not be read"});
+        console.warn("Could not add giveaway image to Carousell ZIP:",giveaway?.id,i+1,error);
+      }
+      if(progressCallback) progressCallback(i+1,images.length,added,failed.length);
+    }
+
+    if(!added){
+      const error=new Error("No downloadable giveaway images found");
+      error.failed=failed;
+      throw error;
+    }
+
+    const blob=await zip.generateAsync({
+      type:"blob",
+      compression:"DEFLATE",
+      compressionOptions:{level:6}
+    });
+    const href=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=href;
+    a.download=`${base} - Giveaway Images.zip`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(href),1500);
+    return {added,failed};
+  }
+
 function renderCarousellPostGeneratorPage(){
     if(!appContext.requireOwner("open Carousell post generator")) return;
 
@@ -1810,6 +1891,15 @@ function renderCarousellPostGeneratorPage(){
       .filter(card=>appContext.cardLifecycle(card)!=="archived")
       .slice()
       .sort((a,b)=>String(a.name||"").localeCompare(String(b.name||"")));
+
+    const selectableGiveaways=(Array.isArray(appContext.giveaways)?appContext.giveaways:[])
+      .filter(g=>String(g.card_name||g.title||"").trim())
+      .slice()
+      .sort((a,b)=>{
+        const aPast=appContext.normalizeFilterValue(a.status)==="gave_away" ? 1 : 0;
+        const bPast=appContext.normalizeFilterValue(b.status)==="gave_away" ? 1 : 0;
+        return aPast-bPast || String(a.card_name||a.title||"").localeCompare(String(b.card_name||b.title||""));
+      });
 
     const carousellGameOptions=[...new Set(
       selectableCards.map(card=>String(card.game||"").trim()).filter(Boolean)
@@ -1824,7 +1914,7 @@ function renderCarousellPostGeneratorPage(){
         <div>
           <div class="eyebrow">Owner Tool</div>
           <h2>Carousell Post Generator</h2>
-          <p>Choose a card, review/edit the Product Details section, then copy the complete Carousell listing template.</p>
+          <p>Choose an inventory card or a giveaway prize, review/edit Product Details, then copy the complete Carousell listing template.</p>
         </div>
       </div>
 
@@ -1832,18 +1922,26 @@ function renderCarousellPostGeneratorPage(){
         <section class="panel fb-post-builder">
           <div class="fb-post-section-title">
             <div>
-              <div class="eyebrow">1 · Select Card</div>
+              <div class="eyebrow">1 · Select Product</div>
               <h3>Product Details</h3>
             </div>
           </div>
 
           <div class="fb-card-list-selection-toolbar">
             <div class="field fb-card-list-search-field">
-              <label for="carousellPostCardSearch">Search cards</label>
-              <input id="carousellPostCardSearch" type="search" maxlength="100" placeholder="Name, code, series, year…">
+              <label for="carousellPostCardSearch">Search cards / giveaways</label>
+              <input id="carousellPostCardSearch" type="search" maxlength="100" placeholder="Name, code, series, giveaway title…">
             </div>
 
             <div class="fb-card-list-filter-row">
+              <div class="field">
+                <label for="carousellPostSourceFilter">Source</label>
+                <select id="carousellPostSourceFilter">
+                  <option value="">Cards + giveaways</option>
+                  <option value="card">Inventory / Collection</option>
+                  <option value="giveaway">Giveaway prizes</option>
+                </select>
+              </div>
               <div class="field">
                 <label for="carousellPostGameFilter">Game</label>
                 <select id="carousellPostGameFilter">
@@ -1871,11 +1969,11 @@ function renderCarousellPostGeneratorPage(){
           </div>
 
           <div class="field">
-            <label for="carousellPostCardSelect">Card <span class="field-optional">(optional)</span></label>
+            <label for="carousellPostCardSelect">Card / Giveaway Prize <span class="field-optional">(optional)</span></label>
             <select id="carousellPostCardSelect">
               <option value="">Manual product details</option>
             </select>
-            <div class="hint" id="carousellPostFilterCount">Selecting a card fills Product Details from your inventory. You can still edit the text before copying.</div>
+            <div class="hint" id="carousellPostFilterCount">Selecting an item fills Product Details automatically. Giveaway prizes use their giveaway photos.</div>
           </div>
 
           <div id="carousellPostSelectedCard" class="fb-post-selected-card" hidden></div>
@@ -1883,9 +1981,8 @@ function renderCarousellPostGeneratorPage(){
           <div class="field">
             <label for="carousellProductDetails">Product Details / card explanation</label>
             <textarea id="carousellProductDetails" rows="12" maxlength="5000" placeholder="Explain the card/product here…">${appContext.escapeHtml(prefs.productDetails)}</textarea>
-            <div class="hint">This is the only product-specific section. The caution, COD and negotiation rules remain fixed in the template.</div>
+            <div class="hint">You can edit the generated details before copying. The caution, COD and negotiation rules remain fixed in the template.</div>
           </div>
-
         </section>
 
         <section class="panel fb-post-output-panel">
@@ -1912,6 +2009,7 @@ function renderCarousellPostGeneratorPage(){
 
     const select=appContext.$("carousellPostCardSelect");
     const searchInput=appContext.$("carousellPostCardSearch");
+    const sourceFilter=appContext.$("carousellPostSourceFilter");
     const gameFilter=appContext.$("carousellPostGameFilter");
     const statusFilter=appContext.$("carousellPostStatusFilter");
     const typeFilter=appContext.$("carousellPostTypeFilter");
@@ -1925,6 +2023,20 @@ function renderCarousellPostGeneratorPage(){
     const openCardBtn=appContext.$("carousellOpenCardBtn");
 
     let selectedCard=null;
+    let selectedGiveaway=null;
+
+    function giveawayMatchesSearch(giveaway){
+      const q=appContext.normalizeFilterValue(searchInput.value);
+      if(!q) return true;
+      const hay=[
+        giveaway.title,
+        giveaway.card_name,
+        giveaway.status,
+        giveaway.details,
+        giveaway.giveaway_code
+      ].map(v=>appContext.normalizeFilterValue(v)).join(" ");
+      return hay.includes(q);
+    }
 
     function carousellMatchesFilters(card){
       const q=appContext.normalizeFilterValue(searchInput.value);
@@ -1953,48 +2065,96 @@ function renderCarousellPostGeneratorPage(){
     }
 
     function renderCarousellCardOptions(){
-      const visible=selectableCards.filter(carousellMatchesFilters);
-      const selectedId=String(select.value||selectedCard?.id||"");
+      const source=sourceFilter.value;
+      const visibleCards=source==="giveaway" ? [] : selectableCards.filter(carousellMatchesFilters);
 
-      select.innerHTML=[
-        `<option value="">Manual product details</option>`,
-        ...visible.map(card=>`
-          <option value="${appContext.escapeHtml(card.id)}">
-            ${appContext.escapeHtml(`${card.card_code ? card.card_code+" · " : ""}${card.name}${card.year ? " · "+card.year : ""}`)}
-          </option>
-        `)
-      ].join("");
+      const giveawayFiltersActive=Boolean(gameFilter.value || statusFilter.value || typeFilter.value);
+      const visibleGiveaways=(source==="card" || giveawayFiltersActive)
+        ? []
+        : selectableGiveaways.filter(giveawayMatchesSearch);
 
-      if(selectedId && visible.some(card=>String(card.id)===selectedId)){
-        select.value=selectedId;
+      const currentValue=String(select.value||(
+        selectedGiveaway ? `giveaway:${selectedGiveaway.id}` :
+        selectedCard ? `card:${selectedCard.id}` : ""
+      ));
+
+      const options=[`<option value="">Manual product details</option>`];
+
+      if(visibleCards.length){
+        options.push(`<optgroup label="Inventory / Collection">`);
+        visibleCards.forEach(card=>{
+          options.push(`
+            <option value="card:${appContext.escapeHtml(card.id)}">
+              ${appContext.escapeHtml(`${card.card_code ? card.card_code+" · " : ""}${card.name}${card.year ? " · "+card.year : ""}`)}
+            </option>
+          `);
+        });
+        options.push(`</optgroup>`);
       }
 
-      filterCount.textContent=`${visible.length} of ${selectableCards.length} cards shown · selecting a card fills Product Details automatically.`;
+      if(visibleGiveaways.length){
+        options.push(`<optgroup label="Giveaway Prizes">`);
+        visibleGiveaways.forEach(g=>{
+          const status=appContext.normalizeFilterValue(g.status)==="gave_away" ? "Past Winner" : String(g.status||"Active").replace(/_/g," ");
+          options.push(`
+            <option value="giveaway:${appContext.escapeHtml(g.id)}">
+              ${appContext.escapeHtml(`${g.card_name||g.title||"Giveaway prize"} · ${g.title||"Giveaway"} · ${status}`)}
+            </option>
+          `);
+        });
+        options.push(`</optgroup>`);
+      }
+
+      select.innerHTML=options.join("");
+
+      if(currentValue && [...select.options].some(option=>option.value===currentValue)){
+        select.value=currentValue;
+      }
+
+      const parts=[];
+      if(source!=="giveaway") parts.push(`${visibleCards.length} card${visibleCards.length===1?"":"s"}`);
+      if(source!=="card" && !giveawayFiltersActive) parts.push(`${visibleGiveaways.length} giveaway prize${visibleGiveaways.length===1?"":"s"}`);
+      filterCount.textContent=`${parts.join(" + ") || "0 items"} shown · selecting an item fills Product Details automatically.${giveawayFiltersActive && source!=="card" ? " Clear Game/Status/Type filters to show giveaway prizes." : ""}`;
+    }
+
+    function selectedImages(){
+      if(selectedGiveaway) return appContext.carousellGiveawayImages(selectedGiveaway);
+      if(selectedCard) return appContext.getImages(selectedCard);
+      return [];
     }
 
     function renderSelected(){
-      if(!selectedCard){
+      const selected=selectedGiveaway||selectedCard;
+      if(!selected){
         selectedMount.hidden=true;
         selectedMount.innerHTML="";
         downloadBtn.disabled=true;
         openCardBtn.disabled=true;
+        openCardBtn.textContent="Open Card";
         return;
       }
 
-      const image=appContext.getImages(selectedCard)[0]||"";
+      const images=selectedImages();
+      const image=images[0]||"";
+      const isGiveaway=Boolean(selectedGiveaway);
       selectedMount.hidden=false;
       selectedMount.innerHTML=`
         <div class="fb-post-card-image">
-          ${image ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(selectedCard.name)}">` : `<div class="fb-post-no-image">No image</div>`}
+          ${image ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(isGiveaway ? (selected.card_name||selected.title||"Giveaway prize") : selected.name)}">` : `<div class="fb-post-no-image">No image</div>`}
         </div>
         <div class="fb-post-card-copy">
-          <strong>${appContext.escapeHtml(selectedCard.name||"Untitled card")}</strong>
-          <span>${appContext.escapeHtml([selectedCard.card_code,selectedCard.era,selectedCard.year,selectedCard.series].filter(Boolean).join(" · "))}</span>
-          <small>${appContext.escapeHtml(selectedCard.availability||"Available")}</small>
+          <strong>${appContext.escapeHtml(isGiveaway ? (selected.card_name||selected.title||"Giveaway prize") : (selected.name||"Untitled card"))}</strong>
+          <span>${appContext.escapeHtml(isGiveaway
+            ? [selected.title,"Giveaway"].filter(Boolean).join(" · ")
+            : [selected.card_code,selected.era,selected.year,selected.series].filter(Boolean).join(" · "))}</span>
+          <small>${appContext.escapeHtml(isGiveaway
+            ? `Giveaway · ${String(selected.status||"active").replace(/_/g," ")}`
+            : (selected.availability||"Available"))} · ${images.length} image${images.length===1?"":"s"}</small>
         </div>
       `;
-      downloadBtn.disabled=appContext.getImages(selectedCard).length===0;
+      downloadBtn.disabled=images.length===0;
       openCardBtn.disabled=false;
+      openCardBtn.textContent=isGiveaway ? "Open Giveaway" : "Open Card";
     }
 
     function regenerate(){
@@ -2004,26 +2164,54 @@ function renderCarousellPostGeneratorPage(){
       prepareBtn.disabled=!output.value.trim();
     }
 
-    select.addEventListener("change",()=>{
-      selectedCard=appContext.cards.find(card=>String(card.id)===String(select.value))||null;
-      if(selectedCard){
-        detailsInput.value=appContext.defaultCarousellProductDetails(selectedCard);
+    function setSelection(value){
+      selectedCard=null;
+      selectedGiveaway=null;
+
+      const raw=String(value||"");
+      if(raw.startsWith("card:")){
+        const id=raw.slice(5);
+        selectedCard=selectableCards.find(card=>String(card.id)===id)||null;
+        if(selectedCard) detailsInput.value=appContext.defaultCarousellProductDetails(selectedCard);
+      }else if(raw.startsWith("giveaway:")){
+        const id=raw.slice(9);
+        selectedGiveaway=selectableGiveaways.find(g=>String(g.id)===id)||null;
+        if(selectedGiveaway) detailsInput.value=appContext.defaultCarousellGiveawayProductDetails(selectedGiveaway);
       }
+
       renderSelected();
       regenerate();
-    });
+    }
 
-    [searchInput,gameFilter,statusFilter,typeFilter].forEach(input=>{
+    select.addEventListener("change",()=>setSelection(select.value));
+
+    [searchInput,sourceFilter,gameFilter,statusFilter,typeFilter].forEach(input=>{
       input.addEventListener("input",renderCarousellCardOptions);
       input.addEventListener("change",renderCarousellCardOptions);
+    });
+
+    sourceFilter.addEventListener("change",()=>{
+      if(sourceFilter.value==="giveaway"){
+        gameFilter.value="";
+        statusFilter.value="";
+        typeFilter.value="";
+      }
+      renderCarousellCardOptions();
     });
 
     renderCarousellCardOptions();
 
     openCardBtn.addEventListener("click",()=>{
-      if(!selectedCard || openCardBtn.disabled) return;
-      // Reuse the normal card-details modal without leaving Post Generator Tools.
-      appContext.openDetailsModal(selectedCard);
+      if(openCardBtn.disabled) return;
+      if(selectedGiveaway){
+        if(typeof appContext.openGiveawayDetails==="function"){
+          appContext.openGiveawayDetails(selectedGiveaway.id);
+        }else{
+          location.hash="#/giveaway";
+        }
+        return;
+      }
+      if(selectedCard) appContext.openDetailsModal(selectedCard);
     });
 
     detailsInput.addEventListener("input",regenerate);
@@ -2033,11 +2221,21 @@ function renderCarousellPostGeneratorPage(){
       appContext.copyPlainText(output.value,"Carousell post copied");
     });
 
+    async function downloadSelectedImages(progressCallback){
+      if(selectedGiveaway){
+        return await appContext.downloadCarousellGiveawayImagesZip(selectedGiveaway,progressCallback);
+      }
+      if(selectedCard){
+        return await appContext.downloadSingleCardImagesZip(selectedCard,progressCallback);
+      }
+      return {added:0,failed:[]};
+    }
+
     downloadBtn.addEventListener("click",async()=>{
-      if(!selectedCard || !appContext.requireOwner("download Carousell listing images")) return;
-      const images=appContext.getImages(selectedCard);
+      if((!selectedCard && !selectedGiveaway) || !appContext.requireOwner("download Carousell listing images")) return;
+      const images=selectedImages();
       if(!images.length){
-        appContext.showToast("No card images available");
+        appContext.showToast("No images available");
         return;
       }
 
@@ -2045,16 +2243,20 @@ function renderCarousellPostGeneratorPage(){
       downloadBtn.disabled=true;
       downloadBtn.textContent="Preparing ZIP…";
       try{
-        await appContext.downloadSingleCardImagesZip(selectedCard,(done,total)=>{
+        const result=await downloadSelectedImages((done,total)=>{
           downloadBtn.textContent=`Preparing ${done}/${total}`;
         });
-        appContext.showToast("Carousell images ZIP downloaded");
+        appContext.showToast(
+          result?.failed?.length
+            ? `Carousell ZIP downloaded · ${result.added} included · ${result.failed.length} skipped`
+            : "Carousell images ZIP downloaded"
+        );
       }catch(error){
         console.error("Carousell image ZIP error:",error);
         appContext.showToast("Could not create image ZIP");
       }finally{
         downloadBtn.textContent=old;
-        downloadBtn.disabled=!selectedCard || appContext.getImages(selectedCard).length===0;
+        downloadBtn.disabled=selectedImages().length===0;
       }
     });
 
@@ -2074,9 +2276,9 @@ function renderCarousellPostGeneratorPage(){
         const copied=await appContext.copyPlainText(output.value,"Carousell post copied");
         if(!copied) throw new Error("Could not copy Carousell post");
 
-        if(selectedCard && appContext.getImages(selectedCard).length){
+        if((selectedCard||selectedGiveaway) && selectedImages().length){
           prepareBtn.textContent="Creating image ZIP…";
-          await appContext.downloadSingleCardImagesZip(selectedCard);
+          await downloadSelectedImages();
           appContext.showToast("Carousell post ready · text copied + image ZIP downloaded");
         }else{
           appContext.showToast("Carousell post copied");
@@ -2087,16 +2289,27 @@ function renderCarousellPostGeneratorPage(){
       }finally{
         prepareBtn.textContent=old;
         regenerate();
-        if(selectedCard) downloadBtn.disabled=appContext.getImages(selectedCard).length===0;
+        downloadBtn.disabled=selectedImages().length===0;
       }
     });
 
-    const requestedCard=appContext.safeCardId(appContext.currentHashParams().get("card"));
+    const params=appContext.currentHashParams();
+    const requestedGiveaway=String(params.get("giveaway")||"").trim();
+    if(requestedGiveaway){
+      const match=selectableGiveaways.find(g=>String(g.id)===requestedGiveaway);
+      if(match){
+        select.value=`giveaway:${match.id}`;
+        setSelection(select.value);
+        return;
+      }
+    }
+
+    const requestedCard=appContext.safeCardId(params.get("card"));
     if(requestedCard){
       const match=selectableCards.find(card=>String(card.id)===requestedCard);
       if(match){
-        select.value=requestedCard;
-        select.dispatchEvent(new Event("change"));
+        select.value=`card:${requestedCard}`;
+        setSelection(select.value);
         return;
       }
     }
@@ -3192,7 +3405,7 @@ function renderFbCardListGeneratorPage(){
     applyOrderPreset("default");
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,sortCardListCards,buildFbCardListSection,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,sortCardListCards,buildFbCardListSection,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
