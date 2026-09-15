@@ -2439,6 +2439,59 @@ function cardListItemLine(card){
     return `-【${label}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${nameParts.join(" ").replace(/\s+/g," ").trim()}`.replace(/\s+/g," ").trim();
   }
 
+  function dropDisplayText(value){
+    const text=String(value||"").trim();
+    if(!text || text!==text.toUpperCase()) return text;
+    return text.replace(/[A-Z]+(?:'[A-Z]+)?/g,word=>{
+      if(word.length<=3 || /^(?:PSA|BGS|CGC|SGC|POP|TCG)$/i.test(word)) return word;
+      return `${word.charAt(0)}${word.slice(1).toLowerCase()}`;
+    });
+  }
+
+  function dropCardName(card){
+    const raw=String(card?.name||card?.card_code||"Untitled card").trim();
+    const series=String(card?.series||"").trim();
+    let name=raw;
+    if(series && name.toLocaleLowerCase().startsWith(series.toLocaleLowerCase())){
+      name=name.slice(series.length).replace(/^[\s:–—-]+/,"").trim() || raw;
+    }
+    const code=String(card?.card_code||"").trim();
+    const withCode=code && !name.toLocaleLowerCase().includes(code.toLocaleLowerCase()) ? `${name} · ${code}` : name;
+    return dropDisplayText(withCode);
+  }
+
+  function dropCardMetaLine(card){
+    const format=appContext.cardListFormat(card);
+    const label=format==="graded"
+      ? appContext.gradedPostLabel(card)
+      : (format==="sealed" ? "Sealed" : appContext.rawConditionPostLabel(card));
+    const pop=appContext.postPopLabel(card).replace(/[【】]/g,"");
+    return [
+      card?.year,
+      dropDisplayText(card?.series),
+      dropDisplayText(label),
+      pop,
+      dropDisplayText(card?.era)
+    ].filter(Boolean).join(" · ");
+  }
+
+  function dropCardPriceLine(card){
+    return appContext.cardListPriceLine(card)
+      .replace(/^PRICE\s*:\s*/i,"")
+      .replace(/\$([\d,]+)\s+USD\b/g,(_match,amount)=>`US${amount}`)
+      .replace(/\bSGD\s*([\d,]+)/g,(_match,amount)=>`S${amount}`)
+      .replace(/\s*\/\s*/g," · ")
+      .replace(/\s*\(([^)]+)\)\s*$/," · $1");
+  }
+
+  function dropCardEntryLines(card,index){
+    return [
+      `${index+1}. ${appContext.dropCardName(card)}`,
+      appContext.dropCardMetaLine(card),
+      appContext.dropCardPriceLine(card)
+    ].filter(Boolean);
+  }
+
 function sortCardListCards(list){
     return list.slice().sort((a,b)=>{
       const ay = Number(a.year || 9999);
@@ -2550,20 +2603,15 @@ function buildFbCardListPost(availableCards,prefs){
   function buildFbCardDropPost(selectedCards,prefs){
     const cards=selectedCards.slice(0,Number(prefs.dropLimit)||5);
     if(!cards.length) return "";
-    const shown=cards.map(card=>[
-      appContext.cardListItemLine(card),
-      appContext.cardListPriceLine(card)
-    ].join("\n"));
+    const shown=cards.map((card,index)=>appContext.dropCardEntryLines(card,index).join("\n"));
     const lines=[
-      `‼️ CARD DROP ‼️  [UPDATE : ${appContext.fbCardListDateLabel()}]`,
+      `✨ CARD DROP · ${appContext.fbCardListDateLabel()}`,
       "",
-      `WTS【DROP】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`,
-      "",
-      "A few highlights currently available from Collect TCG MY & SG:",
+      `WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`,
       "",
       ...shown.flatMap((line,index)=>index ? ["",line] : [line]),
       "",
-      `Full photos, prices & availability: ${appContext.getWebsiteShareUrl()}`,
+      `Browse photos, prices & availability: ${appContext.getWebsiteShareUrl()}`,
       "",
       "📍 Malaysia & Singapore · COD / meetup available depending on the item",
       "📩 DM for availability, offers, or more photos / video.",
@@ -3530,7 +3578,7 @@ function renderFbCardListGeneratorPage(){
     applyOrderPreset("default");
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
