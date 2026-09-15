@@ -615,6 +615,9 @@ function cardWriteErrorText(error,action="save"){
     if(message.includes("availability") || message.includes("cards_availability_check")){
       return "The selected availability is not accepted by the current database schema.";
     }
+    if(message.includes("language") && (message.includes("check") || message.includes("constraint"))){
+      return "The selected Language is not accepted by the current database schema. Run 2026-09-15-v13-EXTEND-LANGUAGE-OPTIONS.sql in Supabase, then retry.";
+    }
     if(message.includes("grading_private")){
       return "Private grading storage is unavailable. Please run the private grading migration.";
     }
