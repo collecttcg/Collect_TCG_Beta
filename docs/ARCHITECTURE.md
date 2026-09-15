@@ -7,7 +7,6 @@
 | `beta/index.html` | Existing page shell and static dialogs; module entry point |
 | `beta/src/main.js` | Create the beta environment, register modules, initialize the app, initialize supplementary UI |
 | `beta/src/app/beta-config.js` | Read-only or separate sandbox selection |
-| `beta/src/app/beta-runtime.js` | Storage isolation, database request restrictions, auth/analytics/cache guards |
 | `beta/src/app/register-features.js` | Register all feature functions before initialization |
 | `beta/src/app/initialize.js` | Run feature initialization in the original order |
 | `beta/src/app/routing.js` | Routes, card-return state and navigation |
