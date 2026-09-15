@@ -274,6 +274,8 @@ function runWhenIdle(callback,timeout=1200){
 export function initialize(appContext,runtime){
   appContext.soldAtSupported = false;
 
+  appContext.languageDetailsSupported = null;
+
   appContext.lifecycleSupported = false;
 
   appContext.ownerPrivateSupported = false;
