@@ -9725,3 +9725,19 @@ body.light-mode .interest-contact-assurance-icon{
   .home-premium-trust-points small{font-size:10.5px;}
   .home-premium-trust-links a{font-size:11px;}
 }
+
+/* Home V05: make the currency control as readable as the primary actions. */
+.home-premium-currency > span:not(.sr-only){
+  font-size:12px !important;
+  font-weight:760 !important;
+  letter-spacing:.045em !important;
+}
+.home-premium-currency select{
+  font-size:11px !important;
+  font-weight:700 !important;
+}
+
+@media(max-width:800px){
+  .home-premium-currency > span:not(.sr-only){font-size:12px !important;}
+  .home-premium-currency select{font-size:11px !important;}
+}
