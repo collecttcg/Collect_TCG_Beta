@@ -757,6 +757,7 @@ function renderInventoryPage(scope = "inventory"){
 
       mount.querySelectorAll("[data-inventory-game-series]").forEach(button=>{
         button.addEventListener("click",()=>{
+          const viewportTop=window.scrollY;
           const value=button.dataset.inventoryGameSeries;
           const bucket=appContext.pillFilterState.game;
           const onePiece=families.find(item=>item.key==="one-piece");
