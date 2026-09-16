@@ -643,6 +643,31 @@ function renderInventoryPage(scope = "inventory"){
       return values.length>0 && selected.length===values.length && values.every(value=>selected.includes(value));
     }
 
+    // Recognisable wordmarks lead the primary franchises. Keep other games
+    // useful immediately by falling back to their existing listing image.
+    const inventoryGameLogos={
+      "one-piece":{
+        src:"https://www.onepiece-cardgame.com/images/common/logo_op.png",
+        alt:"One Piece Card Game"
+      },
+      "hunter x hunter hyper battle":{
+        src:"https://upload.wikimedia.org/wikipedia/commons/1/1f/Hunter_%C3%97_Hunter_logo.png",
+        alt:"Hunter × Hunter"
+      },
+      "pokémon":{
+        src:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Pok%C3%A9mon_Trading_Card_Game_logo.svg",
+        alt:"Pokémon Trading Card Game"
+      },
+      "pokemon":{
+        src:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Pok%C3%A9mon_Trading_Card_Game_logo.svg",
+        alt:"Pokémon Trading Card Game"
+      },
+      "zatch bell!":{
+        src:"https://api.ccgtrader.co.uk/_/assets/iixw43h5xts0w884?key=directus-medium-contain",
+        alt:"Zatch Bell! The Card Battle"
+      }
+    };
+
     function inventoryGameBrowserHTML(){
       const families=inventoryGameFamilies();
       const selectedFamily=families.find(inventoryFamilyHasSelection);
@@ -655,13 +680,16 @@ function renderInventoryPage(scope = "inventory"){
 
       const familyTiles=families.map(family=>{
         const active=inventoryFamilyHasSelection(family);
+        const logo=inventoryGameLogos[family.key];
         const image=appContext.safeHttpUrl(appContext.getImages(family.cards[0])[0]||"");
         return `
           <button type="button" class="inventory-game-tile ${active ? "active" : ""}" data-inventory-game-family="${appContext.escapeHtml(family.key)}" aria-pressed="${active ? "true" : "false"}">
-            <span class="inventory-game-art" aria-hidden="true">
-              ${image
+            <span class="inventory-game-art ${logo ? "has-game-logo" : ""}" aria-hidden="true">
+              ${logo
+                ? `<img class="inventory-game-logo" src="${appContext.escapeHtml(logo.src)}" alt="${appContext.escapeHtml(logo.alt)}" loading="lazy" decoding="async">`
+                : (image
                 ? `<img src="${appContext.escapeHtml(image)}" alt="" loading="lazy" decoding="async">`
-                : `<span>${appContext.escapeHtml(family.label.slice(0,3).toUpperCase())}</span>`}
+                : `<span>${appContext.escapeHtml(family.label.slice(0,3).toUpperCase())}</span>`)}
             </span>
             <span class="inventory-game-tile-copy"><strong>${appContext.escapeHtml(family.label)}</strong><small>${family.cards.length.toLocaleString()} ${family.cards.length===1?"card":"cards"}</small></span>
           </button>`;
