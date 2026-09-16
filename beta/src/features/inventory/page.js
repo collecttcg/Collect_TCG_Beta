@@ -1340,6 +1340,9 @@ function renderInventoryPage(scope = "inventory"){
       }
 
       grid.className=appContext.effectiveInventoryViewMode()==="compact" ? "grid compact-list" : "grid";
+      if(["inventory","sold"].includes(appContext.listingAvailabilityScope)){
+        grid.classList.add("gold-card-stripes");
+      }
 
       if(["collection","inventory"].includes(appContext.listingAvailabilityScope)){
         // Grouped catalogue views remain continuous so one Game category is
