@@ -43,6 +43,90 @@ function compactGeneratedPostSpacing(value){
       .trim();
   }
 
+  // One language choice is shared by every generator.  Card metadata and
+  // editable fields deliberately remain as entered: translating those could
+  // obscure a card's actual printing language or change a seller's wording.
+  const POST_LANGUAGE_OPTIONS=Object.freeze([
+    ["en","English"],
+    ["ms","Bahasa Melayu"],
+    ["zh","中文（简体）"],
+    ["ja","日本語"],
+    ["ko","한국어"]
+  ]);
+
+  function normalizePostLanguage(value){
+    return POST_LANGUAGE_OPTIONS.some(([code])=>code===value) ? value : "en";
+  }
+
+  function getPostGeneratorLanguage(){
+    try{return normalizePostLanguage(appContext.localStorage.getItem(appContext.POST_GENERATOR_LANGUAGE_KEY));}
+    catch{return "en";}
+  }
+
+  function savePostGeneratorLanguage(value){
+    const language=normalizePostLanguage(value);
+    try{appContext.localStorage.setItem(appContext.POST_GENERATOR_LANGUAGE_KEY,language);}catch{}
+    return language;
+  }
+
+  function postLanguageSelectHTML(id,selected){
+    const language=normalizePostLanguage(selected);
+    return `
+      <div class="field post-language-field">
+        <label for="${id}">Post language</label>
+        <select id="${id}">
+          ${POST_LANGUAGE_OPTIONS.map(([code,label])=>`<option value="${code}" ${code===language?"selected":""}>${label}</option>`).join("")}
+        </select>
+        <div class="hint">Changes all generated template wording. Card language, titles and any details you edit stay exactly as entered.</div>
+      </div>`;
+  }
+
+  function postLocale(value){
+    const language=normalizePostLanguage(value);
+    const locales={
+      en:{
+        priceRefer:"PRICE : PLEASE REFER TO OUR WEBSITE",
+        nfs:"🚫 NOT FOR SALE — PERSONAL COLLECTION",
+        collectionCta:"🌐 VISIT OUR WEBSITE TO SEE MORE FROM OUR COLLECTION:",
+        cardDrop:"✨ CARD DROP",
+        cardList:"‼️ CARD LIST ‼️",
+        moreCards:"More cards are available beyond this drop.",
+        browseInventory:"Browse the full inventory:",
+        inventory:"AVAILABLE INVENTORY",
+        graded:"𝐆𝐑𝐀𝐃𝐄𝐃 𝐒𝐋𝐀𝐁𝐒", raw:"𝐑𝐀𝐖 𝐒𝐈𝐍𝐆𝐋𝐄𝐒", sealed:"𝐒𝐄𝐀𝐋𝐄𝐃 𝐏𝐑𝐎𝐃𝐔𝐂𝐓𝐒",
+        dm:"📩 DM your offer if interested", serious:"💰 Serious buyers only", meetup:"👥 Can discuss meetup location", located:"📍 Located in KL 🇲🇾 / SG 🇸🇬", lowball:"❌ No lowball offers",
+        cod:"📍 COD / MEETUP: MALAYSIA OR SINGAPORE, DEPENDING ON THE ITEM",
+        shippingTitle:"🌏 INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY",
+        shipping:"International shipping is available only for items valued below USD 6,000. Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped. For cards priced above USD 6,000, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.",
+        winnerAnnouncement:"GIVEAWAY WINNER{plural} ANNOUNCEMENT", results:"The results are in!", congratulations:"Congratulations to:", prize:"Prize", winnerThanks:"Thank you very much to everyone who joined our giveaway and supported Collect TCG MY & SG.", winnerSupport:"We appreciate every follow, like, share, and comment. There will be more giveaways in the future, so keep an eye out for the next one 👀", winnerEnd:"Congratulations once again to {target}! 🎊",
+        howToEnter:"📌 HOW TO ENTER:", followFacebook:"FOLLOW our Facebook Page", followInstagram:"FOLLOW our Instagram", comment:"COMMENT on the giveaway post", visitCode:"VISIT our website and find the Giveaway Code", submit:"SUBMIT your entry here", important:"‼️ IMPORTANT:", eligible:"Only participants who complete all required steps will be eligible for the draw.", contactWinner:"📩 HOW THE WINNER WILL BE CONTACTED:", contactWinnerText:"Facebook Pages cannot send the first message to personal accounts. We will reply to the winner’s comment, and the winner must PM our Facebook Page within {hours} hours to claim the prize.", bonus:"⭐ EXTRA ACTIONS / BONUS ENTRIES:", joinGroup:"➕ +1 BONUS: Join our Facebook Group", shareFacebook:"➕ +1 BONUS: Share this Facebook post publicly", tagFriends:"➕ +1 BONUS: Tag 2 friends", shareStory:"➕ +1 BONUS: Share to your IG Story and tag @collecttcg.mysg", groups:"📢 IMPORTANT:", groupsText:"This giveaway post has been shared across multiple groups. All eligible entries from every group will be combined into one single pool for the final draw.", selection:"🎲 WINNER SELECTION:", selectionText:"The winner will be selected randomly using {tool}.", verification:"🔎 WINNER VERIFICATION:", verificationText:"When the winner is announced, we will also include the winner’s Facebook profile URL for transparency and verification purposes.", luck:"🍀 GOOD LUCK, EVERYONE!", ends:"🗓️ GIVEAWAY ENDS", postage:"📦 Postage", explore:"EXPLORE MORE FROM COLLECT TCG",
+        carousellNoTrade:"NO TRADE, ONLY SELL", productDetails:"[Product Details]", caution:"[Caution]", importantNotes:"[Important Notes]", codRules:"[COD Rules]"
+      },
+      ms:{
+        priceRefer:"HARGA: SILA RUJUK LAMAN WEB KAMI", nfs:"🚫 BUKAN UNTUK DIJUAL — KOLEKSI PERIBADI", collectionCta:"🌐 LAWATI LAMAN WEB KAMI UNTUK MELIHAT LEBIH BANYAK KOLEKSI:", cardDrop:"✨ JATUHAN KAD", cardList:"‼️ SENARAI KAD ‼️", moreCards:"Lebih banyak kad tersedia selain pilihan ini.", browseInventory:"Lihat inventori penuh:", inventory:"INVENTORI TERSEDIA", graded:"𝐊𝐀𝐃 𝐁𝐄𝐑𝐆𝐑𝐀𝐃", raw:"𝐊𝐀𝐃 𝐌𝐄𝐍𝐓𝐀𝐇", sealed:"𝐏𝐑𝐎𝐃𝐔𝐊 𝐁𝐄𝐑𝐒𝐄𝐆𝐄𝐋", dm:"📩 Hantar DM tawaran anda jika berminat", serious:"💰 Pembeli serius sahaja", meetup:"👥 Lokasi pertemuan boleh dibincangkan", located:"📍 Berada di KL 🇲🇾 / SG 🇸🇬", lowball:"❌ Tiada tawaran melampau rendah", cod:"📍 COD / TEMU JANJI: MALAYSIA ATAU SINGAPURA, BERGANTUNG PADA ITEM", shippingTitle:"🌏 PENGHANTARAN ANTARABANGSA — BAWAH USD 6,000 SAHAJA", shipping:"Penghantaran antarabangsa hanya tersedia untuk item bernilai di bawah USD 6,000. Kos penghantaran dan insurans ditanggung pembeli. Insurans penghantaran adalah pilihan tetapi amat disyorkan untuk item bernilai tinggi. Kad akan dibungkus dengan selamat dan video proses pembungkusan akan diberikan. Nombor penjejakan akan diberikan selepas penghantaran. Untuk kad melebihi USD 6,000, COD di Malaysia atau Singapura adalah pilihan utama. Selepas item dihantar, kami tidak bertanggungjawab atas kehilangan, kerosakan atau isu semasa transit.", winnerAnnouncement:"PENGUMUMAN PEMENANG GIVEAWAY{plural}", results:"Keputusan telah diumumkan!", congratulations:"Tahniah kepada:", prize:"Hadiah", winnerThanks:"Terima kasih kepada semua yang menyertai giveaway kami dan menyokong Collect TCG MY & SG.", winnerSupport:"Kami menghargai setiap follow, like, share dan komen. Akan ada lebih banyak giveaway pada masa akan datang, jadi nantikan yang seterusnya 👀", winnerEnd:"Tahniah sekali lagi kepada {target}! 🎊", howToEnter:"📌 CARA PENYERTAAN:", followFacebook:"IKUTI Halaman Facebook kami", followInstagram:"IKUTI Instagram kami", comment:"TINGGALKAN KOMEN pada pos giveaway", visitCode:"LAWATI laman web kami dan cari Kod Giveaway", submit:"HANTAR penyertaan anda di sini", important:"‼️ PENTING:", eligible:"Hanya peserta yang melengkapkan semua langkah diperlukan layak untuk cabutan.", contactWinner:"📩 CARA PEMENANG AKAN DIHUBUNGI:", contactWinnerText:"Halaman Facebook tidak boleh menghantar mesej pertama kepada akaun peribadi. Kami akan membalas komen pemenang dan pemenang perlu PM Halaman Facebook kami dalam {hours} jam untuk menuntut hadiah.", bonus:"⭐ TINDAKAN TAMBAHAN / PENYERTAAN BONUS:", joinGroup:"➕ BONUS +1: Sertai Kumpulan Facebook kami", shareFacebook:"➕ BONUS +1: Kongsi pos Facebook ini secara umum", tagFriends:"➕ BONUS +1: Tag 2 rakan", shareStory:"➕ BONUS +1: Kongsi ke IG Story dan tag @collecttcg.mysg", groups:"📢 PENTING:", groupsText:"Pos giveaway ini dikongsi dalam beberapa kumpulan. Semua penyertaan yang layak akan digabungkan dalam satu cabutan akhir.", selection:"🎲 PEMILIHAN PEMENANG:", selectionText:"Pemenang akan dipilih secara rawak menggunakan {tool}.", verification:"🔎 PENGESAHAN PEMENANG:", verificationText:"Apabila pemenang diumumkan, URL profil Facebook pemenang juga akan disertakan untuk ketelusan dan pengesahan.", luck:"🍀 SEMOGA BERJAYA!", ends:"🗓️ GIVEAWAY TAMAT", postage:"📦 Pos", explore:"TEROKAI LEBIH BANYAK DARIPADA COLLECT TCG", carousellNoTrade:"TIADA TRADE, JUAL SAHAJA", productDetails:"[Butiran Produk]", caution:"[Perhatian]", importantNotes:"[Nota Penting]", codRules:"[Peraturan COD]"
+      },
+      zh:{
+        priceRefer:"价格：请参考我们的网站", nfs:"🚫 非卖品 — 个人收藏", collectionCta:"🌐 浏览我们的网站，查看更多收藏：", cardDrop:"✨ 卡牌上新", cardList:"‼️ 卡牌清单 ‼️", moreCards:"除本次上新外，还有更多卡牌可供选择。", browseInventory:"浏览完整库存：", inventory:"现货库存", graded:"𝐏𝐒𝐀／评级卡", raw:"𝐔𝐍𝐆𝐑𝐀𝐃𝐄𝐃／裸卡", sealed:"𝐌𝐈𝐍𝐓／密封产品", dm:"📩 如有兴趣，请私信报价", serious:"💰 仅限诚意买家", meetup:"👥 可讨论见面地点", located:"📍 位于吉隆坡 🇲🇾 / 新加坡 🇸🇬", lowball:"❌ 谢绝过低报价", cod:"📍 COD / 面交：马来西亚或新加坡，视商品而定", shippingTitle:"🌏 国际运输 — 仅限低于 USD 6,000 的商品", shipping:"国际运输仅适用于价值低于 USD 6,000 的商品。运费和保险费由买方承担。运输保险为可选项目，但强烈建议高价值商品购买。卡牌将安全包装，并提供包装过程视频。发货后会提供追踪号码。价值高于 USD 6,000 的卡牌优先在马来西亚或新加坡 COD。商品发出后，运输过程中产生的遗失、损坏或问题恕不负责。", winnerAnnouncement:"抽奖中奖者公告{plural}", results:"结果已经揭晓！", congratulations:"恭喜以下得奖者：", prize:"奖品", winnerThanks:"感谢所有参加抽奖并支持 Collect TCG MY & SG 的朋友。", winnerSupport:"我们感谢每一次关注、点赞、分享和评论。未来还会有更多抽奖，请继续关注 👀", winnerEnd:"再次恭喜{target}！🎊", howToEnter:"📌 参与方式：", followFacebook:"关注我们的 Facebook 专页", followInstagram:"关注我们的 Instagram", comment:"在抽奖贴文留言", visitCode:"访问我们的网站并寻找抽奖代码", submit:"在此提交报名", important:"‼️ 重要：", eligible:"只有完成所有必要步骤的参与者才有资格参加抽奖。", contactWinner:"📩 联系中奖者的方式：", contactWinnerText:"Facebook 专页无法主动向个人账号发送第一条消息。我们会回复中奖者的评论，中奖者必须在 {hours} 小时内私信我们的 Facebook 专页领取奖品。", bonus:"⭐ 额外行动 / 奖励次数：", joinGroup:"➕ +1 奖励：加入我们的 Facebook 群组", shareFacebook:"➕ +1 奖励：公开分享此 Facebook 贴文", tagFriends:"➕ +1 奖励：标记 2 位朋友", shareStory:"➕ +1 奖励：分享到 IG Story 并标记 @collecttcg.mysg", groups:"📢 重要：", groupsText:"此抽奖贴文已分享到多个群组。所有符合资格的报名将合并到同一个最终抽奖池。", selection:"🎲 中奖者选择：", selectionText:"中奖者将使用 {tool} 随机选出。", verification:"🔎 中奖者核实：", verificationText:"公布中奖者时，我们也会附上其 Facebook 个人资料链接，以便公开透明和核实。", luck:"🍀 祝大家好运！", ends:"🗓️ 抽奖截止", postage:"📦 邮寄", explore:"探索更多 COLLECT TCG 商品", carousellNoTrade:"不接受交换，仅出售", productDetails:"[商品详情]", caution:"[注意事项]", importantNotes:"[重要说明]", codRules:"[COD 规则]"
+      },
+      ja:{
+        priceRefer:"価格：ウェブサイトをご確認ください", nfs:"🚫 非売品 — 個人コレクション", collectionCta:"🌐 ウェブサイトでコレクションをもっと見る：", cardDrop:"✨ カード入荷", cardList:"‼️ カードリスト ‼️", moreCards:"この掲載以外にも、さらに多くのカードをご用意しています。", browseInventory:"全在庫を見る：", inventory:"販売中の在庫", graded:"𝐆𝐑𝐀𝐃𝐄𝐃 カード", raw:"𝐑𝐀𝐖 カード", sealed:"𝐒𝐄𝐀𝐋𝐄𝐃 商品", dm:"📩 ご興味があればDMでオファーをお送りください", serious:"💰 真剣な購入者のみ", meetup:"👥 待ち合わせ場所は相談可能", located:"📍 KL 🇲🇾 / SG 🇸🇬 所在", lowball:"❌ 大幅な値下げ交渉はご遠慮ください", cod:"📍 COD / 対面取引：商品によりマレーシアまたはシンガポール", shippingTitle:"🌏 国際発送 — USD 6,000 未満の商品限定", shipping:"国際発送は USD 6,000 未満の商品に限ります。送料と保険料は購入者負担です。発送保険は任意ですが、高額商品の場合は強く推奨します。カードは安全に梱包し、梱包動画を提供します。発送後に追跡番号をお知らせします。USD 6,000 を超えるカードは、商品によりマレーシアまたはシンガポールでのCODを優先します。発送後の輸送中の紛失、破損、その他の問題については責任を負いかねます。", winnerAnnouncement:"GIVEAWAY 当選者{plural}発表", results:"結果が出ました！", congratulations:"当選者：", prize:"賞品", winnerThanks:"Giveawayに参加し、Collect TCG MY & SGを応援してくださった皆さま、ありがとうございます。", winnerSupport:"フォロー、いいね、シェア、コメントのすべてに感謝しています。今後もGiveawayを行いますので、次回もお楽しみに 👀", winnerEnd:"{target}の皆さま、改めておめでとうございます！🎊", howToEnter:"📌 参加方法：", followFacebook:"Facebookページをフォロー", followInstagram:"Instagramをフォロー", comment:"Giveaway投稿にコメント", visitCode:"ウェブサイトを訪問してGiveawayコードを見つける", submit:"こちらから応募", important:"‼️ 重要：", eligible:"必要な手順をすべて完了した参加者のみ抽選対象となります。", contactWinner:"📩 当選者への連絡方法：", contactWinnerText:"Facebookページから個人アカウントへ最初のメッセージを送ることはできません。当選者のコメントに返信しますので、当選者は{hours}時間以内にFacebookページへPMでご連絡ください。", bonus:"⭐ 追加アクション / ボーナス応募：", joinGroup:"➕ +1 ボーナス：Facebookグループに参加", shareFacebook:"➕ +1 ボーナス：このFacebook投稿を公開シェア", tagFriends:"➕ +1 ボーナス：友達2人をタグ付け", shareStory:"➕ +1 ボーナス：IGストーリーで @collecttcg.mysg をタグ付けしてシェア", groups:"📢 重要：", groupsText:"このGiveaway投稿は複数のグループで共有されています。すべての有効な応募は、最終抽選のために1つのプールにまとめられます。", selection:"🎲 当選者の選出：", selectionText:"当選者は {tool} を使ってランダムに選出されます。", verification:"🔎 当選者の確認：", verificationText:"当選者発表時には、透明性と確認のため当選者のFacebookプロフィールURLも記載します。", luck:"🍀 幸運を祈ります！", ends:"🗓️ GIVEAWAY 締切", postage:"📦 送料", explore:"COLLECT TCGをもっと見る", carousellNoTrade:"トレード不可・販売のみ", productDetails:"[商品詳細]", caution:"[注意事項]", importantNotes:"[重要事項]", codRules:"[CODルール]"
+      },
+      ko:{
+        priceRefer:"가격: 웹사이트를 확인해 주세요", nfs:"🚫 판매하지 않음 — 개인 컬렉션", collectionCta:"🌐 웹사이트에서 더 많은 컬렉션 보기:", cardDrop:"✨ 카드 드롭", cardList:"‼️ 카드 리스트 ‼️", moreCards:"이번 드롭 외에도 더 많은 카드가 준비되어 있습니다.", browseInventory:"전체 인벤토리 보기:", inventory:"판매 가능 재고", graded:"𝐆𝐑𝐀𝐃𝐄𝐃 카드", raw:"𝐑𝐀𝐖 카드", sealed:"𝐒𝐄𝐀𝐋𝐄𝐃 상품", dm:"📩 관심 있으시면 DM으로 제안해 주세요", serious:"💰 진지한 구매자만", meetup:"👥 만남 장소 협의 가능", located:"📍 KL 🇲🇾 / SG 🇸🇬 위치", lowball:"❌ 터무니없는 가격 제안 사절", cod:"📍 COD / 직거래: 상품에 따라 말레이시아 또는 싱가포르", shippingTitle:"🌏 국제 배송 — USD 6,000 미만 상품만", shipping:"국제 배송은 USD 6,000 미만의 상품에만 가능합니다. 배송비와 보험료는 구매자 부담입니다. 배송 보험은 선택 사항이지만 고가 상품에는 강력히 권장합니다. 카드는 안전하게 포장하며 포장 과정 영상도 제공합니다. 발송 후 운송장 번호를 안내드립니다. USD 6,000 이상의 카드는 상품에 따라 말레이시아 또는 싱가포르에서 COD를 우선합니다. 발송 후 운송 중 발생하는 분실, 파손 또는 기타 문제에 대해서는 책임지지 않습니다.", winnerAnnouncement:"GIVEAWAY 당첨자{plural} 발표", results:"결과가 나왔습니다!", congratulations:"축하드립니다:", prize:"경품", winnerThanks:"Giveaway에 참여하고 Collect TCG MY & SG를 응원해 주신 모든 분들께 진심으로 감사드립니다.", winnerSupport:"팔로우, 좋아요, 공유, 댓글 하나하나에 감사드립니다. 앞으로도 더 많은 Giveaway가 있으니 다음 기회도 기대해 주세요 👀", winnerEnd:"{target} 다시 한번 축하드립니다! 🎊", howToEnter:"📌 참여 방법:", followFacebook:"Facebook 페이지 팔로우", followInstagram:"Instagram 팔로우", comment:"Giveaway 게시물에 댓글 남기기", visitCode:"웹사이트에서 Giveaway 코드를 찾기", submit:"여기에서 응모하기", important:"‼️ 중요:", eligible:"필수 단계를 모두 완료한 참여자만 추첨 대상이 됩니다.", contactWinner:"📩 당첨자 연락 방법:", contactWinnerText:"Facebook 페이지는 개인 계정에 먼저 메시지를 보낼 수 없습니다. 당첨자의 댓글에 답글을 남기며, 당첨자는 {hours}시간 이내에 Facebook 페이지로 PM을 보내 경품을 수령해야 합니다.", bonus:"⭐ 추가 액션 / 보너스 응모:", joinGroup:"➕ +1 보너스: Facebook 그룹 가입", shareFacebook:"➕ +1 보너스: 이 Facebook 게시물을 전체 공개로 공유", tagFriends:"➕ +1 보너스: 친구 2명 태그", shareStory:"➕ +1 보너스: IG 스토리에 공유하고 @collecttcg.mysg 태그", groups:"📢 중요:", groupsText:"이 Giveaway 게시물은 여러 그룹에 공유되었습니다. 모든 유효 응모는 최종 추첨을 위해 하나의 풀로 합쳐집니다.", selection:"🎲 당첨자 선정:", selectionText:"당첨자는 {tool}을 사용하여 무작위로 선정됩니다.", verification:"🔎 당첨자 확인:", verificationText:"당첨자 발표 시 투명성과 확인을 위해 당첨자의 Facebook 프로필 URL도 함께 안내합니다.", luck:"🍀 행운을 빕니다!", ends:"🗓️ GIVEAWAY 마감", postage:"📦 배송", explore:"COLLECT TCG 더 보기", carousellNoTrade:"교환 불가, 판매만", productDetails:"[상품 상세]", caution:"[주의사항]", importantNotes:"[중요 안내]", codRules:"[COD 규정]"
+      }
+    };
+    return locales[language]||locales.en;
+  }
+
+  function replacePostTokens(text,values={}){
+    return String(text||"").replace(/\{(\w+)\}/g,(_match,key)=>values[key]??"");
+  }
+
+  function postSalesFooterLines(language){
+    const t=postLocale(language);
+    return [t.cod,"",t.shippingTitle,"",t.shipping,"",t.dm,"",t.serious,"",t.meetup,"",t.located,"",t.lowball];
+  }
+
 function getFbPostPrefs(){
     try{
       const parsed = JSON.parse(appContext.localStorage.getItem(appContext.FB_POST_PREFS_KEY) || "{}");
@@ -185,6 +269,7 @@ function buildFbPostText(card, values){
     if(!card) return "";
 
     const divider = "━━━━━━━━━━━━━━━━━━━━━━━━";
+    const text=appContext.postLocale(values.language);
     const title = String(values.title || appContext.defaultFbPostTitle(card)).trim();
     const websiteCardUrl = appContext.getCardShareUrl(card.id);
     const carousellShopUrl = appContext.safeHttpUrl(values.carousellShopUrl);
@@ -194,27 +279,13 @@ function buildFbPostText(card, values){
     const lines = [
       title,
       "",
-      "PRICE : PLEASE REFER TO OUR WEBSITE",
+      text.priceRefer,
       "",
       websiteCardUrl,
       "",
       divider,
       "",
-      "📍 COD / MEETUP: MALAYSIA OR SINGAPORE, DEPENDING ON THE ITEM",
-      "",
-      "🌏 INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY",
-      "",
-      "International shipping is available only for items valued below USD 6,000. Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped. For cards priced above USD 6,000, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.",
-      "",
-      "📩 DM your offer if interested",
-      "",
-      "💰 Serious buyers only",
-      "",
-      "👥 Can discuss meetup location",
-      "",
-      "📍 Located in KL 🇲🇾 / SG 🇲🇨",
-      "",
-      "❌ No lowball offers",
+      ...appContext.postSalesFooterLines(values.language),
       "",
       divider
     ];
@@ -236,6 +307,7 @@ function buildFbNfsPostText(card,values){
     if(!card) return "";
 
     const divider="━━━━━━━━━━━━━━━━━━━━━━━━";
+    const text=appContext.postLocale(values.language);
     const title=String(values.title||appContext.defaultFbPostTitle(card)).trim();
     const collectionUrl=`${location.origin}${location.pathname}${location.search}#/collection`;
     const hashtags=String(values.hashtags||appContext.defaultFbHashtags(card)).trim();
@@ -243,9 +315,9 @@ function buildFbNfsPostText(card,values){
     const lines=[
       title,
       "",
-      "🚫 NOT FOR SALE — PERSONAL COLLECTION",
+      text.nfs,
       "",
-      "🌐 VISIT OUR WEBSITE TO SEE MORE FROM OUR COLLECTION:",
+      text.collectionCta,
       collectionUrl,
       "",
       divider,
@@ -504,6 +576,8 @@ function renderFbPostGeneratorPage(nfsMode=false){
             <div class="hint">The title is generated from the card data, but you can edit it for terms such as FOIL or a specific Carddass series.</div>
           </div>
 
+          ${appContext.postLanguageSelectHTML("fbPostLanguage",appContext.getPostGeneratorLanguage())}
+
           <details class="fb-post-settings">
             <summary>Template links & hashtags</summary>
             <div class="fb-post-settings-body">
@@ -553,6 +627,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
     const typeFilter = appContext.$("fbPostTypeFilter");
     const filterCount = appContext.$("fbPostFilterCount");
     const titleInput = appContext.$("fbPostTitle");
+    const languageInput = appContext.$("fbPostLanguage");
     const shopInput = appContext.$("fbPostCarousellShop");
     const instagramInput = appContext.$("fbPostInstagram");
     const hashtagsInput = appContext.$("fbPostHashtags");
@@ -617,6 +692,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
     function currentValues(){
       return {
         title:titleInput.value,
+        language:languageInput.value,
         carousellShopUrl:shopInput.value,
         instagramUrl:instagramInput.value,
         hashtags:hashtagsInput.value
@@ -625,6 +701,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
 
     function persistCurrent(){
       const prefsNow = currentValues();
+      appContext.savePostGeneratorLanguage(prefsNow.language);
       appContext.saveFbPostPrefs(prefsNow);
 
       if(selectedCard){
@@ -730,7 +807,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
       selectCard(requestedCardId);
     }
 
-    [titleInput,shopInput,instagramInput,hashtagsInput].forEach(input=>{
+    [titleInput,languageInput,shopInput,instagramInput,hashtagsInput].forEach(input=>{
       input.addEventListener("input", ()=>{
         persistCurrent();
         updateOutput();
@@ -936,7 +1013,7 @@ function getGiveawayShareUrl(giveawayId){
       : `${base}#/giveaway`;
   }
 
-function buildGiveawayWinnerAnnouncementPost(selectedWinners){
+function buildGiveawayWinnerAnnouncementPost(selectedWinners,language="en"){
     const rows=(Array.isArray(selectedWinners)?selectedWinners:[])
       .filter(appContext.isPastGiveawayWinner);
 
@@ -947,14 +1024,15 @@ function buildGiveawayWinnerAnnouncementPost(selectedWinners){
       : appContext.getGiveawayShareUrl();
 
     const plural=rows.length>1;
+    const text=appContext.postLocale(language);
     const lines=[
       `🎁 Giveaway: ${giveawayLink}`,
       "",
-      `🎉 GIVEAWAY WINNER${plural?"S":""} ANNOUNCEMENT 🎉`,
+      `🎉 ${appContext.replacePostTokens(text.winnerAnnouncement,{plural:plural?"S":""})} 🎉`,
       "",
-      "The results are in!",
+      text.results,
       "",
-      "Congratulations to:",
+      text.congratulations,
       ""
     ];
 
@@ -966,7 +1044,7 @@ function buildGiveawayWinnerAnnouncementPost(selectedWinners){
 
       lines.push(
         `🏆 ${number}${name}${profile ? ` — ${profile}` : ""}`,
-        `🎁 Prize: ${prize}`
+        `🎁 ${text.prize}: ${prize}`
       );
 
       if(index<rows.length-1) lines.push("");
@@ -974,11 +1052,11 @@ function buildGiveawayWinnerAnnouncementPost(selectedWinners){
 
     lines.push(
       "",
-      "Thank you very much to everyone who joined our giveaway and supported Collect TCG MY & SG.",
+      text.winnerThanks,
       "",
-      "We appreciate every follow, like, share, and comment. There will be more giveaways in the future, so keep an eye out for the next one 👀",
+      text.winnerSupport,
       "",
-      `Congratulations once again to ${plural?"all our winners":"our winner"}! 🎊`,
+      appContext.replacePostTokens(text.winnerEnd,{target:plural?"all our winners":"our winner"}),
       "",
       "— Collect TCG MY & SG"
     );
@@ -1019,6 +1097,8 @@ function renderGiveawayWinnerPostGeneratorPage(){
             <input id="winnerPostSearch" type="search" maxlength="120" placeholder="Winner, giveaway or prize…">
           </div>
 
+          ${appContext.postLanguageSelectHTML("winnerPostLanguage",appContext.getPostGeneratorLanguage())}
+
           <div class="hint" id="winnerPostSelectionCount" style="margin-bottom:10px;"></div>
           <div class="fb-card-list-selection-list" id="winnerPostSelectionList"></div>
         </section>
@@ -1048,6 +1128,7 @@ function renderGiveawayWinnerPostGeneratorPage(){
 
     const list=appContext.$("winnerPostSelectionList");
     const search=appContext.$("winnerPostSearch");
+    const languageInput=appContext.$("winnerPostLanguage");
     const count=appContext.$("winnerPostSelectionCount");
     const output=appContext.$("winnerPostOutput");
     const copyBtn=appContext.$("winnerPostCopyBtn");
@@ -1096,7 +1177,7 @@ function renderGiveawayWinnerPostGeneratorPage(){
 
     function renderOutput(){
       const rows=selectedRows();
-      output.value=appContext.buildGiveawayWinnerAnnouncementPost(rows);
+      output.value=appContext.buildGiveawayWinnerAnnouncementPost(rows,languageInput.value);
       copyBtn.disabled=!rows.length;
       count.textContent=`${rows.length} selected · ${pastWinners.length} Past Winner${pastWinners.length===1?"":"s"} available`;
       renderWinnerImages();
@@ -1151,6 +1232,10 @@ function renderGiveawayWinnerPostGeneratorPage(){
     }
 
     search.addEventListener("input",renderList);
+    languageInput.addEventListener("change",()=>{
+      appContext.savePostGeneratorLanguage(languageInput.value);
+      renderOutput();
+    });
 
     appContext.$("winnerPostSelectAllBtn")?.addEventListener("click",()=>{
       pastWinners.forEach(g=>selectedIds.add(String(g.id)));
@@ -1242,6 +1327,7 @@ function renderGiveawayWinnerPostGeneratorPage(){
 
 function buildFbGiveawayPost(values,sourceGiveaway=null){
     const divider="━━━━━━━━━━━━━━━━━━━━━━━━";
+    const text=appContext.postLocale(values.language);
     const number=String(values.giveawayNumber||"").trim().replace(/^#/,"")||"1";
     const winnerHeadline=String(values.winnerHeadline||"").trim();
     const prizeLine=String(values.prizeLine||"").trim();
@@ -1261,33 +1347,33 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
       `🏆 ${winnerHeadline}`,
       `🥇 ${prizeLine}`,
       divider,
-      "📌 HOW TO ENTER:",
+      text.howToEnter,
       ...(()=>{
         const steps=[];
         let n=1;
         if(!sourceGiveaway || sourceGiveaway.require_facebook!==false){
-          steps.push(`${n++}️⃣ FOLLOW our Facebook Page: ${appContext.safeHttpUrl(values.facebookPageUrl)||"[LINK NOT SET]"}`);
+          steps.push(`${n++}️⃣ ${text.followFacebook}: ${appContext.safeHttpUrl(values.facebookPageUrl)||"[LINK NOT SET]"}`);
         }
         if(!sourceGiveaway || sourceGiveaway.require_instagram!==false){
-          steps.push(`${n++}️⃣ FOLLOW our Instagram: ${appContext.safeHttpUrl(values.instagramUrl)||"[LINK NOT SET]"}`);
+          steps.push(`${n++}️⃣ ${text.followInstagram}: ${appContext.safeHttpUrl(values.instagramUrl)||"[LINK NOT SET]"}`);
         }
         if(!sourceGiveaway || sourceGiveaway.require_comment!==false){
-          steps.push(`${n++}️⃣ COMMENT on the giveaway post: ${giveawayComment}`);
+          steps.push(`${n++}️⃣ ${text.comment}: ${giveawayComment}`);
         }
         if(sourceGiveaway?.require_website_code){
-          steps.push(`${n++}️⃣ VISIT our website and find the Giveaway Code: ${appContext.getGiveawayShareUrl()}`);
+          steps.push(`${n++}️⃣ ${text.visitCode}: ${appContext.getGiveawayShareUrl()}`);
         }
         if(appContext.safeHttpUrl(sourceGiveaway?.entry_form_url)){
-          steps.push(`${n++}️⃣ SUBMIT your entry here: ${appContext.safeHttpUrl(sourceGiveaway.entry_form_url)}`);
+          steps.push(`${n++}️⃣ ${text.submit}: ${appContext.safeHttpUrl(sourceGiveaway.entry_form_url)}`);
         }
         return steps;
       })(),
       divider,
-      "‼️ IMPORTANT:",
-      "Only participants who complete all required steps will be eligible for the draw.",
+      text.important,
+      text.eligible,
       "",
-      "📩 HOW THE WINNER WILL BE CONTACTED:",
-      `Facebook Pages cannot send the first message to personal accounts. We will reply to the winner’s comment, and the winner must PM our Facebook Page within ${claimHours} hours to claim the prize.`,
+      text.contactWinner,
+      appContext.replacePostTokens(text.contactWinnerText,{hours:claimHours}),
       ""
     ];
 
@@ -1295,15 +1381,15 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
       const bonusLines=[];
       const facebookGroupUrl=appContext.safeHttpUrl(values.facebookGroupUrl);
       if(values.includeFacebookGroupBonus && facebookGroupUrl){
-        bonusLines.push(`➕ +1 BONUS: Join our Facebook Group: ${facebookGroupUrl}`);
+        bonusLines.push(`${text.joinGroup}: ${facebookGroupUrl}`);
       }
-      if(sourceGiveaway?.bonus_share_facebook) bonusLines.push("➕ +1 BONUS: Share this Facebook post publicly");
-      if(sourceGiveaway?.bonus_tag_friends) bonusLines.push("➕ +1 BONUS: Tag 2 friends");
-      if(sourceGiveaway?.bonus_share_instagram_story) bonusLines.push("➕ +1 BONUS: Share to your IG Story and tag @collecttcg.mysg");
+      if(sourceGiveaway?.bonus_share_facebook) bonusLines.push(text.shareFacebook);
+      if(sourceGiveaway?.bonus_tag_friends) bonusLines.push(text.tagFriends);
+      if(sourceGiveaway?.bonus_share_instagram_story) bonusLines.push(text.shareStory);
 
       if(bonusLines.length){
         lines.push(
-          "⭐ EXTRA ACTIONS / BONUS ENTRIES:",
+          text.bonus,
           ...bonusLines,
           ""
         );
@@ -1312,26 +1398,26 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
 
     if(values.includeMultiGroupNotice){
       lines.push(
-        "📢 IMPORTANT:",
-        "This giveaway post has been shared across multiple groups. All eligible entries from every group will be combined into one single pool for the final draw.",
+        text.groups,
+        text.groupsText,
         ""
       );
     }
 
     lines.push(
-      "🎲 WINNER SELECTION:",
-      `The winner will be selected randomly using ${winnerTool}.`,
+      text.selection,
+      appContext.replacePostTokens(text.selectionText,{tool:winnerTool}),
       "",
-      "🔎 WINNER VERIFICATION:",
-      "When the winner is announced, we will also include the winner’s Facebook profile URL for transparency and verification purposes.",
+      text.verification,
+      text.verificationText,
       "",
-      "🍀 GOOD LUCK, EVERYONE!",
+      text.luck,
       divider,
-      `🗓️ GIVEAWAY ENDS: ${giveawayEnds}`,
+      `${text.ends}: ${giveawayEnds}`,
       `📍 COD: ${cod}`,
-      `📦 Postage: ${postage}`,
+      `${text.postage}: ${postage}`,
       divider,
-      "EXPLORE MORE FROM COLLECT TCG",
+      text.explore,
       `WEBSITE : ${appContext.getWebsiteShareUrl()}`,
       `COLLECTION : ${location.origin}${location.pathname}#/collection`,
       ...appContext.collectSocialPostLines(),
@@ -1404,6 +1490,8 @@ function renderFbGiveawayPostGeneratorPage(){
             <label for="fbGiveawayPrizeLine">Prize line</label>
             <input id="fbGiveawayPrizeLine" maxlength="350" value="${appContext.escapeHtml(prefs.prizeLine)}">
           </div>
+
+          ${appContext.postLanguageSelectHTML("fbGiveawayLanguage",appContext.getPostGeneratorLanguage())}
 
           <div class="fb-card-list-settings-divider"></div>
           <div class="eyebrow">2 · Entry Conditions</div>
@@ -1537,6 +1625,7 @@ function renderFbGiveawayPostGeneratorPage(){
       giveawayNumber:appContext.$("fbGiveawayNumber"),
       winnerHeadline:appContext.$("fbGiveawayWinnerHeadline"),
       prizeLine:appContext.$("fbGiveawayPrizeLine"),
+      language:appContext.$("fbGiveawayLanguage"),
       facebookPageUrl:appContext.$("fbGiveawayFacebookPageUrl"),
       instagramUrl:appContext.$("fbGiveawayInstagramUrl"),
       facebookGroupUrl:appContext.$("fbGiveawayFacebookGroupUrl"),
@@ -1560,6 +1649,7 @@ function renderFbGiveawayPostGeneratorPage(){
         giveawayNumber:inputs.giveawayNumber.value,
         winnerHeadline:inputs.winnerHeadline.value,
         prizeLine:inputs.prizeLine.value,
+        language:inputs.language.value,
         facebookPageUrl:inputs.facebookPageUrl.value,
         instagramUrl:inputs.instagramUrl.value,
         facebookGroupUrl:inputs.facebookGroupUrl.value,
@@ -1579,6 +1669,7 @@ function renderFbGiveawayPostGeneratorPage(){
 
     function updateOutput(){
       const values=currentValues();
+      appContext.savePostGeneratorLanguage(values.language);
       appContext.saveFbGiveawayPostPrefs(values);
       output.value=appContext.buildFbGiveawayPost(values,selectedGiveaway);
       copyBtn.disabled=!output.value.trim();
@@ -1705,7 +1796,7 @@ function renderFbGiveawayPostGeneratorPage(){
     updateOutput();
   }
 
-function defaultCarousellProductDetails(card){
+function defaultCarousellProductDetails(card,language="en"){
     if(!card) return "";
 
     const lines=[];
@@ -1722,15 +1813,22 @@ function defaultCarousellProductDetails(card){
     if(carousellName){
       lines.push(`【${carousellFormatLabel}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${carousellName}`.replace(/\s+/g," ").trim());
     }
-    if(card.year) lines.push(`Year: ${card.year}`);
-    if(card.series) lines.push(`Series: ${String(card.series).trim()}`);
-    if(card.game) lines.push(`Game: ${String(card.game).trim()}`);
-    if(card.language) lines.push(`Language: ${String(card.language).trim()}`);
+    const labels={
+      en:["Year","Series","Game","Language","Price Terms"],
+      ms:["Tahun","Siri","Permainan","Bahasa","Syarat Harga"],
+      zh:["年份","系列","游戏","语言","价格条款"],
+      ja:["年","シリーズ","ゲーム","言語","価格条件"],
+      ko:["연도","시리즈","게임","언어","가격 조건"]
+    }[appContext.normalizePostLanguage(language)]||["Year","Series","Game","Language","Price Terms"];
+    if(card.year) lines.push(`${labels[0]}: ${card.year}`);
+    if(card.series) lines.push(`${labels[1]}: ${String(card.series).trim()}`);
+    if(card.game) lines.push(`${labels[2]}: ${String(card.game).trim()}`);
+    if(card.language) lines.push(`${labels[3]}: ${String(card.language).trim()}`);
 
     const savedTerm=appContext.normalizePriceNegotiability(
       card.price_negotiability || appContext.priceNegotiabilityFromNotes(card.notes||"")
     );
-    if(savedTerm) lines.push(`Price Terms: ${savedTerm}`);
+    if(savedTerm) lines.push(`${labels[4]}: ${savedTerm}`);
 
     const publicNotes=appContext.stripPriceNegotiabilityMarker(card.notes||"");
     if(publicNotes) lines.push("",publicNotes);
@@ -1757,8 +1855,24 @@ function saveCarousellPostPrefs(values){
     }catch{}
   }
 
-function buildCarousellPostText(productDetails){
+function buildCarousellPostText(productDetails,language="en"){
     const details=String(productDetails||"").trim()||"[Add product/card explanation here]";
+    const selectedLanguage=appContext.normalizePostLanguage(language);
+    const text=appContext.postLocale(selectedLanguage);
+
+    if(selectedLanguage!=="en"){
+      const local={
+        ms:["Mungkin terdapat calar awal atau kecacatan pembuatan.","Sila semak gambar dengan teliti sebelum membeli.","Untuk perlindungan pembeli dan penjual, urusan COD sahaja.","Harga boleh berubah mengikut pasaran.","Tiada trade. Item ini untuk jualan sahaja.","COD hanya di tempat awam di Kuala Lumpur dan Singapura, pada hujung minggu.","Harga akhir mesti dipersetujui sebelum pertemuan. Tiada perubahan semasa urusan.","Item hanya akan ditempah selepas pengesahan pembeli.","Pembeli boleh memeriksa item semasa pertemuan sebelum membuat bayaran.","Bayaran perlu dibuat melalui pindahan bank segera semasa pertemuan.","Sila buat tawaran untuk pertimbangan kami."],
+        zh:["可能存在初始刮痕或生产瑕疵。","购买前请仔细查看照片。","为保障买卖双方，仅接受 COD。","价格可能随市场变化。","不接受交换，仅出售。","COD 仅限吉隆坡和新加坡的公共场所，周末进行。","见面前必须确认最终价格，交易时不接受更改。","仅在买方确认后保留商品。","买方可在付款前于见面时检查商品。","见面时须通过即时银行转账付款。","欢迎报价，我们会考虑。"],
+        ja:["初期傷や製造上の不具合がある場合があります。","購入前に写真をよくご確認ください。","購入者・販売者双方の保護のため、CODのみです。","価格は市場に合わせて変更される場合があります。","トレード不可、販売のみです。","CODは週末にクアラルンプールおよびシンガポールの公共の場所でのみ可能です。","最終価格は対面前に合意してください。取引中の変更はできません。","商品は購入者の確認後にのみ取り置きします。","購入者は支払い前に対面で商品を確認できます。","支払いは対面時に即時銀行振込でお願いします。","ご検討のため、オファーをお送りください。"],
+        ko:["초기 스크래치나 제조상 하자가 있을 수 있습니다.","구매 전 사진을 꼼꼼히 확인해 주세요.","구매자와 판매자 보호를 위해 COD만 가능합니다.","가격은 시장 상황에 따라 변경될 수 있습니다.","교환 불가, 판매만 가능합니다.","COD는 주말에 쿠알라룸푸르와 싱가포르의 공공장소에서만 가능합니다.","최종 가격은 만남 전에 합의해야 하며 거래 중 변경은 불가합니다.","구매자 확인 후에만 상품을 예약합니다.","구매자는 결제 전에 만남에서 상품을 확인할 수 있습니다.","결제는 만남 중 즉시 은행이체로 진행합니다.","검토를 위해 제안 가격을 보내 주세요."]
+      }[selectedLanguage];
+      return appContext.compactGeneratedPostSpacing([
+        text.carousellNoTrade,"",text.productDetails,details,"",text.caution,local[0],local[1],"",text.importantNotes,
+        `- ${local[2]}`,`- ${local[3]}`,`- ${local[4]}`,`- ${local[1]}`,"",text.codRules,
+        `1. ${local[5]}`,`2. ${local[6]}`,`3. ${local[7]}`,`4. ${local[8]}`,`5. ${local[9]}` ,"",local[10]
+      ].join("\n"));
+    }
 
     const lines = [
       "NO TRADE, ONLY SELL",
@@ -1985,6 +2099,8 @@ function renderCarousellPostGeneratorPage(){
             <textarea id="carousellProductDetails" rows="12" maxlength="5000" placeholder="Explain the card/product here…">${appContext.escapeHtml(prefs.productDetails)}</textarea>
             <div class="hint">You can edit the generated details before copying. The caution, COD and negotiation rules remain fixed in the template.</div>
           </div>
+
+          ${appContext.postLanguageSelectHTML("carousellPostLanguage",appContext.getPostGeneratorLanguage())}
         </section>
 
         <section class="panel fb-post-output-panel">
@@ -2017,6 +2133,7 @@ function renderCarousellPostGeneratorPage(){
     const typeFilter=appContext.$("carousellPostTypeFilter");
     const filterCount=appContext.$("carousellPostFilterCount");
     const detailsInput=appContext.$("carousellProductDetails");
+    const languageInput=appContext.$("carousellPostLanguage");
     const selectedMount=appContext.$("carousellPostSelectedCard");
     const output=appContext.$("carousellPostOutput");
     const copyBtn=appContext.$("carousellCopyPostBtn");
@@ -2161,7 +2278,8 @@ function renderCarousellPostGeneratorPage(){
 
     function regenerate(){
       appContext.saveCarousellPostPrefs({productDetails:detailsInput.value});
-      output.value=appContext.buildCarousellPostText(detailsInput.value);
+      appContext.savePostGeneratorLanguage(languageInput.value);
+      output.value=appContext.buildCarousellPostText(detailsInput.value,languageInput.value);
       copyBtn.disabled=!output.value.trim();
       prepareBtn.disabled=!output.value.trim();
     }
@@ -2174,7 +2292,7 @@ function renderCarousellPostGeneratorPage(){
       if(raw.startsWith("card:")){
         const id=raw.slice(5);
         selectedCard=selectableCards.find(card=>String(card.id)===id)||null;
-        if(selectedCard) detailsInput.value=appContext.defaultCarousellProductDetails(selectedCard);
+        if(selectedCard) detailsInput.value=appContext.defaultCarousellProductDetails(selectedCard,languageInput.value);
       }else if(raw.startsWith("giveaway:")){
         const id=raw.slice(9);
         selectedGiveaway=selectableGiveaways.find(g=>String(g.id)===id)||null;
@@ -2218,6 +2336,12 @@ function renderCarousellPostGeneratorPage(){
 
     detailsInput.addEventListener("input",regenerate);
     detailsInput.addEventListener("change",regenerate);
+    languageInput.addEventListener("change",()=>{
+      // Regenerate only the automatically supplied details; never overwrite a
+      // seller's manual description just because they change template language.
+      if(selectedCard) detailsInput.value=appContext.defaultCarousellProductDetails(selectedCard,languageInput.value);
+      regenerate();
+    });
 
     copyBtn.addEventListener("click",()=>{
       appContext.copyPlainText(output.value,"Carousell post copied");
@@ -2327,6 +2451,7 @@ function getFbCardListPostPrefs(){
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
         dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
+        language:appContext.normalizePostLanguage(p.language || appContext.getPostGeneratorLanguage()),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl || p.carousellShopUrl) || "https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl) || "https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl) || "https://www.instagram.com/collecttcg.mysg",
@@ -2338,6 +2463,7 @@ function getFbCardListPostPrefs(){
         postFormat:"drop",
         dropLimit:5,
         dropSelectionMode:"balanced",
+        language:appContext.getPostGeneratorLanguage(),
         carousellMalaysiaUrl:"https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:"https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:"https://www.instagram.com/collecttcg.mysg",
@@ -2353,6 +2479,7 @@ function saveFbCardListPostPrefs(p){
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
         dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
+        language:appContext.normalizePostLanguage(p.language),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl),
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl),
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl),
@@ -2397,7 +2524,7 @@ function gradedPostLabel(card){
     return `${String(grade.company || "").toUpperCase()} ${String(grade.grade || "").trim()}`.trim();
   }
 
-function cardListPriceLine(card){
+function cardListPriceLine(card,language="en"){
     const pieces = [];
     if(appContext.hasListedPrice(card.price_myr)) pieces.push(appContext.fmtMYR(card.price_myr));
     if(appContext.hasListedPrice(card.price_usd ?? card.price)) pieces.push(`$${Math.round(Number(card.price_usd ?? card.price)).toLocaleString("en-US")} USD`);
@@ -2410,7 +2537,9 @@ function cardListPriceLine(card){
     );
     const termsSuffix=savedTerm ? ` (${savedTerm.toLowerCase()})` : "";
 
-    return appContext.compactGeneratedPostSpacing(`PRICE : ${pieces.length ? pieces.join(" / ") : "PLEASE INQUIRE"}${termsSuffix}`);
+    const labels={en:["PRICE","PLEASE INQUIRE"],ms:["HARGA","SILA TANYA"],zh:["价格","请询价"],ja:["価格","お問い合わせください"],ko:["가격","문의해 주세요"]};
+    const [priceLabel,inquire]=labels[appContext.normalizePostLanguage(language)]||labels.en;
+    return appContext.compactGeneratedPostSpacing(`${priceLabel} : ${pieces.length ? pieces.join(" / ") : inquire}${termsSuffix}`);
   }
 
 function cardListGroupHeading(card){
@@ -2483,20 +2612,20 @@ function cardListItemLine(card){
     ].filter(Boolean).join(" · ");
   }
 
-  function dropCardPriceLine(card){
-    return appContext.cardListPriceLine(card)
-      .replace(/^PRICE\s*:\s*/i,"")
+  function dropCardPriceLine(card,language="en"){
+    return appContext.cardListPriceLine(card,language)
+      .replace(/^[^:]+\s*:\s*/,"")
       .replace(/\$([\d,]+)\s+USD\b/g,(_match,amount)=>"US$"+amount)
       .replace(/\bSGD\s*([\d,]+)/g,(_match,amount)=>"S$"+amount)
       .replace(/\s*\/\s*/g," · ")
       .replace(/\s*\(([^)]+)\)\s*$/," · $1");
   }
 
-  function dropCardEntryLines(card,index){
+  function dropCardEntryLines(card,index,language="en"){
     return [
       `${index+1}. ${appContext.dropCardName(card)}`,
       appContext.dropCardMetaLine(card),
-      appContext.dropCardPriceLine(card)
+      appContext.dropCardPriceLine(card,language)
     ].filter(Boolean);
   }
 
@@ -2540,17 +2669,17 @@ function buildFbCardListSection(title, cardsInSection, prefs){
       const cards=group.cards;
       if(cards.length<=2){
         cards.forEach(card=>{
-          lines.push(appContext.cardListItemLine(card),"",appContext.cardListPriceLine(card),"");
+          lines.push(appContext.cardListItemLine(card),"",appContext.cardListPriceLine(card,prefs.language),"");
         });
         return;
       }
 
       cards.slice(0,2).forEach(card=>{
-        lines.push(appContext.cardListItemLine(card),"",appContext.cardListPriceLine(card),"");
+        lines.push(appContext.cardListItemLine(card),"",appContext.cardListPriceLine(card,prefs.language),"");
       });
       lines.push(".",".",".","");
       const lastCard=cards[cards.length-1];
-      lines.push(appContext.cardListItemLine(lastCard),"",appContext.cardListPriceLine(lastCard),"");
+      lines.push(appContext.cardListItemLine(lastCard),"",appContext.cardListPriceLine(lastCard,prefs.language),"");
     });
 
     return lines.join("\n").trimEnd();
@@ -2559,18 +2688,19 @@ function buildFbCardListSection(title, cardsInSection, prefs){
 function buildFbCardListPost(availableCards,prefs){
     if(prefs.postFormat !== "full") return appContext.buildFbCardDropPost(availableCards,prefs);
     const divider = "━━━━━━━━━━━━━━━━━━━━━━━━";
+    const text=appContext.postLocale(prefs.language);
     const graded = availableCards.filter(c=>appContext.cardListFormat(c)==="graded");
     const raw = availableCards.filter(c=>appContext.cardListFormat(c)==="raw");
     const sealed = availableCards.filter(c=>appContext.cardListFormat(c)==="sealed");
 
     const sections = [
-      appContext.buildFbCardListSection("𝐆𝐑𝐀𝐃𝐄𝐃 𝐒𝐋𝐀𝐁𝐒",graded,prefs),
-      appContext.buildFbCardListSection("𝐑𝐀𝐖 𝐒𝐈𝐍𝐆𝐋𝐄𝐒",raw,prefs),
-      appContext.buildFbCardListSection("𝐒𝐄𝐀𝐋𝐄𝐃 𝐏𝐑𝐎𝐃𝐔𝐂𝐓𝐒",sealed,prefs)
+      appContext.buildFbCardListSection(text.graded,graded,prefs),
+      appContext.buildFbCardListSection(text.raw,raw,prefs),
+      appContext.buildFbCardListSection(text.sealed,sealed,prefs)
     ].filter(Boolean);
 
     const lines = [
-      `‼️ CARD LIST ‼️  [UPDATE : ${appContext.fbCardListDateLabel()}]`,
+      `${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`,
       "",
       `WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`,
       "",
@@ -2578,21 +2708,7 @@ function buildFbCardListPost(availableCards,prefs){
       "",
       divider,
       "",
-      "📍 COD / MEETUP: MALAYSIA OR SINGAPORE, DEPENDING ON THE ITEM",
-      "",
-      "🌏 INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY",
-      "",
-      "International shipping is available only for items valued below USD 6,000. Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped. For cards priced above USD 6,000, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.",
-      "",
-      "📩 DM your offer if interested",
-      "",
-      "💰 Serious buyers only",
-      "",
-      "👥 Can discuss meetup location",
-      "",
-      "📍 Located in KL 🇲🇾 / SG 🇲🇨",
-      "",
-      "❌ No lowball offers",
+      ...appContext.postSalesFooterLines(prefs.language),
       "",
       divider,
       "",
@@ -2612,34 +2728,21 @@ function buildFbCardListPost(availableCards,prefs){
     const cards=selectedCards.slice(0,Number(prefs.dropLimit)||5);
     if(!cards.length) return "";
     const divider="━━━━━━━━━━━━━━━━━━━━━━━━";
-    const shown=cards.map((card,index)=>appContext.dropCardEntryLines(card,index).join("\n"));
+    const text=appContext.postLocale(prefs.language);
+    const shown=cards.map((card,index)=>appContext.dropCardEntryLines(card,index,prefs.language).join("\n"));
     const lines=[
-      `✨ CARD DROP · ${appContext.fbCardListDateLabel()}`,
+      `${text.cardDrop} · ${appContext.fbCardListDateLabel()}`,
       "",
       `WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`,
       "",
       ...shown.flatMap((line,index)=>index ? ["",line] : [line]),
       "",
-      "More cards are available beyond this drop.",
-      `Browse the full inventory: ${appContext.getWebsiteShareUrl()}`,
+      text.moreCards,
+      `${text.browseInventory} ${appContext.getWebsiteShareUrl()}`,
       "",
       divider,
       "",
-      "📍 COD / MEETUP: MALAYSIA OR SINGAPORE, DEPENDING ON THE ITEM",
-      "",
-      "🌏 INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY",
-      "",
-      "International shipping is available only for items valued below USD 6,000. Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped. For cards priced above USD 6,000, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.",
-      "",
-      "📩 DM your offer if interested",
-      "",
-      "💰 Serious buyers only",
-      "",
-      "👥 Can discuss meetup location",
-      "",
-      "📍 Located in KL 🇲🇾 / SG 🇲🇨",
-      "",
-      "❌ No lowball offers",
+      ...appContext.postSalesFooterLines(prefs.language),
       "",
       divider,
       "",
@@ -2985,6 +3088,8 @@ function renderFbCardListGeneratorPage(){
             <input id="fbCardListTitle" maxlength="120" value="${appContext.escapeHtml(prefs.listTitle)}" placeholder="e.g. VINTAGE SERIES">
           </div>
 
+          ${appContext.postLanguageSelectHTML("fbCardListLanguage",prefs.language)}
+
           <div class="fb-card-list-terms-note">
             Pricing terms are taken automatically from each card's saved <strong>Pricing terms</strong> category.
           </div>
@@ -3063,6 +3168,7 @@ function renderFbCardListGeneratorPage(){
     const dropMixField=appContext.$("fbCardListDropMixField");
     const previewTitle=appContext.$("fbCardListPreviewTitle");
     const titleInput=appContext.$("fbCardListTitle");
+    const languageInput=appContext.$("fbCardListLanguage");
     const carousellMYInput=appContext.$("fbCardListCarousellMY");
     const carousellSGInput=appContext.$("fbCardListCarousellSG");
     const instagramInput=appContext.$("fbCardListInstagram");
@@ -3081,6 +3187,7 @@ function renderFbCardListGeneratorPage(){
         postFormat:postFormatInput.value,
         dropLimit:Number(dropLimitInput.value),
         dropSelectionMode:dropMixInput.value,
+        language:languageInput.value,
         carousellMalaysiaUrl:carousellMYInput.value,
         carousellSingaporeUrl:carousellSGInput.value,
         instagramUrl:instagramInput.value,
@@ -3427,6 +3534,7 @@ function renderFbCardListGeneratorPage(){
 
     function regenerate(){
       const now=currentPrefs();
+      appContext.savePostGeneratorLanguage(now.language);
       appContext.saveFbCardListPostPrefs(now);
       const selected=cardsForPost();
 
@@ -3489,7 +3597,7 @@ function renderFbCardListGeneratorPage(){
       applyOrderPreset(orderPreset.value);
     });
 
-    [postFormatInput,dropLimitInput,dropMixInput,titleInput,carousellMYInput,carousellSGInput,instagramInput,hashtagsInput].forEach(el=>{
+    [postFormatInput,dropLimitInput,dropMixInput,titleInput,languageInput,carousellMYInput,carousellSGInput,instagramInput,hashtagsInput].forEach(el=>{
       el.addEventListener("input",regenerate);
       el.addEventListener("change",regenerate);
     });
@@ -3605,11 +3713,12 @@ function renderFbCardListGeneratorPage(){
     applyOrderPreset("default");
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
+  appContext.POST_GENERATOR_LANGUAGE_KEY = "collect_tcg_post_generator_language_v1";
   appContext.FB_GIVEAWAY_POST_PREFS_KEY = "collect_tcg_fb_giveaway_post_prefs_v1";
 
   appContext.FB_GIVEAWAY_POST_DEFAULTS = Object.freeze({
