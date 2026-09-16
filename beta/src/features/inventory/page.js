@@ -120,6 +120,14 @@ function inventoryPageHTML(scopeMeta,scope){
               ⬇ Export Collage
             </button>
           ` : ""}
+          ${scope==="inventory" && appContext.isOwnerMode() ? `
+            <button type="button"
+                    class="btn-ghost collection-export-collage-btn owner-only inventory-qr-download-btn"
+                    id="inventoryQrDownloadBtn"
+                    title="Download the full Inventory QR image">
+              ⬇ Inventory QR
+            </button>
+          ` : ""}
 
           <button type="button" class="copy-filter-link-btn" id="copyFilterLinkBtn" title="Copy a link to these filters">
             <span class="copy-filter-link-desktop">Copy Filtered Link</span>
@@ -1518,6 +1526,7 @@ function renderInventoryPage(scope = "inventory"){
     appContext.$("collectionMobileCollageBtn")?.addEventListener("click",appContext.openCollectionCollageSettingsModal);
     appContext.$("inventoryExportCollageBtn")?.addEventListener("click",appContext.openCollectionCollageSettingsModal);
     appContext.$("inventoryMobileCollageBtn")?.addEventListener("click",appContext.openCollectionCollageSettingsModal);
+    appContext.$("inventoryQrDownloadBtn")?.addEventListener("click",appContext.downloadInventoryQrImage);
     [appContext.$("collectionMobileOwnerLogoutBtn"),appContext.$("inventoryMobileOwnerLogoutBtn")].filter(Boolean).forEach(btn=>{
       btn.addEventListener("click",async()=>{
         if(collectionRearrangeMode) await finishCollectionRearrangeMode(false);
