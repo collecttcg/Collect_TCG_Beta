@@ -174,6 +174,13 @@ test('home titles use a consistent uppercase display style and trust copy stays 
  assert.match(css,/@media\(max-width:800px\)\{[\s\S]*\.home-premium-trust-copy h3\{font-size:22px;\}/);
 });
 
+
+test('the Home currency label is readable without changing other currency controls',()=>{
+ const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ assert.match(css,/\.home-premium-currency > span:not\(\.sr-only\)\{\s*font-size:12px !important;/);
+ assert.match(css,/\.home-premium-currency select\{\s*font-size:11px !important;/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
