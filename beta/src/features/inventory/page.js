@@ -774,6 +774,9 @@ function renderInventoryPage(scope = "inventory"){
           appContext.pillFilterState.series.clear();
           appContext.updateListingUrlFromControls();
           draw();
+          requestAnimationFrame(()=>{
+            window.scrollTo({top:viewportTop,left:window.scrollX,behavior:"auto"});
+          });
         },{signal:inventorySignal});
       });
     }
