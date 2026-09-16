@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17-v07 beta
+
+- Restores the v05 logo sizing so every full game mark is visible again.
+- Replaces the One Piece source with the transparent local mark; it stays white on dark tiles and becomes dark on ivory light-mode tiles without a rectangular image background.
+
 ## 2026-09-17-v06 beta
 
 - Centres every game wordmark within its logo tile.
