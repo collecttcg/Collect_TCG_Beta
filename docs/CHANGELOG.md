@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17-v03 beta
+
+- Replaces the white-background One Piece image with a local transparent-style One Piece Card Game wordmark sized to fill its tile.
+- Keeps the reduced spacing around Hunter × Hunter, Pokémon, and Zatch Bell! marks.
+
 ## 2026-09-17-v02 beta
 
 - Removes the visible white One Piece logo field by adapting the mark for the dark game tile.
