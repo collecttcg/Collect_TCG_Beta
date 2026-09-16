@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17-v06 beta
+
+- Centres every game wordmark within its logo tile.
+- Adds consistent breathing room around the One Piece, Hunter × Hunter, Pokémon, and Zatch Bell marks.
+
 ## 2026-09-17-v05 beta
 
 - Blends the One Piece source's baked-in white background into the ivory light-mode logo tile.
