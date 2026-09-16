@@ -9782,3 +9782,8 @@ body.light-mode #invGrid.collection-game-grouped .collection-game-group-header{
 #invGrid .card.nfs-collection-card:hover{
   border-color:rgba(240,196,92,.62) !important;
 }
+
+/* Inventory / Sold V08: keep listing card stripes aligned to the gold brand accent. */
+#invGrid.gold-card-stripes .card{
+  --stripe:#e3b341 !important;
+}
