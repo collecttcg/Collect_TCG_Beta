@@ -2,7 +2,7 @@
 export function register(appContext){
 function renderAboutPage(){
     appContext.view.innerHTML = `
-      <div class="page-head">
+      <div class="page-head information-page-head">
         <div>
           <div class="eyebrow">About us</div>
           <h2>Collect TCG MY & SG</h2>
@@ -10,7 +10,7 @@ function renderAboutPage(){
         </div>
       </div>
 
-      <div class="panel about-panel" style="max-width:820px;">
+      <div class="panel about-panel information-page-panel" style="max-width:820px;">
         <h3>Who We Are</h3>
         <div class="about-copy">
           <p>We are a group of friends and dedicated One Piece Trading Card Game collectors based in Malaysia and Singapore, specializing in rare collectibles, vintage cards, tournament prize cards, and premium grails. While One Piece is our primary focus, we occasionally list cards and collectibles from other TCGs from our personal collections as well.</p>
@@ -58,14 +58,14 @@ function renderAboutPage(){
 
 function renderContactPage(){
     appContext.view.innerHTML = `
-      <div class="page-head">
+      <div class="page-head information-page-head">
         <div>
           <div class="eyebrow">Get in touch</div>
           <h2>Contact</h2>
           <p>Follow Collect TCG MY & SG or contact us through our official pages.</p>
         </div>
       </div>
-      <div class="panel contact-panel" style="max-width:680px;">
+      <div class="panel contact-panel information-page-panel" style="max-width:680px;">
         <h3>Collect TCG MY & SG</h3>
         <div class="contact-links">
           <a class="contact-link" href="https://m.me/61590041416102" target="_blank" rel="noopener noreferrer">
