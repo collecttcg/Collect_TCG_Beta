@@ -2451,7 +2451,7 @@ function getFbCardListPostPrefs(){
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
         dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
-        language:appContext.normalizePostLanguage(p.language || appContext.getPostGeneratorLanguage()),
+        language:appContext.getPostGeneratorLanguage(),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl || p.carousellShopUrl) || "https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl) || "https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl) || "https://www.instagram.com/collecttcg.mysg",
