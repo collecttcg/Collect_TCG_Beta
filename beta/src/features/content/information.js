@@ -36,10 +36,10 @@ function renderAboutPage(){
           </a>
         </div>
 
-        <h3 class="about-subhead">🌏 International Shipping — Below USD 6,000 Only</h3>
+        <h3 class="about-subhead">🌏 Worldwide Shipping &amp; High-Value Delivery</h3>
         <div class="about-copy">
-          <p><b>International shipping is available only for items valued below USD 6,000.</b> Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped.</p>
-          <p>For cards priced above <b>USD 6,000</b>, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.</p>
+          <p><b>Worldwide shipping is available.</b> Shipping costs and insurance fees will be borne by the buyer. Shipping insurance is optional, but strongly recommended for higher-value shipments. Cards will be packed securely, and a video of the packing process will be provided for buyer's peace of mind. A tracking number will be provided once your package has been shipped.</p>
+          <p>For items above <b>USD 6,000</b>, Cash on Delivery (COD) in Malaysia or Singapore is preferred, depending on the specific card. Secure international shipping may also be considered case by case—please contact us before purchase to discuss payment, delivery, insurance and packing arrangements. Please note that we cannot be held responsible for any loss, damage, or issues that may occur during transit once the package has been shipped.</p>
         </div>
 
         <h3 class="about-subhead">COD Rules</h3>
