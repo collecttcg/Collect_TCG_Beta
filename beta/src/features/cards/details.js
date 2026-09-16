@@ -1270,8 +1270,8 @@ async function openDetailsModal(card){
                 <span>
                   <strong>Worldwide Shipping</strong>
                   <small>
-                    <span class="purchase-copy-mobile">Negotiable • Shipping worldwide on eligible orders • COD / meetup in MY &amp; SG</span>
-                    <span class="purchase-copy-desktop">Negotiable · Worldwide shipping · COD / meetup in MY &amp; SG</span>
+                    <span class="purchase-copy-mobile">Negotiable • Worldwide shipping • High-value delivery by arrangement • COD / meetup in MY &amp; SG</span>
+                    <span class="purchase-copy-desktop">Negotiable · Worldwide shipping · High-value delivery by arrangement · COD / meetup in MY &amp; SG</span>
                   </small>
                 </span>
               </div>
@@ -1318,7 +1318,7 @@ async function openDetailsModal(card){
                   <strong>${isSoldListing ? "Sold Archive" : "Buyer Options"}</strong>
                   <small>${isSoldListing
                     ? "This listing is retained for collection history and reference."
-                    : "Worldwide shipping is available for eligible orders; COD / meetup can be arranged in Malaysia or Singapore."}</small>
+                    : "Worldwide shipping is available; for USD 6,000+ items, contact us to discuss secure delivery. COD / meetup can be arranged in Malaysia or Singapore."}</small>
                 </span>
               </div>
             </div>
@@ -1348,7 +1348,7 @@ async function openDetailsModal(card){
               <div class="details-contact-copy">
                 <strong>Contact to Buy</strong>
                 <span class="details-contact-description">Contact us to confirm current availability, transaction method and delivery / meetup options before payment.</span>
-                <span class="details-contact-location">🌍 Worldwide shipping · COD / meetup in MY &amp; SG</span>
+                <span class="details-contact-location">🌍 Worldwide shipping · High-value delivery by arrangement · COD / meetup in MY &amp; SG</span>
               </div>
               <div class="details-contact-actions">
                 <span class="details-contact-via-label">Contact via</span>
