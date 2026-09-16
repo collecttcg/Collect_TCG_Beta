@@ -11,7 +11,7 @@ for(const file of files(fileURLToPath(root))){
  execFileSync(process.execPath,['--check',file],{stdio:'pipe'});
  const source=fs.readFileSync(file,'utf8');
  for(const match of source.matchAll(/\bfrom\s+['"](\.[^'"]+)['"]/g)){
-  const target=path.resolve(path.dirname(file),match[1]);
+  const target=path.resolve(path.dirname(file),match[1].split(/[?#]/,1)[0]);
   if(!fs.existsSync(target))throw new Error('Missing module: '+target);
  }
  count++;
