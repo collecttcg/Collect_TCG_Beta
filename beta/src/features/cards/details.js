@@ -431,6 +431,29 @@ async function createInventoryQrDownloadBlob(card){
     });
   }
 
+async function downloadInventoryQrImage(){
+    if(!appContext.requireOwner("download Inventory QR")) return false;
+
+    try{
+      const blob=await appContext.createInventoryQrDownloadBlob(null);
+      const href=URL.createObjectURL(blob);
+      const link=document.createElement("a");
+      link.href=href;
+      link.download="Collect-TCG-Inventory-QR.png";
+      link.rel="noopener";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(()=>URL.revokeObjectURL(href),1000);
+      appContext.showToast("Inventory QR downloaded");
+      return true;
+    }catch(error){
+      console.warn("Could not download Inventory QR:",error);
+      appContext.showToast("Could not create the Inventory QR. Please try again.");
+      return false;
+    }
+  }
+
 async function downloadSingleCardImagesZip(card, progressCallback){
     if(!card) return {added:0, failed:[]};
     const images = appContext.getImages(card);
@@ -1661,7 +1684,7 @@ function closeDetailsModal(navigateBack = true){
     }
   }
 
-  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
+  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadInventoryQrImage,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
 }
 
 /** State and event initialization; called in preserved startup order. */
