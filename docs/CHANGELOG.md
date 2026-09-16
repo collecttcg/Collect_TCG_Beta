@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17-v04 beta
+
+- Uses the high-quality official One Piece Day card-game mark instead of the cropped local asset.
+- Keeps One Piece bright on the dark tile and uses the original dark mark on a light ivory tile in light mode.
+- Retains the edge-safe Hunter × Hunter, Pokémon, and Zatch Bell! logo sizing.
+
 ## 2026-09-17-v03 beta
 
 - Replaces the white-background One Piece image with a local transparent-style One Piece Card Game wordmark sized to fill its tile.
