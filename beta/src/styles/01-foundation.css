@@ -18334,6 +18334,11 @@ body.collection-rearrange-mode #invGrid.collection-game-grouped .collection-game
 .inventory-game-art{display:block;position:relative;height:70px;overflow:hidden;border-radius:8px;background:linear-gradient(135deg,rgba(71,88,113,.58),rgba(20,22,29,.9));}
 .inventory-game-art::after{content:"";position:absolute;inset:8px 31%;border:1px solid rgba(255,255,255,.32);border-radius:5px;background:linear-gradient(135deg,rgba(227,179,65,.2),transparent);transform:rotate(-8deg);pointer-events:none;}
 .inventory-game-art img{width:100%;height:100%;display:block;object-fit:cover;opacity:.88;}
+/* Franchise marks are not card photography: retain their complete wordmark,
+   with enough breathing room to stay legible in every game tile. */
+.inventory-game-art.has-game-logo{display:flex;align-items:center;justify-content:center;padding:8px 12px;background:linear-gradient(135deg,rgba(26,29,39,.98),rgba(10,12,17,.96));}
+.inventory-game-art.has-game-logo::after{display:none;}
+.inventory-game-art img.inventory-game-logo{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center;opacity:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.46));}
 .inventory-game-art-all{display:grid;place-items:center;background:linear-gradient(135deg,#5f4817,#181a20);}
 .inventory-game-art>span{position:relative;z-index:1;color:#fff;font-family:var(--font-display,Impact,sans-serif);font-size:15px;font-weight:800;letter-spacing:.08em;text-shadow:0 2px 4px rgba(0,0,0,.65);}
 .inventory-game-tile-copy{display:flex;align-items:baseline;justify-content:space-between;gap:7px;margin-top:8px;}
@@ -18353,6 +18358,7 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
   .inventory-game-tiles{display:flex;overflow-x:auto;grid-template-columns:none;padding-bottom:3px;scrollbar-width:thin;}
   .inventory-game-tile{flex:0 0 132px;}
   .inventory-game-art{height:64px;}
+  .inventory-game-art.has-game-logo{padding:7px 10px;}
   .inventory-game-series{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
   .inventory-game-series-label{flex:0 0 auto;}
   .inventory-game-series-chip{flex:0 0 auto;min-height:34px;}
