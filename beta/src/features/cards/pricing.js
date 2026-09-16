@@ -171,7 +171,7 @@ function highValueContactAlertHTML(card,compact=false){
     if(!appContext.isHighValueDirectContactCard(card)) return "";
     return `
       <div class="high-value-contact-alert ${compact?"compact":""}" role="note">
-        <strong>High-value listing · USD ${appContext.HIGH_VALUE_DIRECT_CONTACT_USD.toLocaleString()}+ · Pref COD</strong>
+        <strong>High-value listing · USD ${appContext.HIGH_VALUE_DIRECT_CONTACT_USD.toLocaleString()}+ · Contact us to arrange delivery</strong>
       </div>
     `;
   }
