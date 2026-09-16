@@ -181,6 +181,14 @@ test('the Home currency label is readable without changing other currency contro
  assert.match(css,/\.home-premium-currency select\{\s*font-size:11px !important;/);
 });
 
+
+test('trust descriptions stay on one line and Collection accordion uses the gold accent',()=>{
+ const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ assert.match(css,/\.home-premium-trust-points small\{[\s\S]*white-space:nowrap/);
+ assert.match(css,/\.collection-game-group-header\{[\s\S]*border-color:rgba\(227,179,65,\.28\)/);
+ assert.match(css,/\.collection-game-chevron\{[\s\S]*color:#efc45d/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
