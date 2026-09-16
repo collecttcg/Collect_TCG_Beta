@@ -18336,12 +18336,13 @@ body.collection-rearrange-mode #invGrid.collection-game-grouped .collection-game
 .inventory-game-art img{width:100%;height:100%;display:block;object-fit:cover;opacity:.88;}
 /* Franchise marks are not card photography: retain their complete wordmark,
    with enough breathing room to stay legible in every game tile. */
-.inventory-game-art.has-game-logo{display:flex;align-items:center;justify-content:center;padding:4px 8px;background:linear-gradient(135deg,rgba(26,29,39,.98),rgba(10,12,17,.96));}
+.inventory-game-art.has-game-logo{display:flex;align-items:center;justify-content:center;padding:4px 8px;background:linear-gradient(135deg,rgba(26,29,39,.98),rgba(10,12,17,.96));isolation:isolate;}
 .inventory-game-art.has-game-logo::after{display:none;}
 .inventory-game-art img.inventory-game-logo{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center;opacity:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.46));}
 .inventory-game-logo-one-piece{transform:scale(1.58);}
 body:not(.light-mode) .inventory-game-logo-one-piece{filter:invert(1) contrast(1.1) drop-shadow(0 2px 3px rgba(0,0,0,.46));}
 body.light-mode .inventory-game-art.has-game-logo{background:linear-gradient(135deg,#fffdf8,#f3ead8);box-shadow:inset 0 0 0 1px rgba(128,94,25,.12);}
+body.light-mode .inventory-game-logo-one-piece{mix-blend-mode:multiply;}
 .inventory-game-logo-hunter{transform:scale(1.3);}
 .inventory-game-logo-pokemon{transform:scale(1.14);}
 .inventory-game-logo-zatch{transform:scale(1.15);}
