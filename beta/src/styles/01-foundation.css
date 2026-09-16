@@ -18366,6 +18366,7 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
   .inventory-game-tile{flex:0 0 132px;}
   .inventory-game-art{height:64px;}
   .inventory-game-art.has-game-logo{padding:4px 7px;}
+  .inventory-game-logo-one-piece{transform:scale(1);}
   .inventory-game-series{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
   .inventory-game-series-label{flex:0 0 auto;}
   .inventory-game-series-chip{flex:0 0 auto;min-height:34px;}
