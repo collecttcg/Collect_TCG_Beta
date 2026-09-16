@@ -314,9 +314,11 @@ function wireCardActions(container){
         const value = filterPill.dataset.pillValue;
         const bucket = appContext.pillFilterState[type];
 
-        if(bucket && value){
-          if(bucket.has(value)) bucket.delete(value);
-          else bucket.add(value);
+        // Card-level filter pills are selectors, not toggles: a second tap keeps
+        // the active filter in place. Removal remains available from the active
+        // filter summary or its Clear all action.
+        if(bucket && value && !bucket.has(value)){
+          bucket.add(value);
         }
 
         appContext.activeQuickFilter = "all";
