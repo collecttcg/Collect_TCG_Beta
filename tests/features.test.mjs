@@ -150,6 +150,20 @@ test('the owner can download the standalone Inventory QR from the Inventory page
  assert.match(inventory,/inventoryQrDownloadBtn"\)\?\.addEventListener\("click",appContext\.downloadInventoryQrImage\)/);
 });
 
+test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const details=source('../beta/src/features/cards/details.js');
+ const html=source('../beta/index.html');
+ const mobile=source('../beta/src/ui/enhancement-2.js');
+ assert.match(details,/Worldwide Shipping/);
+ assert.match(details,/Shipping \/ delivery/);
+ assert.match(details,/Is international shipping available to my location\?/);
+ assert.match(details,/COD \/ meetup in MY &amp; SG/);
+ assert.match(html,/data-inquiry-intent="shipping">Shipping \/ delivery/);
+ assert.match(html,/Eligible orders · COD \/ meetup in Malaysia &amp; Singapore/);
+ assert.match(mobile,/shipping:"Copy a shipping inquiry"/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
