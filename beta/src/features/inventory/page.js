@@ -663,8 +663,7 @@ function renderInventoryPage(scope = "inventory"){
       },
       "pokemon":{
         src:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Pok%C3%A9mon_Trading_Card_Game_logo.svg",
-        alt:"Pokémon Trading Card Game",
-        className:"inventory-game-logo-pokemon"
+        alt:"Pokémon Trading Card Game"
       },
       "zatch bell!":{
         src:"./assets/zatch-bell-card-battle-logo.webp",
