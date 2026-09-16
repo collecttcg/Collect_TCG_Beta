@@ -140,6 +140,16 @@ test('owner save flows distinguish an unsaved card from non-critical post-save w
  assert.doesNotMatch(editor,/Card saved; a follow-up step failed/);
 });
 
+test('the owner can download the standalone Inventory QR from the Inventory page',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const details=source('../beta/src/features/cards/details.js');
+ const inventory=source('../beta/src/features/inventory/page.js');
+ assert.match(details,/async function downloadInventoryQrImage\(\)/);
+ assert.match(details,/Collect-TCG-Inventory-QR\.png/);
+ assert.match(inventory,/id="inventoryQrDownloadBtn"/);
+ assert.match(inventory,/inventoryQrDownloadBtn"\)\?\.addEventListener\("click",appContext\.downloadInventoryQrImage\)/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
