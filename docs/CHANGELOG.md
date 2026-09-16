@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17-v08 beta
+
+- Restores the higher-quality official One Piece Card Game source.
+- Raises the Zatch Bell wordmark by 3px while retaining its full size.
+- Reduces the Hunter × Hunter mark slightly to add breathing room above and below.
+
 ## 2026-09-17-v07 beta
 
 - Restores the v05 logo sizing so every full game mark is visible again.
