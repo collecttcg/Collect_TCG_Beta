@@ -18371,3 +18371,7 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
   .inventory-game-series-label{flex:0 0 auto;}
   .inventory-game-series-chip{flex:0 0 auto;min-height:34px;}
 }
+
+
+/* Owner QR generator: reusable links without storing a separate QR record. */
+.qr-generator-panel{max-width:760px;display:grid;gap:14px;}.qr-generator-panel label{display:grid;gap:4px;}.qr-generator-panel label span{color:var(--muted);font-size:12px;}.qr-generator-entry{display:flex;gap:8px;}.qr-generator-entry input{min-width:0;flex:1;}.qr-generator-result{display:grid;justify-items:center;gap:14px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft,rgba(255,255,255,.025));}.qr-generator-code{display:grid;place-items:center;padding:12px;border-radius:10px;background:#fff;line-height:0;}.qr-generator-code canvas,.qr-generator-code img{display:block;max-width:min(100%,360px);height:auto;}.qr-generator-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}@media(max-width:600px){.qr-generator-entry{flex-direction:column;}.qr-generator-entry button{width:100%;}.qr-generator-code canvas,.qr-generator-code img{max-width:260px;}}
