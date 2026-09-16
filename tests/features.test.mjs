@@ -164,6 +164,16 @@ test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD'
  assert.match(mobile,/shipping:"Copy a shipping inquiry"/);
 });
 
+
+test('home titles use a consistent uppercase display style and trust copy stays readable',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const css=source('../beta/src/styles/26-compatibility.css');
+ assert.match(css,/\.home-premium-hero-copy h2,[\s\S]*\.home-premium-trust-points strong\{[\s\S]*text-transform:uppercase/);
+ assert.match(css,/\.home-premium-trust-copy h3\{\s*font-size:clamp\(23px,1\.55vw,30px\)/);
+ assert.match(css,/\.home-premium-trust-points small\{\s*font-size:clamp\(10\.5px,\.68vw,13px\)/);
+ assert.match(css,/@media\(max-width:800px\)\{[\s\S]*\.home-premium-trust-copy h3\{font-size:22px;\}/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
