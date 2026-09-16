@@ -4,7 +4,7 @@
 
 - Uses the approved generated Zatch Bell! The Card Battle wordmark as a local Beta asset.
 - Enlarges the four dedicated franchise marks inside their game-browser tiles without stretching the artwork.
-- Versions the game-browser stylesheet URL so visitors receive the updated tile sizing immediately.
+- Versions the game-browser stylesheet and runtime imports so visitors receive the updated asset and tile sizing immediately.
 
 ## 2026-09-16-v16 beta
 
