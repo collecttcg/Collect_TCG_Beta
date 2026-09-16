@@ -18320,3 +18320,40 @@ body.collection-rearrange-mode #invGrid.collection-game-grouped .collection-game
 .collage-selected-row>span{min-width:0;overflow-wrap:anywhere;flex:1;}
 .collage-selected-row .collage-picker-actions{flex-shrink:0;}
 @media(max-width:420px){.collage-selected-row{flex-wrap:wrap;}.collage-selected-row>span{flex-basis:100%;}}
+
+/* Inventory discovery: visible game families lead into one buyer-facing grid. */
+.inventory-game-browser{margin:0 0 16px;padding:16px;border:1px solid rgba(227,179,65,.2);border-radius:15px;background:linear-gradient(135deg,rgba(227,179,65,.055),rgba(255,255,255,.018));}
+.inventory-game-browser-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.inventory-game-browser-head .eyebrow{display:block;margin-bottom:3px;}
+.inventory-game-browser-head h3{margin:0;color:var(--text);font-size:18px;}
+.inventory-game-browser-head>span{color:var(--muted);font-size:11px;text-align:right;}
+.inventory-game-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:9px;}
+.inventory-game-tile{min-width:0;padding:8px;border:1px solid var(--border);border-radius:11px;background:rgba(14,16,21,.72);color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s ease,transform .15s ease,background .15s ease;}
+.inventory-game-tile:hover,.inventory-game-tile:focus-visible{border-color:rgba(227,179,65,.72);transform:translateY(-1px);}
+.inventory-game-tile.active{border-color:var(--accent-gold);background:rgba(227,179,65,.11);box-shadow:inset 0 0 0 1px rgba(227,179,65,.2);}
+.inventory-game-art{display:block;position:relative;height:70px;overflow:hidden;border-radius:8px;background:linear-gradient(135deg,rgba(71,88,113,.58),rgba(20,22,29,.9));}
+.inventory-game-art::after{content:"";position:absolute;inset:8px 31%;border:1px solid rgba(255,255,255,.32);border-radius:5px;background:linear-gradient(135deg,rgba(227,179,65,.2),transparent);transform:rotate(-8deg);pointer-events:none;}
+.inventory-game-art img{width:100%;height:100%;display:block;object-fit:cover;opacity:.88;}
+.inventory-game-art-all{display:grid;place-items:center;background:linear-gradient(135deg,#5f4817,#181a20);}
+.inventory-game-art>span{position:relative;z-index:1;color:#fff;font-family:var(--font-display,Impact,sans-serif);font-size:15px;font-weight:800;letter-spacing:.08em;text-shadow:0 2px 4px rgba(0,0,0,.65);}
+.inventory-game-tile-copy{display:flex;align-items:baseline;justify-content:space-between;gap:7px;margin-top:8px;}
+.inventory-game-tile-copy strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;}
+.inventory-game-tile-copy small{flex:0 0 auto;color:var(--muted);font-size:9px;}
+.inventory-game-series{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);}
+.inventory-game-series-label{margin-right:2px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
+.inventory-game-series-chip{min-height:30px;padding:5px 9px;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.025);color:var(--muted);font:inherit;font-size:10px;font-weight:700;cursor:pointer;}
+.inventory-game-series-chip:hover,.inventory-game-series-chip:focus-visible,.inventory-game-series-chip.active{border-color:rgba(227,179,65,.7);background:rgba(227,179,65,.1);color:var(--accent-gold);}
+body.light-mode .inventory-game-browser{border-color:rgba(148,107,24,.26);background:#fbf8ef;}
+body.light-mode .inventory-game-tile{background:#fffdf8;}
+@media(max-width:800px){
+  .inventory-game-browser{margin-bottom:12px;padding:12px;}
+  .inventory-game-browser-head{align-items:start;}
+  .inventory-game-browser-head h3{font-size:16px;}
+  .inventory-game-browser-head>span{max-width:130px;font-size:10px;}
+  .inventory-game-tiles{display:flex;overflow-x:auto;grid-template-columns:none;padding-bottom:3px;scrollbar-width:thin;}
+  .inventory-game-tile{flex:0 0 132px;}
+  .inventory-game-art{height:64px;}
+  .inventory-game-series{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
+  .inventory-game-series-label{flex:0 0 auto;}
+  .inventory-game-series-chip{flex:0 0 auto;min-height:34px;}
+}
