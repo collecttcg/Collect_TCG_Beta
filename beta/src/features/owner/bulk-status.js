@@ -723,6 +723,64 @@ function renderBulkPsaPopPage(){
     });
   }
 
+function renderQrGeneratorPage(){
+    if(!appContext.requireOwner("open QR generator")) return;
+    appContext.view.innerHTML=`
+      <div class="page-head"><div><div class="eyebrow">Inventory Tools · Activity</div><h2>QR Generator</h2><p>Create a scannable QR code for any website link.</p></div></div>
+      <section class="panel qr-generator-panel">
+        <label for="qrGeneratorUrl"><strong>Destination URL</strong><span>Paste the full link you want customers to open.</span></label>
+        <div class="qr-generator-entry"><input id="qrGeneratorUrl" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com"><button type="button" class="btn-primary" id="generateQrBtn">Generate QR</button></div>
+        <p class="hint" id="qrGeneratorMessage" aria-live="polite">HTTPS links are recommended.</p>
+        <div class="qr-generator-result" id="qrGeneratorResult" hidden>
+          <div class="qr-generator-code" id="qrGeneratorCode" aria-label="Generated QR code"></div>
+          <div class="qr-generator-actions"><button type="button" class="btn-ghost" id="copyQrUrlBtn">Copy Link</button><button type="button" class="btn-primary" id="downloadQrBtn">Download PNG</button></div>
+        </div>
+      </section>`;
+
+    const input=appContext.$("qrGeneratorUrl");
+    const message=appContext.$("qrGeneratorMessage");
+    const result=appContext.$("qrGeneratorResult");
+    const holder=appContext.$("qrGeneratorCode");
+    let currentUrl="";
+    const normaliseUrl=()=>{
+      const raw=String(input?.value||"").trim();
+      if(!raw) throw new Error("Enter a link first.");
+      const url=new URL(raw);
+      if(!/^https?:$/.test(url.protocol)) throw new Error("Use an http or https link.");
+      return url.href;
+    };
+    const generate=()=>{
+      try{
+        if(typeof QRCode!=="function") throw new Error("QR generator could not load. Please refresh and try again.");
+        currentUrl=normaliseUrl();
+        input.value=currentUrl;
+        holder.innerHTML="";
+        new QRCode(holder,{text:currentUrl,width:360,height:360,colorDark:"#111216",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+        result.hidden=false;
+        message.textContent="QR code ready to scan or download.";
+      }catch(error){
+        result.hidden=true;
+        message.textContent=error?.message||"Could not create the QR code.";
+      }
+    };
+    appContext.$("generateQrBtn")?.addEventListener("click",generate);
+    input?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();generate();}});
+    appContext.$("copyQrUrlBtn")?.addEventListener("click",()=>{if(currentUrl) appContext.copyPlainText(currentUrl,"QR link copied");});
+    appContext.$("downloadQrBtn")?.addEventListener("click",()=>{
+      const canvas=holder.querySelector("canvas");
+      const image=holder.querySelector("img");
+      const href=canvas ? canvas.toDataURL("image/png") : image?.src;
+      if(!href){appContext.showToast("Generate a QR code first.");return;}
+      const link=document.createElement("a");
+      link.href=href;
+      link.download="Collect-TCG-QR-Code.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      appContext.showToast("QR code downloaded");
+    });
+  }
+
 function renderInventoryToolsPage(){
     if(!appContext.requireOwner("open inventory tools")) return;
 
@@ -739,6 +797,7 @@ function renderInventoryToolsPage(){
     else if(submode==="backup") appContext.renderInventoryExportPage();
     else if(submode==="recent") appContext.renderRecentlyEditedOwnerPage(true);
     else if(submode==="history") appContext.renderEditHistoryPage();
+    else if(submode==="qr") renderQrGeneratorPage();
     else if(submode==="audit") appContext.renderCatalogueAuditPage();
     else if(submode==="images") appContext.renderImageHealthPage(true);
     else if(submode==="duplicates") appContext.renderDuplicateDetectorPage();
@@ -830,5 +889,5 @@ function renderCatalogueAuditPage(){
     render();
   }
 
-  Object.assign(appContext,{renderBulkStatusPage,gradingEntries,isSlabGradingEntry,missingCertificateEntries,cardsMissingCertificates,renderBulkMissingCertsPage,renderBulkPsaPopPage,renderInventoryToolsPage,catalogueAuditIssues,renderCatalogueAuditPage});
+  Object.assign(appContext,{renderBulkStatusPage,gradingEntries,isSlabGradingEntry,missingCertificateEntries,cardsMissingCertificates,renderBulkMissingCertsPage,renderBulkPsaPopPage,renderQrGeneratorPage,renderInventoryToolsPage,catalogueAuditIssues,renderCatalogueAuditPage});
 }
