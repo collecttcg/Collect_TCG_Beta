@@ -19,7 +19,7 @@ function currentInventoryToolSubmode(mode){
     const requested=String(appContext.currentHashParams().get("sub")||"");
     const allowed={
       bulk:["prices","metadata","status","psa","missing-certs"],
-      activity:["recent","history"],
+      activity:["recent","history","qr"],
       quality:["audit","images","duplicates","reprocess"],
       lifecycle:["lifecycle"],
       storage:["health","storage-audit","storage-optimizer","migration","backup"]
@@ -43,7 +43,7 @@ function inventoryToolsSwitcher(mode,submode){
 
     const subtabs={
       bulk:[["prices","Bulk Prices"],["metadata","Bulk Metadata"],["status","Bulk Status"],["psa","PSA POP"],["missing-certs","Missing Certs"]],
-      activity:[["recent","Recently Edited"],["history","Edit History"]],
+      activity:[["recent","Recently Edited"],["history","Edit History"],["qr","QR Generator"]],
       quality:[["audit","Catalogue Audit"],["images","Image Health"],["duplicates","Duplicates"],["reprocess","Reprocess Images"]],
       lifecycle:[["lifecycle","Drafts & Archive"]],
       storage:[["health","Database & Storage"],["storage-audit","Storage Audit"],["storage-optimizer","Storage Optimizer"],["migration","Image Migration"],["backup","Backup"]]
