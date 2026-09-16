@@ -648,23 +648,27 @@ function renderInventoryPage(scope = "inventory"){
     const inventoryGameLogos={
       "one-piece":{
         src:"https://www.onepiece-cardgame.com/images/common/logo_op.png",
-        alt:"One Piece Card Game"
+        alt:"One Piece Card Game",
+        className:"inventory-game-logo-one-piece"
       },
       "hunter x hunter hyper battle":{
         src:"https://upload.wikimedia.org/wikipedia/commons/1/1f/Hunter_%C3%97_Hunter_logo.png",
-        alt:"Hunter × Hunter"
+        alt:"Hunter × Hunter",
+        className:"inventory-game-logo-hunter"
       },
       "pokémon":{
         src:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Pok%C3%A9mon_Trading_Card_Game_logo.svg",
-        alt:"Pokémon Trading Card Game"
+        alt:"Pokémon Trading Card Game",
+        className:"inventory-game-logo-pokemon"
       },
       "pokemon":{
         src:"https://upload.wikimedia.org/wikipedia/commons/1/1a/Pok%C3%A9mon_Trading_Card_Game_logo.svg",
         alt:"Pokémon Trading Card Game"
       },
       "zatch bell!":{
-        src:"https://api.ccgtrader.co.uk/_/assets/iixw43h5xts0w884?key=directus-medium-contain",
-        alt:"Zatch Bell! The Card Battle"
+        src:"./assets/zatch-bell-card-battle-logo.webp",
+        alt:"Zatch Bell! The Card Battle",
+        className:"inventory-game-logo-zatch"
       }
     };
 
@@ -686,7 +690,7 @@ function renderInventoryPage(scope = "inventory"){
           <button type="button" class="inventory-game-tile ${active ? "active" : ""}" data-inventory-game-family="${appContext.escapeHtml(family.key)}" aria-pressed="${active ? "true" : "false"}">
             <span class="inventory-game-art ${logo ? "has-game-logo" : ""}" aria-hidden="true">
               ${logo
-                ? `<img class="inventory-game-logo" src="${appContext.escapeHtml(logo.src)}" alt="${appContext.escapeHtml(logo.alt)}" loading="lazy" decoding="async">`
+                ? `<img class="inventory-game-logo ${appContext.escapeHtml(logo.className||"")}" src="${appContext.escapeHtml(logo.src)}" alt="${appContext.escapeHtml(logo.alt)}" loading="lazy" decoding="async">`
                 : (image
                 ? `<img src="${appContext.escapeHtml(image)}" alt="" loading="lazy" decoding="async">`
                 : `<span>${appContext.escapeHtml(family.label.slice(0,3).toUpperCase())}</span>`)}
