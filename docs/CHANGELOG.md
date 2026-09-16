@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17-v09 beta
+
+- Replaces the small opaque One Piece stage image with a crisp transparent card-game logo source.
+- Uses an independent mobile scale so the full One Piece mark remains visible in the narrower tile.
+- Retains the Hunter × Hunter spacing and Zatch Bell position refinements.
+
 ## 2026-09-17-v08 beta
 
 - Restores the higher-quality official One Piece Card Game source.
