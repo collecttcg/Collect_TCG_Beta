@@ -770,14 +770,14 @@ function publicContactSellerMessage(card){
   }
 
 function contactInquiryIntent(){
-    const allowed=new Set(["availability","offer","photos","cod"]);
+    const allowed=new Set(["availability","offer","photos","shipping","cod"]);
     return allowed.has(appContext.contactInquiryIntentState)
       ? appContext.contactInquiryIntentState
       : "availability";
   }
 
 function setContactInquiryIntent(intent){
-    const allowed=new Set(["availability","offer","photos","cod"]);
+    const allowed=new Set(["availability","offer","photos","shipping","cod"]);
     appContext.contactInquiryIntentState=allowed.has(intent) ? intent : "availability";
     return appContext.contactInquiryIntentState;
   }
@@ -794,6 +794,7 @@ function contactInquiryMessage(card,intent=appContext.contactInquiryIntent()){
       availability:`Hi, is this still available? I'm interested in: ${name}`,
       offer:`Hi, I'm interested in: ${name}. Would you be open to an offer?`,
       photos:`Hi, I'm interested in: ${name}. Could I get more photos or a short video of the card?`,
+      shipping:`Hi, I'm interested in: ${name}. Is international shipping available to my location?`,
       cod:`Hi, I'm interested in: ${name}. Is COD / meetup available in Malaysia or Singapore?`
     };
 
@@ -806,6 +807,7 @@ function contactIntentButtonsHtml(extraClass=""){
       ["availability","Availability"],
       ["offer","Make an offer"],
       ["photos","More photos / video"],
+      ["shipping","Shipping / delivery"],
       ["cod","COD / meetup"]
     ];
     return `
@@ -1266,10 +1268,10 @@ async function openDetailsModal(card){
               <div class="detail-purchase-location">
                 <span class="detail-purchase-location-icon" aria-hidden="true">📍</span>
                 <span>
-                  <strong>Malaysia &amp; Singapore</strong>
+                  <strong>Worldwide Shipping</strong>
                   <small>
-                    <span class="purchase-copy-mobile">Negotiable • Shipping available on eligible orders • COD / meetup options in MY &amp; SG</span>
-                    <span class="purchase-copy-desktop">Negotiable · Shipping · COD / meetup in MY &amp; SG</span>
+                    <span class="purchase-copy-mobile">Negotiable • Shipping worldwide on eligible orders • COD / meetup in MY &amp; SG</span>
+                    <span class="purchase-copy-desktop">Negotiable · Worldwide shipping · COD / meetup in MY &amp; SG</span>
                   </small>
                 </span>
               </div>
@@ -1316,7 +1318,7 @@ async function openDetailsModal(card){
                   <strong>${isSoldListing ? "Sold Archive" : "Buyer Options"}</strong>
                   <small>${isSoldListing
                     ? "This listing is retained for collection history and reference."
-                    : "Shipping or face-to-face arrangements depend on item value and location."}</small>
+                    : "Worldwide shipping is available for eligible orders; COD / meetup can be arranged in Malaysia or Singapore."}</small>
                 </span>
               </div>
             </div>
@@ -1346,7 +1348,7 @@ async function openDetailsModal(card){
               <div class="details-contact-copy">
                 <strong>Contact to Buy</strong>
                 <span class="details-contact-description">Contact us to confirm current availability, transaction method and delivery / meetup options before payment.</span>
-                <span class="details-contact-location">📍 Malaysia &amp; Singapore</span>
+                <span class="details-contact-location">🌍 Worldwide shipping · COD / meetup in MY &amp; SG</span>
               </div>
               <div class="details-contact-actions">
                 <span class="details-contact-via-label">Contact via</span>
