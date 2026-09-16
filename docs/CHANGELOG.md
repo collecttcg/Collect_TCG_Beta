@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17-v10 beta
+
+- Corrects the One Piece theme contrast: bright on dark, dark on light.
+- Preserves the mobile One Piece series-row swipe position after a series is selected.
+- Keeps the mobile viewport at its current position while the series filter refreshes.
+
 ## 2026-09-17-v09 beta
 
 - Replaces the small opaque One Piece stage image with a crisp transparent card-game logo source.
