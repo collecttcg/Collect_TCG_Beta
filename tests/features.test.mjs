@@ -127,6 +127,19 @@ test('card edits do not depend on a full REST row being returned after save',asy
  assert.equal(saved.name,'MIXED-LANGUAGE LOT');
 });
 
+test('owner save flows distinguish an unsaved card from non-critical post-save work',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const add=source('../beta/src/features/owner/add.js');
+ const editor=source('../beta/src/features/owner/editor.js');
+ assert.match(add,/Card was not saved\. Please refresh and try again\./);
+ assert.match(add,/Card added · \$\{postSaveStep/);
+ assert.doesNotMatch(add,/Card saved; a follow-up step failed/);
+ assert.match(editor,/Card was not saved\. Please refresh and try again\./);
+ assert.match(editor,/cleanupSaved=await appContext\.cleanupRemovedCardStorageImages/);
+ assert.match(editor,/Card updated · \$\{postSaveStep/);
+ assert.doesNotMatch(editor,/Card saved; a follow-up step failed/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
