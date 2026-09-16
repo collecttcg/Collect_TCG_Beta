@@ -71,6 +71,25 @@ test('short card drop removes repeated series text and keeps price readable',()=
  assert.doesNotMatch(drop,/PRICE\s*:/);
 });
 
+test('every post generator shares an English-default template language selector',()=>{
+ const a=app();
+ a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
+ a.collectSocialPostLines=()=>[];
+ assert.equal(a.normalizePostLanguage(),"en");
+ assert.equal(a.normalizePostLanguage("zh"),"zh");
+ assert.equal(a.normalizePostLanguage("unsupported"),"en");
+ const card={
+  id:'language-post',name:'KOREAN / CHINESE PROMOS',card_code:'DON!!',year:'2024',series:'Championship',language:'Mixed / Multiple languages',language_details:'KR × 1 · CN × 1',availability:'Available',format:'Raw',condition:'Mint',grading:[],price_myr:7000
+ };
+ const chinese=a.buildFbCardListPost([card],{postFormat:'drop',language:'zh',listTitle:'AVAILABLE INVENTORY',dropLimit:3,hashtags:'#tcg'});
+ assert.match(chinese,/卡牌上新/);
+ assert.match(chinese,/更多卡牌可供选择/);
+ assert.match(chinese,/Mixed \/ Multiple languages: KR × 1 · CN × 1/);
+ const source=fs.readFileSync(new URL('../beta/src/features/social/posts.js',import.meta.url),'utf8');
+ for(const id of ['fbPostLanguage','winnerPostLanguage','fbGiveawayLanguage','carousellPostLanguage','fbCardListLanguage']) assert.match(source,new RegExp(id));
+ for(const language of ['English','Bahasa Melayu','中文（简体）','日本語','한국어']) assert.match(source,new RegExp(language));
+});
+
 test('language details preserve a single filter value and an optional exact breakdown',()=>{
  const a=app();
  a.LANGUAGE_OPTIONS=['JP','ENG','KR','CN','Mixed / Multiple languages','N/A'];
