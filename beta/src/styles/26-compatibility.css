@@ -9682,3 +9682,46 @@ body.light-mode .interest-contact-assurance-icon{
   .purchase-copy-mobile{display:inline !important;}
   .purchase-copy-desktop{display:none !important;}
 }
+
+/* Home V04: clearer display hierarchy without changing the existing layout. */
+.home-premium-hero-copy h2,
+.home-premium-section-head h3,
+.home-curated-tile-copy strong,
+.home-premium-trust-copy .eyebrow,
+.home-premium-trust-copy h3,
+.home-premium-trust-points strong{
+  text-transform:uppercase;
+}
+
+.home-premium-trust-copy .eyebrow{
+  font-size:clamp(12px,.72vw,15px);
+  line-height:1.25;
+}
+.home-premium-trust-copy h3{
+  font-size:clamp(23px,1.55vw,30px);
+  line-height:1.15;
+}
+.home-premium-trust-copy p{
+  font-size:clamp(13px,.82vw,16px);
+  line-height:1.55;
+}
+.home-premium-trust-points strong{
+  font-size:clamp(12px,.78vw,15px);
+  line-height:1.25;
+}
+.home-premium-trust-points small{
+  font-size:clamp(10.5px,.68vw,13px);
+  line-height:1.45;
+}
+.home-premium-trust-links a{
+  font-size:clamp(11px,.7vw,14px);
+}
+
+@media(max-width:800px){
+  .home-premium-trust-copy .eyebrow{font-size:12px;}
+  .home-premium-trust-copy h3{font-size:22px;}
+  .home-premium-trust-copy p{font-size:13px;}
+  .home-premium-trust-points strong{font-size:12px;}
+  .home-premium-trust-points small{font-size:10.5px;}
+  .home-premium-trust-links a{font-size:11px;}
+}
