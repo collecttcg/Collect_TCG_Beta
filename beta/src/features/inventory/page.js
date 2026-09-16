@@ -2380,7 +2380,12 @@ function renderInventoryPage(scope = "inventory"){
     appContext.$("quickFilters").querySelectorAll(".quick-filter").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
         if(collectionRearrangeMode && ["collection","inventory"].includes(appContext.listingAvailabilityScope)) return;
-        appContext.activeQuickFilter = btn.dataset.quick;
+        const nextQuickFilter=btn.dataset.quick;
+        // Quick filters toggle on repeat click: select a category, then return
+        // to All by tapping that same active category again.
+        appContext.activeQuickFilter=(nextQuickFilter===appContext.activeQuickFilter && nextQuickFilter!=="all")
+          ? "all"
+          : nextQuickFilter;
         appContext.syncQuickFilterUI();
         appContext.updateListingUrlFromControls();
 
