@@ -189,6 +189,13 @@ test('trust descriptions stay on one line and Collection accordion uses the gold
  assert.match(css,/\.collection-game-chevron\{[\s\S]*color:#efc45d/);
 });
 
+
+test('Collection NFS cards use the same gold accent rather than a purple stripe',()=>{
+ const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ assert.match(css,/\.card\.nfs-collection-card\{[\s\S]*--stripe:#e3b341 !important/);
+ assert.match(css,/inset 3px 0 0 rgba\(227,179,65,\.70\)/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
