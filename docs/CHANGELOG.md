@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17-v02 beta
+
+- Removes the visible white One Piece logo field by adapting the mark for the dark game tile.
+- Reduces Hunter × Hunter, Pokémon, and Zatch Bell! logo scale to retain even edge spacing.
+
 ## 2026-09-17-v01 beta
 
 - Uses the approved generated Zatch Bell! The Card Battle wordmark as a local Beta asset.
