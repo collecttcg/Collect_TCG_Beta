@@ -725,11 +725,17 @@ function renderInventoryPage(scope = "inventory"){
       if(!mount || appContext.listingAvailabilityScope!=="inventory") return;
       const families=inventoryGameFamilies();
       const previousTiles=mount.querySelector(".inventory-game-tiles");
+      const previousSeries=mount.querySelector(".inventory-game-series");
       const gameTilesScrollLeft=previousTiles ? previousTiles.scrollLeft : 0;
+      const gameSeriesScrollLeft=previousSeries ? previousSeries.scrollLeft : 0;
       mount.innerHTML=inventoryGameBrowserHTML();
       const gameTiles=mount.querySelector(".inventory-game-tiles");
+      const gameSeries=mount.querySelector(".inventory-game-series");
       if(gameTiles && gameTilesScrollLeft){
         requestAnimationFrame(()=>{gameTiles.scrollLeft=gameTilesScrollLeft;});
+      }
+      if(gameSeries && gameSeriesScrollLeft){
+        requestAnimationFrame(()=>{gameSeries.scrollLeft=gameSeriesScrollLeft;});
       }
 
       mount.querySelectorAll("[data-inventory-game-family]").forEach(button=>{
