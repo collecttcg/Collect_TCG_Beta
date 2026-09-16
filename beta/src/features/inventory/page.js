@@ -724,7 +724,13 @@ function renderInventoryPage(scope = "inventory"){
       const mount=appContext.$("inventoryGameBrowser");
       if(!mount || appContext.listingAvailabilityScope!=="inventory") return;
       const families=inventoryGameFamilies();
+      const previousTiles=mount.querySelector(".inventory-game-tiles");
+      const gameTilesScrollLeft=previousTiles ? previousTiles.scrollLeft : 0;
       mount.innerHTML=inventoryGameBrowserHTML();
+      const gameTiles=mount.querySelector(".inventory-game-tiles");
+      if(gameTiles && gameTilesScrollLeft){
+        requestAnimationFrame(()=>{gameTiles.scrollLeft=gameTilesScrollLeft;});
+      }
 
       mount.querySelectorAll("[data-inventory-game-family]").forEach(button=>{
         button.addEventListener("click",()=>{
