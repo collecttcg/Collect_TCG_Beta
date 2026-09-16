@@ -284,7 +284,7 @@ export function setup(appContext){
       contactSheet.querySelectorAll("[data-inquiry-intent]").forEach(other=>other.classList.toggle("active",other===btn));
       const copySmall=copyInquiryBtn?.querySelector("small");
       if(copySmall){
-        const labels={availability:"Copy an availability inquiry",offer:"Copy an offer message",photos:"Copy a photo / video request",cod:"Copy a COD / meetup inquiry"};
+        const labels={availability:"Copy an availability inquiry",offer:"Copy an offer message",photos:"Copy a photo / video request",shipping:"Copy a shipping inquiry",cod:"Copy a COD / meetup inquiry"};
         copySmall.textContent=labels[selectedInquiryIntent]||"Copy the card name and listing link";
       }
     });
