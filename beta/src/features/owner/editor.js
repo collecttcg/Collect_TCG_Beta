@@ -144,6 +144,7 @@ appContext.editForm.addEventListener("submit", async (e)=>{
     let preparedImages=null;
     let saveAttempted=false;
     let cardSaved=false;
+    let postSaveStep="";
 
     if(submitBtn){
       submitBtn.disabled=true;
@@ -167,18 +168,27 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       const saved=await appContext.updateCardStorage(data);
       if(!saved){
         appContext.resetEditSubmitButton();
+        appContext.showToast("Card was not saved. Please refresh and try again.");
         return;
       }
 
       cardSaved=true;
 
-      const variantResult=await appContext.saveOwnerCardImageVariants(id,preparedImages.variantRecords||[]);
+      let variantResult={ok:true,staleUrls:[]};
+      postSaveStep="saving reversible watermark information";
+      try{
+        variantResult=await appContext.saveOwnerCardImageVariants(id,preparedImages.variantRecords||[]);
+      }catch(error){
+        console.warn("Reversible watermark metadata was not saved:",error);
+        variantResult={ok:false,staleUrls:[]};
+      }
       const protectedVariantUrls=(preparedImages.variantRecords||[]).flatMap(v=>[
         v.original_url,
         v.watermarked_url
       ]).filter(Boolean);
 
       // Keep the in-memory card lookup in sync immediately after save.
+      postSaveStep="updating the inventory";
       // Directly assigning cards[idx] left cardLookupMap pointing at the old
       // card object, so reopening Edit could show the previous cert until reload.
       appContext.replaceCardInMemory(saved);
@@ -186,11 +196,18 @@ appContext.editForm.addEventListener("submit", async (e)=>{
 
       // Do not delete the inactive original/watermarked counterpart. Both
       // versions are intentionally preserved so the owner can switch later.
-      await appContext.cleanupRemovedCardStorageImages(
-        appContext.editFormState.originalImages || [],
-        appContext.getImages(saved),
-        protectedVariantUrls
-      );
+      let cleanupSaved=true;
+      postSaveStep="checking removed photo files";
+      try{
+        cleanupSaved=await appContext.cleanupRemovedCardStorageImages(
+          appContext.editFormState.originalImages || [],
+          appContext.getImages(saved),
+          protectedVariantUrls
+        );
+      }catch(error){
+        console.warn("Removed photo cleanup was skipped; files were retained:",error);
+        cleanupSaved=false;
+      }
 
       // Variants belonging to photos removed from the card can now be cleaned.
       if(variantResult.ok && variantResult.staleUrls?.length){
@@ -198,15 +215,29 @@ appContext.editForm.addEventListener("submit", async (e)=>{
         const stalePaths=variantResult.staleUrls
           .map(appContext.cardStoragePathFromUrl)
           .filter(path=>path && !protectedPaths.has(path));
-        if(stalePaths.length) await appContext.removeCardStoragePaths(stalePaths);
+        if(stalePaths.length){
+          postSaveStep="checking removed watermark files";
+          try{
+            cleanupSaved=(await appContext.removeCardStoragePaths(stalePaths)) && cleanupSaved;
+          }catch(error){
+            console.warn("Removed watermark file cleanup was skipped; files were retained:",error);
+            cleanupSaved=false;
+          }
+        }
       }
 
+      let privateMetaSaved=true;
       if(appContext.ownerPrivateSupported){
-        await appContext.saveOwnerPrivateMeta(id,data._owner_tags,data._owner_notes);
+        postSaveStep="saving private owner information";
+        privateMetaSaved=await appContext.saveOwnerPrivateMeta(id,data._owner_tags,data._owner_notes);
       }
 
       if(!variantResult.ok && preparedImages.variantRecords?.length){
         appContext.showToast("Card updated · reversible watermark metadata was not saved");
+      }else if(!privateMetaSaved){
+        appContext.showToast("Card updated · private notes/tags were not saved");
+      }else if(!cleanupSaved){
+        appContext.showToast("Card updated · removed photo cleanup was skipped; files were retained safely");
       }else if(appContext.hasPsaCert(data)){
         appContext.showToast("Card updated · use the PSA browser helper to sync POP");
       }else{
@@ -226,6 +257,7 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       }
 
       appContext.closeEditModal({restoreScroll:false});
+      postSaveStep="opening the updated inventory";
       appContext.router();
 
       // Mobile listings can use the shell as their scroll container, which
@@ -247,7 +279,7 @@ appContext.editForm.addEventListener("submit", async (e)=>{
       console.error("Edit save flow error:",error);
       if(saveAttempted){
         appContext.showToast(cardSaved
-          ? "Card saved; a follow-up step failed. Photos were retained. Refresh the page to check the listing."
+          ? `Card updated · ${postSaveStep||"a final update"} could not finish. Photos were retained. Refresh the inventory to confirm the listing.`
           : "Save could not be confirmed. Photos were retained. Refresh the inventory before trying again.");
         appContext.resetEditSubmitButton();
         return;
