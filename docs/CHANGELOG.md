@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-16-v16 beta
+
+- Makes the One Piece, Hunter × Hunter, Pokémon, and Zatch Bell! franchise marks fully visible in the Inventory game browser.
+- Uses dedicated contained sizing, centered positioning, and tile-safe padding for logo tiles only.
+- Keeps the existing card-image fallback unchanged for games without a dedicated franchise mark.
+
 ## V93 beta
 
 - Based on V92 from the production repository; keeps V90 image recovery, V91 return-navigation fixes and V92 related-card ranking.
