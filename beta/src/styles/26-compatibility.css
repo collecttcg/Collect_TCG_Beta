@@ -9770,3 +9770,15 @@ body.light-mode #invGrid.collection-game-grouped .collection-game-group-header{
     linear-gradient(180deg,rgba(227,179,65,.07),rgba(227,179,65,.02)),
     var(--surface-1);
 }
+
+/* Collection V07: NFS cards use the same gold accent as the Collection page. */
+#invGrid .card.nfs-collection-card{
+  --stripe:#e3b341 !important;
+  border-color:rgba(227,179,65,.34) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(227,179,65,.70),
+    0 8px 22px rgba(0,0,0,.12) !important;
+}
+#invGrid .card.nfs-collection-card:hover{
+  border-color:rgba(240,196,92,.62) !important;
+}
