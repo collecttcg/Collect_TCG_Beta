@@ -601,7 +601,11 @@ function renderInventoryPage(scope = "inventory"){
     function inventoryGameFamily(card){
       const game=collectionGameLabel(card);
       const normalized=appContext.normalizeFilterValue(game);
-      if(/one piece|hyper battle|visual adventure|weekly jump|from tv animation/.test(normalized)){
+      // Do not use broad terms such as "hyper battle" here: Hunter x Hunter
+      // also uses that phrase. One Piece belongs in this family only when its
+      // stored game label explicitly identifies it, plus the standalone Weekly
+      // Jump label that is part of the One Piece catalogue.
+      if(normalized.startsWith("one piece") || normalized==="weekly jump"){
         return {key:"one-piece",label:"One Piece"};
       }
       return {key:collectionGameKey(game),label:game};
@@ -627,7 +631,13 @@ function renderInventoryPage(scope = "inventory"){
       });
     }
 
-    function inventoryFamilyIsActive(family){
+    function inventoryFamilyHasSelection(family){
+      const selected=Array.from(appContext.pillFilterState.game||[]).map(appContext.normalizeFilterValue);
+      const values=Array.from(family.gameValues).map(appContext.normalizeFilterValue);
+      return selected.length>0 && values.length>0 && selected.every(value=>values.includes(value));
+    }
+
+    function inventoryFamilyIsFullyActive(family){
       const selected=Array.from(appContext.pillFilterState.game||[]).map(appContext.normalizeFilterValue);
       const values=Array.from(family.gameValues).map(appContext.normalizeFilterValue);
       return values.length>0 && selected.length===values.length && values.every(value=>selected.includes(value));
@@ -635,7 +645,7 @@ function renderInventoryPage(scope = "inventory"){
 
     function inventoryGameBrowserHTML(){
       const families=inventoryGameFamilies();
-      const selectedFamily=families.find(inventoryFamilyIsActive);
+      const selectedFamily=families.find(inventoryFamilyHasSelection);
       const allActive=!selectedFamily && !(appContext.pillFilterState.game?.size);
       const allTile=`
         <button type="button" class="inventory-game-tile ${allActive ? "active" : ""}" data-inventory-game-family="all" aria-pressed="${allActive ? "true" : "false"}">
@@ -644,7 +654,7 @@ function renderInventoryPage(scope = "inventory"){
         </button>`;
 
       const familyTiles=families.map(family=>{
-        const active=inventoryFamilyIsActive(family);
+        const active=inventoryFamilyHasSelection(family);
         const image=appContext.safeHttpUrl(appContext.getImages(family.cards[0])[0]||"");
         return `
           <button type="button" class="inventory-game-tile ${active ? "active" : ""}" data-inventory-game-family="${appContext.escapeHtml(family.key)}" aria-pressed="${active ? "true" : "false"}">
@@ -661,7 +671,7 @@ function renderInventoryPage(scope = "inventory"){
       const seriesTiles=selectedFamily?.key==="one-piece" && onePiece
         ? `<div class="inventory-game-series" aria-label="One Piece series">
             <span class="inventory-game-series-label">One Piece series</span>
-            <button type="button" class="inventory-game-series-chip ${inventoryFamilyIsActive(onePiece) ? "active" : ""}" data-inventory-game-series="all">All One Piece</button>
+            <button type="button" class="inventory-game-series-chip ${inventoryFamilyIsFullyActive(onePiece) ? "active" : ""}" data-inventory-game-series="all">All One Piece</button>
             ${Array.from(onePiece.gameValues).sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base",numeric:true})).map(value=>{
               const active=appContext.pillFilterState.game?.size===1 && appContext.selectedSetMatches(appContext.pillFilterState.game,value);
               return `<button type="button" class="inventory-game-series-chip ${active ? "active" : ""}" data-inventory-game-series="${appContext.escapeHtml(value)}">${appContext.escapeHtml(value)}</button>`;
@@ -689,7 +699,7 @@ function renderInventoryPage(scope = "inventory"){
           const key=button.dataset.inventoryGameFamily;
           const bucket=appContext.pillFilterState.game;
           const family=families.find(item=>item.key===key);
-          if(key==="all" || (family && inventoryFamilyIsActive(family))){
+          if(key==="all" || (family && inventoryFamilyHasSelection(family))){
             bucket.clear();
           }else if(family){
             bucket.clear();
