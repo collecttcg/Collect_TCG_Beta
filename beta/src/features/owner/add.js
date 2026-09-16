@@ -61,6 +61,7 @@ function renderAddPage(){
       let preparedImages=null;
       let saveAttempted=false;
       let cardSaved=false;
+      let postSaveStep="";
 
       if(submitBtn){
         submitBtn.disabled=true;
@@ -83,6 +84,12 @@ function renderAddPage(){
         saveAttempted=true;
         const saved=await appContext.createCardStorage(data);
         if(!saved){
+          if(submitBtn){
+            submitBtn.disabled=false;
+            submitBtn.textContent=originalSubmitText;
+            submitBtn.removeAttribute("aria-busy");
+          }
+          appContext.showToast("Card was not saved. Please refresh and try again.");
           return;
         }
 
@@ -90,14 +97,17 @@ function renderAddPage(){
 
         let imageVariantsSaved=true;
         if(preparedImages.variantRecords?.length){
+          postSaveStep="saving reversible watermark information";
           const variantResult=await appContext.saveOwnerCardImageVariants(saved.id,preparedImages.variantRecords);
           imageVariantsSaved=variantResult.ok;
         }
 
+        postSaveStep="updating the inventory";
         appContext.cards.push(saved);
 
         let privateMetaSaved=true;
         if(appContext.ownerPrivateSupported && (data._owner_tags.length || data._owner_notes)){
+          postSaveStep="saving private owner information";
           privateMetaSaved=await appContext.saveOwnerPrivateMeta(
             saved.id,
             data._owner_tags,
@@ -122,12 +132,13 @@ function renderAddPage(){
                 : "Card added · images stored in Supabase Storage · private notes/tags were not saved"));
         }
 
+        postSaveStep="opening the updated inventory";
         appContext.goToRoute("inventory");
       }catch(error){
         console.error("Add card submit error:",error);
         if(saveAttempted){
           appContext.showToast(cardSaved
-            ? "Card saved; a follow-up step failed. Photos were retained. Refresh the page to check the listing."
+            ? `Card added · ${postSaveStep||"a final update"} could not finish. Photos were retained. Refresh the inventory to confirm the listing.`
             : "Save could not be confirmed. Photos were retained. Refresh the inventory before trying again.");
           return;
         }
