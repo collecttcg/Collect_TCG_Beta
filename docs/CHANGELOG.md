@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-17-v01 beta
+
+- Uses the approved generated Zatch Bell! The Card Battle wordmark as a local Beta asset.
+- Enlarges the four dedicated franchise marks inside their game-browser tiles without stretching the artwork.
+- Versions the game-browser stylesheet URL so visitors receive the updated tile sizing immediately.
+
 ## 2026-09-16-v16 beta
 
 - Makes the One Piece, Hunter × Hunter, Pokémon, and Zatch Bell! franchise marks fully visible in the Inventory game browser.
