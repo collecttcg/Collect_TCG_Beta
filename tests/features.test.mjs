@@ -196,6 +196,16 @@ test('Collection NFS cards use the same gold accent rather than a purple stripe'
  assert.match(css,/inset 3px 0 0 rgba\(227,179,65,\.70\)/);
 });
 
+
+test('Inventory and Sold cards use gold stripes without changing their status badges',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const inventory=source('../beta/src/features/inventory/page.js');
+ const css=source('../beta/src/styles/26-compatibility.css');
+ assert.match(inventory,/\["inventory","sold"\]\.includes\(appContext\.listingAvailabilityScope\)/);
+ assert.match(inventory,/grid\.classList\.add\("gold-card-stripes"\)/);
+ assert.match(css,/#invGrid\.gold-card-stripes \.card\{\s*--stripe:#e3b341 !important;/);
+});
+
 test('balanced card drop mix prioritizes different games before repeating one',()=>{
  const a=app();
  const cards=[
