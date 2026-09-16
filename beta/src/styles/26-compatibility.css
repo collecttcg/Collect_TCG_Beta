@@ -9741,3 +9741,32 @@ body.light-mode .interest-contact-assurance-icon{
   .home-premium-currency > span:not(.sr-only){font-size:12px !important;}
   .home-premium-currency select{font-size:11px !important;}
 }
+
+/* Home V06: trust-point descriptions stay on one clean line. */
+.home-premium-trust-points small{
+  white-space:nowrap;
+  font-size:clamp(9.5px,.66vw,12px);
+  letter-spacing:-.012em;
+}
+
+/* Collection V06: use the established gold accent instead of purple. */
+#invGrid.collection-game-grouped .collection-game-group-header{
+  border-color:rgba(227,179,65,.28);
+  background:
+    linear-gradient(180deg,rgba(227,179,65,.075),rgba(227,179,65,.025)),
+    var(--surface-1);
+}
+#invGrid.collection-game-grouped .collection-game-group-header:hover,
+#invGrid.collection-game-grouped .collection-game-group-header:focus-visible{
+  border-color:rgba(240,196,92,.66);
+  box-shadow:0 0 0 3px rgba(227,179,65,.07);
+}
+#invGrid.collection-game-grouped .collection-game-chevron{
+  background:rgba(227,179,65,.10);
+  color:#efc45d;
+}
+body.light-mode #invGrid.collection-game-grouped .collection-game-group-header{
+  background:
+    linear-gradient(180deg,rgba(227,179,65,.07),rgba(227,179,65,.02)),
+    var(--surface-1);
+}
