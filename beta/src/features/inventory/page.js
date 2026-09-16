@@ -647,7 +647,7 @@ function renderInventoryPage(scope = "inventory"){
     // useful immediately by falling back to their existing listing image.
     const inventoryGameLogos={
       "one-piece":{
-        src:"https://onepiece-day.onepiece-base.com/img/stage/onepiece-card-game.webp",
+        src:"https://cdn.brandfetch.io/id2IG2FqNi/w/562/h/145/theme/dark/logo.png?c=1bxid64Mup7aczewSAYMX&t=1781714425600",
         alt:"One Piece Card Game",
         className:"inventory-game-logo-one-piece"
       },
