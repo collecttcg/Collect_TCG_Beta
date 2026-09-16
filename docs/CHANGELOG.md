@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-17-v05 beta
+
+- Blends the One Piece source's baked-in white background into the ivory light-mode logo tile.
+- Keeps the mobile game-carousel scroll position after selecting a game.
+
 ## 2026-09-17-v04 beta
 
 - Uses the high-quality official One Piece Day card-game mark instead of the cropped local asset.
