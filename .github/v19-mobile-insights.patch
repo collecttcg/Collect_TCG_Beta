@@ -1,0 +1,260 @@
+--- a/beta/index.html
++++ b/beta/index.html
+@@ -837,6 +837,6 @@
+ 
+ 
+ <!-- V48: Recently Added uses the exact same storefront row structure/count as High Value/Vintage/Recently Sold. -->
+-<script type="module" src="./src/main.js?v=2026-09-17-v18"></script>
++<script type="module" src="./src/main.js?v=2026-09-17-v19"></script>
+ </body>
+ </html>
+--- a/beta/src/main.js
++++ b/beta/src/main.js
+@@ -1,5 +1,5 @@
+ import { createProductionRuntime } from './app/production-runtime.js';
+-import { registerFeatures } from './app/register-features.js?v=2026-09-17-v18';
++import { registerFeatures } from './app/register-features.js?v=2026-09-17-v19';
+ import { initializeApp } from './app/initialize.js';
+ import { setup as setup1 } from './ui/enhancement-1.js';
+ import { setup as setup2 } from './ui/enhancement-2.js';
+--- a/beta/src/app/register-features.js
++++ b/beta/src/app/register-features.js
+@@ -28,7 +28,7 @@
+ import { register as register26 } from '../features/content/giveaway-pages.js';
+ import { register as register27 } from '../features/owner/insights.js';
+ import { register as registerInsightsIntentRates } from '../features/owner/insights-intent-rates.js?v=2026-09-17-v16';
+-import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-17-v18';
++import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-17-v19';
+ import { register as register28 } from '../features/content/reviews.js';
+ import { register as register29 } from '../features/content/information.js';
+ import { register as register30 } from '../features/social/posts.js';
+--- a/beta/src/features/owner/insights-dashboard.js
++++ b/beta/src/features/owner/insights-dashboard.js
+@@ -1,4 +1,4 @@
+-/** 2026-09-17-v18: decision-first Insights with era, price and market demand. */
++/** 2026-09-17-v19: decision-first Insights with dedicated mobile presentation. */
+ export function register(appContext){
+   const originalRenderInsightsPage=appContext.renderInsightsPage;
+   const originalFetchInsights=appContext.fetchInsights;
+@@ -25,7 +25,7 @@
+     const link=document.createElement("link");
+     link.id="insights-dashboard-v14-styles";
+     link.rel="stylesheet";
+-    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v18";
++    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v19";
+     document.head.appendChild(link);
+   }
+ 
+--- a/beta/src/styles/27-insights-dashboard.css
++++ b/beta/src/styles/27-insights-dashboard.css
+@@ -155,3 +155,210 @@
+   .insights-v18-market-row{grid-template-columns:1fr;gap:10px;}
+   .insights-v18-market-country{grid-column:auto;}
+ }
++
++/* v19 — dedicated mobile Owner Insights experience. Desktop is intentionally unchanged. */
++@media(max-width:700px){
++  .insights-v4-page-head{
++    display:grid;
++    grid-template-columns:minmax(0,1fr) auto;
++    gap:10px 12px;
++    align-items:center;
++    margin-bottom:12px!important;
++  }
++  .insights-v4-page-head>div{min-width:0;}
++  .insights-v4-page-head .eyebrow{font-size:10px;letter-spacing:.8px;}
++  .insights-v4-page-head h2{margin-top:2px;font-size:30px;line-height:1;}
++  .insights-v4-page-head p{display:none;}
++  .insights-reset-views-btn{min-height:40px;padding:8px 10px;font-size:11px;white-space:nowrap;}
++
++  .insights-v4-tabs{
++    display:flex;
++    gap:7px;
++    margin:0 -2px 10px;
++    padding:3px 2px 5px;
++    border:0;
++    border-radius:0;
++    background:transparent;
++    overflow-x:auto;
++    scroll-snap-type:x proximity;
++    scrollbar-width:none;
++    -webkit-overflow-scrolling:touch;
++  }
++  .insights-v4-tabs::-webkit-scrollbar{display:none;}
++  .insights-v4-tabs button{
++    flex:0 0 auto;
++    min-width:auto;
++    min-height:42px;
++    padding:9px 13px;
++    border:1px solid var(--border);
++    border-radius:999px;
++    background:var(--surface);
++    scroll-snap-align:start;
++    text-align:center;
++  }
++  .insights-v4-tabs button span{font-size:12.5px;line-height:1;}
++  .insights-v4-tabs button.active{border-color:rgba(95,212,196,.42);background:rgba(95,212,196,.10);}
++
++  .insights-v4-filterbar{margin:0 0 13px;padding:12px;border-radius:13px;}
++  .insights-v4-filterbar>div{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
++  .insights-v4-filterbar label{min-width:0;}
++  .insights-v4-filterbar label>span{margin-bottom:5px;font-size:10px;letter-spacing:.45px;}
++  .insights-v4-filterbar select,.insights-v4-filterbar input{width:100%;min-height:44px;font-size:13px;}
++  .insights-v4-filterbar .insights-range-custom{grid-column:1/-1;gap:8px;}
++  #insightsGame{min-width:0;}
++  .insights-v4-loading{padding:14px 8px;font-size:12px;}
++
++  .insights-v14-clean,.insights-v14-dashboard{gap:13px;}
++  .insights-v14-hero{
++    display:grid;
++    grid-template-columns:minmax(0,1fr);
++    gap:8px;
++    padding:14px;
++    border-radius:14px;
++  }
++  .insights-v14-hero>div:first-child>span{font-size:9.5px;letter-spacing:.7px;}
++  .insights-v14-hero h3{font-size:20px;line-height:1.1;}
++  .insights-v14-hero p{display:none;}
++  .insights-v14-context{
++    width:100%;
++    max-width:none;
++    padding:8px 10px;
++    border-radius:9px;
++    font-size:11.5px;
++    line-height:1.35;
++    text-align:left;
++  }
++
++  .insights-v14-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
++  .insights-v14-kpis article{
++    min-height:112px;
++    display:flex;
++    flex-direction:column;
++    justify-content:space-between;
++    padding:14px;
++    border-radius:13px;
++  }
++  .insights-v14-kpis span{font-size:10.5px;letter-spacing:.25px;}
++  .insights-v14-kpis strong{margin-top:10px;font-size:27px;line-height:1;}
++  .insights-v14-kpis small{margin-top:8px;font-size:11px;line-height:1.35;}
++
++  .insights-v14-signal-strip{
++    display:grid;
++    grid-auto-flow:column;
++    grid-auto-columns:minmax(170px,72vw);
++    grid-template-columns:none;
++    gap:8px;
++    overflow-x:auto;
++    padding:1px 1px 4px;
++    scroll-snap-type:x mandatory;
++    scrollbar-width:none;
++    -webkit-overflow-scrolling:touch;
++  }
++  .insights-v14-signal-strip::-webkit-scrollbar{display:none;}
++  .insights-v14-signal-strip article{min-height:94px;padding:13px 14px;scroll-snap-align:start;}
++  .insights-v14-signal-strip span{font-size:9.5px;}
++  .insights-v14-signal-strip strong{font-size:15px;line-height:1.25;}
++  .insights-v14-signal-strip small{font-size:11px;line-height:1.35;}
++
++  .insights-v14-grid{display:grid;grid-template-columns:1fr;gap:11px;}
++  .insights-v14-panel,.insights-v14-opportunities,.insights-v18-market-panel{padding:14px;border-radius:14px;}
++  .insights-v14-panel-head{display:block;margin-bottom:13px;}
++  .insights-v14-panel-head>div>span{font-size:9.5px;letter-spacing:.7px;}
++  .insights-v14-panel-head h4{font-size:21px;line-height:1.05;}
++  .insights-v14-panel-head p{margin-top:5px;max-width:none;font-size:11.5px;line-height:1.4;text-align:left;}
++
++  .insights-v14-demand-list{gap:10px;}
++  .insights-v14-demand-row{
++    grid-template-columns:minmax(0,1fr) auto;
++    gap:7px 10px;
++    padding:10px 0;
++    border-bottom:1px solid var(--border-soft);
++  }
++  .insights-v14-demand-row:last-child{border-bottom:0;padding-bottom:0;}
++  .insights-v14-demand-label strong{font-size:14px;}
++  .insights-v14-demand-label span{font-size:11px;line-height:1.3;}
++  .insights-v14-demand-meta{grid-column:2;grid-row:1;text-align:right;}
++  .insights-v14-demand-meta strong{font-size:13px;}
++  .insights-v14-demand-meta span{font-size:10.5px;}
++  .insights-v14-demand-track{grid-column:1/-1;grid-row:2;height:8px;}
++
++  .insights-v18-secondary{margin-top:13px;padding-top:11px;}
++  .insights-v18-secondary>summary{
++    min-height:40px;
++    display:flex;
++    align-items:center;
++    font-size:10.5px;
++    letter-spacing:.35px;
++  }
++  .insights-v18-secondary>div{margin-top:9px;}
++
++  .insights-v18-market-list{gap:9px;}
++  .insights-v18-market-row{
++    display:grid;
++    grid-template-columns:1fr;
++    gap:10px;
++    padding:13px;
++    border-radius:12px;
++  }
++  .insights-v18-market-country{grid-column:auto;gap:10px;}
++  .insights-v18-market-country>span{flex-basis:42px;height:32px;font-size:11.5px;}
++  .insights-v18-market-country strong{font-size:14px;}
++  .insights-v18-market-country small{font-size:11px;}
++  .insights-v18-market-signal{
++    padding:10px 11px;
++    border:1px solid var(--border-soft);
++    border-radius:10px;
++    background:var(--surface);
++  }
++  .insights-v18-market-signal>span{font-size:9.5px;}
++  .insights-v18-market-signal strong,.insights-v18-market-signal button{font-size:13px;white-space:normal;overflow:visible;text-overflow:clip;}
++  .insights-v18-market-signal small{font-size:10.5px;}
++
++  .insights-v14-opportunity-grid{grid-template-columns:1fr;gap:8px;}
++  .insights-v14-opportunity{min-height:0;padding:13px;border-radius:11px;}
++  .insights-v14-opportunity>span{margin-bottom:5px;font-size:9.5px;}
++  .insights-v14-opportunity strong{font-size:14px;}
++  .insights-v14-opportunity small{margin-top:5px;font-size:11px;line-height:1.4;}
++
++  .insights-v14-details{gap:8px;margin-top:0;}
++  .insights-v14-detail-heading{display:block;padding:2px 1px;}
++  .insights-v14-detail-heading>div>span{font-size:9.5px;}
++  .insights-v14-detail-heading h3{font-size:20px;}
++  .insights-v14-detail-heading p{margin-top:4px;font-size:11.5px;text-align:left;}
++  .insights-v14-details>details{border-radius:12px;}
++  .insights-v14-details>details>summary{
++    min-height:54px;
++    display:grid;
++    grid-template-columns:1fr auto;
++    align-items:center;
++    gap:4px 10px;
++    padding:13px 14px;
++  }
++  .insights-v14-details>details>summary span{font-size:13.5px;}
++  .insights-v14-details>details>summary small{grid-column:1/-1;font-size:10.5px;line-height:1.35;text-align:left;}
++  .insights-v14-detail-body{gap:10px;padding:0 9px 9px;overflow-x:auto;}
++  .insights-v14-detail-body .insights-v4-card{padding:11px;}
++  .insights-v14-detail-body .insights-v4-card-head h3{font-size:16px;}
++  .insights-v14-detail-body .insights-v4-card-head span,.insights-v14-detail-body .hint{font-size:11px;}
++  .insights-v14-detail-body .insights-v4-kpis article span{font-size:9.5px;}
++  .insights-v14-detail-body .insights-v4-kpis article strong{font-size:20px;}
++  .insights-v14-detail-body .insights-v4-kpis article small{font-size:10.5px;}
++  .insights-v14-detail-body .insights-v4-table{min-width:620px;font-size:11.5px;}
++  .insights-v14-detail-body .insights-v4-table th{font-size:10px;}
++  .insights-v14-detail-body .insights-v4-table td{font-size:11px;}
++
++  .insights-v14-note{padding:0 2px;font-size:10.5px;line-height:1.45;}
++}
++
++@media(max-width:460px){
++  .insights-v4-page-head{grid-template-columns:1fr;}
++  .insights-reset-views-btn{width:100%;}
++  .insights-v4-filterbar>div{grid-template-columns:1fr 1fr;}
++  .insights-v4-filterbar .insights-range-custom{grid-column:1/-1;}
++  .insights-v4-filterbar label:last-child{grid-column:1/-1;}
++  .insights-v14-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}
++  .insights-v14-kpis article{display:flex;min-height:108px;}
++  .insights-v14-kpis article strong{margin-top:9px;font-size:25px;text-align:left;}
++  .insights-v14-kpis article small{grid-column:auto;}
++  .insights-v14-signal-strip{grid-auto-columns:minmax(165px,82vw);}
++}
