@@ -1,4 +1,4 @@
-/** 2026-09-17-v14: decision-first Insights dashboard and progressive disclosure. */
+/** 2026-09-17-v15: decision-first Insights dashboard with bounded refresh observation. */
 export function register(appContext){
   const originalRenderInsightsPage=appContext.renderInsightsPage;
   const originalFetchInsights=appContext.fetchInsights;
@@ -13,7 +13,8 @@ export function register(appContext){
   let countryRows=[];
   let sourceRows=[];
   let observer=null;
-  let scheduled=false;
+  let observedRoot=null;
+  let scheduledFrame=0;
 
   function ensureStylesheet(){
     if(document.getElementById("insights-dashboard-v14-styles")) return;
@@ -31,12 +32,13 @@ export function register(appContext){
   }
 
   function scheduleEnhancement(){
-    if(scheduled) return;
-    scheduled=true;
-    queueMicrotask(()=>{
-      scheduled=false;
+    if(scheduledFrame) return;
+    const run=()=>{
+      scheduledFrame=0;
       applyEnhancement();
-    });
+    };
+    if(typeof requestAnimationFrame==="function") scheduledFrame=requestAnimationFrame(run);
+    else scheduledFrame=setTimeout(run,0);
   }
 
   if(typeof originalFetchInsights==="function"){
@@ -550,16 +552,24 @@ export function register(appContext){
       }
       organizeOverview(root,dashboard,details);
     }finally{
-      if(observer && appContext.view){
-        observer.observe(appContext.view,{childList:true,subtree:true});
+      if(observer && root.isConnected){
+        observedRoot=root;
+        observer.observe(root,{childList:true});
       }
     }
   }
 
   function installObserver(){
-    if(observer || typeof MutationObserver!=="function" || !appContext.view) return;
-    observer=new MutationObserver(()=>scheduleEnhancement());
-    observer.observe(appContext.view,{childList:true,subtree:true});
+    if(typeof MutationObserver!=="function") return;
+    const root=overview();
+    if(!root) return;
+    if(observer) observer.disconnect();
+    observedRoot=root;
+    observer=new MutationObserver(records=>{
+      if(!observedRoot?.isConnected) return;
+      if(records.some(record=>record.target===observedRoot)) scheduleEnhancement();
+    });
+    observer.observe(root,{childList:true});
   }
 
   if(typeof originalRenderInsightsPage==="function"){
