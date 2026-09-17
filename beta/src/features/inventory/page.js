@@ -50,8 +50,8 @@ function inventoryPageHTML(scopeMeta,scope){
         </div>
       </div>
 
-      ${scope==="inventory" ? `
-        <section class="inventory-game-browser" id="inventoryGameBrowser" aria-label="Browse inventory by game"></section>
+      ${["inventory","collection"].includes(scope) ? `
+        <section class="inventory-game-browser" id="inventoryGameBrowser" aria-label="Browse ${isCollection ? "Collection" : "Inventory"} by game"></section>
       ` : ""}
 
       <!-- Desktop/mobile top controls only. Keep the filter drawer OUTSIDE
@@ -595,9 +595,9 @@ function renderInventoryPage(scope = "inventory"){
       shortcutValues
     }=appContext.inventoryFilterOptions(scopedCards);
 
-    // Inventory is discovery-first: show a small set of buyer-friendly game
-    // families above one continuous grid. Collection/NFS deliberately keeps its
-    // existing expandable catalogue groups and owner ordering controls.
+    // Inventory and Collection are discovery-first: show a small set of
+    // game families above one continuous grid. The grouped catalogue view is
+    // retained only while an owner is actively rearranging cards/games.
     function inventoryGameFamily(card){
       const game=collectionGameLabel(card);
       const normalized=appContext.normalizeFilterValue(game);
@@ -676,10 +676,11 @@ function renderInventoryPage(scope = "inventory"){
       const families=inventoryGameFamilies();
       const selectedFamily=families.find(inventoryFamilyHasSelection);
       const allActive=!selectedFamily && !(appContext.pillFilterState.game?.size);
+      const browserLabel=appContext.listingAvailabilityScope==="collection" ? "Collection" : "Inventory";
       const allTile=`
         <button type="button" class="inventory-game-tile ${allActive ? "active" : ""}" data-inventory-game-family="all" aria-pressed="${allActive ? "true" : "false"}">
           <span class="inventory-game-art inventory-game-art-all" aria-hidden="true"><span>ALL</span></span>
-          <span class="inventory-game-tile-copy"><strong>All Inventory</strong><small>${scopedCards.length.toLocaleString()} ${scopedCards.length===1?"card":"cards"}</small></span>
+          <span class="inventory-game-tile-copy"><strong>All ${browserLabel}</strong><small>${scopedCards.length.toLocaleString()} ${scopedCards.length===1?"card":"cards"}</small></span>
         </button>`;
 
       const familyTiles=families.map(family=>{
@@ -713,7 +714,7 @@ function renderInventoryPage(scope = "inventory"){
 
       return `
         <div class="inventory-game-browser-head">
-          <div><span class="eyebrow">Browse the vault</span><h3>Shop by game</h3></div>
+          <div><span class="eyebrow">Browse the vault</span><h3>${appContext.listingAvailabilityScope==="collection" ? "Browse Collection by game" : "Shop by game"}</h3></div>
           <span>Choose a game to refine the grid</span>
         </div>
         <div class="inventory-game-tiles">${allTile}${familyTiles}</div>
@@ -722,7 +723,7 @@ function renderInventoryPage(scope = "inventory"){
 
     function syncInventoryGameBrowser(){
       const mount=appContext.$("inventoryGameBrowser");
-      if(!mount || appContext.listingAvailabilityScope!=="inventory") return;
+      if(!mount || !["inventory","collection"].includes(appContext.listingAvailabilityScope)) return;
       const families=inventoryGameFamilies();
       const previousTiles=mount.querySelector(".inventory-game-tiles");
       const previousSeries=mount.querySelector(".inventory-game-series");
@@ -1538,9 +1539,9 @@ function renderInventoryPage(scope = "inventory"){
 
       if(["collection","inventory"].includes(appContext.listingAvailabilityScope)){
         // Catalogue views remain continuous so discovery filters never split
-        // a selected game across pagination pages. Collection always retains
-        // its grouped showcase; Inventory switches to one grid for buyers and
-        // temporarily restores groups only while an owner is rearranging.
+        // a selected game across pagination pages. Inventory and Collection
+        // both use the game-browser + continuous-grid layout, temporarily
+        // restoring grouped headers only while an owner is rearranging.
         appContext.listingCurrentPage=1;
         ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{
           const mount=appContext.$(id);
@@ -1549,7 +1550,7 @@ function renderInventoryPage(scope = "inventory"){
           mount.innerHTML="";
         });
 
-        const groupedView=appContext.listingAvailabilityScope==="collection" || collectionRearrangeMode;
+        const groupedView=collectionRearrangeMode;
         if(groupedView){
           grid.classList.add("collection-game-grouped");
           grid.innerHTML=appContext.listingAvailabilityScope==="collection"
