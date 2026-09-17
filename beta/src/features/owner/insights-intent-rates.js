@@ -1,4 +1,4 @@
-/** 2026-09-17-v13: separate contact views from intent and surface conversion rates. */
+/** 2026-09-17-v16: separate contact views from intent, surface conversion rates, and keep DOM observation bounded. */
 export function register(appContext){
   const originalFetchInsights=appContext.fetchInsights;
   const originalFetchCardEngagementInsights=appContext.fetchCardEngagementInsights;
@@ -7,19 +7,21 @@ export function register(appContext){
   let currentViewRows=[];
   let currentEngagementRows=[];
   let observer=null;
-  let scheduled=false;
+  let observedRoot=null;
+  let scheduledFrame=0;
 
   function insightsOverview(){
     return typeof appContext.$==="function" ? appContext.$("insightsOverview") : null;
   }
 
   function scheduleEnhancement(){
-    if(scheduled) return;
-    scheduled=true;
-    queueMicrotask(()=>{
-      scheduled=false;
+    if(scheduledFrame) return;
+    const run=()=>{
+      scheduledFrame=0;
       applyEnhancement();
-    });
+    };
+    if(typeof requestAnimationFrame==="function") scheduledFrame=requestAnimationFrame(run);
+    else scheduledFrame=setTimeout(run,0);
   }
 
   if(typeof originalFetchInsights==="function"){
@@ -248,16 +250,24 @@ export function register(appContext){
       updateFunnel(overview,metrics);
       updateTopCardsTable(overview,metrics);
     }finally{
-      if(observer && appContext.view){
-        observer.observe(appContext.view,{childList:true,subtree:true});
+      if(observer && overview.isConnected){
+        observedRoot=overview;
+        observer.observe(overview,{childList:true});
       }
     }
   }
 
   function installObserver(){
-    if(observer || typeof MutationObserver!=="function" || !appContext.view) return;
-    observer=new MutationObserver(()=>scheduleEnhancement());
-    observer.observe(appContext.view,{childList:true,subtree:true});
+    if(typeof MutationObserver!=="function") return;
+    const root=insightsOverview();
+    if(!root) return;
+    if(observer) observer.disconnect();
+    observedRoot=root;
+    observer=new MutationObserver(records=>{
+      if(!observedRoot?.isConnected) return;
+      if(records.some(record=>record.target===observedRoot)) scheduleEnhancement();
+    });
+    observer.observe(root,{childList:true});
   }
 
   if(typeof originalRenderInsightsPage==="function"){
