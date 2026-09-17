@@ -155,3 +155,75 @@
   .insights-v18-market-row{grid-template-columns:1fr;gap:10px;}
   .insights-v18-market-country{grid-column:auto;}
 }
+
+
+/* 2026-09-17-v19 — existing mobile Insights page aligned with the v18 decision dashboard. Desktop unchanged. */
+@media(max-width:700px){
+  .insights-v4-page-head{gap:10px;margin-bottom:10px;}
+  .insights-v4-page-head h2{font-size:30px;}
+  .insights-v4-page-head p{max-width:none;font-size:13px;line-height:1.45;}
+  .insights-reset-views-btn{min-height:44px;}
+  .insights-v4-tabs{gap:7px;margin:0 -2px;padding:2px 2px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+  .insights-v4-tabs button{flex:0 0 auto;min-width:112px;min-height:44px;padding:10px 12px;scroll-snap-align:start;}
+  .insights-v4-filterbar{margin:6px 0 12px;padding:11px;border-radius:12px;}
+  .insights-v4-filterbar>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+  .insights-v4-filterbar label{min-width:0;}
+  .insights-v4-filterbar select,.insights-v4-filterbar input{width:100%;min-height:44px;font-size:14px;}
+  .insights-range-custom{grid-column:1/-1;}
+  .insights-v14-clean,.insights-v14-dashboard{gap:12px;}
+  .insights-v14-hero{gap:10px;padding:14px;border-radius:14px;}
+  .insights-v14-hero h3{font-size:24px;}
+  .insights-v14-hero p{font-size:12.5px;line-height:1.45;}
+  .insights-v14-context{width:100%;max-width:none;padding:8px 10px;border-radius:10px;font-size:11.5px;text-align:left;}
+  .insights-v14-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .insights-v14-kpis article{display:block;min-height:106px;padding:12px;border-radius:12px;}
+  .insights-v14-kpis span{font-size:10.5px;line-height:1.3;}
+  .insights-v14-kpis strong,.insights-v14-kpis article strong{display:block;margin-top:6px;font-size:24px;text-align:left;}
+  .insights-v14-kpis small,.insights-v14-kpis article small{display:block;margin-top:5px;font-size:11.5px;line-height:1.35;}
+  .insights-v14-signal-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+  .insights-v14-signal-strip article{padding:12px;border-radius:12px;}
+  .insights-v14-signal-strip span{font-size:10px;}
+  .insights-v14-signal-strip strong{font-size:14px;line-height:1.3;}
+  .insights-v14-signal-strip small{font-size:11.5px;line-height:1.35;}
+  .insights-v14-grid{gap:10px;}
+  .insights-v14-panel,.insights-v14-opportunities,.insights-v18-market-panel{padding:14px;border-radius:14px;}
+  .insights-v14-panel-head{margin-bottom:12px;}
+  .insights-v14-panel-head h4{font-size:21px;}
+  .insights-v14-panel-head p{margin-top:4px;font-size:12.25px;line-height:1.4;}
+  .insights-v14-demand-list{gap:10px;}
+  .insights-v14-demand-row{grid-template-columns:minmax(0,1fr) minmax(92px,.72fr);gap:7px 9px;padding:2px 0;}
+  .insights-v14-demand-label strong{font-size:14px;}
+  .insights-v14-demand-label span{font-size:11.5px;}
+  .insights-v14-demand-track{height:8px;}
+  .insights-v14-demand-meta strong{font-size:12.5px;}
+  .insights-v14-demand-meta span{font-size:10.75px;line-height:1.3;}
+  .insights-v18-secondary{margin-top:12px;padding-top:10px;}
+  .insights-v18-secondary>summary{min-height:40px;display:flex;align-items:center;font-size:11px;}
+  .insights-v18-market-list{gap:8px;}
+  .insights-v18-market-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:11px;border-radius:11px;}
+  .insights-v18-market-country{grid-column:1/-1;padding-bottom:8px;border-bottom:1px solid var(--border-soft);}
+  .insights-v18-market-country>span{flex-basis:36px;height:28px;}
+  .insights-v18-market-country strong{font-size:13.5px;}
+  .insights-v18-market-country small{font-size:11px;}
+  .insights-v18-market-signal>span{font-size:9.5px;}
+  .insights-v18-market-signal strong,.insights-v18-market-signal button{font-size:12.75px;line-height:1.35;white-space:normal;overflow:visible;text-overflow:clip;}
+  .insights-v18-market-signal small{font-size:10.75px;line-height:1.3;}
+  .insights-v14-opportunity-grid{gap:8px;}
+  .insights-v14-opportunity{min-height:0;padding:12px;border-radius:11px;}
+  .insights-v14-opportunity>span{font-size:10px;}
+  .insights-v14-opportunity strong{font-size:14.5px;}
+  .insights-v14-opportunity small{margin-top:6px;font-size:11.75px;line-height:1.4;}
+  .insights-v14-details{gap:8px;}
+  .insights-v14-detail-heading h3{font-size:22px;}
+  .insights-v14-detail-heading p{font-size:12px;}
+  .insights-v14-details>details{border-radius:12px;}
+  .insights-v14-details>details>summary{min-height:48px;padding:12px 13px;}
+  .insights-v14-details>details>summary span{font-size:14px;}
+  .insights-v14-details>details>summary small{font-size:11.25px;line-height:1.35;}
+}
+@media(max-width:460px){
+  .insights-v4-filterbar>div{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .insights-range-custom{grid-column:1/-1;}
+  .insights-v14-kpis,.insights-v14-signal-strip{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .insights-v18-market-row{grid-template-columns:repeat(2,minmax(0,1fr));}
+}

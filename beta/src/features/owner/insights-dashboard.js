@@ -25,7 +25,7 @@ export function register(appContext){
     const link=document.createElement("link");
     link.id="insights-dashboard-v14-styles";
     link.rel="stylesheet";
-    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v18";
+    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v19";
     document.head.appendChild(link);
   }
 
