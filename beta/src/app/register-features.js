@@ -28,6 +28,7 @@ import { register as register25 } from '../features/content/showcase.js';
 import { register as register26 } from '../features/content/giveaway-pages.js';
 import { register as register27 } from '../features/owner/insights.js';
 import { register as registerInsightsIntentRates } from '../features/owner/insights-intent-rates.js?v=2026-09-17-v13';
+import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-17-v14';
 import { register as register28 } from '../features/content/reviews.js';
 import { register as register29 } from '../features/content/information.js';
 import { register as register30 } from '../features/social/posts.js';
@@ -77,6 +78,7 @@ export function registerFeatures(appContext){
   register26(appContext);
   register27(appContext);
   registerInsightsIntentRates(appContext);
+  registerInsightsDashboard(appContext);
   register28(appContext);
   register29(appContext);
   register30(appContext);
