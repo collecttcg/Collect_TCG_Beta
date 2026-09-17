@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d11">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TCG Insights Beta">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cbzytysxtdcqxuckspye.supabase.co wss://cbzytysxtdcqxuckspye.supabase.co; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'">
+  <title>Collect TCG Insights Beta</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="icon" href="./assets/icon-192.png">
+  <link rel="stylesheet" href="./styles.css?v=2026-09-18-v01">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+  <script defer src="./app.js?v=2026-09-18-v01"></script>
+</head>
+<body>
+  <div class="safe-top"></div>
+
+  <main id="bootScreen" class="center-screen">
+    <img class="boot-logo" src="./assets/shop-logo.png" alt="Collect TCG">
+    <div class="spinner" aria-label="Loading"></div>
+    <p>Opening Insights…</p>
+  </main>
+
+  <main id="loginScreen" class="auth-screen" hidden>
+    <section class="auth-card">
+      <div class="brand-lockup">
+        <img src="./assets/shop-logo.png" alt="Collect TCG">
+        <div>
+          <span>COLLECT TCG</span>
+          <h1>Insights Beta</h1>
+        </div>
+      </div>
+      <p class="auth-copy">Private owner analytics. Sign in with your Collect TCG owner account.</p>
+
+      <form id="loginForm" class="auth-form">
+        <label>
+          <span>Email</span>
+          <input id="emailInput" type="email" inputmode="email" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        </label>
+        <label>
+          <span>Password</span>
+          <input id="passwordInput" type="password" autocomplete="current-password" required>
+        </label>
+        <button id="loginButton" class="primary-button" type="submit">Owner sign in</button>
+      </form>
+      <p id="loginError" class="form-error" role="alert" hidden></p>
+      <div class="security-note"><span>◆</span><p>Access is checked by Supabase after login. Non-owner accounts cannot open the dashboard.</p></div>
+    </section>
+  </main>
+
+  <main id="deniedScreen" class="auth-screen" hidden>
+    <section class="auth-card denied-card">
+      <div class="denied-icon">×</div>
+      <h1>Access denied</h1>
+      <p>This account is authenticated but is not authorized as a Collect TCG owner.</p>
+      <button id="deniedLogoutButton" class="secondary-button" type="button">Sign out</button>
+    </section>
+  </main>
+
+  <div id="appShell" class="app-shell" hidden>
+    <header class="app-header">
+      <div class="header-main">
+        <div class="mini-brand">
+          <img src="./assets/shop-logo.png" alt="">
+          <div><span>COLLECT TCG</span><strong>Insights Beta</strong></div>
+        </div>
+        <button id="refreshButton" class="icon-button" type="button" aria-label="Refresh insights" title="Refresh">↻</button>
+      </div>
+      <div class="range-row" id="rangeRow" aria-label="Analytics period">
+        <button type="button" data-range="today">Today</button>
+        <button type="button" data-range="7d" class="active">7 Days</button>
+        <button type="button" data-range="30d">30 Days</button>
+        <button type="button" data-range="all">All Time</button>
+      </div>
+    </header>
+
+    <section id="statusStrip" class="status-strip" hidden></section>
+
+    <section id="content" class="content" aria-live="polite">
+      <div id="loadingView" class="loading-view">
+        <div class="spinner"></div>
+        <p>Loading owner analytics…</p>
+      </div>
+
+      <div id="overviewView" class="page-view active" data-page="overview">
+        <section class="page-title">
+          <div><span>OVERVIEW</span><h2>What’s happening</h2></div>
+          <small id="overviewUpdated">—</small>
+        </section>
+        <div id="overviewMetrics" class="metric-grid"></div>
+        <section class="panel">
+          <div class="panel-head"><div><span>TRAFFIC</span><h3>Website visits</h3></div><strong id="visitTrendTotal">—</strong></div>
+          <div id="visitChart" class="chart-wrap"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>CARDS</span><h3>Qualified card views</h3></div><strong id="cardTrendTotal">—</strong></div>
+          <div id="cardViewChart" class="chart-wrap"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>TOP CARDS</span><h3>Buyer attention</h3></div><button class="text-button" data-go-page="cards" type="button">See all</button></div>
+          <div id="overviewTopCards" class="rank-list"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>SESSIONS</span><h3>Visitor quality</h3></div></div>
+          <div id="visitorQuality" class="compact-stats"></div>
+        </section>
+      </div>
+
+      <div id="cardsView" class="page-view" data-page="cards">
+        <section class="page-title">
+          <div><span>CARDS</span><h2>Card performance</h2></div>
+          <small id="cardsCount">—</small>
+        </section>
+        <section class="toolbar-card">
+          <label class="search-control"><span>⌕</span><input id="cardSearch" type="search" placeholder="Search cards…" autocomplete="off"></label>
+          <select id="cardSort" aria-label="Sort card performance">
+            <option value="interest">Interest</option>
+            <option value="views">Views</option>
+            <option value="unique">Unique views</option>
+            <option value="favorites">Favorites</option>
+            <option value="contacts">Contacts</option>
+          </select>
+        </section>
+        <div id="cardPerformanceList" class="card-performance-list"></div>
+      </div>
+
+      <div id="trafficView" class="page-view" data-page="traffic">
+        <section class="page-title">
+          <div><span>TRAFFIC</span><h2>Audience & discovery</h2></div>
+          <small id="trafficUpdated">—</small>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>AUDIENCE</span><h3>New vs returning</h3></div></div>
+          <div id="returningVisitors" class="compact-stats"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>COUNTRIES</span><h3>Visitor locations</h3></div></div>
+          <div id="countryList" class="bar-list"></div>
+        </section>
+        <section class="panel two-up-panel">
+          <div>
+            <div class="subhead"><span>DEVICES</span><h3>Device mix</h3></div>
+            <div id="deviceList" class="bar-list compact"></div>
+          </div>
+          <div>
+            <div class="subhead"><span>SOURCES</span><h3>Traffic sources</h3></div>
+            <div id="sourceList" class="bar-list compact"></div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>SEARCH</span><h3>What buyers search</h3></div></div>
+          <div id="searchInsights" class="search-insights"></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>TIME</span><h3>Active session duration</h3></div></div>
+          <div id="sessionDuration" class="compact-stats"></div>
+        </section>
+      </div>
+
+      <div id="moreView" class="page-view" data-page="more">
+        <section class="page-title"><div><span>ACCOUNT</span><h2>Insights app</h2></div></section>
+        <section class="panel account-panel">
+          <div class="account-row"><span>Signed in as</span><strong id="accountEmail">—</strong></div>
+          <div class="account-row"><span>Access</span><strong class="owner-badge">OWNER VERIFIED</strong></div>
+          <div class="account-row"><span>App version</span><strong>2026-09-18-v01</strong></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>INSTALL</span><h3>Add to Home Screen</h3></div></div>
+          <p class="panel-copy" id="installHelp">On iPhone: open this page in Safari, tap Share, then choose “Add to Home Screen”.</p>
+          <button id="installButton" class="secondary-button" type="button" hidden>Install app</button>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><div><span>SECURITY</span><h3>Read-only dashboard</h3></div></div>
+          <p class="panel-copy">This app contains no Add, Edit, Delete, Storage, or inventory-management controls. Owner analytics remain protected by Supabase owner authorization.</p>
+        </section>
+        <button id="logoutButton" class="danger-button" type="button">Sign out</button>
+      </div>
+    </section>
+
+    <nav class="bottom-nav" aria-label="Insights navigation">
+      <button type="button" class="active" data-page-button="overview"><span>⌂</span><strong>Overview</strong></button>
+      <button type="button" data-page-button="cards"><span>▦</span><strong>Cards</strong></button>
+      <button type="button" data-page-button="traffic"><span>⌁</span><strong>Traffic</strong></button>
+      <button type="button" data-page-button="more"><span>•••</span><strong>More</strong></button>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>
