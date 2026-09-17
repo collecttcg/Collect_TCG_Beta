@@ -14,440 +14,25 @@ jobs:
   validate-promote-package:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout exact standalone Beta v01
+      - name: Checkout validation branch
         uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
-      - name: Verify baseline
+      - name: Prepare exact Beta v01 baseline
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = "5d5fdd5ea53637acd833db49f8b6cd36f793718b"
-          test -f insights/index.html
-          test -f insights/app.js
-          test -f insights/styles.css
-          test -f insights/sw.js
+          cp .github/scripts/update-standalone-insights-v02.py /tmp/update-standalone-insights-v02.py
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "5d5fdd5ea53637acd833db49f8b6cd36f793718b"
+          git checkout -B main origin/main
           npm test > /tmp/v01-tests.txt 2>&1 || true
 
-      - name: Apply standalone Insights intelligence update
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import re
+      - name: Apply standalone Insights v02
+        run: python /tmp/update-standalone-insights-v02.py
 
-          version='2026-09-18-v02'
-
-          def replace_once(text, old, new, label):
-              if old not in text:
-                  raise SystemExit(f'missing marker: {label}')
-              return text.replace(old,new,1)
-
-          # HTML: preserve existing standalone navigation, add decision-first panels.
-          p=Path('insights/index.html')
-          s=p.read_text()
-          s=replace_once(s,'./styles.css?v=2026-09-18-v01',f'./styles.css?v={version}','stylesheet cache')
-          s=replace_once(s,'./app.js?v=2026-09-18-v01',f'./app.js?v={version}','app cache')
-          s=replace_once(s,'<div class="account-row"><span>App version</span><strong>2026-09-18-v01</strong></div>',f'<div class="account-row"><span>App version</span><strong>{version}</strong></div>','app version label')
-          s=replace_once(s,'<option value="contacts">Contacts</option>','<option value="intent">Intent</option>','card sort intent')
-
-          metric_marker='        <div id="overviewMetrics" class="metric-grid"></div>'
-          intelligence_html='''
-          <section class="panel intelligence-panel">
-            <div class="panel-head"><div><span>ERA</span><h3>Demand by era</h3></div><small>Demand vs inventory</small></div>
-            <div id="eraDemand" class="demand-list"></div>
-          </section>
-          <section class="panel intelligence-panel">
-            <div class="panel-head"><div><span>PRICE</span><h3>Price band demand</h3></div><small>Always visible</small></div>
-            <div id="priceBandDemand" class="demand-list"></div>
-          </section>
-          <section class="panel intelligence-panel">
-            <div class="panel-head"><div><span>MARKETS</span><h3>Card views by country</h3></div><small>Top era & card</small></div>
-            <div id="marketDemand" class="market-list"></div>
-          </section>
-          <section class="panel intelligence-panel">
-            <div class="panel-head"><div><span>OPPORTUNITIES</span><h3>What deserves attention</h3></div></div>
-            <div id="opportunityList" class="opportunity-list"></div>
-          </section>
-          <details class="panel context-panel">
-            <summary><span>LANGUAGE</span><strong>Language demand context</strong><small>Secondary view</small></summary>
-            <div id="languageDemand" class="demand-list context-demand"></div>
-          </details>'''
-          s=replace_once(s,metric_marker,metric_marker+intelligence_html,'overview intelligence panels')
-          p.write_text(s)
-
-          # JS: reuse existing owner-only catalogue + country/card aggregate RPCs.
-          p=Path('insights/app.js')
-          s=p.read_text()
-          s=replace_once(s,'const APP_VERSION = "2026-09-18-v01";',f'const APP_VERSION = "{version}";','app version')
-          s=replace_once(s,'    cards:"get_card_insights",','    catalogue:"get_owner_cards",\n    cards:"get_card_insights",','owner catalogue RPC')
-          s=replace_once(s,'    engaged:"get_engaged_visit_series_my_sg"','    engaged:"get_engaged_visit_series_my_sg",\n    countryCards:"get_country_card_view_insights"','country card RPC')
-
-          singleton_marker='''  function singleton(data){
-    return Array.isArray(data)?(data[0]||null):(data||null);
-  }
-'''
-          helpers='''
-  function catalogueCard(row){
-    if(!row?.id) return null;
-    const listed=row.price_usd==null ? row.price : row.price_usd;
-    const price=listed==null ? null : Number(listed);
-    return {
-      id:String(row.id),
-      name:String(row.name||"Card"),
-      game:String(row.game||""),
-      language:String(row.language||"").trim()||"Unspecified",
-      era:String(row.era||"").trim()||"Unspecified",
-      availability:String(row.availability||""),
-      lifecycle_status:String(row.lifecycle_status||"live").toLowerCase(),
-      price_usd:Number.isFinite(price)?price:null
-    };
-  }
-
-  function contactViewed(row){
-    const visitors=Math.max(0,Number(row?.contact_visitors||0));
-    const opens=Math.max(0,Number(row?.contact_opens||0));
-    return visitors>0?visitors:opens;
-  }
-
-  function intentCount(row){
-    const copies=Math.max(0,Number(row?.inquiry_copies||0));
-    const clicks=Math.max(0,Number(row?.platform_clicks||0));
-    return Math.max(copies,clicks);
-  }
-'''
-          s=replace_once(s,singleton_marker,singleton_marker+helpers,'analytics helpers')
-
-          s=replace_once(s,'    const results=await Promise.all([\n      safeRpc(RPC.cards,args),','    const results=await Promise.all([\n      safeRpc(RPC.catalogue),\n      safeRpc(RPC.cards,args),','load owner catalogue')
-          s=replace_once(s,'      safeRpc(RPC.engaged,args)\n    ]);','      safeRpc(RPC.engaged,args),\n      safeRpc(RPC.countryCards,args)\n    ]);','load country card demand')
-          s=replace_once(s,'    const [cardsRes,engagementRes,siteRes,cardSeriesRes,countryRes,deviceRes,sourceRes,searchRes,returningRes,durationRes,engagedRes]=results;','    const [catalogueRes,cardsRes,engagementRes,siteRes,cardSeriesRes,countryRes,deviceRes,sourceRes,searchRes,returningRes,durationRes,engagedRes,countryCardsRes]=results;','result destructure')
-
-          pattern=re.compile(r'    const engagementMap=new Map\(\(engagementRes\.data\|\|\[\]\).*?\n    return \{',re.S)
-          replacement='''    const catalogue=(catalogueRes.data||[])
-      .map(catalogueCard)
-      .filter(Boolean)
-      .filter(card=>card.lifecycle_status!=="archived");
-    const cardMap=new Map(catalogue.map(card=>[card.id,card]));
-    const engagementMap=new Map((engagementRes.data||[]).map(row=>[String(row.card_id||""),row]));
-    const merged=(cardsRes.data||[]).map(row=>{
-      const id=String(row.card_id||"");
-      const e=engagementMap.get(id)||{};
-      const card=cardMap.get(id)||null;
-      const favorites=Number(e.favorite_adds||0);
-      const viewed=contactViewed(e);
-      const intents=intentCount(e);
-      const interest=Math.round(
-        Number(row.unique_views||0)*2+
-        favorites*3+
-        Number(e.shares||0)*4+
-        Number(e.contact_opens||0)*4+
-        Number(e.inquiry_copies||0)*6+
-        Number(e.platform_clicks||0)*8+
-        Number(e.image_expands||0)
-      );
-      return {
-        ...row,...e,
-        name:row.name||card?.name||"Card",
-        game:row.game||card?.game||"",
-        _card:card,
-        _favorites:favorites,
-        _contactViewed:viewed,
-        _intents:intents,
-        _interest:interest
-      };
-    });
-
-    // Include engagement-only cards when available.
-    (engagementRes.data||[]).forEach(e=>{
-      const id=String(e.card_id||"");
-      if(!id||merged.some(r=>String(r.card_id||"")===id)) return;
-      const card=cardMap.get(id)||null;
-      const favorites=Number(e.favorite_adds||0);
-      const viewed=contactViewed(e);
-      const intents=intentCount(e);
-      merged.push({
-        card_id:id,
-        name:e.name||card?.name||"Card",
-        game:e.game||card?.game||"",
-        views:0,
-        unique_views:0,
-        ...e,
-        _card:card,
-        _favorites:favorites,
-        _contactViewed:viewed,
-        _intents:intents,
-        _interest:favorites*3+viewed*4+intents*8
-      });
-    });
-
-    return {'''
-          s,n=pattern.subn(replacement,s,count=1)
-          if n!=1:
-              raise SystemExit(f'merge block replacement count={n}')
-
-          s=replace_once(s,'      range,\n      cards:merged,','      range,\n      catalogue,\n      catalogueSupported:catalogueRes.supported,\n      cards:merged,','return catalogue')
-          s=replace_once(s,'      engagedSeries:engagedRes.data||[],engagedSupported:engagedRes.supported','      engagedSeries:engagedRes.data||[],engagedSupported:engagedRes.supported,\n      countryCards:countryCardsRes.data||[],countryCardsSupported:countryCardsRes.supported','return country cards')
-
-          totals_pattern=re.compile(r'  function totals\(\)\{.*?\n  \}\n\n  function metricCard',re.S)
-          totals_new='''  function totals(){
-    const d=state.data||{};
-    const cards=d.cards||[];
-    const websiteVisits=(d.siteSeries||[]).reduce((n,r)=>n+Number(r.visits||0),0);
-    const qualifiedViews=cards.reduce((n,r)=>n+Number(r.views||0),0);
-    const uniqueViews=cards.reduce((n,r)=>n+Number(r.unique_views||0),0);
-    const favorites=cards.reduce((n,r)=>n+Number(r._favorites||0),0);
-    const contactViewedTotal=cards.reduce((n,r)=>n+Number(r._contactViewed||0),0);
-    const intents=cards.reduce((n,r)=>n+Number(r._intents||0),0);
-    const engagedVisits=(d.engagedSeries||[]).reduce((n,r)=>n+Number(r.engaged_visits||0),0);
-    return {websiteVisits,qualifiedViews,uniqueViews,favorites,contactViewed:contactViewedTotal,intents,engagedVisits};
-  }
-
-  function metricCard'''
-          s,n=totals_pattern.subn(totals_new,s,count=1)
-          if n!=1:
-              raise SystemExit(f'totals replacement count={n}')
-
-          metric_marker='''  function metricCard(label,value,detail,accent=false){
-    return `<article class="metric-card${accent?" accent":""}"><span>${esc(label)}</span><strong>${esc(value)}</strong><small>${esc(detail||"")}</small></article>`;
-  }
-'''
-          intelligence_js='''
-  function percentage(numerator,denominator,digits=0){
-    const n=Math.max(0,Number(numerator||0));
-    const d=Math.max(0,Number(denominator||0));
-    if(!d) return "—";
-    return `${(n/d*100).toFixed(digits)}%`;
-  }
-
-  function priceBand(card){
-    if(card?.price_usd==null || !Number.isFinite(Number(card.price_usd))) return "No price";
-    const usd=Number(card.price_usd);
-    if(usd<500) return "Under $500";
-    if(usd<2000) return "$500–1,999";
-    if(usd<5000) return "$2,000–4,999";
-    return "$5,000+";
-  }
-
-  function groupDemand(keyFor){
-    const d=state.data||{};
-    const groups=new Map();
-    const ensure=key=>{
-      const label=String(key||"Unspecified");
-      if(!groups.has(label)) groups.set(label,{label,inventory:0,views:0,favorites:0,contactViewed:0,intent:0});
-      return groups.get(label);
-    };
-    (d.catalogue||[]).forEach(card=>ensure(keyFor(card)).inventory+=1);
-    (d.cards||[]).forEach(row=>{
-      const card=row._card;
-      if(!card) return;
-      const group=ensure(keyFor(card));
-      group.views+=Math.max(0,Number(row.unique_views||0));
-      group.favorites+=Math.max(0,Number(row._favorites||0));
-      group.contactViewed+=Math.max(0,Number(row._contactViewed||0));
-      group.intent+=Math.max(0,Number(row._intents||0));
-    });
-    const totalViews=[...groups.values()].reduce((sum,item)=>sum+item.views,0);
-    const totalInventory=[...groups.values()].reduce((sum,item)=>sum+item.inventory,0);
-    return [...groups.values()].map(item=>({
-      ...item,
-      demandShare:totalViews?item.views/totalViews*100:0,
-      inventoryShare:totalInventory?item.inventory/totalInventory*100:0,
-      gap:(totalViews?item.views/totalViews*100:0)-(totalInventory?item.inventory/totalInventory*100:0),
-      intentRate:item.views?item.intent/item.views*100:0
-    }));
-  }
-
-  function renderDemandList(rows,supported=true){
-    if(!supported) return `<div class="empty-state">Catalogue metadata is unavailable.</div>`;
-    const safe=(rows||[]).filter(row=>row.inventory>0||row.views>0);
-    if(!safe.length) return `<div class="empty-state">No demand data for this period yet.</div>`;
-    return safe.slice(0,10).map(row=>{
-      const sign=row.gap>0?"+":"";
-      const tone=row.gap>2?"positive":(row.gap<-2?"negative":"neutral");
-      return `<div class="demand-row">
-        <div class="demand-copy"><strong>${esc(row.label)}</strong><span>${fmt(row.views)} unique views · ${fmt(row.intent)} intent</span></div>
-        <div class="demand-stat"><span>Demand</span><strong>${row.demandShare.toFixed(0)}%</strong></div>
-        <div class="demand-stat"><span>Stock</span><strong>${row.inventoryShare.toFixed(0)}%</strong></div>
-        <div class="demand-gap ${tone}"><span>Gap</span><strong>${sign}${row.gap.toFixed(0)}pp</strong></div>
-      </div>`;
-    }).join("");
-  }
-
-  function marketDemandRows(){
-    const d=state.data||{};
-    if(!d.countryCardsSupported||!d.catalogueSupported) return [];
-    const cardMap=new Map((d.catalogue||[]).map(card=>[card.id,card]));
-    const groups=new Map();
-    (d.countryCards||[]).forEach(row=>{
-      const card=cardMap.get(String(row.card_id||""));
-      if(!card) return;
-      const code=String(row.country_code||"XX").trim().toUpperCase()||"XX";
-      if(!groups.has(code)) groups.set(code,{code,views:0,eras:new Map(),cards:new Map()});
-      const group=groups.get(code);
-      const views=Math.max(0,Number(row.views||0));
-      group.views+=views;
-      const era=card.era||"Unspecified";
-      group.eras.set(era,(group.eras.get(era)||0)+views);
-      const existing=group.cards.get(card.id)||{card,views:0};
-      existing.views+=views;
-      group.cards.set(card.id,existing);
-    });
-    return [...groups.values()].map(group=>{
-      const topEra=[...group.eras.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]||["—",0];
-      const topCard=[...group.cards.values()].sort((a,b)=>b.views-a.views||a.card.name.localeCompare(b.card.name))[0]||null;
-      return {...group,topEra:topEra[0],topCard};
-    }).filter(row=>row.code!=="XX").sort((a,b)=>b.views-a.views||a.code.localeCompare(b.code));
-  }
-
-  function renderMarkets(){
-    const d=state.data||{};
-    if(!d.countryCardsSupported) return `<div class="empty-state">Country → Card demand is unavailable. Apply the existing country-demand SQL migration to enable it.</div>`;
-    if(!d.catalogueSupported) return `<div class="empty-state">Owner catalogue metadata is unavailable.</div>`;
-    const rows=marketDemandRows();
-    if(!rows.length) return `<div class="empty-state">No country-attributed card views for this period yet.</div>`;
-    return rows.slice(0,8).map(row=>`<article class="market-card">
-      <div class="market-head"><strong>${esc(countryName(row.code))}</strong><span>${fmt(row.views)} qualified views</span></div>
-      <div class="market-detail"><span>Top era</span><strong>${esc(row.topEra)}</strong></div>
-      <div class="market-detail"><span>Top card</span><strong>${esc(row.topCard?.card?.name||"—")}</strong></div>
-    </article>`).join("");
-  }
-
-  function opportunityRows(){
-    const rows=(state.data?.cards||[]).filter(hasCardActivity);
-    const picks=[];
-    const used=new Set();
-    const add=(type,row,detail,tone)=>{
-      if(!row) return;
-      const id=String(row.card_id||"");
-      if(!id||used.has(id)) return;
-      used.add(id);picks.push({type,row,detail,tone});
-    };
-    const strongest=rows.filter(row=>Number(row._intents||0)>0)
-      .sort((a,b)=>Number(b._intents||0)-Number(a._intents||0)||Number(b.unique_views||0)-Number(a.unique_views||0))[0];
-    if(strongest) add("Strong buyer intent",strongest,`${fmt(strongest._intents)} intent · ${fmt(strongest.unique_views)} unique views`,"good");
-    const attention=rows.filter(row=>Number(row.unique_views||0)>=3&&Number(row._intents||0)===0)
-      .sort((a,b)=>Number(b.unique_views||0)-Number(a.unique_views||0))[0];
-    if(attention) add("Views without intent",attention,`${fmt(attention.unique_views)} unique views · check price, trust or listing quality`,"watch");
-    const hidden=rows.filter(row=>Number(row.unique_views||0)<=6&&(Number(row._favorites||0)>=1||Number(row._intents||0)>=1))
-      .sort((a,b)=>(Number(b._intents||0)*4+Number(b._favorites||0)*2)-(Number(a._intents||0)*4+Number(a._favorites||0)*2))[0];
-    if(hidden) add("Low exposure, strong signal",hidden,`${fmt(hidden.unique_views)} views · ${fmt(hidden._favorites)} favorites · ${fmt(hidden._intents)} intent`,"focus");
-    if(picks.length<3){
-      rows.slice().sort((a,b)=>Number(b._interest||0)-Number(a._interest||0)).forEach(row=>{
-        if(picks.length>=3) return;
-        add("Worth watching",row,`${fmt(row.unique_views)} unique views · ${fmt(row._intents)} intent`,"neutral");
-      });
-    }
-    return picks.slice(0,3);
-  }
-
-  function renderOpportunities(){
-    const rows=opportunityRows();
-    if(!rows.length) return `<div class="empty-state">No strong opportunity signals for this period yet.</div>`;
-    return rows.map(item=>`<article class="opportunity-card ${item.tone}">
-      <span>${esc(item.type)}</span><strong>${esc(item.row.name||"Card")}</strong><small>${esc(item.detail)}</small>
-    </article>`).join("");
-  }
-'''
-          s=replace_once(s,metric_marker,metric_marker+intelligence_js,'decision intelligence helpers')
-
-          overview_pattern=re.compile(r'  function renderOverview\(\)\{.*?\n  \}\n\n  function renderLineChart',re.S)
-          overview_new='''  function renderOverview(){
-    const d=state.data;
-    if(!d) return;
-    const t=totals();
-    $("overviewUpdated").textContent=pageUpdatedLabel();
-    $("overviewMetrics").innerHTML=[
-      metricCard("Website visits",fmt(t.websiteVisits),state.range==="today"?"Today":"Selected period",true),
-      metricCard("Unique card views",fmt(t.uniqueViews),"Unique browsers per card"),
-      metricCard("Contact viewed",fmt(t.contactViewed),"Soft funnel step"),
-      metricCard("Contact intents",fmt(t.intents),"Copy or platform click"),
-      metricCard("Intent rate",percentage(t.intents,t.uniqueViews,1),"Intent ÷ unique card views"),
-      metricCard("Viewed → intent",percentage(t.intents,t.contactViewed,0),"Intent ÷ contact viewed")
-    ].join("");
-
-    const eras=groupDemand(card=>card.era||"Unspecified")
-      .sort((a,b)=>b.views-a.views||b.intent-a.intent||b.inventory-a.inventory);
-    const priceOrder=["Under $500","$500–1,999","$2,000–4,999","$5,000+","No price"];
-    const prices=groupDemand(priceBand).sort((a,b)=>priceOrder.indexOf(a.label)-priceOrder.indexOf(b.label));
-    const languages=groupDemand(card=>card.language||"Unspecified")
-      .sort((a,b)=>b.views-a.views||b.intent-a.intent||b.inventory-a.inventory);
-    $("eraDemand").innerHTML=renderDemandList(eras,d.catalogueSupported);
-    $("priceBandDemand").innerHTML=renderDemandList(prices,d.catalogueSupported);
-    $("languageDemand").innerHTML=renderDemandList(languages,d.catalogueSupported);
-    $("marketDemand").innerHTML=renderMarkets();
-    $("opportunityList").innerHTML=renderOpportunities();
-
-    $("visitTrendTotal").textContent=fmt(t.websiteVisits);
-    $("cardTrendTotal").textContent=fmt(t.qualifiedViews);
-    $("visitChart").innerHTML=renderLineChart(d.siteSeries,"visits");
-    $("cardViewChart").innerHTML=renderLineChart(d.cardSeries,"views");
-
-    const top=(d.cards||[]).filter(hasCardActivity).sort((a,b)=>b._interest-a._interest||Number(b.views||0)-Number(a.views||0)).slice(0,5);
-    $("overviewTopCards").innerHTML=top.length?top.map((row,i)=>rankRow(row,i)).join(""):`<div class="empty-state">No card activity for this period yet.</div>`;
-
-    const r=d.returning;
-    const totalSessions=Math.max(0,Number(r?.total_sessions||0));
-    const returning=Math.max(0,Number(r?.returning_sessions||0));
-    const returnRate=totalSessions?returning/totalSessions*100:0;
-    const duration=d.duration;
-    $("visitorQuality").innerHTML=[
-      compactStat("Tracked sessions",d.returningSupported?fmt(totalSessions):"—","Anonymous sessions"),
-      compactStat("Returning",d.returningSupported?fmt(returning):"—",d.returningSupported?`${returnRate.toFixed(returnRate>=10?0:1)}% return rate`:"Unavailable"),
-      compactStat("Avg active time",d.durationSupported?formatDuration(duration?.avg_active_seconds):"—","Foreground time"),
-      compactStat("5+ min sessions",d.durationSupported?fmt(duration?.engaged_5m):"—",d.durationSupported?"Highly engaged":"Unavailable")
-    ].join("");
-  }
-
-  function renderLineChart'''
-          s,n=overview_pattern.subn(overview_new,s,count=1)
-          if n!=1:
-              raise SystemExit(f'overview replacement count={n}')
-
-          s=replace_once(s,'    const contacts=Number(row._contacts||0), favorites=Number(row._favorites||0), views=Number(row.views||0);','    const intents=Number(row._intents||0), favorites=Number(row._favorites||0), views=Number(row.views||0);','rank intent variable')
-          s=replace_once(s,'const secondary=[row.game,`${fmt(views)} views`,favorites?`${fmt(favorites)} fav`:"",contacts?`${fmt(contacts)} contact`:""]','const secondary=[row.game,`${fmt(views)} views`,favorites?`${fmt(favorites)} fav`:"",intents?`${fmt(intents)} intent`:""]','rank intent label')
-          s=replace_once(s,'return Number(row.views||0)>0||Number(row._favorites||0)>0||Number(row._contacts||0)>0||Number(row.shares||0)>0||Number(row.image_expands||0)>0;','return Number(row.views||0)>0||Number(row._favorites||0)>0||Number(row._contactViewed||0)>0||Number(row._intents||0)>0||Number(row.shares||0)>0||Number(row.image_expands||0)>0;','activity intent')
-          s=replace_once(s,'      contacts:(a,b)=>Number(b._contacts||0)-Number(a._contacts||0)||b._interest-a._interest','      intent:(a,b)=>Number(b._intents||0)-Number(a._intents||0)||b._interest-a._interest','sort intent')
-          s=replace_once(s,'        <div><span>Contacts</span><strong>${fmt(row._contacts)}</strong></div>','        <div><span>Intents</span><strong>${fmt(row._intents)}</strong></div>','performance intent')
-          p.write_text(s)
-
-          # CSS additions are isolated to the standalone PWA.
-          p=Path('insights/styles.css')
-          s=p.read_text()
-          s+='''\n/* 2026-09-18-v02: decision-first standalone Insights */
-          .intelligence-panel .panel-head small{color:var(--dim);font-size:8px;text-align:right;line-height:1.3}
-          .demand-list{display:grid;gap:7px}
-          .demand-row{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,54px);gap:7px;align-items:center;padding:10px 0;border-top:1px solid var(--border-soft)}
-          .demand-row:first-child{border-top:0;padding-top:1px}
-          .demand-copy{min-width:0}.demand-copy strong{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.demand-copy span{display:block;margin-top:3px;color:var(--dim);font-size:8px;line-height:1.35}
-          .demand-stat,.demand-gap{text-align:right;min-width:0}.demand-stat span,.demand-gap span{display:block;color:var(--dim);font-size:7px;text-transform:uppercase;letter-spacing:.05em}.demand-stat strong,.demand-gap strong{display:block;margin-top:3px;font-size:11px}
-          .demand-gap.positive strong{color:var(--teal)}.demand-gap.negative strong{color:#e2a56f}.demand-gap.neutral strong{color:var(--muted)}
-          .market-list{display:grid;gap:8px}.market-card{padding:12px;border:1px solid var(--border-soft);border-radius:12px;background:#0d1015;display:grid;gap:9px}.market-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.market-head strong{font-size:12px}.market-head span{color:var(--gold);font-size:9px;text-align:right}.market-detail{display:grid;grid-template-columns:64px minmax(0,1fr);gap:9px}.market-detail span{color:var(--dim);font-size:8px;text-transform:uppercase}.market-detail strong{font-size:10px;line-height:1.35;overflow-wrap:anywhere}
-          .opportunity-list{display:grid;gap:8px}.opportunity-card{padding:12px;border:1px solid var(--border-soft);border-radius:12px;background:#0d1015;display:grid;gap:4px}.opportunity-card>span{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:800}.opportunity-card>strong{font-size:12px;line-height:1.35}.opportunity-card>small{color:var(--muted);font-size:9px;line-height:1.45}.opportunity-card.good{border-color:rgba(102,215,196,.25)}.opportunity-card.watch{border-color:rgba(216,181,107,.27)}.opportunity-card.focus{border-color:rgba(216,181,107,.36)}
-          .context-panel{padding:0}.context-panel summary{list-style:none;cursor:pointer;padding:15px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;align-items:center}.context-panel summary::-webkit-details-marker{display:none}.context-panel summary>span{grid-column:1;color:var(--gold);font-size:9px;letter-spacing:.16em;font-weight:800}.context-panel summary>strong{grid-column:1;font-size:14px}.context-panel summary>small{grid-column:2;grid-row:1/3;color:var(--dim);font-size:8px;align-self:center}.context-panel[open] summary{border-bottom:1px solid var(--border-soft)}.context-demand{padding:12px 15px 15px}
-          @media(max-width:390px){.demand-row{grid-template-columns:minmax(0,1fr) repeat(3,48px);gap:5px}.demand-stat strong,.demand-gap strong{font-size:10px}.demand-copy span{font-size:7px}}
-          @media(min-width:650px){.market-list{grid-template-columns:repeat(2,minmax(0,1fr))}.opportunity-list{grid-template-columns:repeat(3,minmax(0,1fr))}.demand-row{grid-template-columns:minmax(0,1fr) repeat(3,72px)}}
-          '''
-          p.write_text(s)
-
-          # PWA cache-bust and isolated cache version.
-          p=Path('insights/sw.js')
-          s=p.read_text()
-          s=replace_once(s,'collect-tcg-insights-beta-2026-09-18-v01',f'collect-tcg-insights-beta-{version}','sw cache')
-          s=replace_once(s,'./styles.css?v=2026-09-18-v01',f'./styles.css?v={version}','sw css')
-          s=replace_once(s,'./app.js?v=2026-09-18-v01',f'./app.js?v={version}','sw app')
-          p.write_text(s)
-
-          p=Path('insights/README.md')
-          s=p.read_text()
-          s=s.replace('Version: `2026-09-18-v01`',f'Version: `{version}`',1)
-          s+='''\n## v02 intelligence alignment\n\n- Decision-first Overview metrics\n- Strict Contact Viewed / Contact Intent funnel\n- Era demand vs inventory share\n- Visible Price Band demand panel\n- Country -> top Era / top Card demand using the existing owner-only aggregate RPC\n- Opportunity signals\n- Language retained as secondary context\n- No inventory mutation controls; read-only owner analytics only\n'''
-          p.write_text(s)
-          PY
-
-      - name: Validate standalone update
+      - name: Validate standalone v02
         shell: bash
         run: |
           set -euo pipefail
@@ -466,13 +51,14 @@ jobs:
           missing=[ref for ref in refs if not (root/ref[2:]).exists()]
           if missing: raise SystemExit('Missing local HTML refs: '+', '.join(missing))
           for marker in ['eraDemand','priceBandDemand','marketDemand','opportunityList','languageDemand']:
-              if f'id="{marker}"' not in html: raise SystemExit('Missing HTML panel '+marker)
+              if f'id="{marker}"' not in html: raise SystemExit('Missing panel '+marker)
           for marker in ['get_owner_cards','get_country_card_view_insights','contactViewed','intentCount','groupDemand','priceBand','marketDemandRows']:
-              if marker not in app: raise SystemExit('Missing app intelligence marker '+marker)
+              if marker not in app: raise SystemExit('Missing app marker '+marker)
           for marker in ['is_app_owner','persistSession:true']:
               if marker not in app: raise SystemExit('Owner security marker missing '+marker)
+          lowered=app.lower()
           for forbidden in ['.insert(','.update(','.delete(','.upsert(','service_role']:
-              if forbidden in app.lower(): raise SystemExit('Read-only safety violation: '+forbidden)
+              if forbidden in lowered: raise SystemExit('Read-only safety violation '+forbidden)
           if 'Price band demand' not in html: raise SystemExit('Price Band is not visible')
           if 'collect-tcg-insights-beta-2026-09-18-v02' not in sw: raise SystemExit('v02 cache namespace missing')
           if 'keys.filter(key=>key!==CACHE)' in sw: raise SystemExit('unsafe global cache cleanup')
@@ -508,19 +94,11 @@ jobs:
           set -euo pipefail
           rm -rf dist
           git status --short
-          changed="$(git status --short | sed 's/^...//')"
-          printf '%s\n' "$changed" | sort > /tmp/changed.txt
-          cat > /tmp/expected.txt <<'EOF'
-          insights/README.md
-          insights/app.js
-          insights/index.html
-          insights/styles.css
-          insights/sw.js
-          EOF
-          sort -o /tmp/expected.txt /tmp/expected.txt
+          git status --short | sed 's/^...//' | sort > /tmp/changed.txt
+          printf '%s\n' insights/README.md insights/app.js insights/index.html insights/styles.css insights/sw.js | sort > /tmp/expected.txt
           diff -u /tmp/expected.txt /tmp/changed.txt
 
-      - name: Commit Beta 2026-09-18-v02
+      - name: Commit Beta v02
         shell: bash
         run: |
           set -euo pipefail
