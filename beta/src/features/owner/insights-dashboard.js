@@ -1,4 +1,4 @@
-/** 2026-09-17-v15: decision-first Insights dashboard with bounded refresh observation. */
+/** 2026-09-17-v18: decision-first Insights with era, price and market demand. */
 export function register(appContext){
   const originalRenderInsightsPage=appContext.renderInsightsPage;
   const originalFetchInsights=appContext.fetchInsights;
@@ -6,12 +6,16 @@ export function register(appContext){
   const originalFetchWebsiteVisitSeries=appContext.fetchWebsiteVisitSeries;
   const originalFetchWebsiteVisitCountries=appContext.fetchWebsiteVisitCountries;
   const originalFetchWebsiteVisitSources=appContext.fetchWebsiteVisitSources;
+  const originalFetchCountryCardViewInsights=appContext.fetchCountryCardViewInsights;
 
   let currentViewRows=[];
   let currentEngagementRows=[];
   let websiteSeries=[];
   let countryRows=[];
   let sourceRows=[];
+  let countryCardRows=[];
+  let countryCardSupported=null;
+  let countryDemandRequest=0;
   let observer=null;
   let observedRoot=null;
   let scheduledFrame=0;
@@ -21,7 +25,7 @@ export function register(appContext){
     const link=document.createElement("link");
     link.id="insights-dashboard-v14-styles";
     link.rel="stylesheet";
-    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v14";
+    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v18";
     document.head.appendChild(link);
   }
 
@@ -46,6 +50,22 @@ export function register(appContext){
       const rows=await originalFetchInsights.call(appContext,start,end,options);
       if(!options?.silent && overview()){
         currentViewRows=Array.isArray(rows)?rows:[];
+        if(typeof originalFetchCountryCardViewInsights==="function"){
+          const request=++countryDemandRequest;
+          Promise.resolve(originalFetchCountryCardViewInsights.call(appContext,start,end))
+            .then(result=>{
+              if(request!==countryDemandRequest) return;
+              countryCardSupported=result?.supported===true;
+              countryCardRows=Array.isArray(result?.rows)?result.rows:[];
+              scheduleEnhancement();
+            })
+            .catch(()=>{
+              if(request!==countryDemandRequest) return;
+              countryCardSupported=false;
+              countryCardRows=[];
+              scheduleEnhancement();
+            });
+        }
         scheduleEnhancement();
       }
       return rows;
@@ -163,6 +183,10 @@ export function register(appContext){
     return String(card?.language||"").trim() || "Unspecified";
   }
 
+  function eraName(card){
+    return String(card?.era||"").trim() || "Unspecified";
+  }
+
   function priceBand(card){
     const usd=Number(appContext.cardUsdListedPrice?.(card));
     if(!Number.isFinite(usd)) return "No price";
@@ -199,6 +223,48 @@ export function register(appContext){
       inventoryShare:totalInventory ? item.inventory/totalInventory*100 : 0,
       intentRate:item.views ? item.intent/item.views*100 : 0
     }));
+  }
+
+  function filteredCountryCardRows(){
+    const {status,game}=selectedFilters();
+    return countryCardRows.filter(row=>{
+      const card=appContext.insightCardForRow?.(row)||null;
+      if(!card) return false;
+      if(status && String(card?.availability||"")!==status) return false;
+      if(game && String(card?.game||"")!==game) return false;
+      return true;
+    });
+  }
+
+  function marketDemandRows(){
+    const groups=new Map();
+    filteredCountryCardRows().forEach(row=>{
+      const card=appContext.insightCardForRow?.(row)||null;
+      if(!card) return;
+      const code=String(row?.country_code||"XX").trim().toUpperCase()||"XX";
+      if(!groups.has(code)){
+        groups.set(code,{countryCode:code,views:0,eras:new Map(),cards:new Map()});
+      }
+      const group=groups.get(code);
+      const views=Math.max(0,Number(row?.views||0));
+      group.views+=views;
+      const era=eraName(card);
+      group.eras.set(era,(group.eras.get(era)||0)+views);
+      const id=String(card?.id||row?.card_id||"");
+      const existing=group.cards.get(id)||{card,views:0};
+      existing.views+=views;
+      group.cards.set(id,existing);
+    });
+
+    const result=[...groups.values()].map(group=>{
+      const topEra=[...group.eras.entries()].sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))[0]||["—",0];
+      const topCard=[...group.cards.values()].sort((a,b)=>b.views-a.views || String(a.card?.name||"").localeCompare(String(b.card?.name||"")))[0]||null;
+      return {...group,topEra:topEra[0],topEraViews:topEra[1],topCard};
+    });
+
+    const known=result.filter(item=>item.countryCode!=="XX");
+    const source=known.length?known:result;
+    return source.sort((a,b)=>b.views-a.views || a.countryCode.localeCompare(b.countryCode));
   }
 
   function rowCard(row){
@@ -285,6 +351,8 @@ export function register(appContext){
 
     const language=groupDemand(rows,cards,languageName)
       .sort((a,b)=>b.views-a.views || b.intent-a.intent || b.inventory-a.inventory);
+    const eras=groupDemand(rows,cards,eraName)
+      .sort((a,b)=>b.views-a.views || b.intent-a.intent || b.inventory-a.inventory);
     const prices=groupDemand(rows,cards,priceBand)
       .sort((a,b)=>{
         const order=["Under $500","$500–1,999","$2,000–4,999","$5,000+","No price"];
@@ -299,7 +367,8 @@ export function register(appContext){
     )[0]||null;
 
     return {
-      rows,cards,visits,uniqueViews,qualifiedViews,favorites,viewed,intent,language,prices,games,strongest,
+      rows,cards,visits,uniqueViews,qualifiedViews,favorites,viewed,intent,language,eras,prices,games,strongest,
+      markets:marketDemandRows(),countryCardSupported,
       favoriteRate:percentage(favorites,uniqueViews),
       intentRate:percentage(intent,uniqueViews),
       contactToIntent:percentage(intent,viewed),
@@ -329,6 +398,36 @@ export function register(appContext){
               : `<strong>${percentage(item.intent,item.views)}</strong><span>intent rate</span>`}
           </div>
         </div>`;
+      }).join("")}
+    </div>`;
+  }
+
+  function marketDemandHtml(markets,supported){
+    if(supported===false){
+      return `<div class="insights-v14-empty"><strong>Country × Card data is ready in the UI.</strong><br>Run <code>2026-09-17-v18-COUNTRY-CARD-DEMAND.sql</code> in Supabase to enable this panel.</div>`;
+    }
+    if(!markets.length){
+      return `<div class="insights-v14-empty">No country-attributed card views for this selection yet.</div>`;
+    }
+    return `<div class="insights-v18-market-list">
+      ${markets.slice(0,6).map(item=>{
+        const countryName=appContext.visitorCountryName?.(item.countryCode)||item.countryCode;
+        const topCard=item.topCard?.card||null;
+        return `<article class="insights-v18-market-row">
+          <div class="insights-v18-market-country">
+            <span>${appContext.escapeHtml(item.countryCode)}</span>
+            <div><strong>${appContext.escapeHtml(countryName)}</strong><small>${item.views.toLocaleString()} qualified card views</small></div>
+          </div>
+          <div class="insights-v18-market-signal">
+            <span>Top era</span><strong>${appContext.escapeHtml(item.topEra)}</strong><small>${Number(item.topEraViews||0).toLocaleString()} views</small>
+          </div>
+          <div class="insights-v18-market-signal">
+            <span>Top card</span>
+            ${topCard
+              ? `<button type="button" data-insights-v14-open-card="${appContext.escapeHtml(topCard.id)}">${appContext.escapeHtml(topCard.name||"Untitled card")}</button><small>${Number(item.topCard.views||0).toLocaleString()} views</small>`
+              : `<strong>—</strong><small>No card data</small>`}
+          </div>
+        </article>`;
       }).join("")}
     </div>`;
   }
@@ -392,13 +491,17 @@ export function register(appContext){
       <div class="insights-v14-grid">
         <section class="insights-v14-panel">
           <div class="insights-v14-panel-head">
-            <div><span>Demand balance</span><h4>Card language</h4></div>
-            <p>Demand share vs how much of your matching inventory uses that language.</p>
+            <div><span>Demand balance</span><h4>Card era</h4></div>
+            <p>See whether Vintage, Championship, Modern and your other stored eras outperform their share of inventory.</p>
           </div>
-          ${demandBars(m.language,{inventoryGap:true,limit:6})}
+          ${demandBars(m.eras,{inventoryGap:true,limit:6})}
+          <details class="insights-v18-secondary">
+            <summary>Compare by card language</summary>
+            <div>${demandBars(m.language,{inventoryGap:true,limit:6})}</div>
+          </details>
         </section>
 
-        <section class="insights-v14-panel">
+        <section class="insights-v14-panel insights-v18-price-panel">
           <div class="insights-v14-panel-head">
             <div><span>Buyer quality</span><h4>Price bands</h4></div>
             <p>Which price ranges attract views and convert into contact intent.</p>
@@ -406,6 +509,14 @@ export function register(appContext){
           ${demandBars(m.prices,{inventoryGap:false,limit:5})}
         </section>
       </div>
+
+      <section class="insights-v14-panel insights-v18-market-panel">
+        <div class="insights-v14-panel-head">
+          <div><span>Market demand</span><h4>Card views by country</h4></div>
+          <p>For each market, see the card era and individual card attracting the most qualified views.</p>
+        </div>
+        ${marketDemandHtml(m.markets,m.countryCardSupported)}
+      </section>
 
       <section class="insights-v14-opportunities">
         <div class="insights-v14-panel-head">
@@ -423,7 +534,7 @@ export function register(appContext){
       </section>
 
       <div class="insights-v14-note">
-        Country totals use the existing privacy-safe country tracking. Country × specific-card correlation is not inferred without a dedicated aggregated backend join.
+        Market demand is aggregated from anonymous qualified card views and country events. Individual visitor histories are never shown.
       </div>`;
 
     mount.querySelectorAll("[data-insights-v14-open-card]").forEach(btn=>{
