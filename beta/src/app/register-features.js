@@ -11,6 +11,7 @@ import { register as register9 } from '../services/catalogue.js';
 import { register as register10 } from '../features/content/giveaways-data.js';
 import { register as register11 } from '../features/content/showcase-data.js';
 import { register as register12 } from '../services/analytics.js';
+import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
 import { register as register14 } from '../app/routing.js';
 import { register as register15 } from '../features/media/images.js';
@@ -58,6 +59,7 @@ export function registerFeatures(appContext){
   register10(appContext);
   register11(appContext);
   register12(appContext);
+  registerContactIntentPolicy(appContext);
   register13(appContext);
   register14(appContext);
   register15(appContext);
