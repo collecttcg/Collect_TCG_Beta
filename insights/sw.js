@@ -1,9 +1,9 @@
-const CACHE="collect-tcg-insights-beta-2026-09-18-v01";
+const CACHE="collect-tcg-insights-beta-2026-09-18-v02";
 const STATIC=[
   "./",
   "./index.html",
-  "./styles.css?v=2026-09-18-v01",
-  "./app.js?v=2026-09-18-v01",
+  "./styles.css?v=2026-09-18-v02",
+  "./app.js?v=2026-09-18-v02",
   "./manifest.webmanifest",
   "./assets/shop-logo.png",
   "./assets/icon-192.png",

@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const APP_VERSION = "2026-09-18-v01";
+  const APP_VERSION = "2026-09-18-v02";
   const SUPABASE_URL = "https://cbzytysxtdcqxuckspye.supabase.co";
   const SUPABASE_KEY = "sb_publishable_BqOlV51b2YVACuQbTOf3Tg_n1mVI-Au";
 
@@ -27,6 +27,7 @@
   };
 
   const RPC = Object.freeze({
+    catalogue:"get_owner_cards",
     cards:"get_card_insights",
     engagement:"get_card_engagement_insights",
     siteSeries:"get_site_visit_series_my_sg",
@@ -37,7 +38,8 @@
     searches:"get_inventory_search_insights",
     returning:"get_returning_visitor_insights",
     duration:"get_site_session_duration_insights",
-    engaged:"get_engaged_visit_series_my_sg"
+    engaged:"get_engaged_visit_series_my_sg",
+    countryCards:"get_country_card_view_insights"
   });
 
   function showToast(message){
@@ -169,12 +171,41 @@
     return Array.isArray(data)?(data[0]||null):(data||null);
   }
 
+  function catalogueCard(row){
+    if(!row?.id) return null;
+    const listed=row.price_usd==null ? row.price : row.price_usd;
+    const price=listed==null ? null : Number(listed);
+    return {
+      id:String(row.id),
+      name:String(row.name||"Card"),
+      game:String(row.game||""),
+      language:String(row.language||"").trim()||"Unspecified",
+      era:String(row.era||"").trim()||"Unspecified",
+      availability:String(row.availability||""),
+      lifecycle_status:String(row.lifecycle_status||"live").toLowerCase(),
+      price_usd:Number.isFinite(price)?price:null
+    };
+  }
+
+  function contactViewed(row){
+    const visitors=Math.max(0,Number(row?.contact_visitors||0));
+    const opens=Math.max(0,Number(row?.contact_opens||0));
+    return visitors>0?visitors:opens;
+  }
+
+  function intentCount(row){
+    const copies=Math.max(0,Number(row?.inquiry_copies||0));
+    const clicks=Math.max(0,Number(row?.platform_clicks||0));
+    return Math.max(copies,clicks);
+  }
+
   async function loadData(){
     const range=rangeForPreset(state.range);
     const args=rangeArgs(range);
     const statusGameArgs={...args,p_status:null,p_game:null};
 
     const results=await Promise.all([
+      safeRpc(RPC.catalogue),
       safeRpc(RPC.cards,args),
       safeRpc(RPC.engagement,args),
       safeRpc(RPC.siteSeries,args),
@@ -185,10 +216,11 @@
       safeRpc(RPC.searches,args),
       safeRpc(RPC.returning,args,singleton),
       safeRpc(RPC.duration,args,singleton),
-      safeRpc(RPC.engaged,args)
+      safeRpc(RPC.engaged,args),
+      safeRpc(RPC.countryCards,args)
     ]);
 
-    const [cardsRes,engagementRes,siteRes,cardSeriesRes,countryRes,deviceRes,sourceRes,searchRes,returningRes,durationRes,engagedRes]=results;
+    const [catalogueRes,cardsRes,engagementRes,siteRes,cardSeriesRes,countryRes,deviceRes,sourceRes,searchRes,returningRes,durationRes,engagedRes,countryCardsRes]=results;
 
     // If the core owner-only card RPC fails, re-check authorization before showing stale UI.
     if(!cardsRes.supported){
@@ -196,12 +228,19 @@
       if(!stillOwner){ state.owner=false; setScreen("deniedScreen"); throw new Error("Owner authorization is no longer valid."); }
     }
 
+    const catalogue=(catalogueRes.data||[])
+      .map(catalogueCard)
+      .filter(Boolean)
+      .filter(card=>card.lifecycle_status!=="archived");
+    const cardMap=new Map(catalogue.map(card=>[card.id,card]));
     const engagementMap=new Map((engagementRes.data||[]).map(row=>[String(row.card_id||""),row]));
     const merged=(cardsRes.data||[]).map(row=>{
       const id=String(row.card_id||"");
       const e=engagementMap.get(id)||{};
+      const card=cardMap.get(id)||null;
       const favorites=Number(e.favorite_adds||0);
-      const contacts=Number(e.contact_opens||0)+Number(e.platform_clicks||0)+Number(e.inquiry_copies||0);
+      const viewed=contactViewed(e);
+      const intents=intentCount(e);
       const interest=Math.round(
         Number(row.unique_views||0)*2+
         favorites*3+
@@ -211,20 +250,44 @@
         Number(e.platform_clicks||0)*8+
         Number(e.image_expands||0)
       );
-      return {...row,...e,_favorites:favorites,_contacts:contacts,_interest:interest};
+      return {
+        ...row,...e,
+        name:row.name||card?.name||"Card",
+        game:row.game||card?.game||"",
+        _card:card,
+        _favorites:favorites,
+        _contactViewed:viewed,
+        _intents:intents,
+        _interest:interest
+      };
     });
 
-    // Include engagement-only cards when available.
     (engagementRes.data||[]).forEach(e=>{
       const id=String(e.card_id||"");
       if(!id||merged.some(r=>String(r.card_id||"")===id)) return;
+      const card=cardMap.get(id)||null;
       const favorites=Number(e.favorite_adds||0);
-      const contacts=Number(e.contact_opens||0)+Number(e.platform_clicks||0)+Number(e.inquiry_copies||0);
-      merged.push({card_id:id,name:e.name||"Card",game:e.game||"",views:0,unique_views:0,...e,_favorites:favorites,_contacts:contacts,_interest:favorites*3+contacts*6});
+      const viewed=contactViewed(e);
+      const intents=intentCount(e);
+      merged.push({
+        card_id:id,
+        name:e.name||card?.name||"Card",
+        game:e.game||card?.game||"",
+        views:0,
+        unique_views:0,
+        ...e,
+        _card:card,
+        _favorites:favorites,
+        _contactViewed:viewed,
+        _intents:intents,
+        _interest:favorites*3+viewed*4+intents*8
+      });
     });
 
     return {
       range,
+      catalogue,
+      catalogueSupported:catalogueRes.supported,
       cards:merged,
       cardAnalyticsSupported:cardsRes.supported,
       engagementSupported:engagementRes.supported,
@@ -236,7 +299,8 @@
       searches:searchRes.data||[],searchesSupported:searchRes.supported,
       returning:returningRes.data||null,returningSupported:returningRes.supported,
       duration:durationRes.data||null,durationSupported:durationRes.supported,
-      engagedSeries:engagedRes.data||[],engagedSupported:engagedRes.supported
+      engagedSeries:engagedRes.data||[],engagedSupported:engagedRes.supported,
+      countryCards:countryCardsRes.data||[],countryCardsSupported:countryCardsRes.supported
     };
   }
 
@@ -275,29 +339,177 @@
     const qualifiedViews=cards.reduce((n,r)=>n+Number(r.views||0),0);
     const uniqueViews=cards.reduce((n,r)=>n+Number(r.unique_views||0),0);
     const favorites=cards.reduce((n,r)=>n+Number(r._favorites||0),0);
-    const contacts=cards.reduce((n,r)=>n+Number(r._contacts||0),0);
+    const contactViewedTotal=cards.reduce((n,r)=>n+Number(r._contactViewed||0),0);
+    const intents=cards.reduce((n,r)=>n+Number(r._intents||0),0);
     const engagedVisits=(d.engagedSeries||[]).reduce((n,r)=>n+Number(r.engaged_visits||0),0);
-    return {websiteVisits,qualifiedViews,uniqueViews,favorites,contacts,engagedVisits};
+    return {websiteVisits,qualifiedViews,uniqueViews,favorites,contactViewed:contactViewedTotal,intents,engagedVisits};
   }
 
   function metricCard(label,value,detail,accent=false){
     return `<article class="metric-card${accent?" accent":""}"><span>${esc(label)}</span><strong>${esc(value)}</strong><small>${esc(detail||"")}</small></article>`;
   }
 
+  function percentage(numerator,denominator,digits=0){
+    const n=Math.max(0,Number(numerator||0));
+    const d=Math.max(0,Number(denominator||0));
+    if(!d) return "—";
+    return `${(n/d*100).toFixed(digits)}%`;
+  }
+
+  function priceBand(card){
+    if(card?.price_usd==null || !Number.isFinite(Number(card.price_usd))) return "No price";
+    const usd=Number(card.price_usd);
+    if(usd<500) return "Under $500";
+    if(usd<2000) return "$500–1,999";
+    if(usd<5000) return "$2,000–4,999";
+    return "$5,000+";
+  }
+
+  function groupDemand(keyFor){
+    const d=state.data||{};
+    const groups=new Map();
+    const ensure=key=>{
+      const label=String(key||"Unspecified");
+      if(!groups.has(label)) groups.set(label,{label,inventory:0,views:0,favorites:0,contactViewed:0,intent:0});
+      return groups.get(label);
+    };
+    (d.catalogue||[]).forEach(card=>ensure(keyFor(card)).inventory+=1);
+    (d.cards||[]).forEach(row=>{
+      const card=row._card;
+      if(!card) return;
+      const group=ensure(keyFor(card));
+      group.views+=Math.max(0,Number(row.unique_views||0));
+      group.favorites+=Math.max(0,Number(row._favorites||0));
+      group.contactViewed+=Math.max(0,Number(row._contactViewed||0));
+      group.intent+=Math.max(0,Number(row._intents||0));
+    });
+    const totalViews=[...groups.values()].reduce((sum,item)=>sum+item.views,0);
+    const totalInventory=[...groups.values()].reduce((sum,item)=>sum+item.inventory,0);
+    return [...groups.values()].map(item=>({
+      ...item,
+      demandShare:totalViews?item.views/totalViews*100:0,
+      inventoryShare:totalInventory?item.inventory/totalInventory*100:0,
+      gap:(totalViews?item.views/totalViews*100:0)-(totalInventory?item.inventory/totalInventory*100:0),
+      intentRate:item.views?item.intent/item.views*100:0
+    }));
+  }
+
+  function renderDemandList(rows,supported=true){
+    if(!supported) return `<div class="empty-state">Catalogue metadata is unavailable.</div>`;
+    const safe=(rows||[]).filter(row=>row.inventory>0||row.views>0);
+    if(!safe.length) return `<div class="empty-state">No demand data for this period yet.</div>`;
+    return safe.slice(0,10).map(row=>{
+      const sign=row.gap>0?"+":"";
+      const tone=row.gap>2?"positive":(row.gap<-2?"negative":"neutral");
+      return `<div class="demand-row">
+        <div class="demand-copy"><strong>${esc(row.label)}</strong><span>${fmt(row.views)} unique views · ${fmt(row.intent)} intent</span></div>
+        <div class="demand-stat"><span>Demand</span><strong>${row.demandShare.toFixed(0)}%</strong></div>
+        <div class="demand-stat"><span>Stock</span><strong>${row.inventoryShare.toFixed(0)}%</strong></div>
+        <div class="demand-gap ${tone}"><span>Gap</span><strong>${sign}${row.gap.toFixed(0)}pp</strong></div>
+      </div>`;
+    }).join("");
+  }
+
+  function marketDemandRows(){
+    const d=state.data||{};
+    if(!d.countryCardsSupported||!d.catalogueSupported) return [];
+    const cardMap=new Map((d.catalogue||[]).map(card=>[card.id,card]));
+    const groups=new Map();
+    (d.countryCards||[]).forEach(row=>{
+      const card=cardMap.get(String(row.card_id||""));
+      if(!card) return;
+      const code=String(row.country_code||"XX").trim().toUpperCase()||"XX";
+      if(!groups.has(code)) groups.set(code,{code,views:0,eras:new Map(),cards:new Map()});
+      const group=groups.get(code);
+      const views=Math.max(0,Number(row.views||0));
+      group.views+=views;
+      const era=card.era||"Unspecified";
+      group.eras.set(era,(group.eras.get(era)||0)+views);
+      const existing=group.cards.get(card.id)||{card,views:0};
+      existing.views+=views;
+      group.cards.set(card.id,existing);
+    });
+    return [...groups.values()].map(group=>{
+      const topEra=[...group.eras.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]||["—",0];
+      const topCard=[...group.cards.values()].sort((a,b)=>b.views-a.views||a.card.name.localeCompare(b.card.name))[0]||null;
+      return {...group,topEra:topEra[0],topCard};
+    }).filter(row=>row.code!=="XX").sort((a,b)=>b.views-a.views||a.code.localeCompare(b.code));
+  }
+
+  function renderMarkets(){
+    const d=state.data||{};
+    if(!d.countryCardsSupported) return `<div class="empty-state">Country → Card demand is unavailable. Apply the existing country-demand SQL migration to enable it.</div>`;
+    if(!d.catalogueSupported) return `<div class="empty-state">Owner catalogue metadata is unavailable.</div>`;
+    const rows=marketDemandRows();
+    if(!rows.length) return `<div class="empty-state">No country-attributed card views for this period yet.</div>`;
+    return rows.slice(0,8).map(row=>`<article class="market-card">
+      <div class="market-head"><strong>${esc(countryName(row.code))}</strong><span>${fmt(row.views)} qualified views</span></div>
+      <div class="market-detail"><span>Top era</span><strong>${esc(row.topEra)}</strong></div>
+      <div class="market-detail"><span>Top card</span><strong>${esc(row.topCard?.card?.name||"—")}</strong></div>
+    </article>`).join("");
+  }
+
+  function opportunityRows(){
+    const rows=(state.data?.cards||[]).filter(hasCardActivity);
+    const picks=[];
+    const used=new Set();
+    const add=(type,row,detail,tone)=>{
+      if(!row) return;
+      const id=String(row.card_id||"");
+      if(!id||used.has(id)) return;
+      used.add(id);picks.push({type,row,detail,tone});
+    };
+    const strongest=rows.filter(row=>Number(row._intents||0)>0)
+      .sort((a,b)=>Number(b._intents||0)-Number(a._intents||0)||Number(b.unique_views||0)-Number(a.unique_views||0))[0];
+    if(strongest) add("Strong buyer intent",strongest,`${fmt(strongest._intents)} intent · ${fmt(strongest.unique_views)} unique views`,"good");
+    const attention=rows.filter(row=>Number(row.unique_views||0)>=3&&Number(row._intents||0)===0)
+      .sort((a,b)=>Number(b.unique_views||0)-Number(a.unique_views||0))[0];
+    if(attention) add("Views without intent",attention,`${fmt(attention.unique_views)} unique views · check price, trust or listing quality`,"watch");
+    const hidden=rows.filter(row=>Number(row.unique_views||0)<=6&&(Number(row._favorites||0)>=1||Number(row._intents||0)>=1))
+      .sort((a,b)=>(Number(b._intents||0)*4+Number(b._favorites||0)*2)-(Number(a._intents||0)*4+Number(a._favorites||0)*2))[0];
+    if(hidden) add("Low exposure, strong signal",hidden,`${fmt(hidden.unique_views)} views · ${fmt(hidden._favorites)} favorites · ${fmt(hidden._intents)} intent`,"focus");
+    if(picks.length<3){
+      rows.slice().sort((a,b)=>Number(b._interest||0)-Number(a._interest||0)).forEach(row=>{
+        if(picks.length>=3) return;
+        add("Worth watching",row,`${fmt(row.unique_views)} unique views · ${fmt(row._intents)} intent`,"neutral");
+      });
+    }
+    return picks.slice(0,3);
+  }
+
+  function renderOpportunities(){
+    const rows=opportunityRows();
+    if(!rows.length) return `<div class="empty-state">No strong opportunity signals for this period yet.</div>`;
+    return rows.map(item=>`<article class="opportunity-card ${item.tone}">
+      <span>${esc(item.type)}</span><strong>${esc(item.row.name||"Card")}</strong><small>${esc(item.detail)}</small>
+    </article>`).join("");
+  }
+
   function renderOverview(){
     const d=state.data;
     if(!d) return;
     const t=totals();
-    const engagementRate=t.websiteVisits?t.engagedVisits/t.websiteVisits*100:0;
     $("overviewUpdated").textContent=pageUpdatedLabel();
     $("overviewMetrics").innerHTML=[
       metricCard("Website visits",fmt(t.websiteVisits),state.range==="today"?"Today":"Selected period",true),
-      metricCard("Qualified views",fmt(t.qualifiedViews),"Cards open 2+ seconds"),
-      metricCard("Engaged visits",fmt(t.engagedVisits),d.engagedSupported?`${engagementRate.toFixed(engagementRate>=10?0:1)}% of visits`:"Metric unavailable"),
       metricCard("Unique card views",fmt(t.uniqueViews),"Unique browsers per card"),
-      metricCard("Favorites",fmt(t.favorites),d.engagementSupported?"Buyer shortlist adds":"Metric unavailable"),
-      metricCard("Contact actions",fmt(t.contacts),d.engagementSupported?"Contact + platform + inquiry":"Metric unavailable")
+      metricCard("Contact viewed",fmt(t.contactViewed),"Soft funnel step"),
+      metricCard("Contact intents",fmt(t.intents),"Copy or platform click"),
+      metricCard("Intent rate",percentage(t.intents,t.uniqueViews,1),"Intent ÷ unique card views"),
+      metricCard("Viewed → intent",percentage(t.intents,t.contactViewed,0),"Intent ÷ contact viewed")
     ].join("");
+
+    const eras=groupDemand(card=>card.era||"Unspecified")
+      .sort((a,b)=>b.views-a.views||b.intent-a.intent||b.inventory-a.inventory);
+    const priceOrder=["Under $500","$500–1,999","$2,000–4,999","$5,000+","No price"];
+    const prices=groupDemand(priceBand).sort((a,b)=>priceOrder.indexOf(a.label)-priceOrder.indexOf(b.label));
+    const languages=groupDemand(card=>card.language||"Unspecified")
+      .sort((a,b)=>b.views-a.views||b.intent-a.intent||b.inventory-a.inventory);
+    $("eraDemand").innerHTML=renderDemandList(eras,d.catalogueSupported);
+    $("priceBandDemand").innerHTML=renderDemandList(prices,d.catalogueSupported);
+    $("languageDemand").innerHTML=renderDemandList(languages,d.catalogueSupported);
+    $("marketDemand").innerHTML=renderMarkets();
+    $("opportunityList").innerHTML=renderOpportunities();
 
     $("visitTrendTotal").textContent=fmt(t.websiteVisits);
     $("cardTrendTotal").textContent=fmt(t.qualifiedViews);
@@ -353,8 +565,8 @@
   }
 
   function rankRow(row,index){
-    const contacts=Number(row._contacts||0), favorites=Number(row._favorites||0), views=Number(row.views||0);
-    const secondary=[row.game,`${fmt(views)} views`,favorites?`${fmt(favorites)} fav`:"",contacts?`${fmt(contacts)} contact`:""].filter(Boolean).join(" · ");
+    const intents=Number(row._intents||0), favorites=Number(row._favorites||0), views=Number(row.views||0);
+    const secondary=[row.game,`${fmt(views)} views`,favorites?`${fmt(favorites)} fav`:"",intents?`${fmt(intents)} intent`:""].filter(Boolean).join(" · ");
     return `<div class="rank-row"><span class="rank-no">${index+1}</span><div class="rank-copy"><strong>${esc(row.name||"Card")}</strong><span>${esc(secondary)}</span></div><div class="rank-value"><strong>${fmt(row._interest)}</strong><span>interest</span></div></div>`;
   }
 
@@ -363,7 +575,7 @@
   }
 
   function hasCardActivity(row){
-    return Number(row.views||0)>0||Number(row._favorites||0)>0||Number(row._contacts||0)>0||Number(row.shares||0)>0||Number(row.image_expands||0)>0;
+    return Number(row.views||0)>0||Number(row._favorites||0)>0||Number(row._contactViewed||0)>0||Number(row._intents||0)>0||Number(row.shares||0)>0||Number(row.image_expands||0)>0;
   }
 
   function renderCards(){
@@ -376,7 +588,7 @@
       views:(a,b)=>Number(b.views||0)-Number(a.views||0)||b._interest-a._interest,
       unique:(a,b)=>Number(b.unique_views||0)-Number(a.unique_views||0)||Number(b.views||0)-Number(a.views||0),
       favorites:(a,b)=>Number(b._favorites||0)-Number(a._favorites||0)||b._interest-a._interest,
-      contacts:(a,b)=>Number(b._contacts||0)-Number(a._contacts||0)||b._interest-a._interest
+      intent:(a,b)=>Number(b._intents||0)-Number(a._intents||0)||b._interest-a._interest
     };
     rows.sort(sorters[state.cardSort]||sorters.interest);
     $("cardsCount").textContent=`${rows.length} active`;
@@ -390,7 +602,7 @@
         <div><span>Views</span><strong>${fmt(row.views)}</strong></div>
         <div><span>Unique</span><strong>${fmt(row.unique_views)}</strong></div>
         <div><span>Favorites</span><strong>${fmt(row._favorites)}</strong></div>
-        <div><span>Contacts</span><strong>${fmt(row._contacts)}</strong></div>
+        <div><span>Intents</span><strong>${fmt(row._intents)}</strong></div>
       </div>
     </article>`;
   }

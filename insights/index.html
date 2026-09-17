@@ -14,9 +14,9 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <link rel="icon" href="./assets/icon-192.png">
-  <link rel="stylesheet" href="./styles.css?v=2026-09-18-v01">
+  <link rel="stylesheet" href="./styles.css?v=2026-09-18-v02">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
-  <script defer src="./app.js?v=2026-09-18-v01"></script>
+  <script defer src="./app.js?v=2026-09-18-v02"></script>
 </head>
 <body>
   <div class="safe-top"></div>
@@ -94,6 +94,26 @@
           <small id="overviewUpdated">—</small>
         </section>
         <div id="overviewMetrics" class="metric-grid"></div>
+        <section class="panel intelligence-panel">
+          <div class="panel-head"><div><span>ERA</span><h3>Demand by era</h3></div><small>Demand vs inventory</small></div>
+          <div id="eraDemand" class="demand-list"></div>
+        </section>
+        <section class="panel intelligence-panel">
+          <div class="panel-head"><div><span>PRICE</span><h3>Price band demand</h3></div><small>Always visible</small></div>
+          <div id="priceBandDemand" class="demand-list"></div>
+        </section>
+        <section class="panel intelligence-panel">
+          <div class="panel-head"><div><span>MARKETS</span><h3>Card views by country</h3></div><small>Top era & card</small></div>
+          <div id="marketDemand" class="market-list"></div>
+        </section>
+        <section class="panel intelligence-panel">
+          <div class="panel-head"><div><span>OPPORTUNITIES</span><h3>What deserves attention</h3></div></div>
+          <div id="opportunityList" class="opportunity-list"></div>
+        </section>
+        <details class="panel context-panel">
+          <summary><span>LANGUAGE</span><strong>Language demand context</strong><small>Secondary view</small></summary>
+          <div id="languageDemand" class="demand-list context-demand"></div>
+        </details>
         <section class="panel">
           <div class="panel-head"><div><span>TRAFFIC</span><h3>Website visits</h3></div><strong id="visitTrendTotal">—</strong></div>
           <div id="visitChart" class="chart-wrap"></div>
@@ -124,7 +144,7 @@
             <option value="views">Views</option>
             <option value="unique">Unique views</option>
             <option value="favorites">Favorites</option>
-            <option value="contacts">Contacts</option>
+            <option value="intent">Intent</option>
           </select>
         </section>
         <div id="cardPerformanceList" class="card-performance-list"></div>
@@ -168,7 +188,7 @@
         <section class="panel account-panel">
           <div class="account-row"><span>Signed in as</span><strong id="accountEmail">—</strong></div>
           <div class="account-row"><span>Access</span><strong class="owner-badge">OWNER VERIFIED</strong></div>
-          <div class="account-row"><span>App version</span><strong>2026-09-18-v01</strong></div>
+          <div class="account-row"><span>App version</span><strong>2026-09-18-v02</strong></div>
         </section>
         <section class="panel">
           <div class="panel-head"><div><span>INSTALL</span><h3>Add to Home Screen</h3></div></div>
