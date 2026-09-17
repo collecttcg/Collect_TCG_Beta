@@ -78,7 +78,7 @@ export function registerFeatures(appContext){
   register26(appContext);
   register27(appContext);
   registerInsightsIntentRates(appContext);
-  registerInsightsDashboard(appContext);
+  if(typeof document!=="undefined") registerInsightsDashboard(appContext);
   register28(appContext);
   register29(appContext);
   register30(appContext);
