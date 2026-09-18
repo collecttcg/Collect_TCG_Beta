@@ -212,9 +212,64 @@ function renderHomePage(){
       .filter(c=>appContext.effectiveFormat(c)==="Sealed")
       .sort(byValue);
 
-    const featured=liveInventory.slice().sort(byValue)[0] || newest[0] || null;
-
     const firstImage=card=>appContext.getImages(card||{})[0] || "";
+
+    const isVintageSpotlightCard=card=>
+      appContext.normalizeFilterValue(card?.era)==="vintage" ||
+      appContext.normalizeFilterValue(card?.game)==="vintages" ||
+      appContext.normalizeFilterValue(card?.series).includes("vintage");
+
+    const dailySpotlightChoice=(cards,limit=3)=>{
+      const pool=cards.filter(Boolean).slice(0,Math.max(1,limit));
+      if(!pool.length) return null;
+      const dayIndex=Math.floor(Date.now()/(24*60*60*1000));
+      return pool[dayIndex%pool.length];
+    };
+
+    const curatedSpotlightPool=()=>{
+      const withImages=liveInventory.filter(card=>!!firstImage(card));
+      const source=withImages.length ? withImages : liveInventory;
+      const pool=[];
+      const seen=new Set();
+      const add=card=>{
+        const id=String(card?.id||"");
+        if(!id || seen.has(id)) return;
+        seen.add(id);
+        pool.push(card);
+      };
+
+      add(source.filter(card=>appContext.isChampionshipSeries(card.series)).sort(byValue)[0]);
+      add(source.filter(isVintageSpotlightCard).sort(byValue)[0]);
+      add(source.slice().sort(byNewest)[0]);
+      add(source.slice().sort(byValue)[0]);
+
+      return pool;
+    };
+
+    const selectCollectorSpotlight=({preferTrending=false}={})=>{
+      const withImages=liveInventory.filter(card=>!!firstImage(card));
+      const source=withImages.length ? withImages : liveInventory;
+
+      if(preferTrending && appContext.trending7dBackendState==="available"){
+        const trending=source
+          .filter(card=>appContext.trendingCardViews(card)>0)
+          .sort((a,b)=>
+            appContext.trendingCardUniqueViews(b)-appContext.trendingCardUniqueViews(a) ||
+            appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
+            byNewest(a,b)
+          );
+
+        if(trending.length){
+          return dailySpotlightChoice(trending,3);
+        }
+      }
+
+      return dailySpotlightChoice(curatedSpotlightPool(),4) || source.slice().sort(byNewest)[0] || null;
+    };
+
+    const featured=selectCollectorSpotlight({
+      preferTrending:appContext.trending7dBackendState==="available"
+    });
     const primaryPrice=card=>{
       if(!card) return "";
       if(appContext.normalizeFilterValue(card.availability)==="collection (nfs)") return "NOT FOR SALE";
@@ -290,9 +345,34 @@ function renderHomePage(){
         </a>`;
     };
 
-    const featuredImage=firstImage(featured);
-    const featuredGrade=compactGrade(featured);
-    const featuredReference=referenceText(featured);
+    const collectorSpotlightMarkup=card=>{
+      if(!card) return "";
+      const image=firstImage(card);
+      const grade=compactGrade(card);
+      const reference=referenceText(card);
+      return `
+        <section id="homeCollectorSpotlight"
+                 class="home-collector-spotlight"
+                 data-card-id="${appContext.escapeHtml(card.id)}"
+                 aria-label="Collector Spotlight">
+          <a class="home-collector-spotlight-media" href="#/card/${encodeURIComponent(card.id)}" aria-label="View ${appContext.escapeHtml(card.name)}">
+            ${image
+              ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(card.name)}" decoding="async">`
+              : `<div class="home-collector-spotlight-placeholder">Featured collectible</div>`}
+          </a>
+          <div class="home-collector-spotlight-copy">
+            <div class="eyebrow">Collector Spotlight</div>
+            <h3>${appContext.escapeHtml(card.name)}</h3>
+            <p>${appContext.escapeHtml(card.series || "A highlighted piece from our current catalogue.")}</p>
+            <div class="home-collector-spotlight-meta">
+              ${grade ? `<span>${appContext.escapeHtml(grade)}</span>` : ""}
+              ${reference ? `<span>${appContext.escapeHtml(reference)}</span>` : ""}
+              <strong>${appContext.escapeHtml(primaryPrice(card))}</strong>
+            </div>
+            <a href="#/card/${encodeURIComponent(card.id)}" class="btn-primary home-collector-spotlight-action">View Card</a>
+          </div>
+        </section>`;
+    };
 
     appContext.view.innerHTML=`
       <section class="home-premium-hero home-brand-hero">
@@ -320,25 +400,7 @@ function renderHomePage(){
         </div>
       </section>
 
-      ${featured ? `
-        <section class="home-collector-spotlight" aria-label="Collector Spotlight">
-          <a class="home-collector-spotlight-media" href="#/card/${encodeURIComponent(featured.id)}" aria-label="View ${appContext.escapeHtml(featured.name)}">
-            ${featuredImage
-              ? `<img src="${appContext.escapeHtml(featuredImage)}" alt="${appContext.escapeHtml(featured.name)}" decoding="async">`
-              : `<div class="home-collector-spotlight-placeholder">Featured collectible</div>`}
-          </a>
-          <div class="home-collector-spotlight-copy">
-            <div class="eyebrow">Collector Spotlight</div>
-            <h3>${appContext.escapeHtml(featured.name)}</h3>
-            <p>${appContext.escapeHtml(featured.series || "A highlighted piece from our current catalogue.")}</p>
-            <div class="home-collector-spotlight-meta">
-              ${featuredGrade ? `<span>${appContext.escapeHtml(featuredGrade)}</span>` : ""}
-              ${featuredReference ? `<span>${appContext.escapeHtml(featuredReference)}</span>` : ""}
-              <strong>${appContext.escapeHtml(primaryPrice(featured))}</strong>
-            </div>
-            <a href="#/card/${encodeURIComponent(featured.id)}" class="btn-primary home-collector-spotlight-action">View Card</a>
-          </div>
-        </section>` : ""}
+      ${collectorSpotlightMarkup(featured)}
 
       <section class="home-premium-curated">
         <div class="home-premium-section-head home-premium-curated-head">
@@ -416,6 +478,17 @@ function renderHomePage(){
         mount.innerHTML=trending.length
           ? premiumShelf("Trending This Week","The cards receiving the most qualified attention over the rolling last 7 days.",trending,"#/inventory?quick=trending",{eyebrow:"Collector Interest",trending:true})
           : "";
+
+        const spotlight=selectCollectorSpotlight({preferTrending:true});
+        const spotlightMount=appContext.$("homeCollectorSpotlight");
+        if(
+          spotlight &&
+          spotlightMount &&
+          appContext.view.contains(spotlightMount) &&
+          String(spotlightMount.dataset.cardId||"")!==String(spotlight.id||"")
+        ){
+          spotlightMount.outerHTML=collectorSpotlightMarkup(spotlight);
+        }
       })
       .catch(()=>{
         const mount=appContext.$("homeTrendingShelf");
