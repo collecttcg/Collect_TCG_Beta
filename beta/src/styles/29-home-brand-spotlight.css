@@ -1,7 +1,7 @@
 /* 2026-09-18-v06 — brand-first Home hero with compact Collector Spotlight. */
 .home-brand-hero{
-  grid-template-columns:minmax(0,1.14fr) minmax(330px,.86fr);
-  min-height:450px;
+  grid-template-columns:minmax(0,1fr);
+  min-height:0;
 }
 .home-brand-hero .home-premium-hero-copy{
   padding:clamp(34px,4.8vw,68px);
