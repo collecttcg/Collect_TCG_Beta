@@ -295,22 +295,19 @@ function renderHomePage(){
     const featuredReference=referenceText(featured);
 
     appContext.view.innerHTML=`
-      <section class="home-premium-hero">
+      <section class="home-premium-hero home-brand-hero">
         <div class="home-premium-hero-copy">
-          <div class="eyebrow">Collect TCG MY &amp; SG · Featured</div>
-          <h2>${featured ? appContext.escapeHtml(featured.name) : "Rare cards. Curated with intent."}</h2>
-          <p>${featured
-            ? "A highlighted piece from our current catalogue. Explore rare vintage, tournament and modern grails selected from our MY & SG collection."
-            : "Explore rare vintage, tournament and modern grails selected from our MY & SG collection."}</p>
-          ${featured ? `
-            <div class="home-premium-hero-meta">
-              ${featuredGrade ? `<span>${appContext.escapeHtml(featuredGrade)}</span>` : ""}
-              ${featuredReference ? `<span>${appContext.escapeHtml(featuredReference)}</span>` : ""}
-              <strong>${appContext.escapeHtml(primaryPrice(featured))}</strong>
-            </div>` : ""}
+          <div class="eyebrow">Collect TCG MY &amp; SG</div>
+          <h2>Rare cards. Curated with intent.</h2>
+          <p>Explore rare vintage, championship, modern and sealed collectibles selected for collectors in Malaysia, Singapore and beyond.</p>
+          <div class="home-brand-hero-points" aria-label="Collect TCG highlights">
+            <span>Malaysia &amp; Singapore</span>
+            <span>Vintage &amp; tournament grails</span>
+            <span>Direct collector support</span>
+          </div>
           <div class="home-premium-hero-actions">
-            ${featured ? `<a href="#/card/${encodeURIComponent(featured.id)}" class="btn-primary">View Featured Listing</a>` : ""}
-            <a href="#/inventory" class="btn-ghost">Browse Inventory</a>
+            <a href="#/inventory" class="btn-primary">Browse Inventory</a>
+            <a href="#/collection" class="btn-ghost">View Collection</a>
             <label class="global-currency-control home-premium-currency" title="Your preferred currency is saved on this device.">
               <span>Currency</span>
               <select id="homeCurrencyPreference" aria-label="Preferred display currency">
@@ -321,13 +318,42 @@ function renderHomePage(){
             </label>
           </div>
         </div>
-        <a class="home-premium-hero-visual" href="${featured?`#/card/${encodeURIComponent(featured.id)}`:"#/inventory"}" aria-label="${featured?`View ${appContext.escapeHtml(featured.name)}`:"Browse inventory"}">
-          ${featuredImage
-            ? `<img src="${appContext.escapeHtml(featuredImage)}" alt="${featured?appContext.escapeHtml(featured.name):"Featured collectible"}" decoding="async">`
-            : `<div class="home-premium-hero-placeholder"><span>COLLECT</span><strong>TCG</strong></div>`}
-          <span class="home-premium-hero-glow"></span>
+        <a class="home-premium-hero-visual home-brand-hero-visual" href="#/inventory" aria-label="Browse Collect TCG inventory">
+          <span class="home-brand-hero-halo"></span>
+          <span class="home-brand-hero-mark">
+            <img class="home-brand-hero-logo" src="./assets/shop-logo.png" alt="Collect TCG MY &amp; SG">
+            <span class="home-brand-hero-wordmark">
+              <strong>Collect TCG</strong>
+              <small>MY &amp; SG</small>
+            </span>
+          </span>
+          <span class="home-brand-hero-tags" aria-hidden="true">
+            <span>Vintage</span>
+            <span>Championship</span>
+            <span>Modern</span>
+          </span>
         </a>
       </section>
+
+      ${featured ? `
+        <section class="home-collector-spotlight" aria-label="Collector Spotlight">
+          <a class="home-collector-spotlight-media" href="#/card/${encodeURIComponent(featured.id)}" aria-label="View ${appContext.escapeHtml(featured.name)}">
+            ${featuredImage
+              ? `<img src="${appContext.escapeHtml(featuredImage)}" alt="${appContext.escapeHtml(featured.name)}" decoding="async">`
+              : `<div class="home-collector-spotlight-placeholder">Featured collectible</div>`}
+          </a>
+          <div class="home-collector-spotlight-copy">
+            <div class="eyebrow">Collector Spotlight</div>
+            <h3>${appContext.escapeHtml(featured.name)}</h3>
+            <p>${appContext.escapeHtml(featured.series || "A highlighted piece from our current catalogue.")}</p>
+            <div class="home-collector-spotlight-meta">
+              ${featuredGrade ? `<span>${appContext.escapeHtml(featuredGrade)}</span>` : ""}
+              ${featuredReference ? `<span>${appContext.escapeHtml(featuredReference)}</span>` : ""}
+              <strong>${appContext.escapeHtml(primaryPrice(featured))}</strong>
+            </div>
+            <a href="#/card/${encodeURIComponent(featured.id)}" class="btn-primary home-collector-spotlight-action">View Card</a>
+          </div>
+        </section>` : ""}
 
       <section class="home-premium-curated">
         <div class="home-premium-section-head home-premium-curated-head">
