@@ -1,0 +1,111 @@
+name: Finalize Beta 2026-09-18-v05
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v05]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v05 candidate
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "6a730fa60278b739a791318abea383036f7e3bd3"
+          git reset --hard 073aa86510ccace9cac7274a1ad0aff6b4e9cd76
+          test "$(git rev-parse HEAD~4)" = "6a730fa60278b739a791318abea383036f7e3bd3"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/register-features.js beta/src/features/cards/details.js beta/src/main.js | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only 6a730fa60278b739a791318abea383036f7e3bd3..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/features/cards/details.js
+
+      - name: Validate ZIP QR caption and behavior
+        run: |
+          set -euo pipefail
+          grep -Fq 'More cards, more photos, prices and updates on our website' beta/src/features/cards/details.js
+          ! grep -Fq 'More cards, prices and updates on our website' beta/src/features/cards/details.js
+          grep -Fq 'createCollectionCollageQrCode(appContext.CARD_WATERMARK_URL, 720)' beta/src/features/cards/details.js
+          grep -Fq 'const qrBlob = await appContext.createInventoryQrDownloadBlob(card);' beta/src/features/cards/details.js
+          grep -Fq 'Inventory QR.png' beta/src/features/cards/details.js
+          grep -Fq '../features/cards/details.js?v=2026-09-18-v05' beta/src/app/register-features.js
+          grep -Fq './app/register-features.js?v=2026-09-18-v05' beta/src/main.js
+          grep -Fq './src/main.js?v=2026-09-18-v05' beta/index.html
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v05-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v04 6a730fa60278b739a791318abea383036f7e3bd3
+          (cd /tmp/v04 && npm test > /tmp/v04-tests.log 2>&1 || true)
+
+          v05_pass="$(awk '/^# pass /{print $3}' /tmp/v05-tests.log | tail -1)"
+          v05_fail="$(awk '/^# fail /{print $3}' /tmp/v05-tests.log | tail -1)"
+          v04_pass="$(awk '/^# pass /{print $3}' /tmp/v04-tests.log | tail -1)"
+          v04_fail="$(awk '/^# fail /{print $3}' /tmp/v04-tests.log | tail -1)"
+
+          echo "v04 tests: pass=$v04_pass fail=$v04_fail"
+          echo "v05 tests: pass=$v05_pass fail=$v05_fail"
+          test -n "$v05_pass" -a -n "$v05_fail" -a -n "$v04_pass" -a -n "$v04_fail"
+          test "$v05_pass" = "$v04_pass"
+          test "$v05_fail" = "$v04_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -q 'facebookexternalhit' beta/src/services/analytics.js
+          grep -q 'Browse Collection by game' beta/src/features/inventory/page.js
+
+      - name: Squash and promote Beta v05
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft 6a730fa60278b739a791318abea383036f7e3bd3
+          git commit -m 'Beta 2026-09-18-v05: add more photos to ZIP QR caption'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v05.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v05-full.zip .)
+
+          for f in beta/index.html beta/src/app/register-features.js beta/src/features/cards/details.js beta/src/main.js; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v04-to-2026-09-18-v05-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v05-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v04-to-2026-09-18-v05-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v05-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v05-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v04-to-2026-09-18-v05-patch.zip
