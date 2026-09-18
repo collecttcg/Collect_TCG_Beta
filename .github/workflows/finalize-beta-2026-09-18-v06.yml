@@ -1,0 +1,133 @@
+name: Finalize Beta 2026-09-18-v06
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v06]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v06 candidate
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "8448ceaf2da5a10f3af4906a2ce8aaa868da89cc"
+          git reset --hard e6e176a49cc3ca3a31317ab8a75918c08fb0b535
+          test "$(git rev-parse HEAD~5)" = "8448ceaf2da5a10f3af4906a2ce8aaa868da89cc"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/register-features.js beta/src/features/content/home.js beta/src/main.js beta/src/styles/29-home-brand-spotlight.css | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only 8448ceaf2da5a10f3af4906a2ce8aaa868da89cc..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/features/content/home.js
+
+      - name: Validate Home brand hero and spotlight
+        run: |
+          set -euo pipefail
+          grep -Fq 'Rare cards. Curated with intent.' beta/src/features/content/home.js
+          grep -Fq 'Collector Spotlight' beta/src/features/content/home.js
+          grep -Fq 'Browse Inventory' beta/src/features/content/home.js
+          grep -Fq 'View Collection' beta/src/features/content/home.js
+          grep -Fq 'home-brand-hero-logo' beta/src/features/content/home.js
+          grep -Fq './assets/shop-logo.png' beta/src/features/content/home.js
+          grep -Fq 'const featured=liveInventory.slice().sort(byValue)[0] || newest[0] || null;' beta/src/features/content/home.js
+          ! grep -Fq 'Collect TCG MY &amp; SG · Featured' beta/src/features/content/home.js
+
+          grep -Fq '.home-brand-hero{' beta/src/styles/29-home-brand-spotlight.css
+          grep -Fq '.home-collector-spotlight{' beta/src/styles/29-home-brand-spotlight.css
+          grep -Fq '@media(max-width:800px)' beta/src/styles/29-home-brand-spotlight.css
+          grep -Fq 'body.light-mode .home-collector-spotlight' beta/src/styles/29-home-brand-spotlight.css
+
+          grep -Fq '../features/content/home.js?v=2026-09-18-v06' beta/src/app/register-features.js
+          grep -Fq './app/register-features.js?v=2026-09-18-v06' beta/src/main.js
+          grep -Fq './src/styles/29-home-brand-spotlight.css?v=2026-09-18-v06' beta/index.html
+          grep -Fq './src/main.js?v=2026-09-18-v06' beta/index.html
+
+      - name: Preserve existing Home sections
+        run: |
+          set -euo pipefail
+          grep -Fq 'Curated Collections' beta/src/features/content/home.js
+          grep -Fq 'Trending This Week' beta/src/features/content/home.js
+          grep -Fq 'Recently Added' beta/src/features/content/home.js
+          grep -Fq 'Collect with confidence' beta/src/features/content/home.js
+          grep -Fq 'homeCurrencyPreference' beta/src/features/content/home.js
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v06-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v05 8448ceaf2da5a10f3af4906a2ce8aaa868da89cc
+          (cd /tmp/v05 && npm test > /tmp/v05-tests.log 2>&1 || true)
+
+          v06_pass="$(awk '/^# pass /{print $3}' /tmp/v06-tests.log | tail -1)"
+          v06_fail="$(awk '/^# fail /{print $3}' /tmp/v06-tests.log | tail -1)"
+          v05_pass="$(awk '/^# pass /{print $3}' /tmp/v05-tests.log | tail -1)"
+          v05_fail="$(awk '/^# fail /{print $3}' /tmp/v05-tests.log | tail -1)"
+
+          echo "v05 tests: pass=$v05_pass fail=$v05_fail"
+          echo "v06 tests: pass=$v06_pass fail=$v06_fail"
+          test -n "$v06_pass" -a -n "$v06_fail" -a -n "$v05_pass" -a -n "$v05_fail"
+          test "$v06_pass" = "$v05_pass"
+          test "$v06_fail" = "$v05_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -q 'facebookexternalhit' beta/src/services/analytics.js
+          grep -q 'Browse Collection by game' beta/src/features/inventory/page.js
+          grep -R -q 'giveaway' beta/src/features/content beta/src/features/owner
+          test -f beta/src/features/owner/qr-generator.js
+          test -f beta/src/features/owner/insights-dashboard.js
+
+      - name: Squash and promote Beta v06
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft 8448ceaf2da5a10f3af4906a2ce8aaa868da89cc
+          git commit -m 'Beta 2026-09-18-v06: redesign Home featured presentation'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v06.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v06-full.zip .)
+
+          for f in beta/index.html beta/src/app/register-features.js beta/src/features/content/home.js beta/src/main.js beta/src/styles/29-home-brand-spotlight.css; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v05-to-2026-09-18-v06-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v06-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v05-to-2026-09-18-v06-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v06-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v06-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v05-to-2026-09-18-v06-patch.zip
