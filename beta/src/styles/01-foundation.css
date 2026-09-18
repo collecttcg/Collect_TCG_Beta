@@ -413,6 +413,7 @@
   .combo-option:hover,.combo-option:focus{background:var(--surface);outline:none;}
   /* ---------- Form / Add page & Modal ---------- */
   .form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px;max-width:640px;}
+  #addForm.form-card,#editForm.form-card{margin-left:auto;margin-right:auto;}
   .field{margin-bottom:13px;}
   .field label{display:block;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
   label[for="giveawayTitle"],
