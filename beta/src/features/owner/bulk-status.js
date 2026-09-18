@@ -728,6 +728,8 @@ function renderQrGeneratorPage(){
     appContext.view.innerHTML=`
       <div class="page-head"><div><div class="eyebrow">Inventory Tools · Activity</div><h2>QR Generator</h2><p>Create a scannable QR code for any website link.</p></div></div>
       <section class="panel qr-generator-panel">
+        <label for="qrGeneratorTitle"><strong>QR Title</strong><span>This title will be printed above the QR code in the downloaded image.</span></label>
+        <div class="qr-generator-entry"><input id="qrGeneratorTitle" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Collect TCG Inventory"></div>
         <label for="qrGeneratorUrl"><strong>Destination URL</strong><span>Paste the full link you want customers to open.</span></label>
         <div class="qr-generator-entry"><input id="qrGeneratorUrl" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com"><button type="button" class="btn-primary" id="generateQrBtn">Generate QR</button></div>
         <p class="hint" id="qrGeneratorMessage" aria-live="polite">HTTPS links are recommended.</p>
@@ -737,6 +739,7 @@ function renderQrGeneratorPage(){
         </div>
       </section>`;
 
+    const titleInput=appContext.$("qrGeneratorTitle");
     const input=appContext.$("qrGeneratorUrl");
     const message=appContext.$("qrGeneratorMessage");
     const result=appContext.$("qrGeneratorResult");
@@ -773,25 +776,41 @@ function renderQrGeneratorPage(){
       // Export a framed image instead of the bare QR. The white inset keeps a
       // generous quiet zone around the code so the decorative border does not
       // interfere with scanning.
+      const title=String(titleInput?.value||"").trim().slice(0,80);
       const exportCanvas=document.createElement("canvas");
       exportCanvas.width=520;
-      exportCanvas.height=520;
+      exportCanvas.height=title ? 600 : 520;
       const ctx=exportCanvas.getContext("2d",{alpha:false});
       if(!ctx){appContext.showToast("Could not prepare QR image.");return;}
 
+      const qrOffsetY=title ? 80 : 0;
       ctx.fillStyle="#111216";
-      ctx.fillRect(0,0,520,520);
+      ctx.fillRect(0,0,exportCanvas.width,exportCanvas.height);
       ctx.strokeStyle="#e3b341";
       ctx.lineWidth=8;
-      ctx.strokeRect(12,12,496,496);
+      ctx.strokeRect(12,12,496,exportCanvas.height-24);
       ctx.strokeStyle="rgba(227,179,65,0.42)";
       ctx.lineWidth=2;
-      ctx.strokeRect(25,25,470,470);
+      ctx.strokeRect(25,25,470,exportCanvas.height-50);
+
+      if(title){
+        ctx.fillStyle="#ffffff";
+        ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        let fontSize=28;
+        const applyTitleFont=()=>{ctx.font=`800 ${fontSize}px Inter, Arial, sans-serif`;};
+        applyTitleFont();
+        while(fontSize>16 && ctx.measureText(title).width>430){
+          fontSize-=1;
+          applyTitleFont();
+        }
+        ctx.fillText(title,260,57,430);
+      }
 
       ctx.fillStyle="#ffffff";
-      ctx.fillRect(60,60,400,400);
+      ctx.fillRect(60,60+qrOffsetY,400,400);
       ctx.imageSmoothingEnabled=false;
-      ctx.drawImage(qrCanvas,80,80,360,360);
+      ctx.drawImage(qrCanvas,80,80+qrOffsetY,360,360);
 
       const link=document.createElement("a");
       link.href=exportCanvas.toDataURL("image/png");
