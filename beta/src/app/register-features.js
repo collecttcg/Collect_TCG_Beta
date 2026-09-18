@@ -17,7 +17,7 @@ import { register as register14 } from '../app/routing.js';
 import { register as register15 } from '../features/media/images.js';
 import { register as register16 } from '../features/cards/presentation.js';
 import { register as register17 } from '../features/owner/forms.js';
-import { register as register18 } from '../features/content/home.js';
+import { register as register18 } from '../features/content/home.js?v=2026-09-18-v06';
 import { register as register19 } from '../features/inventory/filtering.js';
 import { register as register20 } from '../features/cards/related.js';
 import { register as register21 } from '../features/cards/compare.js';
