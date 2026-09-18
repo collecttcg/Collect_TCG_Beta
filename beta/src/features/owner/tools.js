@@ -754,89 +754,6 @@ function renderStorageAuditPage(){
       el.innerHTML=`<strong>${appContext.escapeHtml(title)}</strong><span>${appContext.escapeHtml(message)}</span>`;
     };
 
-    const selectedOrphanPaths=()=>[
-      ...appContext.view.querySelectorAll("[data-storage-orphan-path]:checked")
-    ].map(input=>String(input.dataset.storageOrphanPath||"")).filter(Boolean);
-
-    const updateSelectionSummary=()=>{
-      if(!latestAudit) return;
-      const selected=new Set(selectedOrphanPaths());
-      const bytes=latestAudit.orphans
-        .filter(file=>selected.has(file.path))
-        .reduce((sum,file)=>sum+file.size,0);
-      const label=appContext.$("storageAuditSelectedSummary");
-      const btn=appContext.$("storageAuditDeleteBtn");
-      if(label){
-        label.textContent=`${selected.size.toLocaleString()} selected · ${appContext.formatApproxBytes(bytes)}`;
-      }
-      if(btn) btn.disabled=!selected.size;
-    };
-
-    const bindResultEvents=()=>{
-      appContext.$("storageAuditSelectAllBtn")?.addEventListener("click",()=>{
-        const boxes=[...appContext.view.querySelectorAll("[data-storage-orphan-path]")];
-        const shouldSelect=boxes.some(box=>!box.checked);
-        boxes.forEach(box=>{ box.checked=shouldSelect; });
-        updateSelectionSummary();
-      });
-
-      appContext.view.querySelectorAll("[data-storage-orphan-path]").forEach(input=>{
-        input.addEventListener("change",updateSelectionSummary);
-      });
-
-      appContext.$("storageAuditDeleteBtn")?.addEventListener("click",async()=>{
-        const paths=selectedOrphanPaths();
-        if(!paths.length) return;
-
-        const selected=new Set(paths);
-        const bytes=latestAudit.orphans
-          .filter(file=>selected.has(file.path))
-          .reduce((sum,file)=>sum+file.size,0);
-
-        const ok=confirm(
-          `Delete ${paths.length} selected orphaned file${paths.length===1?"":"s"}?\n\n`+
-          `Estimated space to reclaim: ${appContext.formatApproxBytes(bytes)}\n\n`+
-          `A fresh database reference check will run before deletion. Referenced files will be retained.`
-        );
-        if(!ok) return;
-
-        const btn=appContext.$("storageAuditDeleteBtn");
-        if(btn){
-          btn.disabled=true;
-          btn.textContent="Checking & deleting…";
-        }
-
-        let allOk=true;
-        for(let i=0;i<paths.length;i+=100){
-          const okChunk=await appContext.removeCardStoragePaths(paths.slice(i,i+100));
-          if(!okChunk){
-            allOk=false;
-            break;
-          }
-        }
-
-        if(!allOk){
-          setStatus(
-            "Cleanup stopped safely",
-            "The reference check or Storage delete was not confirmed. Remaining files were retained.",
-            "warn"
-          );
-          if(btn){
-            btn.disabled=false;
-            btn.textContent="Delete Selected Orphans";
-          }
-          return;
-        }
-
-        setStatus(
-          "Cleanup completed",
-          "Selected unreferenced files were processed. Running a fresh audit now…",
-          "ok"
-        );
-        await runAudit();
-      });
-    };
-
     const renderAudit=audit=>{
       const usage=audit.usage;
       const totalStorage=usage?.ok ? usage.storageBytes : null;
@@ -882,15 +799,13 @@ function renderStorageAuditPage(){
               <p>Files not referenced by any card image, thumbnail, original image or reversible watermark variant.</p>
             </div>
             <div class="storage-audit-inline-actions">
-              <button type="button" class="btn-ghost" id="storageAuditSelectAllBtn" ${audit.orphans.length?"":"disabled"}>Select All</button>
-              <button type="button" class="btn-danger" id="storageAuditDeleteBtn" disabled>Delete Selected Orphans</button>
+              <span class="hint">Scan-only Beta</span>
             </div>
           </div>
-          <div id="storageAuditSelectedSummary" class="hint">0 selected · 0 B</div>
-          ${appContext.storageAuditTableRows(audit.orphans,{checkboxes:true,limit:100})}
+          ${appContext.storageAuditTableRows(audit.orphans,{limit:100})}
           <div class="storage-audit-safety-note">
-            <strong>Safety check</strong>
-            <span>Delete runs the existing full database reference check again immediately before removing files. Nothing is auto-deleted.</span>
+            <strong>Analysis only</strong>
+            <span>This Beta reports unreferenced files and estimated reclaimable space. It cannot delete Storage objects.</span>
           </div>
         </section>
 
@@ -929,7 +844,6 @@ function renderStorageAuditPage(){
         </section>
       `;
 
-      bindResultEvents();
     };
 
     const runAudit=async()=>{
