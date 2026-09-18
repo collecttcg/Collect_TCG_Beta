@@ -96,7 +96,7 @@ jobs:
           grep -q 'facebookexternalhit' beta/src/services/analytics.js
           grep -q 'Browse Collection by game' beta/src/features/inventory/page.js
           grep -R -q 'giveaway' beta/src/features/content beta/src/features/owner
-          test -f beta/src/features/owner/qr-generator.js
+          grep -Fq 'QR Generator' beta/src/features/owner/tools.js
           test -f beta/src/features/owner/insights-dashboard.js
 
       - name: Squash and promote Beta v06
