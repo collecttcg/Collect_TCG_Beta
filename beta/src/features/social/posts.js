@@ -2582,6 +2582,7 @@ function cardListFormat(card){
 
 function rawConditionPostLabel(card){
     const c = String(card?.condition || "").trim().toUpperCase();
+    if(c === "M") return "Mint";
     if(c && c !== "NA" && c !== "SEALED") return c;
     return "RAW";
   }
