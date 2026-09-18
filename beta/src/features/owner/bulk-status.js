@@ -767,17 +767,39 @@ function renderQrGeneratorPage(){
     input?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();generate();}});
     appContext.$("copyQrUrlBtn")?.addEventListener("click",()=>{if(currentUrl) appContext.copyPlainText(currentUrl,"QR link copied");});
     appContext.$("downloadQrBtn")?.addEventListener("click",()=>{
-      const canvas=holder.querySelector("canvas");
-      const image=holder.querySelector("img");
-      const href=canvas ? canvas.toDataURL("image/png") : image?.src;
-      if(!href){appContext.showToast("Generate a QR code first.");return;}
+      const qrCanvas=holder.querySelector("canvas");
+      if(!qrCanvas){appContext.showToast("Generate a QR code first.");return;}
+
+      // Export a framed image instead of the bare QR. The white inset keeps a
+      // generous quiet zone around the code so the decorative border does not
+      // interfere with scanning.
+      const exportCanvas=document.createElement("canvas");
+      exportCanvas.width=520;
+      exportCanvas.height=520;
+      const ctx=exportCanvas.getContext("2d",{alpha:false});
+      if(!ctx){appContext.showToast("Could not prepare QR image.");return;}
+
+      ctx.fillStyle="#111216";
+      ctx.fillRect(0,0,520,520);
+      ctx.strokeStyle="#e3b341";
+      ctx.lineWidth=8;
+      ctx.strokeRect(12,12,496,496);
+      ctx.strokeStyle="rgba(227,179,65,0.42)";
+      ctx.lineWidth=2;
+      ctx.strokeRect(25,25,470,470);
+
+      ctx.fillStyle="#ffffff";
+      ctx.fillRect(60,60,400,400);
+      ctx.imageSmoothingEnabled=false;
+      ctx.drawImage(qrCanvas,80,80,360,360);
+
       const link=document.createElement("a");
-      link.href=href;
+      link.href=exportCanvas.toDataURL("image/png");
       link.download="Collect-TCG-QR-Code.png";
       document.body.appendChild(link);
       link.click();
       link.remove();
-      appContext.showToast("QR code downloaded");
+      appContext.showToast("Framed QR code downloaded");
     });
   }
 
