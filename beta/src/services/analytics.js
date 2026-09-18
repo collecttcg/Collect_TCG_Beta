@@ -236,13 +236,24 @@ async function createAnalyticsExclusionLink(){
     }
   }
 
-function isKnownAutomatedSocialFetcher(){
-    // Exclude explicit Meta crawler/fetcher identities only. Do not match
-    // normal Facebook/Instagram in-app browser tokens such as FBAN/FBAV.
-    let ua="";
+function analyticsUserAgent(){
     try{
-      ua=String(typeof navigator!=="undefined" ? navigator.userAgent||"" : "").toLowerCase();
+      return String(typeof navigator!=="undefined" ? navigator.userAgent||"" : "").toLowerCase();
+    }catch{
+      return "";
+    }
+  }
+
+function isKnownAutomatedSocialFetcher(){
+    // Exclude explicit social fetchers plus common browser-automation/search
+    // crawler identities. Normal Facebook/Instagram in-app browsers are not
+    // blocked here; they are handled by the human-interaction gate below.
+    const ua=appContext.analyticsUserAgent();
+
+    try{
+      if(typeof navigator!=="undefined" && navigator.webdriver===true) return true;
     }catch{}
+
     if(!ua) return false;
 
     return [
@@ -253,14 +264,147 @@ function isKnownAutomatedSocialFetcher(){
       "meta-externalagent",
       "meta-externalfetcher",
       "meta-webindexer",
-      "meta-externalads"
+      "meta-externalads",
+      "headlesschrome",
+      "phantomjs",
+      "selenium",
+      "playwright",
+      "puppeteer",
+      "googlebot",
+      "bingbot",
+      "bingpreview",
+      "duckduckbot",
+      "baiduspider",
+      "yandexbot",
+      "slurp",
+      "applebot",
+      "petalbot",
+      "twitterbot",
+      "linkedinbot",
+      "pinterestbot",
+      "slackbot",
+      "discordbot",
+      "telegrambot",
+      "crawler",
+      "spider",
+      "previewbot",
+      "linkpreview"
     ].some(token=>ua.includes(token));
+  }
+
+function isFacebookInstagramAnalyticsSession(){
+    try{
+      const source=appContext.currentVisitorTrafficSource();
+      if(source==="Facebook" || source==="Instagram") return true;
+    }catch{}
+
+    const ua=appContext.analyticsUserAgent();
+    if([
+      "fban/",
+      "fbav/",
+      "fb_iab",
+      "fbios",
+      "fb4a",
+      "messengerforios",
+      "instagram"
+    ].some(token=>ua.includes(token))){
+      return true;
+    }
+
+    try{
+      const params=new URLSearchParams(String(location.search||""));
+      if(params.has("fbclid") || params.has("igshid")) return true;
+    }catch{}
+
+    return false;
+  }
+
+function socialAnalyticsNeedsHumanInteraction(){
+    return appContext.isFacebookInstagramAnalyticsSession() &&
+      !appContext.analyticsHumanInteractionObserved;
   }
 
 function isBuyerAnalyticsBlocked(){
     return appContext.isOwnerAuthenticated() ||
       appContext.isAnalyticsExcludedDevice() ||
-      appContext.isKnownAutomatedSocialFetcher();
+      appContext.isKnownAutomatedSocialFetcher() ||
+      appContext.socialAnalyticsNeedsHumanInteraction();
+  }
+
+async function resumeDeferredSocialAnalytics(){
+    if(!appContext.isFacebookInstagramAnalyticsSession()) return false;
+    if(!appContext.analyticsHumanInteractionObserved) return false;
+    if(appContext.isOwnerAuthenticated() || appContext.isAnalyticsExcludedDevice() || appContext.isKnownAutomatedSocialFetcher()) return false;
+    if(!appContext.analyticsDeferredSocialStartupAttempted) return false;
+    if(appContext.analyticsDeferredSocialResumeStarted) return true;
+
+    appContext.analyticsDeferredSocialResumeStarted=true;
+
+    try{
+      await appContext.recordAnalyticsSession();
+      appContext.startSessionDurationTracking();
+      await appContext.recordWebsiteVisit();
+
+      // If the social link opened a card before human proof was available,
+      // start its normal 2-second qualification window now.
+      const cardId=appContext.safeCardId(appContext.detailsCardId||"");
+      if(cardId && !appContext.detailsOverlay?.hidden && Array.isArray(appContext.cards)){
+        const card=appContext.cards.find(row=>String(row?.id||"")===cardId);
+        if(card) appContext.recordCardViewEvent(card);
+      }
+
+      return true;
+    }catch(error){
+      console.warn("Deferred social analytics could not resume:",error);
+      return false;
+    }
+  }
+
+function noteHumanAnalyticsInteraction(event){
+    if(event && event.isTrusted===false) return false;
+
+    try{
+      if(typeof document!=="undefined" && (document.hidden || (document.visibilityState && document.visibilityState!=="visible"))){
+        return false;
+      }
+    }catch{}
+
+    if(appContext.analyticsHumanInteractionObserved) return true;
+
+    appContext.analyticsHumanInteractionObserved=true;
+    try{
+      appContext.sessionStorage.setItem(appContext.ANALYTICS_HUMAN_INTERACTION_SESSION_KEY,"1");
+    }catch{}
+
+    if(appContext.analyticsDeferredSocialStartupAttempted){
+      Promise.resolve().then(()=>appContext.resumeDeferredSocialAnalytics());
+    }
+
+    return true;
+  }
+
+function setupSocialAnalyticsHumanInteractionGate(){
+    if(!appContext.isFacebookInstagramAnalyticsSession()) return false;
+    if(appContext.analyticsHumanInteractionObserved) return true;
+    if(typeof window==="undefined" || appContext.analyticsHumanInteractionHandlersInstalled) return false;
+
+    appContext.analyticsHumanInteractionHandlersInstalled=true;
+    const options={capture:true,passive:true};
+    const types=["pointerdown","touchstart","mousedown","click","keydown","wheel"];
+
+    const handler=event=>{
+      if(!appContext.noteHumanAnalyticsInteraction(event)) return;
+      for(const type of types){
+        try{window.removeEventListener(type,handler,options);}catch{}
+      }
+      appContext.analyticsHumanInteractionHandlersInstalled=false;
+    };
+
+    for(const type of types){
+      window.addEventListener(type,handler,options);
+    }
+
+    return true;
   }
 
 function getVisitorId(){
@@ -771,7 +915,12 @@ function getAnalyticsSessionId(){
   }
 
 async function recordAnalyticsSession(){
-    if(appContext.isBuyerAnalyticsBlocked()) return false;
+    if(appContext.isBuyerAnalyticsBlocked()){
+      if(appContext.socialAnalyticsNeedsHumanInteraction()){
+        appContext.analyticsDeferredSocialStartupAttempted=true;
+      }
+      return false;
+    }
     const sessionId=appContext.getAnalyticsSessionId();
     const visitorId=appContext.getVisitorId();
     if(!sessionId || !visitorId) return false;
@@ -1661,7 +1810,7 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,isKnownAutomatedSocialFetcher,isBuyerAnalyticsBlocked,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -1701,6 +1850,22 @@ window.collectTrackEngagement=(eventType,cardId,platform="")=>
 window.collectCurrentDetailsCardId=()=>appContext.safeCardId(appContext.detailsCardId||"");
 
   appContext.WEBSITE_VISIT_SESSION_KEY = "collect_tcg_website_visit_recorded_fresh_v1";
+
+  appContext.ANALYTICS_HUMAN_INTERACTION_SESSION_KEY = "collect_tcg_human_interaction_v1";
+
+  appContext.analyticsHumanInteractionObserved = false;
+  try{
+    appContext.analyticsHumanInteractionObserved=
+      appContext.sessionStorage.getItem(appContext.ANALYTICS_HUMAN_INTERACTION_SESSION_KEY)==="1";
+  }catch{}
+
+  appContext.analyticsDeferredSocialStartupAttempted = false;
+
+  appContext.analyticsDeferredSocialResumeStarted = false;
+
+  appContext.analyticsHumanInteractionHandlersInstalled = false;
+
+  appContext.setupSocialAnalyticsHumanInteractionGate();
 
   appContext.ANALYTICS_SESSION_ID_KEY = "collect_tcg_analytics_session_id_v1";
 
