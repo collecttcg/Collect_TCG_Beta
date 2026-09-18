@@ -380,7 +380,7 @@ async function createInventoryQrDownloadBlob(card){
     copyY = drawCenteredLines("Collect TCG",copyY,{
       font:"800 106px Inter, Arial, sans-serif",color:"#111827",lineHeight:116,maxLines:1
     }) + 16;
-    copyY = drawCenteredLines("More cards, prices and updates on our website",copyY,{
+    copyY = drawCenteredLines("More cards, more photos, prices and updates on our website",copyY,{
       font:"700 48px Inter, Arial, sans-serif",color:"rgba(17,24,39,0.78)",lineHeight:62,maxLines:2
     }) + 20;
 
