@@ -318,21 +318,6 @@ function renderHomePage(){
             </label>
           </div>
         </div>
-        <a class="home-premium-hero-visual home-brand-hero-visual" href="#/inventory" aria-label="Browse Collect TCG inventory">
-          <span class="home-brand-hero-halo"></span>
-          <span class="home-brand-hero-mark">
-            <img class="home-brand-hero-logo" src="./assets/shop-logo.png" alt="Collect TCG MY &amp; SG">
-            <span class="home-brand-hero-wordmark">
-              <strong>Collect TCG</strong>
-              <small>MY &amp; SG</small>
-            </span>
-          </span>
-          <span class="home-brand-hero-tags" aria-hidden="true">
-            <span>Vintage</span>
-            <span>Championship</span>
-            <span>Modern</span>
-          </span>
-        </a>
       </section>
 
       ${featured ? `
