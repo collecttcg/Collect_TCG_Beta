@@ -1,0 +1,202 @@
+name: Finalize Beta 2026-09-18-v07
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v07]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v07 candidate
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "a5ca183be01f9a3af75d7df638087bbf6c4cf97e"
+          git reset --hard 93c89e0df712f98ddf4e94a29ae500bcb01a1cbf
+          test "$(git rev-parse HEAD~4)" = "a5ca183be01f9a3af75d7df638087bbf6c4cf97e"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/register-features.js beta/src/features/social/posts.js beta/src/main.js | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only a5ca183be01f9a3af75d7df638087bbf6c4cf97e..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/features/social/posts.js
+
+      - name: Validate social footer removal
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          text=Path("beta/src/features/social/posts.js").read_text()
+
+          if "appContext.collectSocialPostLines()" in text:
+              raise SystemExit("A generator still calls collectSocialPostLines()")
+
+          names=[
+              "buildFbPostText",
+              "buildFbNfsPostText",
+              "buildFbGiveawayPost",
+              "buildGiveawayWinnerAnnouncementPost",
+              "buildCarousellPostText",
+              "buildFbCardListPost",
+              "buildFbCardDropPost",
+          ]
+          for name in names:
+              if f"function {name}" not in text:
+                  raise SystemExit(f"Missing generator function: {name}")
+
+          # The shared social-link UI/URLs remain available elsewhere; only
+          # generated-post insertion is removed.
+          helper=Path("beta/src/features/content/giveaways-data.js").read_text()
+          for marker in [
+              "function collectSocialLinksHtml",
+              "function collectSocialPostLines",
+              "instagram:",
+              "facebook:",
+              "carousellMY:",
+              "carousellSG:",
+          ]:
+              if marker not in helper:
+                  raise SystemExit(f"Expected retained social-link infrastructure: {marker}")
+
+          # Giveaway entry requirements must remain.
+          for marker in [
+              "followFacebook",
+              "followInstagram",
+              "facebookPageUrl",
+              "instagramUrl",
+              "includeFacebookGroupBonus",
+          ]:
+              if marker not in text:
+                  raise SystemExit(f"Expected giveaway requirement marker: {marker}")
+
+          print("All generator footer and giveaway-preservation checks passed")
+          PY
+
+          grep -Fq "../features/social/posts.js?v=2026-09-18-v07" beta/src/app/register-features.js
+          grep -Fq "./app/register-features.js?v=2026-09-18-v07" beta/src/main.js
+          grep -Fq "./src/main.js?v=2026-09-18-v07" beta/index.html
+
+      - name: Smoke-test single and NFS generated text
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { register } from './beta/src/features/social/posts.js';
+
+          globalThis.location={
+            origin:'https://example.test',
+            pathname:'/Collect_TCG_Beta/beta/',
+            search:''
+          };
+
+          const appContext={
+            localStorage:{getItem(){return null},setItem(){}},
+            normalizeFilterValue:v=>String(v||'').trim().toLowerCase(),
+            effectiveFormat:()=> 'Raw',
+            rawConditionPostLabel:()=> 'RAW',
+            getCardShareUrl:id=>`https://example.test/card/${id}`,
+            getWebsiteShareUrl:()=> 'https://example.test/inventory'
+          };
+          register(appContext);
+
+          const values={
+            language:'en',
+            title:'TEST CARD',
+            hashtags:'#tcg',
+            carousellShopUrl:'https://carousell.test/',
+            instagramUrl:'https://instagram.test/'
+          };
+          const card={id:'abc',name:'Test Card'};
+
+          for(const [name,output] of [
+            ['single',appContext.buildFbPostText(card,values)],
+            ['nfs',appContext.buildFbNfsPostText(card,values)]
+          ]){
+            if(/SOCIALS|Instagram:|Facebook:|Carousell Malaysia:|Carousell Singapore:/i.test(output)){
+              throw new Error(name+' still contains social footer');
+            }
+            if(!output.includes('HASHTAG :')) throw new Error(name+' lost hashtags');
+            if((output.match(/━━━━━━━━━━━━━━━━━━━━━━━━/g)||[]).some?.(()=>false)){}
+          }
+          console.log('Single and NFS generator smoke tests passed');
+          NODE
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v07-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v06 a5ca183be01f9a3af75d7df638087bbf6c4cf97e
+          (cd /tmp/v06 && npm test > /tmp/v06-tests.log 2>&1 || true)
+
+          v07_pass="$(awk '/^# pass /{print $3}' /tmp/v07-tests.log | tail -1)"
+          v07_fail="$(awk '/^# fail /{print $3}' /tmp/v07-tests.log | tail -1)"
+          v06_pass="$(awk '/^# pass /{print $3}' /tmp/v06-tests.log | tail -1)"
+          v06_fail="$(awk '/^# fail /{print $3}' /tmp/v06-tests.log | tail -1)"
+
+          echo "v06 tests: pass=$v06_pass fail=$v06_fail"
+          echo "v07 tests: pass=$v07_pass fail=$v07_fail"
+          test -n "$v07_pass" -a -n "$v07_fail" -a -n "$v06_pass" -a -n "$v06_fail"
+          test "$v07_pass" = "$v06_pass"
+          test "$v07_fail" = "$v06_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -q 'facebookexternalhit' beta/src/services/analytics.js
+          grep -q 'Browse Collection by game' beta/src/features/inventory/page.js
+          grep -Fq 'QR Generator' beta/src/features/owner/tools.js
+          test -f beta/src/features/owner/insights-dashboard.js
+          grep -R -q 'giveaway' beta/src/features/content beta/src/features/owner
+          grep -Fq 'Rare cards. Curated with intent.' beta/src/features/content/home.js
+
+      - name: Squash and promote Beta v07
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft a5ca183be01f9a3af75d7df638087bbf6c4cf97e
+          git commit -m 'Beta 2026-09-18-v07: remove social footers from generators'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v07.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v07-full.zip .)
+
+          for f in beta/index.html beta/src/app/register-features.js beta/src/features/social/posts.js beta/src/main.js; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v06-to-2026-09-18-v07-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v07-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v06-to-2026-09-18-v07-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v07-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v07-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v06-to-2026-09-18-v07-patch.zip
