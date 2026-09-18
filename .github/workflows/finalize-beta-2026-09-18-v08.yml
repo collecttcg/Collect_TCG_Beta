@@ -1,0 +1,268 @@
+name: Finalize Beta 2026-09-18-v08
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v08]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v08 candidate
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "a89a0613784e0092542485eef201d93a5bc9be22"
+          git reset --hard c68add7b68fe19323161891caf340ea7c30279c4
+          test "$(git rev-parse HEAD~5)" = "a89a0613784e0092542485eef201d93a5bc9be22"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/initialize.js beta/src/app/register-features.js beta/src/main.js beta/src/services/analytics.js | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only a89a0613784e0092542485eef201d93a5bc9be22..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/services/analytics.js
+          node --check beta/src/app/initialize.js
+
+      - name: Validate stronger social analytics gate
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { register } from './beta/src/services/analytics.js';
+
+          const storage=()=>{
+            const map=new Map();
+            return {
+              getItem:key=>map.has(key)?map.get(key):null,
+              setItem:(key,value)=>map.set(key,String(value))
+            };
+          };
+
+          function setNavigator(userAgent,webdriver=false){
+            Object.defineProperty(globalThis,'navigator',{
+              value:{
+                userAgent,
+                webdriver,
+                platform:'MacIntel',
+                maxTouchPoints:0
+              },
+              configurable:true
+            });
+          }
+
+          function setPage({referrer='',search=''}={}){
+            globalThis.document={
+              referrer,
+              hidden:false,
+              visibilityState:'visible'
+            };
+            globalThis.location={
+              hostname:'collecttcg.github.io',
+              search
+            };
+          }
+
+          function context(){
+            const appContext={
+              localStorage:storage(),
+              sessionStorage:storage(),
+              isOwnerAuthenticated:()=>false,
+              isAnalyticsExcludedDevice:()=>false,
+              safeCardId:value=>String(value||'').trim()
+            };
+            register(appContext);
+            appContext.ANALYTICS_HUMAN_INTERACTION_SESSION_KEY='collect_tcg_human_interaction_v1';
+            appContext.analyticsHumanInteractionObserved=false;
+            appContext.analyticsDeferredSocialStartupAttempted=false;
+            appContext.analyticsDeferredSocialResumeStarted=false;
+            appContext.analyticsHumanInteractionHandlersInstalled=false;
+            appContext.detailsCardId='';
+            appContext.cards=[];
+            return appContext;
+          }
+
+          // Direct normal traffic must remain unchanged.
+          setPage();
+          setNavigator('Mozilla/5.0 Chrome/152.0 Safari/537.36');
+          let app=context();
+          if(app.isFacebookInstagramAnalyticsSession()) throw new Error('Direct Chrome misclassified as social');
+          if(app.isBuyerAnalyticsBlocked()) throw new Error('Direct Chrome incorrectly blocked');
+
+          // Facebook referrer: blocked until trusted human proof.
+          setPage({referrer:'https://www.facebook.com/'});
+          setNavigator('Mozilla/5.0 Chrome/152.0 Safari/537.36');
+          app=context();
+          if(!app.isFacebookInstagramAnalyticsSession()) throw new Error('Facebook referrer not detected');
+          if(!app.isBuyerAnalyticsBlocked()) throw new Error('Facebook pre-interaction traffic not blocked');
+
+          const pre=await app.recordAnalyticsSession();
+          if(pre!==false || !app.analyticsDeferredSocialStartupAttempted){
+            throw new Error('Facebook startup was not deferred');
+          }
+
+          let sessionWrites=0,visitWrites=0,durationStarts=0;
+          app.recordAnalyticsSession=async()=>{sessionWrites+=1; return true;};
+          app.recordWebsiteVisit=async()=>{visitWrites+=1; return true;};
+          app.startSessionDurationTracking=()=>{durationStarts+=1;};
+
+          if(app.noteHumanAnalyticsInteraction({isTrusted:false})!==false){
+            throw new Error('Synthetic event was accepted as human');
+          }
+          if(!app.isBuyerAnalyticsBlocked()){
+            throw new Error('Synthetic event unlocked analytics');
+          }
+
+          if(!app.noteHumanAnalyticsInteraction({isTrusted:true})){
+            throw new Error('Trusted interaction not accepted');
+          }
+          await new Promise(resolve=>setTimeout(resolve,0));
+
+          if(app.isBuyerAnalyticsBlocked()) throw new Error('Trusted Facebook visitor stayed blocked');
+          if(sessionWrites!==1 || visitWrites!==1 || durationStarts!==1){
+            throw new Error(`Deferred analytics did not resume exactly once: ${sessionWrites}/${visitWrites}/${durationStarts}`);
+          }
+
+          // Repeated trusted events must not start another analytics session.
+          app.noteHumanAnalyticsInteraction({isTrusted:true});
+          await new Promise(resolve=>setTimeout(resolve,0));
+          if(sessionWrites!==1 || visitWrites!==1 || durationStarts!==1){
+            throw new Error('Deferred analytics resumed more than once');
+          }
+
+          // Instagram referrer.
+          setPage({referrer:'https://l.instagram.com/'});
+          setNavigator('Mozilla/5.0 Chrome/152.0 Safari/537.36');
+          app=context();
+          if(!app.isFacebookInstagramAnalyticsSession() || !app.isBuyerAnalyticsBlocked()){
+            throw new Error('Instagram referrer gate failed');
+          }
+
+          // Facebook in-app browser with no referrer.
+          setPage();
+          setNavigator('Mozilla/5.0 (iPhone) [FBAN/FBIOS;FBAV/500.0.0.0.0]');
+          app=context();
+          if(!app.isFacebookInstagramAnalyticsSession() || !app.isBuyerAnalyticsBlocked()){
+            throw new Error('Facebook in-app gate failed');
+          }
+          app.analyticsHumanInteractionObserved=true;
+          if(app.isBuyerAnalyticsBlocked()) throw new Error('Real Facebook in-app browser remained blocked after human proof');
+
+          // Instagram in-app browser with no referrer.
+          setPage();
+          setNavigator('Instagram 400.0.0.0.0 Android');
+          app=context();
+          if(!app.isFacebookInstagramAnalyticsSession() || !app.isBuyerAnalyticsBlocked()){
+            throw new Error('Instagram in-app gate failed');
+          }
+
+          // fbclid survives when referrer is unavailable.
+          setPage({search:'?fbclid=test-token'});
+          setNavigator('Mozilla/5.0 Chrome/152.0 Safari/537.36');
+          app=context();
+          if(!app.isFacebookInstagramAnalyticsSession() || !app.isBuyerAnalyticsBlocked()){
+            throw new Error('fbclid social gate failed');
+          }
+
+          // Explicit bots/headless/WebDriver remain blocked even after human flag.
+          for(const [ua,webdriver] of [
+            ['facebookexternalhit/1.1',false],
+            ['Mozilla/5.0 HeadlessChrome/152.0',false],
+            ['Googlebot/2.1',false],
+            ['Mozilla/5.0 Chrome/152.0',true]
+          ]){
+            setPage({referrer:'https://www.facebook.com/'});
+            setNavigator(ua,webdriver);
+            app=context();
+            app.analyticsHumanInteractionObserved=true;
+            if(!app.isKnownAutomatedSocialFetcher()) throw new Error('Known automated client not detected: '+ua);
+            if(!app.isBuyerAnalyticsBlocked()) throw new Error('Known automated client escaped gate: '+ua);
+          }
+
+          console.log('Social human-interaction and automated-client analytics tests passed');
+          NODE
+
+          grep -Fq "analytics.js?v=2026-09-18-v08" beta/src/app/register-features.js
+          grep -Fq "analytics.js?v=2026-09-18-v08" beta/src/app/initialize.js
+          grep -Fq "register-features.js?v=2026-09-18-v08" beta/src/main.js
+          grep -Fq "initialize.js?v=2026-09-18-v08" beta/src/main.js
+          grep -Fq "src/main.js?v=2026-09-18-v08" beta/index.html
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v08-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v07 a89a0613784e0092542485eef201d93a5bc9be22
+          (cd /tmp/v07 && npm test > /tmp/v07-tests.log 2>&1 || true)
+
+          v08_pass="$(awk '/^# pass /{print $3}' /tmp/v08-tests.log | tail -1)"
+          v08_fail="$(awk '/^# fail /{print $3}' /tmp/v08-tests.log | tail -1)"
+          v07_pass="$(awk '/^# pass /{print $3}' /tmp/v07-tests.log | tail -1)"
+          v07_fail="$(awk '/^# fail /{print $3}' /tmp/v07-tests.log | tail -1)"
+
+          echo "v07 tests: pass=$v07_pass fail=$v07_fail"
+          echo "v08 tests: pass=$v08_pass fail=$v08_fail"
+          test -n "$v08_pass" -a -n "$v08_fail" -a -n "$v07_pass" -a -n "$v07_fail"
+          test "$v08_pass" = "$v07_pass"
+          test "$v08_fail" = "$v07_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -Fq 'More cards, more photos, prices and updates on our website' beta/src/features/cards/details.js
+          grep -Fq 'Rare cards. Curated with intent.' beta/src/features/content/home.js
+          ! grep -Fq 'appContext.collectSocialPostLines()' beta/src/features/social/posts.js
+          grep -Fq 'QR Generator' beta/src/features/owner/tools.js
+          test -f beta/src/features/owner/insights-dashboard.js
+          grep -R -q 'giveaway' beta/src/features/content beta/src/features/owner
+          grep -Fq 'Browse Collection by game' beta/src/features/inventory/page.js
+
+      - name: Squash and promote Beta v08
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft a89a0613784e0092542485eef201d93a5bc9be22
+          git commit -m 'Beta 2026-09-18-v08: strengthen social analytics filtering'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v08.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v08-full.zip .)
+
+          for f in beta/index.html beta/src/app/initialize.js beta/src/app/register-features.js beta/src/main.js beta/src/services/analytics.js; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v07-to-2026-09-18-v08-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v08-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v07-to-2026-09-18-v08-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v08-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v08-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v07-to-2026-09-18-v08-patch.zip
