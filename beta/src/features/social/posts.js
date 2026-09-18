@@ -273,6 +273,13 @@ function defaultFbPostTitle(card){
     return `WTS【${appContext.fbFormatLabel(card)}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${parts.join(" ")}`.replace(/\s+/g," ").trim().toUpperCase();
   }
 
+function singleCardCopyTitle(card){
+    if(!card) return "";
+    const type=appContext.cardListFormat(card);
+    const lead=type==="graded" ? appContext.gradedPostLabel(card) : (type==="sealed" ? "Sealed" : appContext.rawConditionPostLabel(card));
+    return [lead,card.series,card.name,card.card_code].map(value=>String(value||"").trim()).filter(Boolean).join(" · ");
+  }
+
 function defaultFbHashtags(card){
     const game = appContext.normalizeFilterValue(card?.game || "");
     if(game.includes("one piece")){
@@ -618,12 +625,14 @@ function renderFbPostGeneratorPage(nfsMode=false){
               <h3>Post Preview</h3>
             </div>
             <div class="fb-post-copy-actions">
-              <button type="button" class="btn-ghost" id="fbCopyTitleBtn" disabled>Copy Title</button>
+              <button type="button" class="btn-ghost" id="fbCopyListingTitleBtn" disabled>Copy Listing Title</button>
+              <button type="button" class="btn-ghost" id="fbCopyTitleBtn" disabled>Copy Facebook Title</button>
               <button type="button" class="btn-ghost" id="fbCopyPostBtn" disabled>Copy Full Post</button>
               <button type="button" class="btn-primary fb-prepare-btn" id="fbPreparePostBtn" disabled>Prepare Facebook Post</button>
             </div>
           </div>
 
+          <div class="field"><label for="fbListingTitleOutput">Listing Title</label><input id="fbListingTitleOutput" type="text" readonly placeholder="Select a card to generate the listing title…"><div class="hint">Condition / grade / sealed · series · card name · card code. Empty fields are omitted.</div></div>
           <textarea id="fbPostOutput" class="fb-post-output" readonly placeholder="Select a card to generate the Facebook post…"></textarea>
 
           <div class="fb-post-bottom-actions">
@@ -645,8 +654,10 @@ function renderFbPostGeneratorPage(nfsMode=false){
     const shopInput = appContext.$("fbPostCarousellShop");
     const instagramInput = appContext.$("fbPostInstagram");
     const hashtagsInput = appContext.$("fbPostHashtags");
+    const listingTitleOutput = appContext.$("fbListingTitleOutput");
     const output = appContext.$("fbPostOutput");
     const selectedCardMount = appContext.$("fbPostSelectedCard");
+    const copyListingTitleBtn = appContext.$("fbCopyListingTitleBtn");
     const copyTitleBtn = appContext.$("fbCopyTitleBtn");
     const copyPostBtn = appContext.$("fbCopyPostBtn");
     const prepareBtn = appContext.$("fbPreparePostBtn");
@@ -729,7 +740,9 @@ function renderFbPostGeneratorPage(nfsMode=false){
 
     function updateOutput(){
       if(!selectedCard){
+        listingTitleOutput.value = "";
         output.value = "";
+        copyListingTitleBtn.disabled = true;
         copyTitleBtn.disabled = true;
         copyPostBtn.disabled = true;
         prepareBtn.disabled = true;
@@ -738,9 +751,11 @@ function renderFbPostGeneratorPage(nfsMode=false){
       }
 
       const values = currentValues();
+      listingTitleOutput.value = appContext.singleCardCopyTitle(selectedCard);
       output.value = nfsMode
         ? appContext.buildFbNfsPostText(selectedCard,values)
         : appContext.buildFbPostText(selectedCard,values);
+      copyListingTitleBtn.disabled = !listingTitleOutput.value.trim();
       copyTitleBtn.disabled = !titleInput.value.trim();
       copyPostBtn.disabled = !output.value.trim();
       prepareBtn.disabled = !output.value.trim();
@@ -830,6 +845,10 @@ function renderFbPostGeneratorPage(nfsMode=false){
         persistCurrent();
         updateOutput();
       });
+    });
+
+    copyListingTitleBtn.addEventListener("click", ()=>{
+      appContext.copyPlainText(listingTitleOutput.value, "Listing title copied");
     });
 
     copyTitleBtn.addEventListener("click", ()=>{
@@ -3725,7 +3744,7 @@ function renderFbCardListGeneratorPage(){
     applyOrderPreset("default");
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
