@@ -1,5 +1,7 @@
 /** V93 beta: features/owner/tools. Shared dependencies are explicit on appContext. */
 export function register(appContext){
+const SUPABASE_PRO_DATABASE_LIMIT_BYTES=8*1024*1024*1024;
+const SUPABASE_PRO_STORAGE_LIMIT_BYTES=100*1024*1024*1024;
 function currentInventoryToolMode(){
     const mode=appContext.currentHashParams().get("mode");
     const aliases={
@@ -758,7 +760,7 @@ function renderStorageAuditPage(){
       const usage=audit.usage;
       const totalStorage=usage?.ok ? usage.storageBytes : null;
       const storageLeft=usage?.ok
-        ? appContext.capacityLeft(usage.storageBytes,appContext.SUPABASE_FREE_STORAGE_LIMIT_BYTES)
+        ? appContext.capacityLeft(usage.storageBytes,SUPABASE_PRO_STORAGE_LIMIT_BYTES)
         : null;
       const exactDupFiles=audit.exactDuplicateGroups.reduce((sum,g)=>sum+g.length,0);
       const possibleDupFiles=audit.possibleDuplicateGroups.reduce((sum,g)=>sum+g.length,0);
@@ -1352,7 +1354,7 @@ function renderSupabaseHealthPage(){
         </div>
         <button class="btn-primary" type="button" id="healthRefreshBtn">Refresh Supabase Usage</button>
         <div id="healthCapacityWarning" class="capacity-warning" hidden></div>
-        <div class="hint" style="margin-top:10px">Database and file usage are read through the owner-only <code>get_owner_capacity_usage()</code> RPC. Remaining values are calculated from the live usage returned by <code>get_owner_capacity_usage()</code>. Reference capacities used for the calculation: 500 MB database and 1 GB File Storage.</div>
+        <div class="hint" style="margin-top:10px">Database and file usage are read through the owner-only <code>get_owner_capacity_usage()</code> RPC. Remaining values are calculated from the live usage returned by <code>get_owner_capacity_usage()</code>. Pro plan included capacities used for the calculation: 8 GB database disk and 100 GB File Storage.</div>
       </section>`;
 
     const refresh=async()=>{
@@ -1371,24 +1373,24 @@ function renderSupabaseHealthPage(){
             if(el) el.textContent="Unavailable";
           });
         }else{
-          const dbLeft=appContext.capacityLeft(usage.databaseBytes,appContext.SUPABASE_FREE_DATABASE_LIMIT_BYTES);
-          const storageLeft=appContext.capacityLeft(usage.storageBytes,appContext.SUPABASE_FREE_STORAGE_LIMIT_BYTES);
+          const dbLeft=appContext.capacityLeft(usage.databaseBytes,SUPABASE_PRO_DATABASE_LIMIT_BYTES);
+          const storageLeft=appContext.capacityLeft(usage.storageBytes,SUPABASE_PRO_STORAGE_LIMIT_BYTES);
           appContext.$("healthDbUsed").textContent=appContext.formatApproxBytes(usage.databaseBytes);
           appContext.$("healthDbLeft").textContent=appContext.formatApproxBytes(dbLeft);
           appContext.$("healthStorageUsed").textContent=appContext.formatApproxBytes(usage.storageBytes);
           appContext.$("healthStorageLeft").textContent=appContext.formatApproxBytes(storageLeft);
 
-          appContext.$("healthDbUsed").title=appContext.capacitySummaryText("Database",usage.databaseBytes,appContext.SUPABASE_FREE_DATABASE_LIMIT_BYTES);
-          appContext.$("healthDbLeft").title=appContext.capacitySummaryText("Database",usage.databaseBytes,appContext.SUPABASE_FREE_DATABASE_LIMIT_BYTES);
-          appContext.$("healthStorageUsed").title=appContext.capacitySummaryText("File Storage",usage.storageBytes,appContext.SUPABASE_FREE_STORAGE_LIMIT_BYTES);
-          appContext.$("healthStorageLeft").title=appContext.capacitySummaryText("File Storage",usage.storageBytes,appContext.SUPABASE_FREE_STORAGE_LIMIT_BYTES);
+          appContext.$("healthDbUsed").title=appContext.capacitySummaryText("Database",usage.databaseBytes,SUPABASE_PRO_DATABASE_LIMIT_BYTES);
+          appContext.$("healthDbLeft").title=appContext.capacitySummaryText("Database",usage.databaseBytes,SUPABASE_PRO_DATABASE_LIMIT_BYTES);
+          appContext.$("healthStorageUsed").title=appContext.capacitySummaryText("File Storage",usage.storageBytes,SUPABASE_PRO_STORAGE_LIMIT_BYTES);
+          appContext.$("healthStorageLeft").title=appContext.capacitySummaryText("File Storage",usage.storageBytes,SUPABASE_PRO_STORAGE_LIMIT_BYTES);
 
-          const dbPct=appContext.capacityPercent(usage.databaseBytes,appContext.SUPABASE_FREE_DATABASE_LIMIT_BYTES);
-          const storagePct=appContext.capacityPercent(usage.storageBytes,appContext.SUPABASE_FREE_STORAGE_LIMIT_BYTES);
+          const dbPct=appContext.capacityPercent(usage.databaseBytes,SUPABASE_PRO_DATABASE_LIMIT_BYTES);
+          const storagePct=appContext.capacityPercent(usage.storageBytes,SUPABASE_PRO_STORAGE_LIMIT_BYTES);
           const warning=appContext.$("healthCapacityWarning");
           const parts=[];
-          if(dbPct>=80) parts.push(`Database is ${dbPct.toFixed(1)}% of the 500 MB reference limit.`);
-          if(storagePct>=80) parts.push(`File Storage is ${storagePct.toFixed(1)}% of the 1 GB reference limit.`);
+          if(dbPct>=80) parts.push(`Database is ${dbPct.toFixed(1)}% of the 8 GB Pro included database disk.`);
+          if(storagePct>=80) parts.push(`File Storage is ${storagePct.toFixed(1)}% of the 100 GB Pro included File Storage.`);
           warning.hidden=!parts.length;
           warning.classList.toggle("danger",dbPct>=90||storagePct>=90);
           warning.textContent=parts.join(" ");
