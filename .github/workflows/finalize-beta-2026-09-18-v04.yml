@@ -1,0 +1,162 @@
+name: Finalize Beta 2026-09-18-v04
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v04]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v04 candidate
+        run: |
+          set -euo pipefail
+          git reset --hard 057ee09491fe6883af2601fdcc082b134b9f0a16
+          test "$(git rev-parse HEAD^~3)" = "27224cf189ddc38d1df8801adfe166009c6bdc61"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/register-features.js beta/src/main.js beta/src/services/analytics.js | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only 27224cf189ddc38d1df8801adfe166009c6bdc61..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/services/analytics.js
+
+      - name: Validate Meta crawler filter
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { register } from './beta/src/services/analytics.js';
+
+          const appContext={
+            isOwnerAuthenticated:()=>false,
+            isAnalyticsExcludedDevice:()=>false
+          };
+          register(appContext);
+
+          const setUA=ua=>Object.defineProperty(globalThis,'navigator',{
+            value:{userAgent:ua},
+            configurable:true
+          });
+
+          const blocked=[
+            'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+            'facebookcatalog/1.0',
+            'Facebot',
+            'FacebookBot/1.0',
+            'meta-externalagent/1.1',
+            'Meta-ExternalFetcher/1.1',
+            'meta-webindexer/1.1',
+            'meta-externalads/1.1'
+          ];
+          const allowed=[
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 [FBAN/FBIOS;FBAV/500.0.0.0.0]',
+            'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 [FBAN/FB4A;FBAV/500.0.0.0.0]',
+            'Instagram 400.0.0.0.0 Android',
+            'Mozilla/5.0 Chrome/152.0 Safari/537.36'
+          ];
+
+          for(const ua of blocked){
+            setUA(ua);
+            if(!appContext.isKnownAutomatedSocialFetcher()){
+              throw new Error('Expected blocked Meta crawler: '+ua);
+            }
+            if(!appContext.isBuyerAnalyticsBlocked()){
+              throw new Error('Expected buyer analytics blocked: '+ua);
+            }
+          }
+
+          for(const ua of allowed){
+            setUA(ua);
+            if(appContext.isKnownAutomatedSocialFetcher()){
+              throw new Error('Real browser incorrectly blocked: '+ua);
+            }
+            if(appContext.isBuyerAnalyticsBlocked()){
+              throw new Error('Real browser analytics incorrectly blocked: '+ua);
+            }
+          }
+
+          console.log('Meta crawler filter and in-app browser preservation OK');
+          NODE
+
+          grep -q 'facebookexternalhit' beta/src/services/analytics.js
+          grep -q 'facebookcatalog' beta/src/services/analytics.js
+          grep -q 'meta-externalfetcher' beta/src/services/analytics.js
+          grep -q 'isBuyerAnalyticsBlocked' beta/src/services/analytics.js
+          grep -q 'analytics.js?v=2026-09-18-v04' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-18-v04' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-18-v04' beta/index.html
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v04-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v03 27224cf189ddc38d1df8801adfe166009c6bdc61
+          (cd /tmp/v03 && npm test > /tmp/v03-tests.log 2>&1 || true)
+
+          v04_pass="$(awk '/^# pass /{print $3}' /tmp/v04-tests.log | tail -1)"
+          v04_fail="$(awk '/^# fail /{print $3}' /tmp/v04-tests.log | tail -1)"
+          v03_pass="$(awk '/^# pass /{print $3}' /tmp/v03-tests.log | tail -1)"
+          v03_fail="$(awk '/^# fail /{print $3}' /tmp/v03-tests.log | tail -1)"
+
+          echo "v03 tests: pass=$v03_pass fail=$v03_fail"
+          echo "v04 tests: pass=$v04_pass fail=$v04_fail"
+          test -n "$v04_pass" -a -n "$v04_fail" -a -n "$v03_pass" -a -n "$v03_fail"
+          test "$v04_pass" = "$v03_pass"
+          test "$v04_fail" = "$v03_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -q 'record-visitor-country' beta/src/services/analytics.js
+          grep -q 'record-card-view' beta/src/services/analytics.js
+
+      - name: Squash and promote Beta v04
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft 27224cf189ddc38d1df8801adfe166009c6bdc61
+          git commit -m 'Beta 2026-09-18-v04: exclude Meta automated fetchers from analytics'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v04.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v04-full.zip .)
+
+          for f in beta/index.html beta/src/app/register-features.js beta/src/main.js beta/src/services/analytics.js; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v03-to-2026-09-18-v04-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v04-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v03-to-2026-09-18-v04-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v04-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v04-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v03-to-2026-09-18-v04-patch.zip
