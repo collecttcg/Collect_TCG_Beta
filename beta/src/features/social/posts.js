@@ -314,10 +314,6 @@ function buildFbPostText(card, values){
 
     lines.push(
       "",
-      ...appContext.collectSocialPostLines(),
-      "",
-      divider,
-      "",
       "HASHTAG :",
       hashtags
     );
@@ -341,10 +337,6 @@ function buildFbNfsPostText(card,values){
       "",
       text.collectionCta,
       collectionUrl,
-      "",
-      divider,
-      "",
-      ...appContext.collectSocialPostLines(),
       "",
       divider,
       "",
@@ -1442,7 +1434,6 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
       text.explore,
       `WEBSITE : ${appContext.getWebsiteShareUrl()}`,
       `COLLECTION : ${location.origin}${location.pathname}#/collection`,
-      ...appContext.collectSocialPostLines(),
       divider,
       "HASHTAG :",
       hashtags
@@ -2735,7 +2726,6 @@ function buildFbCardListPost(availableCards,prefs){
       divider,
       "",
       `WEBSITE : ${appContext.getWebsiteShareUrl()}`,
-      ...appContext.collectSocialPostLines(),
       "",
       divider,
       "",
