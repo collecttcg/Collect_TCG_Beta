@@ -18499,7 +18499,7 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
 /* ---------- Inventory Tools screenshot correction ---------- */
 .inventory-tools-category-switcher{
   display:grid!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
 }
 .inventory-tools-subnav{
   gap:8px;
