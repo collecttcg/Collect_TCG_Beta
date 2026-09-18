@@ -1,0 +1,156 @@
+name: Finalize Beta 2026-09-18-v10
+
+on:
+  push:
+    branches: [release-validate-2026-09-18-v10]
+
+jobs:
+  validate-promote-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore exact v10 candidate
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "33e50324e04797d14f54d31a1bdf80c653db95b6"
+          git reset --hard 7a7abd3873859b18865ed5ceafd20e80f52ef5ce
+          test "$(git rev-parse HEAD~4)" = "33e50324e04797d14f54d31a1bdf80c653db95b6"
+
+      - name: Validate intended scope
+        run: |
+          set -euo pipefail
+          expected="$(printf '%s\n' beta/index.html beta/src/app/register-features.js beta/src/features/content/home.js beta/src/main.js | sort | tr '\n' ' ')"
+          actual="$(git diff --name-only 33e50324e04797d14f54d31a1bdf80c653db95b6..HEAD | sort | tr '\n' ' ')"
+          test "$actual" = "$expected" || { echo "Unexpected scope: $actual"; exit 1; }
+
+      - name: Validate repository
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build
+          node --check beta/src/features/content/home.js
+
+      - name: Validate Collector Spotlight selection
+        run: |
+          set -euo pipefail
+          ! grep -Fq 'const featured=liveInventory.slice().sort(byValue)[0] || newest[0] || null;' beta/src/features/content/home.js
+
+          grep -Fq 'const dailySpotlightChoice=' beta/src/features/content/home.js
+          grep -Fq 'const curatedSpotlightPool=' beta/src/features/content/home.js
+          grep -Fq 'const selectCollectorSpotlight=' beta/src/features/content/home.js
+          grep -Fq 'const withImages=liveInventory.filter(card=>!!firstImage(card));' beta/src/features/content/home.js
+
+          # Interest ranking must prioritize unique viewers before repeat views.
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path("beta/src/features/content/home.js").read_text()
+          start=s.index("const selectCollectorSpotlight=")
+          end=s.index("const featured=", start)
+          block=s[start:end]
+          u=block.index("trendingCardUniqueViews(b)-appContext.trendingCardUniqueViews(a)")
+          v=block.index("trendingCardViews(b)-appContext.trendingCardViews(a)")
+          if not u < v:
+              raise SystemExit("Unique-view priority is not ahead of total-view priority")
+          for marker in [
+              "dailySpotlightChoice(trending,3)",
+              "dailySpotlightChoice(curatedSpotlightPool(),4)",
+              "appContext.isChampionshipSeries(card.series)",
+              "source.filter(isVintageSpotlightCard)",
+              "source.slice().sort(byNewest)[0]",
+              "source.slice().sort(byValue)[0]",
+          ]:
+              if marker not in s:
+                  raise SystemExit(f"Missing Spotlight selection marker: {marker}")
+          print("Collector Spotlight selection structure OK")
+          PY
+
+          grep -Fq 'id="homeCollectorSpotlight"' beta/src/features/content/home.js
+          grep -Fq 'data-card-id=' beta/src/features/content/home.js
+          grep -Fq 'spotlightMount.outerHTML=collectorSpotlightMarkup(spotlight);' beta/src/features/content/home.js
+
+          grep -Fq '../features/content/home.js?v=2026-09-18-v10' beta/src/app/register-features.js
+          grep -Fq './app/register-features.js?v=2026-09-18-v10' beta/src/main.js
+          grep -Fq './src/main.js?v=2026-09-18-v10' beta/index.html
+
+      - name: Compare regression baseline
+        run: |
+          set -euo pipefail
+          npm test > /tmp/v10-tests.log 2>&1 || true
+          git worktree add --detach /tmp/v09 33e50324e04797d14f54d31a1bdf80c653db95b6
+          (cd /tmp/v09 && npm test > /tmp/v09-tests.log 2>&1 || true)
+
+          v10_pass="$(awk '/^# pass /{print $3}' /tmp/v10-tests.log | tail -1)"
+          v10_fail="$(awk '/^# fail /{print $3}' /tmp/v10-tests.log | tail -1)"
+          v09_pass="$(awk '/^# pass /{print $3}' /tmp/v09-tests.log | tail -1)"
+          v09_fail="$(awk '/^# fail /{print $3}' /tmp/v09-tests.log | tail -1)"
+
+          echo "v09 tests: pass=$v09_pass fail=$v09_fail"
+          echo "v10 tests: pass=$v10_pass fail=$v10_fail"
+          test -n "$v10_pass" -a -n "$v10_fail" -a -n "$v09_pass" -a -n "$v09_fail"
+          test "$v10_pass" = "$v09_pass"
+          test "$v10_fail" = "$v09_fail"
+
+      - name: Preserve retained behavior markers
+        run: |
+          set -euo pipefail
+
+          # v09 Home logo removal remains.
+          ! grep -Fq 'home-brand-hero-visual' beta/src/features/content/home.js
+          ! grep -Fq 'home-brand-hero-logo' beta/src/features/content/home.js
+
+          # v08 social analytics filtering remains.
+          grep -q 'socialAnalyticsNeedsHumanInteraction' beta/src/services/analytics.js
+          grep -q 'analyticsHumanInteractionObserved' beta/src/services/analytics.js
+          grep -q 'facebookexternalhit' beta/src/services/analytics.js
+
+          # v07 generator social footer removal remains.
+          ! grep -Fq 'appContext.collectSocialPostLines()' beta/src/features/social/posts.js
+
+          grep -R -q 'Owner Mode' beta/src beta/index.html
+          grep -R -q 'Availability' beta/src beta/index.html
+          grep -R -q 'Make an offer' beta/src beta/index.html
+          grep -R -q 'More photos / video' beta/src beta/index.html
+          grep -R -q 'COD / meetup' beta/src beta/index.html
+          grep -q 'Browse Collection by game' beta/src/features/inventory/page.js
+          grep -Fq 'QR Generator' beta/src/features/owner/tools.js
+          test -f beta/src/features/owner/insights-dashboard.js
+          grep -R -q 'giveaway' beta/src/features/content beta/src/features/owner
+
+      - name: Squash and promote Beta v10
+        run: |
+          set -euo pipefail
+          git config user.name collecttcg
+          git config user.email z3313514@gmail.com
+          git reset --soft 33e50324e04797d14f54d31a1bdf80c653db95b6
+          git commit -m 'Beta 2026-09-18-v10: improve Collector Spotlight selection'
+          git push origin HEAD:main
+
+      - name: Build release archives
+        run: |
+          set -euo pipefail
+          rm -rf dist node_modules
+          mkdir -p /tmp/pkg/full /tmp/pkg/patch
+          rsync -a --exclude='.git' --exclude='.github/workflows/finalize-beta-2026-09-18-v10.yml' --exclude='dist' --exclude='node_modules' ./ /tmp/pkg/full/
+          (cd /tmp/pkg/full && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v10-full.zip .)
+
+          for f in beta/index.html beta/src/app/register-features.js beta/src/features/content/home.js beta/src/main.js; do
+            mkdir -p "/tmp/pkg/patch/$(dirname "$f")"
+            cp "$f" "/tmp/pkg/patch/$f"
+          done
+          (cd /tmp/pkg/patch && zip -qr /tmp/Collect-TCG-Beta-2026-09-18-v09-to-2026-09-18-v10-patch.zip .)
+
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v10-full.zip
+          unzip -t /tmp/Collect-TCG-Beta-2026-09-18-v09-to-2026-09-18-v10-patch.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-18-v10-release
+          path: |
+            /tmp/Collect-TCG-Beta-2026-09-18-v10-full.zip
+            /tmp/Collect-TCG-Beta-2026-09-18-v09-to-2026-09-18-v10-patch.zip
