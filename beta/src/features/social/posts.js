@@ -2518,7 +2518,7 @@ function getFbCardListPostPrefs(){
         listTitle:String(p.listTitle || "AVAILABLE INVENTORY").trim().slice(0,120),
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
-        dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
+        dropSelectionMode:p.dropSelectionMode==="selected" ? "selected" : "trending",
         language:appContext.getPostGeneratorLanguage(),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl || p.carousellShopUrl) || "https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl) || "https://www.carousell.sg/u/collect_tcg_sg/",
@@ -2530,7 +2530,7 @@ function getFbCardListPostPrefs(){
         listTitle:"AVAILABLE INVENTORY",
         postFormat:"drop",
         dropLimit:5,
-        dropSelectionMode:"balanced",
+        dropSelectionMode:"trending",
         language:appContext.getPostGeneratorLanguage(),
         carousellMalaysiaUrl:"https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:"https://www.carousell.sg/u/collect_tcg_sg/",
@@ -2546,7 +2546,7 @@ function saveFbCardListPostPrefs(p){
         listTitle:String(p.listTitle || "").trim().slice(0,120),
         postFormat:["drop","full"].includes(p.postFormat) ? p.postFormat : "drop",
         dropLimit:[3,4,5,6,8].includes(Number(p.dropLimit)) ? Number(p.dropLimit) : 5,
-        dropSelectionMode:["balanced","selected"].includes(p.dropSelectionMode) ? p.dropSelectionMode : "balanced",
+        dropSelectionMode:p.dropSelectionMode==="selected" ? "selected" : "trending",
         language:appContext.normalizePostLanguage(p.language),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl),
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl),
@@ -3021,6 +3021,8 @@ function renderFbCardListGeneratorPage(){
     let orderedIds = appContext.sortCardListCards(availableCards).map(c=>String(c.id));
     let activeOrderMode = "default";
     let draggedOrderId = null;
+    const trendingScores = new Map();
+    let trendingState = "loading";
 
     const gameOptions = [...new Set(
       availableCards.map(c=>String(c.game || "").trim()).filter(Boolean)
@@ -3144,10 +3146,10 @@ function renderFbCardListGeneratorPage(){
             <div class="field" id="fbCardListDropMixField">
               <label for="fbCardListDropMix">Card mix</label>
               <select id="fbCardListDropMix">
-                <option value="balanced" ${prefs.dropSelectionMode==="balanced" ? "selected" : ""}>Balanced mix (automatic)</option>
+                <option value="trending" ${prefs.dropSelectionMode!=="selected" ? "selected" : ""}>Trending cards (automatic)</option>
                 <option value="selected" ${prefs.dropSelectionMode==="selected" ? "selected" : ""}>Use selected order</option>
               </select>
-              <div class="hint">Balanced mix avoids repeating the same game, series, era and card type where possible.</div>
+              <div class="hint" id="fbCardListDropMixHint">Trending uses the last 7 days of buyer activity. Loading current demand…</div>
             </div>
           </div>
 
@@ -3234,6 +3236,7 @@ function renderFbCardListGeneratorPage(){
     const dropLimitField=appContext.$("fbCardListDropLimitField");
     const dropMixInput=appContext.$("fbCardListDropMix");
     const dropMixField=appContext.$("fbCardListDropMixField");
+    const dropMixHint=appContext.$("fbCardListDropMixHint");
     const previewTitle=appContext.$("fbCardListPreviewTitle");
     const titleInput=appContext.$("fbCardListTitle");
     const languageInput=appContext.$("fbCardListLanguage");
@@ -3565,13 +3568,89 @@ function renderFbCardListGeneratorPage(){
       });
     }
 
+    function trendingCardDropCards(cards,limit){
+      if(trendingState!=="ready"){
+        return appContext.balancedCardDropCards(cards,limit);
+      }
+
+      const orderIndex=new Map(orderedIds.map((id,index)=>[id,index]));
+      const ranked=cards.slice().sort((a,b)=>{
+        const aid=String(a.id);
+        const bid=String(b.id);
+        const aTrend=trendingScores.get(aid)||{score:0,unique:0,views:0};
+        const bTrend=trendingScores.get(bid)||{score:0,unique:0,views:0};
+        return bTrend.score-aTrend.score ||
+          bTrend.unique-aTrend.unique ||
+          bTrend.views-aTrend.views ||
+          (orderIndex.get(aid)??999999)-(orderIndex.get(bid)??999999);
+      });
+
+      const hasCurrentDemand=ranked.some(card=>(trendingScores.get(String(card.id))?.score||0)>0);
+      return hasCurrentDemand
+        ? ranked.slice(0,limit)
+        : appContext.balancedCardDropCards(cards,limit);
+    }
+
+    async function loadTrendingDropScores(){
+      if(typeof appContext.fetchInsights!=="function" || typeof appContext.fetchCardEngagementInsights!=="function"){
+        trendingState="unavailable";
+        if(dropMixHint) dropMixHint.textContent="Trending data is unavailable. Automatic mode is using the balanced inventory mix.";
+        regenerate();
+        return;
+      }
+
+      try{
+        const {start,end}=appContext.dateRangeForPreset("7d");
+        const [viewRows,engagementResult]=await Promise.all([
+          appContext.fetchInsights(start,end,{silent:true}),
+          appContext.fetchCardEngagementInsights(start,end)
+        ]);
+
+        const viewMap=new Map((Array.isArray(viewRows)?viewRows:[]).map(row=>[
+          String(row.card_id||row.id||""),
+          row
+        ]));
+        const engagementMap=new Map((Array.isArray(engagementResult?.rows)?engagementResult.rows:[]).map(row=>[
+          String(row.card_id||""),
+          row
+        ]));
+
+        trendingScores.clear();
+        availableCards.forEach(card=>{
+          const id=String(card.id);
+          const views=viewMap.get(id)||{};
+          const engagement=engagementMap.get(id)||{};
+          const combined={...views,...engagement};
+          trendingScores.set(id,{
+            score:Math.max(0,Number(appContext.insightInterestScore?.(combined)||0)),
+            unique:Math.max(0,Number(views.unique_views||0)),
+            views:Math.max(0,Number(views.views||0))
+          });
+        });
+
+        trendingState="ready";
+        const demandCount=[...trendingScores.values()].filter(item=>item.score>0).length;
+        if(dropMixHint){
+          dropMixHint.textContent=demandCount
+            ? `Trending prioritizes the last 7 days of qualified views, favorites, shares and buyer contact intent · ${demandCount} listing${demandCount===1?"":"s"} with current activity.`
+            : "No buyer activity was recorded in the last 7 days. Automatic mode is using the balanced inventory mix.";
+        }
+      }catch(error){
+        console.warn("Could not load trending cards for Card Drop:",error);
+        trendingState="unavailable";
+        if(dropMixHint) dropMixHint.textContent="Trending data could not be loaded. Automatic mode is using the balanced inventory mix.";
+      }
+
+      regenerate();
+    }
+
     function cardsForPost(){
       const selected=orderedSelectedCards();
       if(postFormatInput.value==="full") return selected;
       const limit=Number(dropLimitInput.value)||5;
       return dropMixInput.value==="selected"
         ? selected.slice(0,limit)
-        : appContext.balancedCardDropCards(selected,limit);
+        : trendingCardDropCards(selected,limit);
     }
 
     function updateSelectionStatus(){
@@ -3779,6 +3858,7 @@ function renderFbCardListGeneratorPage(){
     syncPostFormatUI();
     renderPicker();
     applyOrderPreset("default");
+    loadTrendingDropScores();
   }
 
   Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,ebayListingTitle,ebayItemSpecifics,ebayListingDescription,renderEbayListingGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
