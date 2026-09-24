@@ -222,7 +222,7 @@ async function fetchCards(){
       endpoint.searchParams.set('order','created_at.asc');
       endpoint.searchParams.set('limit','1000');
       endpoint.searchParams.set('offset',String(offset));
-      const response=await fetch(endpoint,{headers:{apikey:runtime.key}});
+      const response=await fetch(endpoint,{headers:{apikey:runtime.key,Authorization:`Bearer ${runtime.key}`}});
       if(!response.ok){
         const body=await response.text();
         const error=new Error(`Supabase public catalogue request failed (${response.status}): ${body.slice(0,500)}`);
