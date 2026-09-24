@@ -77,8 +77,8 @@ jobs:
         shell: bash
         env:
           RELEASE_VERSION: 2026-09-24-v02
-          PREVIOUS_VERSION: 2026-09-17-v10
-          PREVIOUS_COMMIT: 74e9974f961de16905b5c18ab42d52a905f14f4e
+          PREVIOUS_VERSION: 2026-09-19-v08
+          PREVIOUS_COMMIT: 165f617f2f9b151a4c229a292046ed114a7f9678
         run: |
           set -euo pipefail
           mkdir -p release
@@ -109,7 +109,7 @@ jobs:
           name: Collect-TCG-Beta-2026-09-24-v02-packages
           path: |
             release/Collect-TCG-Beta-2026-09-24-v02-full.zip
-            release/Collect-TCG-Beta-2026-09-17-v10-to-2026-09-24-v02-patch.zip
+            release/Collect-TCG-Beta-2026-09-19-v08-to-2026-09-24-v02-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -121,10 +121,10 @@ jobs:
           MANIFEST="release-manifests/2026-09-24-v02.txt"
           {
             echo "Version: 2026-09-24-v02"
-            echo "Previous version: 2026-09-17-v10"
+            echo "Previous version: 2026-09-19-v08"
             echo "Source commit: $(git rev-parse HEAD)"
             echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v02-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-17-v10-to-2026-09-24-v02-patch.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-19-v08-to-2026-09-24-v02-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
