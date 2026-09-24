@@ -246,7 +246,7 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
 
  assert.match(utilities,/function seoCardSlug\(card\)/);
  assert.match(utilities,/function publishedSeoCardUrl\(card\)/);
- assert.match(utilities,/seoCardSlugMap=new Map\(\)/);
+ assert.match(utilities,/seoCardSlugMap\s*=\s*new Map\(\)/);
  assert.match(routing,/meta\[name="collect-tcg-card-id"\]/);
  assert.match(routing,/return `card\/\$\{seoCardId\}`/);
  assert.match(details,/publishedSeoCardUrl\(card\)/);
