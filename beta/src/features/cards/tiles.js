@@ -250,6 +250,22 @@ async function stepListingGallery(wrap,card,step){
   }
 
 function wireCardActions(container){
+    const preloadFromTarget=target=>{
+      const cardTile=target?.closest?.(".card[data-card-id]");
+      if(!cardTile) return;
+      const card=appContext.getCardById(cardTile.dataset.cardId||"");
+      if(card) appContext.preloadCardDetailsMedia?.(card);
+    };
+
+    container.addEventListener("pointerover",e=>{
+      if(e.pointerType && e.pointerType!=="mouse" && e.pointerType!=="pen") return;
+      preloadFromTarget(e.target);
+    },{passive:true});
+
+    container.addEventListener("focusin",e=>{
+      preloadFromTarget(e.target);
+    });
+
     container.addEventListener("click", async (e)=>{
       const galleryBtn=e.target.closest("[data-listing-gallery-step][data-id]");
       if(galleryBtn){
@@ -431,6 +447,12 @@ export function initialize(appContext,runtime){
   appContext.listingGalleryTouchState = null;
 
 appContext.view.addEventListener("touchstart",e=>{
+    const cardTile=e.target.closest?.(".card[data-card-id]");
+    if(cardTile){
+      const card=appContext.getCardById(cardTile.dataset.cardId||"");
+      if(card) appContext.preloadCardDetailsMedia?.(card);
+    }
+
     const wrap=e.target.closest?.("[data-listing-gallery]");
     if(!wrap || e.touches.length!==1) return;
     const touch=e.touches[0];
