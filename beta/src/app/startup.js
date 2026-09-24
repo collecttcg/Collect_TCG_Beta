@@ -80,11 +80,23 @@ async function startApp(){
       appContext.recordWebsiteVisit();
     }
 
-    const [cardsLoaded]=await Promise.all([
-      appContext.loadCards(),
-      appContext.loadGiveaways(),
-      appContext.loadShowcases()
-    ]);
+    const initialRoute=appContext.currentRoute();
+    const directCardEntry=String(initialRoute||"").startsWith("card/");
+
+    // Direct SEO/shared card entries only need the card catalogue before the
+    // requested Card Details can render. Giveaways/showcases are unrelated to
+    // that first paint, so load them afterward instead of extending the card's
+    // loading screen.
+    let cardsLoaded=false;
+    if(directCardEntry){
+      cardsLoaded=await appContext.loadCards();
+    }else{
+      [cardsLoaded]=await Promise.all([
+        appContext.loadCards(),
+        appContext.loadGiveaways(),
+        appContext.loadShowcases()
+      ]);
+    }
 
     if(!cardsLoaded){
       appContext.renderCatalogueLoadError();
@@ -102,6 +114,13 @@ async function startApp(){
 
     // Single initial route render. loadCards no longer calls router internally.
     appContext.router();
+
+    if(directCardEntry){
+      Promise.allSettled([
+        appContext.loadGiveaways(),
+        appContext.loadShowcases()
+      ]).catch(()=>{});
+    }
   }
 
 async function removeLegacyAppRefreshCaches(){
