@@ -241,13 +241,19 @@ async function openCardRoute(cardId){
     }
 
     const card=appContext.getCardById(id);
-    if(card && !appContext.isOwnerMode() && appContext.isLiveLifecycle(card)){
+    if(card && appContext.isLiveLifecycle(card)){
       let clean=appContext.publishedSeoCardUrl(card);
       if(!clean){
         await appContext.loadSeoCardSlugMap();
         clean=appContext.publishedSeoCardUrl(card);
       }
       if(clean){
+        try{
+          appContext.sessionStorage.setItem(
+            "collect_tcg_clean_card_return_v1",
+            String(appContext.detailsReturnHash||current||"#/home").slice(0,1500)
+          );
+        }catch{}
         location.assign(clean);
         return;
       }
@@ -506,6 +512,17 @@ function router(){
       });
     }
     if(isCardRoute){
+      if(!appContext.detailsReturnHash){
+        try{
+          const savedReturn=String(appContext.sessionStorage.getItem("collect_tcg_clean_card_return_v1")||"").slice(0,1500);
+          if(savedReturn && !savedReturn.includes("#/card/")) appContext.detailsReturnHash=savedReturn;
+          appContext.sessionStorage.removeItem("collect_tcg_clean_card_return_v1");
+        }catch{}
+        if(!appContext.detailsReturnHash){
+          const filteredContext=appContext.getFilteredResultsBrowseContext();
+          if(filteredContext?.source_hash) appContext.detailsReturnHash=filteredContext.source_hash;
+        }
+      }
       const cardId = decodeURIComponent(route.slice(5));
       const candidate = appContext.cards.find(c=>c.id === cardId);
       const card = candidate && (appContext.isOwnerMode() || appContext.isLiveLifecycle(candidate)) ? candidate : null;
