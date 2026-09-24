@@ -285,13 +285,13 @@ function renderHomePage(){
     };
     const referenceText=card=>[card?.card_code,card?.year].filter(Boolean).join(" · ");
 
-    const premiumCard=(card,{trending=false,isNew=false}={})=>{
+    const premiumCard=(card,{trending=false,isNew=false,source=""}={})=>{
       if(!card) return "";
       const image=firstImage(card);
       const grade=compactGrade(card);
       const views=trending ? Number(appContext.trendingCardViews(card)||0) : 0;
       return `
-        <article class="card home-premium-card" data-card-id="${appContext.escapeHtml(card.id)}" tabindex="0" role="button" aria-label="View ${appContext.escapeHtml(card.name)}">
+        <article class="card home-premium-card" data-card-id="${appContext.escapeHtml(card.id)}" data-discovery-source="${appContext.escapeHtml(source)}" tabindex="0" role="button" aria-label="View ${appContext.escapeHtml(card.name)}">
           <div class="home-premium-card-media">
             ${image
               ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(card.name)}" loading="lazy" decoding="async">`
@@ -316,7 +316,7 @@ function renderHomePage(){
         </article>`;
     };
 
-    const premiumShelf=(title,description,list,href,{eyebrow="Discover",trending=false,isNew=false}={})=>list.length ? `
+    const premiumShelf=(title,description,list,href,{eyebrow="Discover",trending=false,isNew=false,source=""}={})=>list.length ? `
       <section class="home-premium-section">
         <div class="home-premium-section-head">
           <div>
@@ -327,7 +327,7 @@ function renderHomePage(){
           <a href="${appContext.escapeHtml(href)}" class="home-section-link home-premium-view-all">View all</a>
         </div>
         <div class="home-premium-grid">
-          ${list.slice(0,4).map(card=>premiumCard(card,{trending,isNew})).join("")}
+          ${list.slice(0,4).map(card=>premiumCard(card,{trending,isNew,source})).join("")}
         </div>
       </section>` : "";
 
@@ -355,7 +355,7 @@ function renderHomePage(){
                  class="home-collector-spotlight"
                  data-card-id="${appContext.escapeHtml(card.id)}"
                  aria-label="Collector Spotlight">
-          <a class="home-collector-spotlight-media" href="#/card/${encodeURIComponent(card.id)}" aria-label="View ${appContext.escapeHtml(card.name)}">
+          <a class="home-collector-spotlight-media" href="${appContext.escapeHtml(appContext.publishedSeoCardUrl(card)||appContext.cardShareHash(card.id))}" data-spotlight-card-id="${appContext.escapeHtml(card.id)}" aria-label="View ${appContext.escapeHtml(card.name)}">
             ${image
               ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(card.name)}" decoding="async">`
               : `<div class="home-collector-spotlight-placeholder">Featured collectible</div>`}
@@ -369,7 +369,7 @@ function renderHomePage(){
               ${reference ? `<span>${appContext.escapeHtml(reference)}</span>` : ""}
               <strong>${appContext.escapeHtml(primaryPrice(card))}</strong>
             </div>
-            <a href="#/card/${encodeURIComponent(card.id)}" class="btn-primary home-collector-spotlight-action">View Card</a>
+            <a href="${appContext.escapeHtml(appContext.publishedSeoCardUrl(card)||appContext.cardShareHash(card.id))}" data-spotlight-card-id="${appContext.escapeHtml(card.id)}" class="btn-primary home-collector-spotlight-action">View Card</a>
           </div>
         </section>`;
     };
@@ -425,7 +425,7 @@ function renderHomePage(){
         </section>
       </div>
 
-      ${premiumShelf("Recently Added","The newest available pieces to enter the catalogue.",newest,"#/inventory?sort=newest",{eyebrow:"New Arrivals",isNew:true})}
+      ${premiumShelf("Recently Added","The newest available pieces to enter the catalogue.",newest,"#/inventory?sort=newest",{eyebrow:"New Arrivals",isNew:true,source:"recently-added"})}
 
       <section class="home-premium-trust">
         <div class="home-premium-trust-copy">
@@ -445,6 +445,14 @@ function renderHomePage(){
         </div>
       </section>
     `;
+
+    appContext.view.querySelectorAll("[data-spotlight-card-id]").forEach(link=>{
+      link.addEventListener("click",event=>{
+        event.preventDefault();
+        const id=appContext.safeCardId(link.dataset.spotlightCardId||"");
+        if(id) appContext.openCardRoute(id,"spotlight");
+      });
+    });
 
     appContext.$("homeCurrencyPreference")?.addEventListener("change",e=>{
       const currency=appContext.setPriceCurrencyPreference(e.target.value);
@@ -476,7 +484,7 @@ function renderHomePage(){
           )
           .slice(0,4);
         mount.innerHTML=trending.length
-          ? premiumShelf("Trending This Week","The cards receiving the most qualified attention over the rolling last 7 days.",trending,"#/inventory?quick=trending",{eyebrow:"Collector Interest",trending:true})
+          ? premiumShelf("Trending This Week","The cards receiving the most qualified attention over the rolling last 7 days.",trending,"#/inventory?quick=trending",{eyebrow:"Collector Interest",trending:true,source:"trending"})
           : "";
 
         const spotlight=selectCollectorSpotlight({preferTrending:true});
