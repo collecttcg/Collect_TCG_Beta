@@ -5,6 +5,57 @@ function safeListingBrowseHash(value){
     return /^#\/(inventory|collection|reserved|sold)(?:\?|$)/.test(hash) ? hash : "";
   }
 
+function normalizeCardDiscoverySource(value){
+    const source=String(value||"").trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
+    const allowed=new Set([
+      "trending","recently-added","spotlight","related",
+      "vintage","championship","sealed","search","inventory-filtered",
+      "inventory","collection","reserved","sold","recently-viewed","favorites","home"
+    ]);
+    return allowed.has(source) ? source : "";
+  }
+
+function rememberCardDiscoverySource(cardId,source){
+    const id=appContext.safeCardId(cardId);
+    const normalized=appContext.normalizeCardDiscoverySource(source);
+    if(!id || !normalized) return "";
+    const payload={card_id:id,source:normalized,at:Date.now()};
+    appContext.cardDiscoveryContext=payload;
+    try{
+      appContext.sessionStorage.setItem(appContext.CARD_DISCOVERY_CONTEXT_KEY,JSON.stringify(payload));
+    }catch{}
+    return normalized;
+  }
+
+function getCardDiscoverySource(cardId){
+    const id=appContext.safeCardId(cardId);
+    if(!id) return "";
+    let payload=appContext.cardDiscoveryContext;
+    if(!payload){
+      try{payload=JSON.parse(appContext.sessionStorage.getItem(appContext.CARD_DISCOVERY_CONTEXT_KEY)||"null");}
+      catch{payload=null;}
+    }
+    if(!payload || String(payload.card_id||"")!==id) return "";
+    if(Date.now()-Number(payload.at||0)>30*60*1000) return "";
+    return appContext.normalizeCardDiscoverySource(payload.source);
+  }
+
+function currentCardDiscoverySource(){
+    const route=appContext.currentRoute();
+    if(route==="home") return "home";
+    if(route==="recent") return "recently-viewed";
+    if(route==="favorites") return "favorites";
+    if(!appContext.isInventoryRoute(route)) return "";
+
+    const params=appContext.currentHashParams();
+    const quick=appContext.normalizeCardDiscoverySource(params.get("quick")||"");
+    if(["trending","vintage","championship","sealed"].includes(quick)) return quick;
+    if(String(params.get("sort")||"").toLowerCase()==="newest") return "recently-added";
+    if(String(params.get("q")||params.get("search")||"").trim()) return "search";
+    if([...params.keys()].some(key=>!["sort","page"].includes(key))) return "inventory-filtered";
+    return appContext.normalizeCardDiscoverySource(route);
+  }
+
 function clearFilteredResultsBrowseContext(){
     appContext.filteredResultsBrowseContext=null;
     try{appContext.sessionStorage.removeItem(appContext.FILTERED_RESULTS_BROWSE_KEY);}catch{}
@@ -221,7 +272,7 @@ function openInsightsCardDetails(cardId){
     appContext.openDetailsModal(card);
   }
 
-async function openCardRoute(cardId){
+async function openCardRoute(cardId,discoverySource=""){
     const id=appContext.safeCardId(cardId);
     if(!id) return;
 
@@ -241,6 +292,9 @@ async function openCardRoute(cardId){
     }
 
     const card=appContext.getCardById(id);
+    const source=appContext.normalizeCardDiscoverySource(discoverySource) || appContext.currentCardDiscoverySource();
+    if(source) appContext.rememberCardDiscoverySource(id,source);
+
     if(card && appContext.isLiveLifecycle(card)){
       let clean=appContext.publishedSeoCardUrl(card);
       if(!clean){
@@ -640,11 +694,13 @@ function updateSidebarFooter(){
     appContext.$("sfCount").textContent=appContext.cards.filter(appContext.isLiveLifecycle).length.toLocaleString();
   }
 
-  Object.assign(appContext,{safeListingBrowseHash,clearFilteredResultsBrowseContext,captureFilteredResultsBrowseContext,getFilteredResultsBrowseContext,getFilteredResultNavigation,listingRouteFromHash,currentListingDomScope,canPreserveCurrentListing,canReusePreservedListing,setNavigationActiveRoute,rememberReturnScroll,restoreReturnScrollIfReady,cardShareHash,captureInsightsDetailsReturnState,restoreInsightsDetailsReturnState,openInsightsCardDetails,openCardRoute,getCollectionStats,updateStatusNavCounts,currentRoute,currentHashParams,scrollListingPageHeaderIntoView,consumeHomeViewAllScrollTarget,safeUrlFilterText,safePriceFilterValue,listingRouteForScope,updateListingUrlFromControls,router,updateSidebarFooter});
+  Object.assign(appContext,{safeListingBrowseHash,normalizeCardDiscoverySource,rememberCardDiscoverySource,getCardDiscoverySource,currentCardDiscoverySource,clearFilteredResultsBrowseContext,captureFilteredResultsBrowseContext,getFilteredResultsBrowseContext,getFilteredResultNavigation,listingRouteFromHash,currentListingDomScope,canPreserveCurrentListing,canReusePreservedListing,setNavigationActiveRoute,rememberReturnScroll,restoreReturnScrollIfReady,cardShareHash,captureInsightsDetailsReturnState,restoreInsightsDetailsReturnState,openInsightsCardDetails,openCardRoute,getCollectionStats,updateStatusNavCounts,currentRoute,currentHashParams,scrollListingPageHeaderIntoView,consumeHomeViewAllScrollTarget,safeUrlFilterText,safePriceFilterValue,listingRouteForScope,updateListingUrlFromControls,router,updateSidebarFooter});
 }
 
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
+  appContext.CARD_DISCOVERY_CONTEXT_KEY = "collect_tcg_card_discovery_context_v1";
+  appContext.cardDiscoveryContext = null;
   appContext.insightsDetailsReturnState = null;
 
 window.addEventListener("hashchange", appContext.router);
