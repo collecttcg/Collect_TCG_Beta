@@ -1402,6 +1402,35 @@ async function fetchWebsiteVisitAccessTime(start,end){
     }
   }
 
+async function fetchDiscoverySourceSummary(start,end){
+    try{
+      if(!appContext.isOwnerAuthenticated?.()) return {supported:false,rows:[]};
+
+      const {data,error}=await appContext.supabaseClient.rpc("get_card_discovery_summary",{
+        p_start:start.toISOString(),
+        p_end:end.toISOString()
+      });
+
+      if(error){
+        const message=`${error.message||""} ${error.details||""}`.toLowerCase();
+        const unavailable=
+          message.includes("get_card_discovery_summary") ||
+          message.includes("function") ||
+          message.includes("schema cache");
+
+        if(!unavailable){
+          console.warn("Discovery source summary unavailable:",error);
+        }
+        return {supported:false,rows:[]};
+      }
+
+      return {supported:true,rows:Array.isArray(data)?data:[]};
+    }catch(error){
+      console.warn("Discovery source summary unavailable:",error);
+      return {supported:false,rows:[]};
+    }
+  }
+
 async function fetchWebsiteVisitDevices(start,end){
     try{
       const {data,error}=await appContext.supabaseClient.rpc("get_site_visit_device_totals",{
@@ -1854,7 +1883,7 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */
