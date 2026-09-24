@@ -394,3 +394,57 @@ test('internal card opens never reload the static SEO page',()=>{
  assert.doesNotMatch(openBlock,/location\.assign\(/);
 });
 
+test('Phase 3 buyer inquiries carry full card context and record explicit copies',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const details=source('../beta/src/features/cards/details.js');
+ assert.match(details,/function contactCardReferenceLines\(card\)/);
+ assert.match(details,/Grade \/ Condition:/);
+ assert.match(details,/Language:/);
+ assert.match(details,/Price:/);
+ assert.match(details,/Link:/);
+ assert.match(details,/recordCardEngagement\(card\.id,"inquiry_copy",platform\)/);
+ assert.match(details,/inquiry copied and ready to paste/);
+});
+
+test('Phase 3 owner card details reuse existing analytics for a private conversion summary',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const analytics=source('../beta/src/services/analytics.js');
+ const details=source('../beta/src/features/cards/details.js');
+ assert.match(analytics,/async function fetchOwnerCardConversionSummary\(cardId/);
+ assert.match(analytics,/appContext\.fetchInsights\(start,end,\{silent:true\}\)/);
+ assert.match(analytics,/appContext\.fetchCardEngagementInsights\(start,end\)/);
+ assert.match(analytics,/ownerCardConversionSummaryCache/);
+ assert.match(details,/data-owner-conversion="unique"/);
+ assert.match(details,/data-owner-conversion="favorites"/);
+ assert.match(details,/data-owner-conversion="intent"/);
+ assert.match(details,/data-owner-conversion="intent-rate"/);
+ assert.match(details,/appContext\.refreshOwnerCardConversionSummary\(card\.id\)/);
+});
+
+test('Phase 3 card-detail media preloading deduplicates image requests',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const catalogue=source('../beta/src/services/catalogue.js');
+ const tiles=source('../beta/src/features/cards/tiles.js');
+ assert.match(catalogue,/cardImageLoadPromises\.get\(id\)/);
+ assert.match(catalogue,/cardImageLoadPromises\.set\(id,request\)/);
+ assert.match(catalogue,/async function preloadCardDetailsMedia\(card\)/);
+ assert.match(tiles,/addEventListener\("pointerover"/);
+ assert.match(tiles,/addEventListener\("focusin"/);
+ assert.match(tiles,/preloadCardDetailsMedia\?\.\(card\)/);
+});
+
+test('Phase 3 direct card entry renders before unrelated content finishes loading',()=>{
+ const startup=fs.readFileSync(new URL('../beta/src/app/startup.js',import.meta.url),'utf8');
+ assert.match(startup,/const directCardEntry=String\(initialRoute\|\|""\)\.startsWith\("card\/"\)/);
+ assert.match(startup,/if\(directCardEntry\)\{\s*cardsLoaded=await appContext\.loadCards\(\)/);
+ assert.match(startup,/appContext\.router\(\);[\s\S]*if\(directCardEntry\)\{[\s\S]*Promise\.allSettled/);
+});
+
+test('Phase 3 Owner Insights surfaces saved cards that have not produced buyer intent',()=>{
+ const dashboard=fs.readFileSync(new URL('../beta/src/features/owner/insights-dashboard.js',import.meta.url),'utf8');
+ assert.match(dashboard,/const savedWithoutIntent=safe/);
+ assert.match(dashboard,/favorite_adds\|\|0\)>=1 && contactIntent\(row\)===0/);
+ assert.match(dashboard,/Saved without contact/);
+ assert.match(dashboard,/review price or trust signals/);
+});
+
