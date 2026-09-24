@@ -20,6 +20,7 @@ on:
       - '2026-09-24-v08-DISCOVERY-SUMMARY.sql'
       - 'beta/index.html'
       - 'beta/src/app/register-features.js'
+      - 'beta/src/app/initialize.js'
       - 'beta/src/app/routing.js'
       - 'beta/src/services/analytics.js'
       - 'beta/src/features/core/utilities.js'
@@ -82,6 +83,22 @@ jobs:
           grep -q 'fetchDiscoverySourceSummary' beta/src/services/analytics.js
           grep -q 'Where card interest starts' beta/src/features/owner/insights-dashboard.js
 
+      - name: Validate fast clean-card navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/app/routing.js
+          node --check beta/src/features/cards/details.js
+          node --check beta/src/app/initialize.js
+          grep -q 'history.pushState(state,"",clean)' beta/src/app/routing.js
+          grep -q 'state.collectTcgSpaCardId=id' beta/src/app/routing.js
+          grep -q 'window.addEventListener("popstate", appContext.router)' beta/src/app/routing.js
+          grep -q 'history.back()' beta/src/features/cards/details.js
+          grep -q 'location.assign(clean)' beta/src/app/routing.js
+          grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
+          grep -q 'routing.js?v=2026-09-24-v09' beta/src/app/initialize.js
+          grep -q 'details.js?v=2026-09-24-v09' beta/src/app/initialize.js
+
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
 
@@ -111,9 +128,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v08
-          PREVIOUS_VERSION: 2026-09-24-v07
-          PREVIOUS_COMMIT: 8dc5761ffd147e6bab58b41e585f323233b4a333
+          RELEASE_VERSION: 2026-09-24-v09
+          PREVIOUS_VERSION: 2026-09-24-v08
+          PREVIOUS_COMMIT: caf267842d341d0d13b8599dabad94b2b51413ad
         run: |
           set -euo pipefail
           mkdir -p release
@@ -141,10 +158,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v08-packages
+          name: Collect-TCG-Beta-2026-09-24-v09-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v08-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v07-to-2026-09-24-v08-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v09-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v08-to-2026-09-24-v09-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -153,16 +170,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v08.txt"
+          MANIFEST="release-manifests/2026-09-24-v09.txt"
           {
-            echo "Version: 2026-09-24-v08"
-            echo "Previous version: 2026-09-24-v07"
+            echo "Version: 2026-09-24-v09"
+            echo "Previous version: 2026-09-24-v08"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v08-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v07-to-2026-09-24-v08-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v09-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v08-to-2026-09-24-v09-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v08: record package validation"
+          git commit -m "Beta 2026-09-24-v09: record package validation"
           git push
