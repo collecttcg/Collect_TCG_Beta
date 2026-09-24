@@ -179,28 +179,61 @@ async function fetchPublicCards(){
 
 async function ensureCardImagesLoaded(card){
     if(!card || card._images_loaded!==false) return card;
-    if(!appContext.safeCardId(card.id)) return card;
+    const id=appContext.safeCardId(card.id);
+    if(!id) return card;
 
-    try{
-      const {data,error}=await appContext.supabaseClient
-        .from("cards")
-        .select("images")
-        .eq("id",card.id)
-        .single();
+    const pending=appContext.cardImageLoadPromises.get(id);
+    if(pending) return pending;
 
-      if(error){
+    const request=(async()=>{
+      try{
+        const {data,error}=await appContext.supabaseClient
+          .from("cards")
+          .select("images")
+          .eq("id",id)
+          .single();
+
+        if(error){
+          console.warn("Could not lazy-load full card images:",error);
+          return card;
+        }
+
+        const full=Array.isArray(data?.images) ? data.images.filter(v=>appContext.safeHttpUrl(v)||appContext.isPendingCardImage(v)) : [];
+        card.images=full;
+        card.image=full[0]||card.thumbnail_url||null;
+        card._images_loaded=true;
+        return card;
+      }catch(error){
         console.warn("Could not lazy-load full card images:",error);
         return card;
+      }finally{
+        appContext.cardImageLoadPromises.delete(id);
       }
+    })();
 
-      const full=Array.isArray(data?.images) ? data.images.filter(v=>appContext.safeHttpUrl(v)||appContext.isPendingCardImage(v)) : [];
-      card.images=full;
-      card.image=full[0]||card.thumbnail_url||null;
-      card._images_loaded=true;
-      return card;
-    }catch(error){
-      console.warn("Could not lazy-load full card images:",error);
-      return card;
+    appContext.cardImageLoadPromises.set(id,request);
+    return request;
+  }
+
+async function preloadCardDetailsMedia(card){
+    if(!card || !appContext.safeCardId(card.id)) return false;
+    const id=String(card.id);
+    if(appContext.cardDetailMediaPreloaded.has(id)) return true;
+
+    try{
+      await appContext.ensureCardImagesLoaded(card);
+      const first=(Array.isArray(card.images) && card.images.length)
+        ? card.images[0]
+        : (card.image||card.thumbnail_url||"");
+      if(!first) return false;
+
+      const preload=new Image();
+      preload.decoding="async";
+      preload.src=first;
+      appContext.cardDetailMediaPreloaded.add(id);
+      return true;
+    }catch{
+      return false;
     }
   }
 
@@ -792,11 +825,14 @@ async function updateCardStorage(card){
     }
   }
 
-  Object.assign(appContext,{cardMutationReturnColumns,cardPublicColumns,mergeOwnerOnlyCardFields,dbToCard,cardToDb,optionalColumnUnavailable,fetchPublicCards,ensureCardImagesLoaded,probeOwnerCardCapabilities,loadCards,sanitizeOwnerTags,sanitizeOwnerPrivateNotes,fetchOwnerPrivateMeta,newCardImageVariantKey,fetchOwnerCardImageVariants,saveOwnerCardImageVariants,saveOwnerPrivateMeta,setCardLifecycle,deleteListingPermanently,errorText,cardWriteErrorText,optionalCardWriteColumnUnavailable,createCardStorage,updateCardStorage});
+  Object.assign(appContext,{cardMutationReturnColumns,cardPublicColumns,mergeOwnerOnlyCardFields,dbToCard,cardToDb,optionalColumnUnavailable,fetchPublicCards,ensureCardImagesLoaded,preloadCardDetailsMedia,probeOwnerCardCapabilities,loadCards,sanitizeOwnerTags,sanitizeOwnerPrivateNotes,fetchOwnerPrivateMeta,newCardImageVariantKey,fetchOwnerCardImageVariants,saveOwnerCardImageVariants,saveOwnerPrivateMeta,setCardLifecycle,deleteListingPermanently,errorText,cardWriteErrorText,optionalCardWriteColumnUnavailable,createCardStorage,updateCardStorage});
 }
 
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
+  appContext.cardImageLoadPromises = new Map();
+  appContext.cardDetailMediaPreloaded = new Set();
+
   appContext.EMPTY_ICON = `<svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="12" y="8" width="30" height="42" rx="5" transform="rotate(-8 12 8)" stroke="#2E3038" stroke-width="2"/>
     <rect x="20" y="13" width="30" height="42" rx="5" fill="#1A1C22" stroke="#4A4D57" stroke-width="2"/>
