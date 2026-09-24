@@ -131,6 +131,21 @@ jobs:
           grep -q 'details.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'startup.js?v=2026-09-24-v12' beta/src/app/register-features.js
 
+      - name: Validate Phase 4 owner sales intelligence
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/features/owner/insights-dashboard.js
+          grep -q 'function cardPerformanceRows' beta/src/features/owner/insights-dashboard.js
+          grep -q 'data-insights-v20-sort' beta/src/features/owner/insights-dashboard.js
+          grep -q 'Highest intent rate' beta/src/features/owner/insights-dashboard.js
+          grep -q 'Needs attention' beta/src/features/owner/insights-dashboard.js
+          grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
+          grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
+          grep -q 'insights-dashboard.js?v=2026-09-24-v14' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-24-v14' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-24-v14' beta/index.html
+
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
 
@@ -160,9 +175,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v13
-          PREVIOUS_VERSION: 2026-09-24-v12
-          PREVIOUS_COMMIT: 6510f0c57fb717d097bd7af3708901a21236a9be
+          RELEASE_VERSION: 2026-09-24-v14
+          PREVIOUS_VERSION: 2026-09-24-v13
+          PREVIOUS_COMMIT: a6f9861524f89810919f7b428648ca79c1430b08
         run: |
           set -euo pipefail
           mkdir -p release
@@ -190,10 +205,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v13-packages
+          name: Collect-TCG-Beta-2026-09-24-v14-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v13-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v12-to-2026-09-24-v13-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v14-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v13-to-2026-09-24-v14-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -202,16 +217,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v13.txt"
+          MANIFEST="release-manifests/2026-09-24-v14.txt"
           {
-            echo "Version: 2026-09-24-v13"
-            echo "Previous version: 2026-09-24-v12"
+            echo "Version: 2026-09-24-v14"
+            echo "Previous version: 2026-09-24-v13"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v13-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v12-to-2026-09-24-v13-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v14-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v13-to-2026-09-24-v14-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v13: record package validation"
+          git commit -m "Beta 2026-09-24-v14: record package validation"
           git push
