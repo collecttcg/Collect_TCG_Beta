@@ -451,6 +451,10 @@ function renderHomePage(){
     appContext.view.querySelectorAll("[data-spotlight-card-id]").forEach(link=>{
       link.addEventListener("click",event=>{
         event.preventDefault();
+        // Spotlight links live inside a .card[data-card-id]. Stop this click
+        // before it reaches the shared delegated card handler, otherwise the
+        // same card route is opened twice.
+        event.stopPropagation();
         const id=appContext.safeCardId(link.dataset.spotlightCardId||"");
         if(id) appContext.openCardRoute(id,"spotlight");
       });
