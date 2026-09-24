@@ -13,6 +13,7 @@ on:
       - '2026-09-24-v01-SEO-PUBLIC-CATALOG.sql'
       - '2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql'
       - 'beta/src/features/owner/insights-dashboard.js'
+      - 'beta/src/features/social/posts.js'
       - 'beta/src/features/inventory/page.js'
       - 'beta/src/features/content/home.js'
       - 'beta/src/features/inventory/filtering.js'
@@ -147,8 +148,25 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v01' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v01' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v01' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v02' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v02' beta/index.html
+
+      - name: Validate Facebook group-friendly post generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/features/social/posts.js
+          grep -q 'function facebookGroupSalesCopy' beta/src/features/social/posts.js
+          grep -q 'function facebookGroupSalesFooterLines' beta/src/features/social/posts.js
+          grep -q 'Group-friendly (short)' beta/src/features/social/posts.js
+          grep -q 'Detailed listing' beta/src/features/social/posts.js
+          grep -Fq 'Price & full details:' beta/src/features/social/posts.js
+          grep -Fq 'Worldwide shipping available' beta/src/features/social/posts.js
+          grep -Fq 'more photos / video' beta/src/features/social/posts.js
+          grep -q 'templateModeInput?.value||"group"' beta/src/features/social/posts.js
+          grep -q 'posts.js?v=2026-09-25-v02' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-25-v02' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v02' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -179,9 +197,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-25-v01
-          PREVIOUS_VERSION: 2026-09-24-v15
-          PREVIOUS_COMMIT: 4a46844206ddf633d620f9a0b08d3d66a7c01738
+          RELEASE_VERSION: 2026-09-25-v02
+          PREVIOUS_VERSION: 2026-09-25-v01
+          PREVIOUS_COMMIT: acda9e46024bb9f71e4d58aeddde2f5f7ddb6130
         run: |
           set -euo pipefail
           mkdir -p release
@@ -209,10 +227,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-25-v01-packages
+          name: Collect-TCG-Beta-2026-09-25-v02-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-25-v01-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v15-to-2026-09-25-v01-patch.zip
+            release/Collect-TCG-Beta-2026-09-25-v02-full.zip
+            release/Collect-TCG-Beta-2026-09-25-v01-to-2026-09-25-v02-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -221,16 +239,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-25-v01.txt"
+          MANIFEST="release-manifests/2026-09-25-v02.txt"
           {
-            echo "Version: 2026-09-25-v01"
-            echo "Previous version: 2026-09-24-v15"
+            echo "Version: 2026-09-25-v02"
+            echo "Previous version: 2026-09-25-v01"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v01-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v15-to-2026-09-25-v01-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v02-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v01-to-2026-09-25-v02-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-25-v01: record package validation"
+          git commit -m "Beta 2026-09-25-v02: record package validation"
           git push

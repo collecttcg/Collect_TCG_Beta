@@ -149,6 +149,23 @@ function compactGeneratedPostSpacing(value){
     return [t.cod,"",t.shippingTitle,"",t.shipping,"",t.dm,"",t.serious,"",t.meetup,"",t.located,"",t.lowball];
   }
 
+  function facebookGroupSalesCopy(language){
+    const copy={
+      en:{price:"💰 Price & full details:",shipping:"🌏 Worldwide shipping available",dm:"📩 DM if interested or if you would like more photos / video."},
+      ms:{price:"💰 Harga & butiran penuh:",shipping:"🌏 Penghantaran seluruh dunia tersedia",dm:"📩 DM jika berminat atau jika anda mahu lebih banyak foto / video."},
+      zh:{price:"💰 价格与完整详情：",shipping:"🌏 提供全球配送",dm:"📩 如有兴趣或想查看更多照片 / 视频，请私信。"},
+      ja:{price:"💰 価格・詳細：",shipping:"🌏 世界各国へ発送可能",dm:"📩 ご興味がある場合、または追加の写真・動画をご希望の場合はDMください。"},
+      ko:{price:"💰 가격 및 전체 정보:",shipping:"🌏 전 세계 배송 가능",dm:"📩 관심이 있거나 추가 사진 / 영상을 원하시면 DM 주세요."}
+    };
+    return copy[normalizePostLanguage(language)]||copy.en;
+  }
+
+  function facebookGroupSalesFooterLines(language){
+    const t=postLocale(language);
+    const short=facebookGroupSalesCopy(language);
+    return [t.cod,"",short.shipping,"",short.dm,"",t.meetup,"",t.located];
+  }
+
 function getFbPostPrefs(){
     try{
       const parsed = JSON.parse(appContext.localStorage.getItem(appContext.FB_POST_PREFS_KEY) || "{}");
@@ -305,16 +322,20 @@ function buildFbPostText(card, values){
     const instagramUrl = appContext.safeHttpUrl(values.instagramUrl);
     const hashtags = String(values.hashtags || appContext.defaultFbHashtags(card)).trim();
 
+    const groupFriendly=values.templateMode!=="detailed";
+    const groupCopy=appContext.facebookGroupSalesCopy(values.language);
     const lines = [
       title,
       "",
-      text.priceRefer,
+      groupFriendly ? groupCopy.price : text.priceRefer,
       "",
       websiteCardUrl,
       "",
       divider,
       "",
-      ...appContext.postSalesFooterLines(values.language),
+      ...(groupFriendly
+        ? appContext.facebookGroupSalesFooterLines(values.language)
+        : appContext.postSalesFooterLines(values.language)),
       "",
       divider
     ];
@@ -604,6 +625,16 @@ function renderFbPostGeneratorPage(nfsMode=false){
 
           ${appContext.postLanguageSelectHTML("fbPostLanguage",appContext.getPostGeneratorLanguage())}
 
+          ${nfsMode ? "" : `
+            <div class="field">
+              <label for="fbPostTemplateMode">Facebook template</label>
+              <select id="fbPostTemplateMode">
+                <option value="group" selected>Group-friendly (short)</option>
+                <option value="detailed">Detailed listing</option>
+              </select>
+              <div class="hint">Group-friendly keeps the card link, COD / meetup, worldwide shipping and DM contact while leaving detailed shipping terms on the website.</div>
+            </div>`}
+
           <details class="fb-post-settings">
             <summary>Template links & hashtags</summary>
             <div class="fb-post-settings-body">
@@ -656,6 +687,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
     const filterCount = appContext.$("fbPostFilterCount");
     const titleInput = appContext.$("fbPostTitle");
     const languageInput = appContext.$("fbPostLanguage");
+    const templateModeInput = appContext.$("fbPostTemplateMode");
     const shopInput = appContext.$("fbPostCarousellShop");
     const instagramInput = appContext.$("fbPostInstagram");
     const hashtagsInput = appContext.$("fbPostHashtags");
@@ -723,6 +755,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
       return {
         title:titleInput.value,
         language:languageInput.value,
+        templateMode:templateModeInput?.value||"group",
         carousellShopUrl:shopInput.value,
         instagramUrl:instagramInput.value,
         hashtags:hashtagsInput.value
@@ -841,7 +874,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
       selectCard(requestedCardId);
     }
 
-    [titleInput,languageInput,shopInput,instagramInput,hashtagsInput].forEach(input=>{
+    [titleInput,languageInput,templateModeInput,shopInput,instagramInput,hashtagsInput].filter(Boolean).forEach(input=>{
       input.addEventListener("input", ()=>{
         persistCurrent();
         updateOutput();
@@ -3861,7 +3894,7 @@ function renderFbCardListGeneratorPage(){
     loadTrendingDropScores();
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,ebayListingTitle,ebayItemSpecifics,ebayListingDescription,renderEbayListingGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,facebookGroupSalesCopy,facebookGroupSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,ebayListingTitle,ebayItemSpecifics,ebayListingDescription,renderEbayListingGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
