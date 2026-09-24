@@ -309,24 +309,39 @@ async function openCardRoute(cardId,discoverySource=""){
           );
         }catch{}
 
-        // Internal card browsing stays inside the already-loaded SPA. The clean
-        // SEO URL still appears in the address bar, but the page/catalogue is
-        // not downloaded and initialized again.
+        // Internal browsing must never reload a generated static card page.
+        // Change only the address/history entry, then open the already-loaded
+        // card directly. The full router is intentionally NOT called here:
+        // rerendering Home/Inventory underneath the modal adds visible churn
+        // and is unnecessary when the current page is already in memory.
+        let pushedCleanUrl=false;
         try{
-          const state=history.state && typeof history.state==="object"
-            ? {...history.state}
-            : {};
-          state.collectTcgSpaCardId=id;
-          state.collectTcgSpaCard=true;
-          history.pushState(state,"",clean);
-          appContext.router();
-          return;
-        }catch{
-          // History API can fail in unusual embedded/browser environments.
-          // Preserve the existing clean-page navigation as a safe fallback.
-          location.assign(clean);
+          const cleanUrl=new URL(clean,location.href);
+          if(cleanUrl.origin===location.origin){
+            const state=history.state && typeof history.state==="object"
+              ? {...history.state}
+              : {};
+            state.collectTcgSpaCardId=id;
+            state.collectTcgSpaCard=true;
+            history.pushState(state,"",cleanUrl.pathname+cleanUrl.search+cleanUrl.hash);
+            pushedCleanUrl=true;
+          }
+        }catch{}
+
+        if(pushedCleanUrl){
+          appContext.openDetailsModal(card);
           return;
         }
+
+        // If History API cannot represent the clean URL, stay inside the SPA.
+        // Never fall back to location.assign() for an internal card click.
+        const fallbackTarget=appContext.cardShareHash(id);
+        if(location.hash===fallbackTarget){
+          appContext.openDetailsModal(card);
+        }else{
+          location.hash=fallbackTarget;
+        }
+        return;
       }
     }
 
