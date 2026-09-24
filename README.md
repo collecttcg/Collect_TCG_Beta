@@ -10,7 +10,7 @@ This is the complete modular beta package, based on the V92 content verified in 
 4. Open the new repository's Pages address with `/beta/` appended. For the suggested repository name, the intended path is `https://collecttcg.github.io/Collect_TCG_Beta/beta/`.
 5. Follow `docs/TEST-CHECKLIST.md` before replacing production.
 
-The runtime deliberately refuses to start under the live `/Collect_TCG/` project path. This avoids the known legacy production service worker's scope. There is **no root `index.html`, service worker, deployment workflow or CNAME** in this package that can replace the production entry point or change production deployment settings.
+The runtime deliberately refuses to start under the live `/Collect_TCG/` project path. This avoids the known legacy production service worker's scope. There is **no root `index.html`, production service worker or CNAME** in this package that can replace the production entry point. The Beta SEO refresh workflow only regenerates files under `beta/cards/` plus the Beta sitemap/robots/slug-state files from anonymous public catalogue reads; it does not deploy or modify Production.
 
 ## What is isolated
 
