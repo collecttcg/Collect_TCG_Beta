@@ -923,7 +923,13 @@ function replaceCardRouteWithoutRefresh(cardId){
       : "";
     const target=clean || appContext.cardShareHash(id);
     try{
-      history.replaceState(history.state,"",target);
+      const state=history.state && typeof history.state==="object"
+        ? {...history.state}
+        : {};
+      if(state.collectTcgSpaCard){
+        state.collectTcgSpaCardId=id;
+      }
+      history.replaceState(state,"",target);
     }catch{
       // Do not fall back to location.hash here: that would trigger router()
       // and recreate the modal, which is exactly what this smooth path avoids.
@@ -1677,6 +1683,19 @@ function closeDetailsModal(navigateBack = true){
       const target=appContext.detailsReturnHash && !appContext.detailsReturnHash.includes("#/card/")
         ? appContext.detailsReturnHash
         : "#/inventory";
+
+      const spaCardEntry=!!(
+        history.state &&
+        typeof history.state==="object" &&
+        history.state.collectTcgSpaCard
+      );
+
+      // Internal card opens use pushState, so closing should simply return to
+      // the already-rendered previous page. popstate/router handles the rest.
+      if(spaCardEntry){
+        history.back();
+        return;
+      }
 
       if(appContext.canReusePreservedListing(target)){
         try{
