@@ -3,7 +3,7 @@ export function register(appContext){
 function relatedCardHTML(c){
     const image = appContext.getImages(c)[0] || "";
     return `
-      <button type="button" class="related-card" data-related-card-id="${appContext.escapeHtml(c.id)}" aria-label="View ${appContext.escapeHtml(c.name)}">
+      <button type="button" class="related-card" data-related-card-id="${appContext.escapeHtml(c.id)}" data-discovery-source="related" aria-label="View ${appContext.escapeHtml(c.name)}">
         <div class="related-card-image-wrap">
           ${image ? `<img src="${appContext.escapeHtml(image)}" alt="${appContext.escapeHtml(c.name)}" loading="lazy" decoding="async" fetchpriority="low">` : `<div class="related-card-no-image">No image</div>`}
           ${appContext.statusCornerHTML(c)}
@@ -419,7 +419,7 @@ function wireCardActions(container){
       const tile = e.target.closest(".card[data-card-id]");
       if(!tile) return;
       const card = appContext.getCardById(tile.dataset.cardId||"");
-      if(card) appContext.openCardRoute(card.id);
+      if(card) appContext.openCardRoute(card.id,tile.dataset.discoverySource||"");
     });
   }
 
