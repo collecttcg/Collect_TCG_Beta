@@ -251,6 +251,10 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.match(routing,/return `card\/\$\{seoCardId\}`/);
  assert.match(details,/publishedSeoCardUrl\(card\)/);
  assert.match(details,/cardShareHash\(cardId\)/);
+ assert.match(routing,/location\.assign\(clean\)/);
+ assert.match(routing,/collect_tcg_clean_card_return_v1/);
+ assert.match(details,/history\.replaceState\(history\.state,"",target\)/);
+ assert.match(details,/location\.assign\(new URL\(target,appContext\.siteRootUrl\(\)\)\.toString\(\)\)/);
  assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
  assert.match(generator,/application\/ld\+json/);
  assert.match(generator,/rel="canonical"/);
