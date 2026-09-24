@@ -273,9 +273,11 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.match(routing,/return `card\/\$\{seoCardId\}`/);
  assert.match(details,/publishedSeoCardUrl\(card\)/);
  assert.match(details,/cardShareHash\(cardId\)/);
- assert.match(routing,/location\.assign\(clean\)/);
+ assert.match(routing,/history\.pushState\(state,"",clean\)/);
+ assert.match(routing,/collectTcgSpaCardId=id/);
  assert.match(routing,/collect_tcg_clean_card_return_v1/);
- assert.match(details,/history\.replaceState\(history\.state,"",target\)/);
+ assert.match(routing,/location\.assign\(clean\)/);
+ assert.match(details,/history\.replaceState\(state,"",target\)/);
  assert.match(details,/location\.assign\(new URL\(target,appContext\.siteRootUrl\(\)\)\.toString\(\)\)/);
  assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
  assert.match(generator,/application\/ld\+json/);
@@ -295,6 +297,7 @@ test('Phase 2A discovery surfaces keep clean-card routing and source context',()
  assert.match(routing,/function rememberCardDiscoverySource\(cardId,source\)/);
  assert.match(routing,/function currentCardDiscoverySource\(\)/);
  assert.match(routing,/openCardRoute\(cardId,discoverySource=""\)/);
+ assert.match(routing,/history\.pushState\(state,"",clean\)/);
  assert.match(routing,/location\.assign\(clean\)/);
  assert.doesNotMatch(home,/home-collector-spotlight-media" href="#\/card\//);
  assert.match(home,/data-spotlight-card-id/);
@@ -348,5 +351,25 @@ test('Phase 2 discovery summary is owner-only and intentionally lightweight',()=
  assert.match(analytics,/async function fetchDiscoverySourceSummary\(start,end\)/);
  assert.match(dashboard,/Where card interest starts/);
  assert.match(dashboard,/directional context while traffic is still small/);
+});
+
+test('clean card URLs use SPA history internally while direct static pages remain supported',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const routing=source('../beta/src/app/routing.js');
+ const details=source('../beta/src/features/cards/details.js');
+
+ assert.match(routing,/state\.collectTcgSpaCardId=id/);
+ assert.match(routing,/state\.collectTcgSpaCard=true/);
+ assert.match(routing,/history\.pushState\(state,"",clean\)/);
+ assert.match(routing,/appContext\.router\(\);[\s\S]*location\.assign\(clean\)/);
+ assert.match(routing,/history\.state\.collectTcgSpaCardId/);
+ assert.match(routing,/meta\[name="collect-tcg-card-id"\]/);
+ assert.match(routing,/window\.addEventListener\("popstate", appContext\.router\)/);
+
+ assert.match(details,/if\(state\.collectTcgSpaCard\)\{[\s\S]*state\.collectTcgSpaCardId=id/);
+ assert.match(details,/const spaCardEntry=!!\(/);
+ assert.match(details,/history\.state\.collectTcgSpaCard/);
+ assert.match(details,/history\.back\(\)/);
+ assert.match(details,/const cleanPage=!!document\.querySelector\('meta\[name="collect-tcg-card-id"\]'\)/);
 });
 
