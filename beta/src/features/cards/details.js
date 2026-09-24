@@ -1048,6 +1048,25 @@ function toggleDetailsMoreMenu(){
     }
   }
 
+async function refreshOwnerCardConversionSummary(cardId){
+    const id=appContext.safeCardId(cardId);
+    if(!id || !appContext.isOwnerMode() || typeof appContext.fetchOwnerCardConversionSummary!=="function") return;
+
+    const summary=await appContext.fetchOwnerCardConversionSummary(id);
+    if(!summary || !appContext.isOwnerMode() || String(appContext.detailsCardId)!==id) return;
+
+    const setValue=(key,value)=>{
+      const el=appContext.detailsMount?.querySelector(`[data-owner-conversion="${key}"]`);
+      if(el) el.textContent=String(value);
+    };
+
+    setValue("qualified",Number(summary.qualified_views||0).toLocaleString());
+    setValue("unique",Number(summary.unique_views||0).toLocaleString());
+    setValue("favorites",Number(summary.favorite_adds||0).toLocaleString());
+    setValue("intent",Number(summary.intent_count||0).toLocaleString());
+    setValue("intent-rate",`${Number(summary.intent_rate||0).toFixed(1)}%`);
+  }
+
 async function openDetailsModal(card){
     if(!card) return;
     const openRequestId=++appContext.detailsOpenRequestId;
@@ -1362,7 +1381,23 @@ async function openDetailsModal(card){
             <div class="detail-item"><div class="detail-label">Pictures</div><div class="detail-value">${images.length}</div></div>
             <div class="detail-item owner-only">
               <div class="detail-label">Qualified Views</div>
-              <div class="detail-value">${appContext.freshQualifiedViewDisplay(card.id)}</div>
+              <div class="detail-value" data-owner-conversion="qualified">${appContext.freshQualifiedViewDisplay(card.id)}</div>
+            </div>
+            <div class="detail-item owner-only">
+              <div class="detail-label">Unique Collectors</div>
+              <div class="detail-value" data-owner-conversion="unique">—</div>
+            </div>
+            <div class="detail-item owner-only">
+              <div class="detail-label">Favorite Adds</div>
+              <div class="detail-value" data-owner-conversion="favorites">—</div>
+            </div>
+            <div class="detail-item owner-only">
+              <div class="detail-label">Buyer Intents</div>
+              <div class="detail-value" data-owner-conversion="intent">—</div>
+            </div>
+            <div class="detail-item owner-only">
+              <div class="detail-label">Intent Rate</div>
+              <div class="detail-value" data-owner-conversion="intent-rate">—</div>
             </div>
           </div>
 
@@ -1419,6 +1454,10 @@ async function openDetailsModal(card){
     `;
 
     appContext.detailsOverlay.hidden = false;
+
+    if(appContext.isOwnerMode()){
+      appContext.refreshOwnerCardConversionSummary(card.id).catch(()=>{});
+    }
 
     // The Card Details modal is reused between listings. Reset its actual
     // scrolling element only AFTER the new card has been rendered and the
@@ -1733,7 +1772,7 @@ function closeDetailsModal(navigateBack = true){
     }
   }
 
-  Object.assign(appContext,{contactCardReferenceLines,syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadInventoryQrImage,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
+  Object.assign(appContext,{contactCardReferenceLines,refreshOwnerCardConversionSummary,syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadInventoryQrImage,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
 }
 
 /** State and event initialization; called in preserved startup order. */
