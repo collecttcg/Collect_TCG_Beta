@@ -264,7 +264,13 @@ function trendingCardUniqueViews(card){
   }
 
 function trendingCardScore(card){
-    return trendingCardViews(card);
+    const views=trendingCardViews(card);
+    const unique=trendingCardUniqueViews(card);
+    if(views<=0 && unique<=0) return 0;
+    // Unique collectors lead the ranking. Repeat qualified views still add a
+    // smaller signal, capped so one visitor cannot dominate Trending.
+    const repeatContribution=Math.min(Math.max(0,views-unique),Math.max(1,unique)*2);
+    return unique*100 + repeatContribution*10 + Math.min(views,9);
   }
 
 async function refreshTrending7dPerformance({force=false}={}){
@@ -441,8 +447,9 @@ function getFiltered(){
       list=list.filter(card=>appContext.trendingCardViews(card)>0);
 
       list.sort((a,b)=>
-        appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
+        appContext.trendingCardScore(b)-appContext.trendingCardScore(a) ||
         appContext.trendingCardUniqueViews(b)-appContext.trendingCardUniqueViews(a) ||
+        appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
         a.name.localeCompare(b.name)
       );
 
