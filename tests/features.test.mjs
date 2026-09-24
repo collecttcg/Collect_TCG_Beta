@@ -273,10 +273,10 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.match(routing,/return `card\/\$\{seoCardId\}`/);
  assert.match(details,/publishedSeoCardUrl\(card\)/);
  assert.match(details,/cardShareHash\(cardId\)/);
- assert.match(routing,/history\.pushState\(state,"",clean\)/);
+ assert.match(routing,/history\.pushState\(state,"",cleanUrl\.pathname\+cleanUrl\.search\+cleanUrl\.hash\)/);
  assert.match(routing,/collectTcgSpaCardId=id/);
  assert.match(routing,/collect_tcg_clean_card_return_v1/);
- assert.match(routing,/location\.assign\(clean\)/);
+ assert.doesNotMatch(routing,/location\.assign\(clean\)/);
  assert.match(details,/history\.replaceState\(state,"",target\)/);
  assert.match(details,/location\.assign\(new URL\(target,appContext\.siteRootUrl\(\)\)\.toString\(\)\)/);
  assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
@@ -297,8 +297,8 @@ test('Phase 2A discovery surfaces keep clean-card routing and source context',()
  assert.match(routing,/function rememberCardDiscoverySource\(cardId,source\)/);
  assert.match(routing,/function currentCardDiscoverySource\(\)/);
  assert.match(routing,/openCardRoute\(cardId,discoverySource=""\)/);
- assert.match(routing,/history\.pushState\(state,"",clean\)/);
- assert.match(routing,/location\.assign\(clean\)/);
+ assert.match(routing,/history\.pushState\(state,"",cleanUrl\.pathname\+cleanUrl\.search\+cleanUrl\.hash\)/);
+ assert.doesNotMatch(routing,/location\.assign\(clean\)/);
  assert.doesNotMatch(home,/home-collector-spotlight-media" href="#\/card\//);
  assert.match(home,/data-spotlight-card-id/);
  assert.match(home,/source:"recently-added"/);
@@ -360,8 +360,9 @@ test('clean card URLs use SPA history internally while direct static pages remai
 
  assert.match(routing,/state\.collectTcgSpaCardId=id/);
  assert.match(routing,/state\.collectTcgSpaCard=true/);
- assert.match(routing,/history\.pushState\(state,"",clean\)/);
- assert.match(routing,/appContext\.router\(\);[\s\S]*location\.assign\(clean\)/);
+ assert.match(routing,/history\.pushState\(state,"",cleanUrl\.pathname\+cleanUrl\.search\+cleanUrl\.hash\)/);
+ assert.match(routing,/if\(pushedCleanUrl\)\{[\s\S]*appContext\.openDetailsModal\(card\);[\s\S]*return;/);
+ assert.doesNotMatch(routing,/location\.assign\(clean\)/);
  assert.match(routing,/history\.state\.collectTcgSpaCardId/);
  assert.match(routing,/meta\[name="collect-tcg-card-id"\]/);
  assert.match(routing,/window\.addEventListener\("popstate", appContext\.router\)/);
@@ -377,5 +378,19 @@ test('Collector Spotlight click stops before the shared card delegate',()=>{
  const source=fs.readFileSync(new URL('../beta/src/features/content/home.js',import.meta.url),'utf8');
  assert.match(source,/data-spotlight-card-id/);
  assert.match(source,/event\.preventDefault\(\);[\s\S]*event\.stopPropagation\(\);[\s\S]*openCardRoute\(id,"spotlight"\)/);
+});
+
+test('internal card opens never reload the static SEO page',()=>{
+ const routing=fs.readFileSync(new URL('../beta/src/app/routing.js',import.meta.url),'utf8');
+ const openStart=routing.indexOf('async function openCardRoute');
+ const openEnd=routing.indexOf('\nfunction getCollectionStats',openStart);
+ const openBlock=routing.slice(openStart,openEnd);
+
+ assert.ok(openStart>=0 && openEnd>openStart);
+ assert.match(openBlock,/history\.pushState\(/);
+ assert.match(openBlock,/appContext\.openDetailsModal\(card\)/);
+ assert.match(openBlock,/location\.hash=fallbackTarget/);
+ assert.doesNotMatch(openBlock,/appContext\.router\(\)/);
+ assert.doesNotMatch(openBlock,/location\.assign\(/);
 });
 
