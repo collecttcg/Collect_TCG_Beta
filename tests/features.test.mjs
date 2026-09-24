@@ -373,3 +373,9 @@ test('clean card URLs use SPA history internally while direct static pages remai
  assert.match(details,/const cleanPage=!!document\.querySelector\('meta\[name="collect-tcg-card-id"\]'\)/);
 });
 
+test('Collector Spotlight click stops before the shared card delegate',()=>{
+ const source=fs.readFileSync(new URL('../beta/src/features/content/home.js',import.meta.url),'utf8');
+ assert.match(source,/data-spotlight-card-id/);
+ assert.match(source,/event\.preventDefault\(\);[\s\S]*event\.stopPropagation\(\);[\s\S]*openCardRoute\(id,"spotlight"\)/);
+});
+
