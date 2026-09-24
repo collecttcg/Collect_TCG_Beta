@@ -460,6 +460,11 @@ async function sendQualifiedCardViewEvent(card,token){
         });
       }catch{}
 
+      // Discovery attribution is recorded only after the same 2-second
+      // Qualified View succeeds. This keeps accidental taps and Owner/testing
+      // activity out of the discovery history.
+      appContext.recordQualifiedViewDiscoveryAttribution(cardId,visitorId).catch(()=>{});
+
       // A successfully recorded Qualified View contributes one step to
       // this anonymous session's browsing depth.
       appContext.incrementAnalyticsSessionQualifiedView().catch(()=>{});
@@ -483,6 +488,45 @@ function recordCardViewEvent(card){
     },appContext.CARD_VIEW_QUALIFY_MS);
 
     return true;
+  }
+
+async function recordQualifiedViewDiscoveryAttribution(cardId,visitorId){
+    try{
+      if(appContext.discoveryAttributionBackendState==="unavailable") return false;
+
+      const id=appContext.safeCardId(cardId);
+      const source=id ? appContext.getCardDiscoverySource?.(id) || "" : "";
+      const visitor=String(visitorId||"").trim().slice(0,120);
+      if(!id || !source || !visitor) return false;
+
+      const {data,error}=await appContext.supabaseClient.rpc("record_card_discovery_view",{
+        p_card_id:id,
+        p_visitor_id:visitor,
+        p_source:source
+      });
+
+      if(error){
+        const message=`${error.message||""} ${error.details||""}`.toLowerCase();
+        if(
+          message.includes("record_card_discovery_view") ||
+          message.includes("function") ||
+          message.includes("schema cache")
+        ){
+          appContext.discoveryAttributionBackendState="unavailable";
+          return false;
+        }
+        appContext.discoveryAttributionBackendState="error";
+        console.warn("Discovery attribution unavailable:",error);
+        return false;
+      }
+
+      appContext.discoveryAttributionBackendState="available";
+      return data!==false;
+    }catch(error){
+      appContext.discoveryAttributionBackendState="error";
+      console.warn("Discovery attribution unavailable:",error);
+      return false;
+    }
   }
 
 function engagementDedupeWindowMs(eventType){
@@ -1810,7 +1854,7 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -1818,6 +1862,8 @@ export function initialize(appContext,runtime){
   appContext.CARD_VIEW_QUALIFY_MS = 2000;
 
   appContext.cardViewQualificationToken = 0;
+
+  appContext.discoveryAttributionBackendState = "unknown";
 
   appContext.CARD_ENGAGEMENT_EVENT_TYPES = new Set([
     "favorite_add",
