@@ -282,3 +282,21 @@ test('Phase 2A discovery surfaces keep clean-card routing and source context',()
  assert.match(tiles,/openCardRoute\(card\.id,tile\.dataset\.discoverySource\|\|""\)/);
  assert.match(details,/rememberCardDiscoverySource\(id,el\.dataset\.discoverySource\|\|"related"\)/);
 });
+
+test('Phase 2B1 records discovery attribution only after qualified views',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const analytics=source('../beta/src/services/analytics.js');
+ const sql=source('../2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql');
+
+ assert.match(analytics,/async function recordQualifiedViewDiscoveryAttribution\(cardId,visitorId\)/);
+ assert.match(analytics,/getCardDiscoverySource\?\.\(id\)/);
+ assert.match(analytics,/record_card_discovery_view/);
+ assert.match(analytics,/recordQualifiedViewDiscoveryAttribution\(cardId,visitorId\)\.catch/);
+ assert.match(sql,/create table if not exists public\.card_discovery_views/);
+ assert.match(sql,/alter table public\.card_discovery_views enable row level security/);
+ assert.match(sql,/revoke all on table public\.card_discovery_views from anon, authenticated/);
+ assert.match(sql,/create or replace function public\.record_card_discovery_view/);
+ assert.match(sql,/grant execute on function public\.record_card_discovery_view/);
+ assert.match(sql,/lifecycle_status/);
+});
+
