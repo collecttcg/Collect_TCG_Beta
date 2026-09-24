@@ -59,16 +59,46 @@ function siteRootUrl(){
     }
   }
 
-function seoCardUrl(card){
+function seoCardUrl(card,slugOverride=""){
     const id=appContext.safeCardId(card?.id);
     if(!id) return "";
+    const slug=appContext.seoSlugPart(slugOverride)||appContext.seoCardSlug(card);
     return new URL(
-      `cards/${appContext.seoCardSlug(card)}--${encodeURIComponent(id)}/`,
+      `cards/${slug}--${encodeURIComponent(id)}/`,
       appContext.siteRootUrl()
     ).toString();
   }
 
-  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId,seoSlugPart,seoCardSlug,siteRootUrl,seoCardUrl});
+async function loadSeoCardSlugMap(){
+    try{
+      const response=await appContext.fetch(new URL("seo-slugs.json",appContext.siteRootUrl()),{
+        method:"GET",
+        cache:"no-store",
+        credentials:"omit"
+      });
+      if(!response.ok) return false;
+      const payload=await response.json();
+      const entries=payload && typeof payload.cards==="object" ? Object.entries(payload.cards) : [];
+      const map=new Map();
+      entries.forEach(([id,value])=>{
+        const safeId=appContext.safeCardId(id);
+        const slug=appContext.seoSlugPart(value?.slug||"");
+        if(safeId && slug) map.set(safeId,slug);
+      });
+      appContext.seoCardSlugMap=map;
+      return true;
+    }catch{
+      return false;
+    }
+  }
+
+function publishedSeoCardUrl(card){
+    const id=appContext.safeCardId(card?.id);
+    const slug=id ? appContext.seoCardSlugMap?.get(id) : "";
+    return slug ? appContext.seoCardUrl(card,slug) : "";
+  }
+
+  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId,seoSlugPart,seoCardSlug,siteRootUrl,seoCardUrl,loadSeoCardSlugMap,publishedSeoCardUrl});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -114,4 +144,7 @@ export function initialize(appContext,runtime){
   appContext.RECENTLY_VIEWED_KEY = "collect_tcg_recently_viewed_v1";
 
   appContext.RECENTLY_VIEWED_LIMIT = 12;
+
+  appContext.seoCardSlugMap = new Map();
+  appContext.loadSeoCardSlugMap().catch(()=>{});
 }
