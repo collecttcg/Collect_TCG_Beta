@@ -15,8 +15,30 @@ function app(){
 test('all 350 V92 filter/sort results are preserved by the modular app',()=>{
  const a=app();for(const scenario of golden.scenarios){Object.assign(a,{controls:Object.fromEntries(Object.entries(scenario.control).map(([k,v])=>[k,{value:v}])),listingAvailabilityScope:scenario.scope,currency:scenario.currency,activeQuickFilter:scenario.quick,owner:scenario.owner});assert.deepEqual(a.getFiltered().map(c=>c.id),scenario.expected);}
 });
-test('all 30 V92 related-card results and availability rules are preserved',()=>{
- const a=app();for(const row of golden.related)assert.deepEqual(a.getRelatedCards(row.source,6).map(c=>c.id),row.expected);
+test('Related Cards preserve availability/diversity while prioritizing stronger collector matches',()=>{
+ const a=app();
+ for(const row of golden.related){
+  const results=a.getRelatedCards(row.source,6);
+  assert.ok(results.length<=6);
+  assert.ok(results.every(card=>card.id!==row.source.id));
+  assert.ok(results.every(card=>a.isLiveLifecycle(card)));
+  assert.ok(results.every(card=>a.normalizeFilterValue(card.availability||'Available')==='available' ||
+    (a.normalizeFilterValue(row.source.availability||'Available')==='collection (nfs)' &&
+     a.normalizeFilterValue(card.availability||'Available')==='collection (nfs)')));
+  const identities=results.map(card=>a.relatedCardIdentityKey(card));
+  for(const identity of new Set(identities)) assert.ok(identities.filter(value=>value===identity).length<=2);
+ }
+
+ const source={id:'source',game:'One Piece Card Game',series:'Treasure Cup 2024',name:'Monkey D. Luffy Winner',card_code:'OP01-001',era:'Championship',language:'ENG',format:'Graded',availability:'Available',lifecycle_status:'live',grading:[{company:'PSA',grade:'10'}],price_usd:3000};
+ const sameCode={...source,id:'same-code',name:'Monkey D. Luffy Finalist',grading:[{company:'PSA',grade:'9'}],price_usd:2800};
+ const sameCharacter={...source,id:'same-character',card_code:'P-001',series:'Regional 2024',name:'Monkey D. Luffy Promo',price_usd:2600};
+ const sameEvent={...source,id:'same-event',card_code:'OP01-002',name:'Roronoa Zoro Winner',price_usd:2500};
+ const generic={...source,id:'generic',card_code:'OP09-001',series:'Modern Booster',name:'Random Character',era:'Modern',price_usd:2900};
+ a.cards=[source,sameCode,sameCharacter,sameEvent,generic];
+ const ranked=a.getRelatedCards(source,4);
+ assert.equal(ranked[0].id,'same-code');
+ assert.ok(ranked.findIndex(card=>card.id==='same-character') < ranked.findIndex(card=>card.id==='generic'));
+ assert.ok(ranked.findIndex(card=>card.id==='same-event') < ranked.findIndex(card=>card.id==='generic'));
 });
 test('feature registry has no missing cross-module dependencies',()=>{
  const a=app();const map=JSON.parse(fs.readFileSync(new URL('../docs/function-map.json',import.meta.url),'utf8'));for(const row of map)assert.equal(typeof a[row.name],'function',row.name);assert.equal(map.length,667);
@@ -298,5 +320,33 @@ test('Phase 2B1 records discovery attribution only after qualified views',()=>{
  assert.match(sql,/create or replace function public\.record_card_discovery_view/);
  assert.match(sql,/grant execute on function public\.record_card_discovery_view/);
  assert.match(sql,/lifecycle_status/);
+});
+
+test('Phase 2 Trending ranks unique collectors ahead of repeat-heavy views',()=>{
+ const a=app();
+ a.trending7dViewsByCard=new Map([['repeat',8],['broader',3],['single',2]]);
+ a.trending7dUniqueViewsByCard=new Map([['repeat',1],['broader',3],['single',1]]);
+ const repeat={id:'repeat'};
+ const broader={id:'broader'};
+ const single={id:'single'};
+ assert.ok(a.trendingCardScore(broader)>a.trendingCardScore(repeat));
+ assert.ok(a.trendingCardScore(repeat)>a.trendingCardScore(single));
+ const source=fs.readFileSync(new URL('../beta/src/features/content/home.js',import.meta.url),'utf8');
+ assert.match(source,/trendingCardScore\(b\)-appContext\.trendingCardScore\(a\)/);
+ assert.match(source,/unique qualified collector interest/);
+});
+
+test('Phase 2 discovery summary is owner-only and intentionally lightweight',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const sql=source('../2026-09-24-v08-DISCOVERY-SUMMARY.sql');
+ const analytics=source('../beta/src/services/analytics.js');
+ const dashboard=source('../beta/src/features/owner/insights-dashboard.js');
+ assert.match(sql,/create or replace function public\.get_card_discovery_summary/);
+ assert.match(sql,/public\.is_app_owner\(\)/);
+ assert.match(sql,/revoke all on function public\.get_card_discovery_summary[\s\S]*from anon/);
+ assert.match(sql,/grant execute on function public\.get_card_discovery_summary[\s\S]*to authenticated/);
+ assert.match(analytics,/async function fetchDiscoverySourceSummary\(start,end\)/);
+ assert.match(dashboard,/Where card interest starts/);
+ assert.match(dashboard,/directional context while traffic is still small/);
 });
 
