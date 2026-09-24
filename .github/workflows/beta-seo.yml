@@ -155,7 +155,7 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Beta v12 packaging: Phase 3 buyer conversion and performance.
+      # Final Beta v12 packaging after restoring validated v11 manifest.
       - name: Create Beta release packages
         shell: bash
         env:
