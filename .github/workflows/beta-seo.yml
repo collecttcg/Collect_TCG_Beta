@@ -1,0 +1,73 @@
+name: Refresh Beta SEO card pages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/beta-seo.yml'
+      - 'tools/generate-seo.mjs'
+      - 'beta/index.html'
+      - 'beta/src/app/register-features.js'
+      - 'beta/src/app/routing.js'
+      - 'beta/src/features/core/utilities.js'
+      - 'beta/src/features/cards/details.js'
+      - 'beta/src/main.js'
+      - 'tests/**'
+      - 'tools/check.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: beta-seo-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate JavaScript and repository references
+        run: |
+          npm test
+          npm run check
+          node --check tools/generate-seo.mjs
+          node tools/generate-seo.mjs --self-test
+
+      - name: Generate Beta SEO card pages
+        run: node tools/generate-seo.mjs --beta
+
+      - name: Validate generated SEO files
+        run: |
+          test -s beta/sitemap.xml
+          test -s beta/robots.txt
+          test -s beta/seo-slugs.json
+          grep -q 'Disallow: /' beta/robots.txt
+          grep -q '<urlset' beta/sitemap.xml
+          git diff --check
+
+      - name: Commit refreshed SEO pages
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add beta/cards beta/sitemap.xml beta/robots.txt beta/seo-slugs.json
+          if git diff --cached --quiet; then
+            echo "SEO output already current."
+            exit 0
+          fi
+          git commit -m "chore: refresh Beta SEO card pages [skip ci]"
+          git push
