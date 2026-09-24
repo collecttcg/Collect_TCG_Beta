@@ -183,7 +183,7 @@ function noscriptSnapshot(card,url){
 }
 
 function renderCardPage(indexHtml,card,slug){
-  const url=new URL(`cards/${slug}--${encodeURIComponent(card.id)}/`,config.publicBase).toString();
+  const url=new URL(`cards/${slug}/`,config.publicBase).toString();
   const meta=metadataBlock(card,url);
   let html=replaceSeoMeta(indexHtml,meta.html,meta.title);
   html=html.replace(/<body([^>]*)>/i,match=>`${match}\n${noscriptSnapshot(card,url)}`);
@@ -296,12 +296,25 @@ async function generate(){
   await fs.mkdir(cardsDir,{recursive:true});
 
   const urls=[config.publicBase];
+  const usedSlugs=new Set();
+  const allocateSlug=(preferred)=>{
+    const base=slugPart(preferred)||'card';
+    if(!usedSlugs.has(base)){
+      usedSlugs.add(base);
+      return base;
+    }
+    let suffix=2;
+    while(usedSlugs.has(`${base}-${suffix}`)) suffix+=1;
+    const unique=`${base}-${suffix}`;
+    usedSlugs.add(unique);
+    return unique;
+  };
   for(const card of liveCards){
     const previous=state.cards?.[card.id]?.slug;
-    const slug=previous||cardSlug(card);
+    const slug=allocateSlug(previous||cardSlug(card));
     nextState.cards[card.id]={slug};
     const rendered=renderCardPage(indexHtml,card,slug);
-    const dir=path.join(cardsDir,`${slug}--${card.id}`);
+    const dir=path.join(cardsDir,slug);
     await fs.mkdir(dir,{recursive:true});
     await fs.writeFile(path.join(dir,'index.html'),rendered.html,'utf8');
     urls.push(rendered.url);
@@ -330,7 +343,7 @@ function runSelfTest(){
   for(const needle of ['rel="canonical"','application/ld+json','collect-tcg-card-id','og:image','<base href=']){
     if(!rendered.html.includes(needle)) throw new Error(`Render self-test missing ${needle}`);
   }
-  if(!rendered.url.includes(card.id)) throw new Error('SEO URL self-test failed');
+  if(rendered.url.includes(card.id)||!rendered.url.endsWith(`/${slug}/`)) throw new Error('SEO URL self-test failed');
   process.stdout.write('SEO generator self-test passed.\n');
 }
 
