@@ -255,5 +255,7 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.match(generator,/application\/ld\+json/);
  assert.match(generator,/rel="canonical"/);
  assert.match(generator,/seo-slugs\.json/);
+ assert.match(generator,/cards\/\$\{slug\}\//);
+ assert.doesNotMatch(generator,/slug\}--\$\{encodeURIComponent\(card\.id\)\}/);
 });
 
