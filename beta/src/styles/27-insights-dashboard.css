@@ -258,3 +258,13 @@
 .insights-v20-pagination button:disabled{opacity:.42;cursor:default;}
 .insights-v20-pagination span{min-width:82px;color:var(--text-muted);font-size:11.5px;text-align:center;}
 @media(max-width:700px){.insights-v20-pagination{justify-content:center;}.insights-v20-pagination button{min-height:44px;}}
+
+/* 2026-09-25-v01 — place card performance pagination beside Sort by. */
+.insights-v20-performance-controls{display:flex;align-items:flex-end;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
+.insights-v20-performance-controls>label{flex:0 0 180px;}
+.insights-v20-performance-controls .insights-v20-pagination{margin-top:0;min-height:40px;}
+@media(max-width:700px){
+  .insights-v20-performance-controls{justify-content:flex-start;margin-top:12px;}
+  .insights-v20-performance-controls>label{flex:1 1 180px;margin-top:0;}
+  .insights-v20-performance-controls .insights-v20-pagination{justify-content:flex-start;margin-top:0;}
+}

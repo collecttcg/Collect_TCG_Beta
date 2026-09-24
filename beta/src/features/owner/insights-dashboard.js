@@ -444,27 +444,29 @@ export function register(appContext){
           <h4>Card performance</h4>
           <p>Compare views, saves and buyer intent. Select a column to sort the current filtered cards.</p>
         </div>
-        <label>
-          <span>Sort by</span>
-          <select data-insights-v20-sort>
-            <option value="views">Most viewed</option>
-            <option value="saves">Most saved</option>
-            <option value="intent">Most buyer intent</option>
-            <option value="rate">Highest intent rate</option>
-            <option value="attention">Needs attention</option>
-          </select>
-        </label>
+        <div class="insights-v20-performance-controls">
+          <label>
+            <span>Sort by</span>
+            <select data-insights-v20-sort>
+              <option value="views">Most viewed</option>
+              <option value="saves">Most saved</option>
+              <option value="intent">Most buyer intent</option>
+              <option value="rate">Highest intent rate</option>
+              <option value="attention">Needs attention</option>
+            </select>
+          </label>
+          <div class="insights-v20-pagination" data-insights-v20-pagination hidden>
+            <button type="button" data-insights-v20-page="prev">Previous</button>
+            <span data-insights-v20-page-status></span>
+            <button type="button" data-insights-v20-page="next">Next</button>
+          </div>
+        </div>
       </div>
       <div class="insights-v20-table-wrap">
         <table class="insights-v20-table">
           <thead><tr><th>Card</th><th>Views</th><th>Saves</th><th>Contact viewed</th><th>Buyer intent</th><th>Intent rate</th><th>Signal</th></tr></thead>
           <tbody data-insights-v20-performance-body></tbody>
         </table>
-      </div>
-      <div class="insights-v20-pagination" data-insights-v20-pagination hidden>
-        <button type="button" data-insights-v20-page="prev">Previous</button>
-        <span data-insights-v20-page-status></span>
-        <button type="button" data-insights-v20-page="next">Next</button>
       </div>
     </section>`;
   }
