@@ -11,7 +11,7 @@ import { initialize as initialize8 } from '../features/content/giveaways-data.js
 import { initialize as initialize9 } from '../features/content/showcase-data.js';
 import { initialize as initialize10 } from '../services/analytics.js?v=2026-09-18-v08';
 import { initialize as initialize11 } from '../features/owner/psa.js';
-import { initialize as initialize12 } from '../app/routing.js?v=2026-09-24-v09';
+import { initialize as initialize12 } from '../app/routing.js?v=2026-09-24-v11';
 import { initialize as initialize13 } from '../features/media/images.js';
 import { initialize as initialize14 } from '../features/cards/presentation.js';
 import { initialize as initialize15 } from '../features/owner/forms.js';
