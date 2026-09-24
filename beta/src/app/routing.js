@@ -308,8 +308,25 @@ async function openCardRoute(cardId,discoverySource=""){
             String(appContext.detailsReturnHash||current||"#/home").slice(0,1500)
           );
         }catch{}
-        location.assign(clean);
-        return;
+
+        // Internal card browsing stays inside the already-loaded SPA. The clean
+        // SEO URL still appears in the address bar, but the page/catalogue is
+        // not downloaded and initialized again.
+        try{
+          const state=history.state && typeof history.state==="object"
+            ? {...history.state}
+            : {};
+          state.collectTcgSpaCardId=id;
+          state.collectTcgSpaCard=true;
+          history.pushState(state,"",clean);
+          appContext.router();
+          return;
+        }catch{
+          // History API can fail in unusual embedded/browser environments.
+          // Preserve the existing clean-page navigation as a safe fallback.
+          location.assign(clean);
+          return;
+        }
       }
     }
 
@@ -365,6 +382,13 @@ function currentRoute(){
     const h = location.hash.replace(/^#\/?/, "");
     const hashRoute=(h.split("?")[0] || "").trim();
     if(hashRoute) return hashRoute;
+
+    const spaCardId=appContext.safeCardId(
+      history.state && typeof history.state==="object"
+        ? history.state.collectTcgSpaCardId
+        : ""
+    );
+    if(spaCardId) return `card/${spaCardId}`;
 
     const seoCardId=appContext.safeCardId(
       document.querySelector('meta[name="collect-tcg-card-id"]')?.content || ""
@@ -704,6 +728,7 @@ export function initialize(appContext,runtime){
   appContext.insightsDetailsReturnState = null;
 
 window.addEventListener("hashchange", appContext.router);
+window.addEventListener("popstate", appContext.router);
 
   appContext.CARD_WATERMARK_LOGO = "./assets/watermark-logo.png";
 
