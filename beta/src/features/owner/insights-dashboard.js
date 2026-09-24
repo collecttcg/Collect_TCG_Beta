@@ -461,6 +461,11 @@ export function register(appContext){
           <tbody data-insights-v20-performance-body></tbody>
         </table>
       </div>
+      <div class="insights-v20-pagination" data-insights-v20-pagination hidden>
+        <button type="button" data-insights-v20-page="prev">Previous</button>
+        <span data-insights-v20-page-status></span>
+        <button type="button" data-insights-v20-page="next">Next</button>
+      </div>
     </section>`;
   }
 
@@ -476,11 +481,15 @@ export function register(appContext){
     return copy.sort((a,b)=>b.views-a.views || b.intent-a.intent || b.saves-a.saves);
   }
 
-  function renderPerformanceRows(mount,rows,mode="views"){
+  function renderPerformanceRows(mount,rows,mode="views",page=1){
     const body=mount?.querySelector("[data-insights-v20-performance-body]");
-    if(!body) return;
+    if(!body) return {page:1,pages:1};
     const items=performanceSort(cardPerformanceRows(rows),mode);
-    body.innerHTML=items.map(item=>`<tr>
+    const pageSize=10;
+    const pages=Math.max(1,Math.ceil(items.length/pageSize));
+    const safePage=Math.min(Math.max(1,Number(page)||1),pages);
+    const visible=items.slice((safePage-1)*pageSize,safePage*pageSize);
+    body.innerHTML=visible.map(item=>`<tr>
       <td><button type="button" data-insights-v14-open-card="${appContext.escapeHtml(item.card?.id||"")}"><strong>${appContext.escapeHtml(item.card?.name||item.row?.name||"Untitled card")}</strong><small>${appContext.escapeHtml(String(item.card?.game||item.row?.game||""))}</small></button></td>
       <td>${item.views.toLocaleString()}</td>
       <td>${item.saves.toLocaleString()}</td>
@@ -489,6 +498,15 @@ export function register(appContext){
       <td>${item.views ? item.intentRate.toFixed(item.intentRate>=10?0:1)+"%" : "—"}</td>
       <td><span class="insights-v20-signal ${item.signal.tone}">${appContext.escapeHtml(item.signal.label)}</span></td>
     </tr>`).join("");
+    const pager=mount.querySelector("[data-insights-v20-pagination]");
+    const status=mount.querySelector("[data-insights-v20-page-status]");
+    const prev=mount.querySelector('[data-insights-v20-page="prev"]');
+    const next=mount.querySelector('[data-insights-v20-page="next"]');
+    if(pager) pager.hidden=items.length<=pageSize;
+    if(status) status.textContent=`Page ${safePage} of ${pages}`;
+    if(prev) prev.disabled=safePage<=1;
+    if(next) next.disabled=safePage>=pages;
+    return {page:safePage,pages};
   }
 
   function demandBars(items,{inventoryGap=false,limit=5}={}){
@@ -727,8 +745,17 @@ export function register(appContext){
     const performance=mount.querySelector("[data-insights-v20-performance]");
     if(performance){
       const sort=performance.querySelector("[data-insights-v20-sort]");
-      const refresh=()=>{ renderPerformanceRows(performance,m.rows,String(sort?.value||"views")); bindCardOpenButtons(performance); };
-      if(sort) sort.addEventListener("change",refresh);
+      let page=1;
+      const refresh=()=>{
+        const result=renderPerformanceRows(performance,m.rows,String(sort?.value||"views"),page);
+        page=result.page;
+        bindCardOpenButtons(performance);
+      };
+      if(sort) sort.addEventListener("change",()=>{ page=1; refresh(); });
+      performance.querySelectorAll("[data-insights-v20-page]").forEach(btn=>btn.addEventListener("click",()=>{
+        page+=btn.dataset.insightsV20Page==="next"?1:-1;
+        refresh();
+      }));
       refresh();
     }
 

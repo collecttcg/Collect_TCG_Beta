@@ -127,7 +127,7 @@ jobs:
           grep -q 'analytics.js?v=2026-09-24-v13' beta/src/app/register-features.js
           grep -q 'catalogue.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-24-v12' beta/src/app/register-features.js
-          grep -q 'insights-dashboard.js?v=2026-09-24-v14' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-24-v15' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'startup.js?v=2026-09-24-v12' beta/src/app/register-features.js
 
@@ -138,13 +138,16 @@ jobs:
           node --check beta/src/features/owner/insights-dashboard.js
           grep -q 'function cardPerformanceRows' beta/src/features/owner/insights-dashboard.js
           grep -q 'data-insights-v20-sort' beta/src/features/owner/insights-dashboard.js
+          grep -q 'const pageSize=10' beta/src/features/owner/insights-dashboard.js
+          grep -q 'data-insights-v20-pagination' beta/src/features/owner/insights-dashboard.js
+          grep -q 'data-insights-v20-page="next"' beta/src/features/owner/insights-dashboard.js
           grep -q 'Highest intent rate' beta/src/features/owner/insights-dashboard.js
           grep -q 'Needs attention' beta/src/features/owner/insights-dashboard.js
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-24-v14' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-24-v14' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-24-v14' beta/index.html
+          grep -q 'register-features.js?v=2026-09-24-v15' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-24-v15' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -175,9 +178,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v14
-          PREVIOUS_VERSION: 2026-09-24-v13
-          PREVIOUS_COMMIT: a6f9861524f89810919f7b428648ca79c1430b08
+          RELEASE_VERSION: 2026-09-24-v15
+          PREVIOUS_VERSION: 2026-09-24-v14
+          PREVIOUS_COMMIT: c7c3a3539088b1cd69e7498f484f1bb013f99ea6
         run: |
           set -euo pipefail
           mkdir -p release
@@ -205,10 +208,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v14-packages
+          name: Collect-TCG-Beta-2026-09-24-v15-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v14-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v13-to-2026-09-24-v14-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v15-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v14-to-2026-09-24-v15-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -217,16 +220,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v14.txt"
+          MANIFEST="release-manifests/2026-09-24-v15.txt"
           {
-            echo "Version: 2026-09-24-v14"
-            echo "Previous version: 2026-09-24-v13"
+            echo "Version: 2026-09-24-v15"
+            echo "Previous version: 2026-09-24-v14"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v14-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v13-to-2026-09-24-v14-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v15-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v14-to-2026-09-24-v15-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v14: record package validation"
+          git commit -m "Beta 2026-09-24-v15: record package validation"
           git push
