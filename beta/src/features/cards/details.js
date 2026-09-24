@@ -1525,6 +1525,7 @@ async function openDetailsModal(card){
       el.addEventListener("click", ()=>{
         const id=appContext.safeCardId(el.dataset.relatedCardId);
         if(!id) return;
+        appContext.rememberCardDiscoverySource(id,el.dataset.discoverySource||"related");
         appContext.smoothNavigateDetailsCard(id,"next");
       });
     });
