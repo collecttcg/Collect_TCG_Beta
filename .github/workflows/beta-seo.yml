@@ -100,7 +100,7 @@ jobs:
           ! grep -q 'location.assign(clean)' beta/src/app/routing.js
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
           grep -q 'routing.js?v=2026-09-24-v11' beta/src/app/initialize.js
-          grep -q 'details.js?v=2026-09-24-v09' beta/src/app/initialize.js
+          grep -q 'details.js?v=2026-09-24-v12' beta/src/app/initialize.js
           grep -q 'event.stopPropagation()' beta/src/features/content/home.js
           grep -q 'appContext.openDetailsModal(card)' beta/src/app/routing.js
 
