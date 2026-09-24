@@ -127,7 +127,7 @@ jobs:
           grep -q 'analytics.js?v=2026-09-24-v13' beta/src/app/register-features.js
           grep -q 'catalogue.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-24-v12' beta/src/app/register-features.js
-          grep -q 'insights-dashboard.js?v=2026-09-24-v12' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-24-v14' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'startup.js?v=2026-09-24-v12' beta/src/app/register-features.js
 
