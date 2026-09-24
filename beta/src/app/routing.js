@@ -291,7 +291,15 @@ function updateStatusNavCounts(){
 
 function currentRoute(){
     const h = location.hash.replace(/^#\/?/, "");
-    return (h.split("?")[0] || "home").trim();
+    const hashRoute=(h.split("?")[0] || "").trim();
+    if(hashRoute) return hashRoute;
+
+    const seoCardId=appContext.safeCardId(
+      document.querySelector('meta[name="collect-tcg-card-id"]')?.content || ""
+    );
+    if(seoCardId) return `card/${seoCardId}`;
+
+    return "home";
   }
 
 function currentHashParams(){
