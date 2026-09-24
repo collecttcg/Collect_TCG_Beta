@@ -90,15 +90,16 @@ jobs:
           node --check beta/src/app/routing.js
           node --check beta/src/features/cards/details.js
           node --check beta/src/app/initialize.js
-          grep -q 'history.pushState(state,"",clean)' beta/src/app/routing.js
+          grep -Fq 'history.pushState(state,"",cleanUrl.pathname+cleanUrl.search+cleanUrl.hash)' beta/src/app/routing.js
           grep -q 'state.collectTcgSpaCardId=id' beta/src/app/routing.js
           grep -q 'window.addEventListener("popstate", appContext.router)' beta/src/app/routing.js
           grep -q 'history.back()' beta/src/features/cards/details.js
-          grep -q 'location.assign(clean)' beta/src/app/routing.js
+          ! grep -q 'location.assign(clean)' beta/src/app/routing.js
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
-          grep -q 'routing.js?v=2026-09-24-v09' beta/src/app/initialize.js
+          grep -q 'routing.js?v=2026-09-24-v11' beta/src/app/initialize.js
           grep -q 'details.js?v=2026-09-24-v09' beta/src/app/initialize.js
           grep -q 'event.stopPropagation()' beta/src/features/content/home.js
+          grep -q 'appContext.openDetailsModal(card)' beta/src/app/routing.js
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -125,13 +126,13 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Final v10 packaging after restoring the validated v09 manifest.
+      # Beta v11 packaging: internal card clicks never reload static SEO pages.
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v10
-          PREVIOUS_VERSION: 2026-09-24-v09
-          PREVIOUS_COMMIT: ad0e4fb8130695a6eb7a2e60965487dd8ac9c3b7
+          RELEASE_VERSION: 2026-09-24-v11
+          PREVIOUS_VERSION: 2026-09-24-v10
+          PREVIOUS_COMMIT: 2ba5cd2778eed38a329e390e536cc7da5dfdd8fe
         run: |
           set -euo pipefail
           mkdir -p release
@@ -159,10 +160,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v10-packages
+          name: Collect-TCG-Beta-2026-09-24-v11-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v10-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v09-to-2026-09-24-v10-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v11-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v10-to-2026-09-24-v11-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -171,16 +172,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v10.txt"
+          MANIFEST="release-manifests/2026-09-24-v11.txt"
           {
-            echo "Version: 2026-09-24-v10"
-            echo "Previous version: 2026-09-24-v09"
+            echo "Version: 2026-09-24-v11"
+            echo "Previous version: 2026-09-24-v10"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v10-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v09-to-2026-09-24-v10-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v11-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v10-to-2026-09-24-v11-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v10: record package validation"
+          git commit -m "Beta 2026-09-24-v11: record package validation"
           git push
