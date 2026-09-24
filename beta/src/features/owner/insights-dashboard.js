@@ -332,6 +332,17 @@ export function register(appContext){
         `${Number(attention.unique_views||0)} unique views · consider price, trust signals or listing quality`,"watch");
     }
 
+    const savedWithoutIntent=safe
+      .filter(row=>Number(row.favorite_adds||0)>=1 && contactIntent(row)===0)
+      .sort((a,b)=>
+        Number(b.favorite_adds||0)-Number(a.favorite_adds||0) ||
+        Number(b.unique_views||0)-Number(a.unique_views||0)
+      )[0];
+    if(savedWithoutIntent){
+      add("Saved without contact",savedWithoutIntent,
+        `${Number(savedWithoutIntent.favorite_adds||0)} favorite adds · ${Number(savedWithoutIntent.unique_views||0)} unique views · review price or trust signals`,"watch");
+    }
+
     const hidden=safe
       .filter(row=>Number(row.unique_views||0)<=6 && (Number(row.favorite_adds||0)>=1 || contactIntent(row)>=1))
       .sort((a,b)=>{
