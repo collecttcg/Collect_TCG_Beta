@@ -11,9 +11,11 @@ on:
       - '.github/workflows/beta-seo.yml'
       - 'tools/generate-seo.mjs'
       - '2026-09-24-v01-SEO-PUBLIC-CATALOG.sql'
+      - '2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql'
       - 'beta/index.html'
       - 'beta/src/app/register-features.js'
       - 'beta/src/app/routing.js'
+      - 'beta/src/services/analytics.js'
       - 'beta/src/features/core/utilities.js'
       - 'beta/src/features/cards/details.js'
       - 'beta/src/main.js'
@@ -48,6 +50,17 @@ jobs:
           node --check tools/generate-seo.mjs
           node tools/generate-seo.mjs --self-test
 
+      - name: Validate Phase 2B1 discovery migration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+          grep -q 'create table if not exists public.card_discovery_views' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+          grep -q 'enable row level security' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+          grep -q 'revoke all on table public.card_discovery_views from anon, authenticated' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+          grep -q 'create or replace function public.record_card_discovery_view' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+          grep -q 'grant execute on function public.record_card_discovery_view' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
+
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
 
@@ -76,9 +89,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v06
-          PREVIOUS_VERSION: 2026-09-24-v05
-          PREVIOUS_COMMIT: 3f3cbcc09a8159d68811150cef683d3781da26d7
+          RELEASE_VERSION: 2026-09-24-v07
+          PREVIOUS_VERSION: 2026-09-24-v06
+          PREVIOUS_COMMIT: f018f00dc62a685caac48fabbb5ef4ada434f0a0
         run: |
           set -euo pipefail
           mkdir -p release
@@ -106,10 +119,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v06-packages
+          name: Collect-TCG-Beta-2026-09-24-v07-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v06-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v05-to-2026-09-24-v06-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v07-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v06-to-2026-09-24-v07-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -118,16 +131,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v06.txt"
+          MANIFEST="release-manifests/2026-09-24-v07.txt"
           {
-            echo "Version: 2026-09-24-v06"
-            echo "Previous version: 2026-09-24-v05"
+            echo "Version: 2026-09-24-v07"
+            echo "Previous version: 2026-09-24-v06"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v06-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v05-to-2026-09-24-v06-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v07-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v06-to-2026-09-24-v07-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v06: record package validation"
+          git commit -m "Beta 2026-09-24-v07: record package validation"
           git push
