@@ -28,6 +28,44 @@ function relatedCardNamesMatch(sourceTokens,candidate){
     return shared>0 && shared/union>=0.5;
   }
 
+function relatedSeriesTokens(card){
+    const tokenize=value=>String(value||"").normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}]+/gu)||[];
+    const generic=new Set([
+      ...tokenize(card?.game),
+      "card","cards","game","tcg","series","set","edition","promo","promotional",
+      "championship","tournament","event","the","and","of"
+    ]);
+    return new Set(tokenize(card?.series).filter(token=>!generic.has(token) && (token.length>=2 || /\d/.test(token))));
+  }
+
+function relatedSeriesAffinity(sourceTokens,candidate){
+    if(!sourceTokens?.size) return 0;
+    const candidateTokens=appContext.relatedSeriesTokens(candidate);
+    if(!candidateTokens.size) return 0;
+    const shared=[...sourceTokens].filter(token=>candidateTokens.has(token)).length;
+    return shared/Math.max(sourceTokens.size,candidateTokens.size);
+  }
+
+function relatedGradeAffinity(source,candidate){
+    const sourceGrades=appContext.validGradingEntries?.(source)||[];
+    const candidateGrades=appContext.validGradingEntries?.(candidate)||[];
+    if(!sourceGrades.length || !candidateGrades.length) return 0;
+    let best=0;
+    sourceGrades.forEach(a=>candidateGrades.forEach(b=>{
+      if(appContext.normalizeFilterValue(a.company)!==appContext.normalizeFilterValue(b.company)) return;
+      const ag=Number.parseFloat(String(a.grade??""));
+      const bg=Number.parseFloat(String(b.grade??""));
+      if(Number.isFinite(ag) && Number.isFinite(bg)){
+        const diff=Math.abs(ag-bg);
+        if(diff===0) best=Math.max(best,1);
+        else if(diff<=1) best=Math.max(best,0.6);
+      }else{
+        best=Math.max(best,0.35);
+      }
+    }));
+    return best;
+  }
+
 function relatedCardIdentityKey(card){
     if(!card) return "";
     const norm=value=>appContext.normalizeFilterValue(value || "");
@@ -59,7 +97,9 @@ function getRelatedCards(card, limit = 4, options = {}){
 
     const sourceGame=appContext.normalizeFilterValue(card.game);
     const sourceSeries=appContext.normalizeFilterValue(card.series);
+    const sourceCode=appContext.normalizeFilterValue(card.card_code);
     const sourceNameTokens=appContext.relatedCardNameTokens(card);
+    const sourceSeriesTokens=appContext.relatedSeriesTokens(card);
 
     const ranked = appContext.cards
       .filter(c=>{
@@ -71,13 +111,22 @@ function getRelatedCards(card, limit = 4, options = {}){
       .map(c=>{
         const sameGame=!!sourceGame && appContext.normalizeFilterValue(c.game)===sourceGame;
         const sameSeries=sameGame && !!sourceSeries && appContext.normalizeFilterValue(c.series)===sourceSeries;
+        const sameCode=sameGame && !!sourceCode && appContext.normalizeFilterValue(c.card_code)===sourceCode;
         const sameName=sameGame && appContext.relatedCardNamesMatch(sourceNameTokens,c);
+        const seriesAffinity=sameGame ? appContext.relatedSeriesAffinity(sourceSeriesTokens,c) : 0;
+        const gradeAffinity=sameGame ? appContext.relatedGradeAffinity(card,c) : 0;
         let score = 0;
-        if(sameGame) score += 8;
-        if(sameSeries) score += 7;
-        if(card.era && appContext.normalizeFilterValue(c.era) === appContext.normalizeFilterValue(card.era)) score += 4;
+        if(sameGame) score += 4;
+        if(sameCode) score += 18;
+        if(sameName) score += 14;
+        if(sameSeries) score += 10;
+        else if(seriesAffinity>=0.66) score += 7;
+        else if(seriesAffinity>=0.34) score += 4;
+        if(card.era && appContext.normalizeFilterValue(c.era) === appContext.normalizeFilterValue(card.era)) score += 5;
         if(appContext.normalizeFilterValue(appContext.effectiveFormat(c)) === appContext.normalizeFilterValue(appContext.effectiveFormat(card))) score += 3;
         if(card.language && appContext.normalizeFilterValue(c.language) === appContext.normalizeFilterValue(card.language)) score += 2;
+        if(gradeAffinity>=1) score += 4;
+        else if(gradeAffinity>=0.6) score += 2;
 
         const sourcePrice=appContext.cardUsdListedPrice(card);
         const candidatePrice=appContext.cardUsdListedPrice(c);
@@ -95,8 +144,10 @@ function getRelatedCards(card, limit = 4, options = {}){
           card:c,
           score,
           sameGame,
+          sameCode,
           sameSeries,
           sameName,
+          seriesAffinity,
           identity:appContext.relatedCardIdentityKey(c) || `id|${String(c.id||"")}`
         };
       })
@@ -107,11 +158,15 @@ function getRelatedCards(card, limit = 4, options = {}){
           const bAvailable = appContext.normalizeFilterValue(b.card.availability || "Available") === "available";
           if(aAvailable !== bAvailable) return aAvailable ? -1 : 1;
         }
-        // Within each availability group: same game, matching name, same series.
+        // Collector relevance first: same game, exact card identity/character,
+        // then event/set affinity. Score handles grade, era, language and price.
         return Number(b.sameGame)-Number(a.sameGame) ||
+          Number(b.sameCode)-Number(a.sameCode) ||
           Number(b.sameName)-Number(a.sameName) ||
           Number(b.sameSeries)-Number(a.sameSeries) ||
-          b.score - a.score || String(b.card.created_at || "").localeCompare(String(a.card.created_at || ""));
+          b.seriesAffinity-a.seriesAffinity ||
+          b.score-a.score ||
+          String(b.card.created_at || "").localeCompare(String(a.card.created_at || ""));
       });
 
     // Recommendation diversity:
@@ -139,7 +194,7 @@ function getRelatedCards(card, limit = 4, options = {}){
     return selected.slice(0,limit);
   }
 
-  Object.assign(appContext,{relatedCardNameTokens,relatedCardNamesMatch,relatedCardIdentityKey,getRelatedCards});
+  Object.assign(appContext,{relatedCardNameTokens,relatedCardNamesMatch,relatedSeriesTokens,relatedSeriesAffinity,relatedGradeAffinity,relatedCardIdentityKey,getRelatedCards});
 }
 
 /** State and event initialization; called in preserved startup order. */
