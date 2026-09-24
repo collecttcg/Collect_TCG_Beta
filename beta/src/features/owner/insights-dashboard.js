@@ -7,6 +7,7 @@ export function register(appContext){
   const originalFetchWebsiteVisitCountries=appContext.fetchWebsiteVisitCountries;
   const originalFetchWebsiteVisitSources=appContext.fetchWebsiteVisitSources;
   const originalFetchCountryCardViewInsights=appContext.fetchCountryCardViewInsights;
+  const originalFetchDiscoverySourceSummary=appContext.fetchDiscoverySourceSummary;
 
   let currentViewRows=[];
   let currentEngagementRows=[];
@@ -15,7 +16,10 @@ export function register(appContext){
   let sourceRows=[];
   let countryCardRows=[];
   let countryCardSupported=null;
+  let discoveryRows=[];
+  let discoverySupported=null;
   let countryDemandRequest=0;
+  let discoveryRequest=0;
   let observer=null;
   let observedRoot=null;
   let scheduledFrame=0;
@@ -63,6 +67,22 @@ export function register(appContext){
               if(request!==countryDemandRequest) return;
               countryCardSupported=false;
               countryCardRows=[];
+              scheduleEnhancement();
+            });
+        }
+        if(typeof originalFetchDiscoverySourceSummary==="function"){
+          const request=++discoveryRequest;
+          Promise.resolve(originalFetchDiscoverySourceSummary.call(appContext,start,end))
+            .then(result=>{
+              if(request!==discoveryRequest) return;
+              discoverySupported=result?.supported===true;
+              discoveryRows=Array.isArray(result?.rows)?result.rows:[];
+              scheduleEnhancement();
+            })
+            .catch(()=>{
+              if(request!==discoveryRequest) return;
+              discoverySupported=false;
+              discoveryRows=[];
               scheduleEnhancement();
             });
         }
@@ -432,6 +452,57 @@ export function register(appContext){
     </div>`;
   }
 
+  function discoverySourceLabel(source){
+    const labels={
+      "trending":"Trending",
+      "recently-added":"Recently Added",
+      "spotlight":"Collector Spotlight",
+      "related":"Related Cards",
+      "vintage":"Vintage",
+      "championship":"Championship",
+      "sealed":"Sealed",
+      "search":"Search",
+      "inventory-filtered":"Filtered Inventory",
+      "inventory":"Inventory",
+      "collection":"Collection",
+      "reserved":"Reserved",
+      "sold":"Sold",
+      "recently-viewed":"Recently Viewed",
+      "favorites":"Favorites",
+      "home":"Home"
+    };
+    return labels[String(source||"")]||String(source||"Other");
+  }
+
+  function discoverySummaryHtml(){
+    if(discoverySupported===false){
+      return `<div class="insights-v14-empty">Discovery attribution is not available yet. Run <code>2026-09-24-v08-DISCOVERY-SUMMARY.sql</code> after the Phase 2B1 migration.</div>`;
+    }
+    if(!discoveryRows.length){
+      return `<div class="insights-v14-empty">No attributed Qualified Views in this period yet. With low traffic, let this accumulate naturally.</div>`;
+    }
+    const rows=discoveryRows.slice(0,6);
+    const max=Math.max(1,...rows.map(row=>Number(row.unique_visitors||0)));
+    return `<div class="insights-v14-demand-list">
+      ${rows.map(row=>{
+        const unique=Math.max(0,Number(row.unique_visitors||0));
+        const views=Math.max(0,Number(row.qualified_views||0));
+        const cards=Math.max(0,Number(row.unique_cards||0));
+        const width=unique ? Math.max(4,unique/max*100) : 0;
+        return `<div class="insights-v14-demand-row">
+          <div class="insights-v14-demand-label">
+            <strong>${appContext.escapeHtml(discoverySourceLabel(row.discovery_source))}</strong>
+            <span>${unique.toLocaleString()} unique collector${unique===1?"":"s"} · ${views.toLocaleString()} qualified view${views===1?"":"s"}</span>
+          </div>
+          <div class="insights-v14-demand-track"><i style="width:${width}%"></i></div>
+          <div class="insights-v14-demand-meta">
+            <strong>${cards.toLocaleString()}</strong><span>card${cards===1?"":"s"} discovered</span>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  }
+
   function audienceCard(label,value,detail){
     return `<article><span>${appContext.escapeHtml(label)}</span><strong>${appContext.escapeHtml(value||"—")}</strong><small>${appContext.escapeHtml(detail||"")}</small></article>`;
   }
@@ -509,6 +580,14 @@ export function register(appContext){
           ${demandBars(m.prices,{inventoryGap:false,limit:5})}
         </section>
       </div>
+
+      <section class="insights-v14-panel">
+        <div class="insights-v14-panel-head">
+          <div><span>Discovery</span><h4>Where card interest starts</h4></div>
+          <p>Qualified Views by discovery surface. Use this as directional context while traffic is still small.</p>
+        </div>
+        ${discoverySummaryHtml()}
+      </section>
 
       <section class="insights-v14-panel insights-v18-market-panel">
         <div class="insights-v14-panel-head">
