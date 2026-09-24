@@ -72,3 +72,43 @@ jobs:
           fi
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
+
+      - name: Create Beta release packages
+        shell: bash
+        env:
+          RELEASE_VERSION: 2026-09-24-v02
+          PREVIOUS_VERSION: 2026-09-17-v10
+          PREVIOUS_COMMIT: 74e9974f961de16905b5c18ab42d52a905f14f4e
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          FULL="release/Collect-TCG-Beta-${RELEASE_VERSION}-full.zip"
+          PATCH="release/Collect-TCG-Beta-${PREVIOUS_VERSION}-to-${RELEASE_VERSION}-patch.zip"
+
+          git archive --format=zip --output="${FULL}" HEAD
+
+          rm -rf .release-patch
+          mkdir -p .release-patch
+          while IFS= read -r -d '' path; do
+            mkdir -p ".release-patch/$(dirname "$path")"
+            cp -a "$path" ".release-patch/$path"
+          done < <(git diff --name-only --diff-filter=ACMRT -z "${PREVIOUS_COMMIT}" HEAD)
+
+          git diff --name-only --diff-filter=D "${PREVIOUS_COMMIT}" HEAD > .release-patch/PATCH-DELETIONS.txt
+          (
+            cd .release-patch
+            zip -qr "../${PATCH}" .
+          )
+
+          unzip -tq "${FULL}"
+          unzip -tq "${PATCH}"
+
+      - name: Upload Beta release packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: Collect-TCG-Beta-2026-09-24-v02-packages
+          path: |
+            release/Collect-TCG-Beta-2026-09-24-v02-full.zip
+            release/Collect-TCG-Beta-2026-09-17-v10-to-2026-09-24-v02-patch.zip
+          if-no-files-found: error
+          retention-days: 30
