@@ -334,7 +334,7 @@ async function openCardRoute(cardId,discoverySource=""){
         }
 
         // If History API cannot represent the clean URL, stay inside the SPA.
-        // Never fall back to location.assign() for an internal card click.
+        // Never fall back to a full-document navigation for an internal card click.
         const fallbackTarget=appContext.cardShareHash(id);
         if(location.hash===fallbackTarget){
           appContext.openDetailsModal(card);
