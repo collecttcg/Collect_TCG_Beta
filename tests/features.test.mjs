@@ -235,3 +235,25 @@ test('balanced card drop mix prioritizes different games before repeating one',(
  ];
  assert.deepEqual(a.balancedCardDropCards(cards,4).map(card=>card.id),['a','c','d','b']);
 });
+
+test('SEO phase 1 preserves legacy card routes and activates clean URLs only after generation',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const utilities=source('../beta/src/features/core/utilities.js');
+ const routing=source('../beta/src/app/routing.js');
+ const details=source('../beta/src/features/cards/details.js');
+ const html=source('../beta/index.html');
+ const generator=source('../tools/generate-seo.mjs');
+
+ assert.match(utilities,/function seoCardSlug\(card\)/);
+ assert.match(utilities,/function publishedSeoCardUrl\(card\)/);
+ assert.match(utilities,/seoCardSlugMap=new Map\(\)/);
+ assert.match(routing,/meta\[name="collect-tcg-card-id"\]/);
+ assert.match(routing,/return `card\/\$\{seoCardId\}`/);
+ assert.match(details,/publishedSeoCardUrl\(card\)/);
+ assert.match(details,/cardShareHash\(cardId\)/);
+ assert.match(html,/name="robots" content="noindex,nofollow,noarchive"/);
+ assert.match(generator,/application\/ld\+json/);
+ assert.match(generator,/rel="canonical"/);
+ assert.match(generator,/seo-slugs\.json/);
+});
+
