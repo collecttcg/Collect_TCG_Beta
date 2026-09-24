@@ -13,7 +13,7 @@ import { register as register11 } from '../features/content/showcase-data.js';
 import { register as register12 } from '../services/analytics.js?v=2026-09-24-v08';
 import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
-import { register as register14 } from '../app/routing.js?v=2026-09-24-v09';
+import { register as register14 } from '../app/routing.js?v=2026-09-24-v11';
 import { register as register15 } from '../features/media/images.js';
 import { register as register16 } from '../features/cards/presentation.js';
 import { register as register17 } from '../features/owner/forms.js';
