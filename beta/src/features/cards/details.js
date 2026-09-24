@@ -548,6 +548,11 @@ function getWebsiteShareUrl(){
   }
 
 function getCardShareUrl(cardId){
+    const id=appContext.safeCardId(cardId);
+    const card=id ? appContext.getCardById(id) : null;
+    const clean=card ? appContext.seoCardUrl(card) : "";
+    if(clean) return clean;
+
     const base = `${location.origin}${location.pathname}${location.search}`;
     return `${base}${appContext.cardShareHash(cardId)}`;
   }
