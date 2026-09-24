@@ -11,7 +11,7 @@ import { initialize as initialize8 } from '../features/content/giveaways-data.js
 import { initialize as initialize9 } from '../features/content/showcase-data.js';
 import { initialize as initialize10 } from '../services/analytics.js?v=2026-09-18-v08';
 import { initialize as initialize11 } from '../features/owner/psa.js';
-import { initialize as initialize12 } from '../app/routing.js';
+import { initialize as initialize12 } from '../app/routing.js?v=2026-09-24-v09';
 import { initialize as initialize13 } from '../features/media/images.js';
 import { initialize as initialize14 } from '../features/cards/presentation.js';
 import { initialize as initialize15 } from '../features/owner/forms.js';
@@ -29,7 +29,7 @@ import { initialize as initialize26 } from '../features/owner/quality.js';
 import { initialize as initialize27 } from '../features/owner/tools.js';
 import { initialize as initialize28 } from '../features/owner/image-maintenance.js';
 import { initialize as initialize29 } from '../features/owner/add.js';
-import { initialize as initialize30 } from '../features/cards/details.js';
+import { initialize as initialize30 } from '../features/cards/details.js?v=2026-09-24-v09';
 import { initialize as initialize31 } from '../features/owner/editor.js';
 import { initialize as initialize32 } from '../app/theme.js';
 import { initialize as initialize33 } from '../app/startup.js';
