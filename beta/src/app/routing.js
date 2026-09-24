@@ -221,7 +221,7 @@ function openInsightsCardDetails(cardId){
     appContext.openDetailsModal(card);
   }
 
-function openCardRoute(cardId){
+async function openCardRoute(cardId){
     const id=appContext.safeCardId(cardId);
     if(!id) return;
 
@@ -240,9 +240,21 @@ function openCardRoute(cardId){
       }
     }
 
+    const card=appContext.getCardById(id);
+    if(card && !appContext.isOwnerMode() && appContext.isLiveLifecycle(card)){
+      let clean=appContext.publishedSeoCardUrl(card);
+      if(!clean){
+        await appContext.loadSeoCardSlugMap();
+        clean=appContext.publishedSeoCardUrl(card);
+      }
+      if(clean){
+        location.assign(clean);
+        return;
+      }
+    }
+
     const target=appContext.cardShareHash(id);
     if(location.hash===target){
-      const card=appContext.getCardById(id);
       if(card && (appContext.isOwnerMode() || appContext.isLiveLifecycle(card))) appContext.openDetailsModal(card);
     }else{
       location.hash=target;
