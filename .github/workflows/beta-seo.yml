@@ -107,6 +107,7 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
+      # Package only the current release delta from the validated previous manifest commit.
       - name: Create Beta release packages
         shell: bash
         env:
