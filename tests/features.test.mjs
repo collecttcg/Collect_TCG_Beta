@@ -414,6 +414,7 @@ test('Phase 3 owner card details reuse existing analytics for a private conversi
  assert.match(analytics,/appContext\.fetchInsights\(start,end,\{silent:true\}\)/);
  assert.match(analytics,/appContext\.fetchCardEngagementInsights\(start,end\)/);
  assert.match(analytics,/ownerCardConversionSummaryCache/);
+ assert.match(analytics,/ownerCardConversionSummaryCache = new Map/);
  assert.match(details,/data-owner-conversion="unique"/);
  assert.match(details,/data-owner-conversion="favorites"/);
  assert.match(details,/data-owner-conversion="intent"/);

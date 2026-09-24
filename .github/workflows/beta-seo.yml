@@ -117,13 +117,14 @@ jobs:
           grep -q 'function contactCardReferenceLines' beta/src/features/cards/details.js
           grep -q 'recordCardEngagement(card.id,"inquiry_copy",platform)' beta/src/features/cards/details.js
           grep -q 'fetchOwnerCardConversionSummary' beta/src/services/analytics.js
+          grep -q 'ownerCardConversionSummaryCache = new Map' beta/src/services/analytics.js
           grep -q 'data-owner-conversion="intent-rate"' beta/src/features/cards/details.js
           grep -q 'cardImageLoadPromises.get(id)' beta/src/services/catalogue.js
           grep -q 'preloadCardDetailsMedia' beta/src/features/cards/tiles.js
           grep -q 'Saved without contact' beta/src/features/owner/insights-dashboard.js
           grep -q 'const directCardEntry=' beta/src/app/startup.js
           grep -q 'Promise.allSettled' beta/src/app/startup.js
-          grep -q 'analytics.js?v=2026-09-24-v12' beta/src/app/register-features.js
+          grep -q 'analytics.js?v=2026-09-24-v13' beta/src/app/register-features.js
           grep -q 'catalogue.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'insights-dashboard.js?v=2026-09-24-v12' beta/src/app/register-features.js
@@ -155,13 +156,13 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Final Beta v12 packaging after restoring validated v11 manifest.
+      # Final Beta v13 packaging after validated v12.
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v12
-          PREVIOUS_VERSION: 2026-09-24-v11
-          PREVIOUS_COMMIT: 7b0366bbe146b129cc8df6dc783a132b7aa58581
+          RELEASE_VERSION: 2026-09-24-v13
+          PREVIOUS_VERSION: 2026-09-24-v12
+          PREVIOUS_COMMIT: 6510f0c57fb717d097bd7af3708901a21236a9be
         run: |
           set -euo pipefail
           mkdir -p release
@@ -189,10 +190,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v12-packages
+          name: Collect-TCG-Beta-2026-09-24-v13-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v12-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v11-to-2026-09-24-v12-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v13-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v12-to-2026-09-24-v13-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -201,16 +202,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v12.txt"
+          MANIFEST="release-manifests/2026-09-24-v13.txt"
           {
-            echo "Version: 2026-09-24-v12"
-            echo "Previous version: 2026-09-24-v11"
+            echo "Version: 2026-09-24-v13"
+            echo "Previous version: 2026-09-24-v12"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v12-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v11-to-2026-09-24-v12-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v13-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v12-to-2026-09-24-v13-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v12: record package validation"
+          git commit -m "Beta 2026-09-24-v13: record package validation"
           git push

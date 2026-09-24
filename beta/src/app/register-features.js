@@ -10,7 +10,7 @@ import { register as register8 } from '../features/cards/pricing.js';
 import { register as register9 } from '../services/catalogue.js?v=2026-09-24-v12';
 import { register as register10 } from '../features/content/giveaways-data.js';
 import { register as register11 } from '../features/content/showcase-data.js';
-import { register as register12 } from '../services/analytics.js?v=2026-09-24-v12';
+import { register as register12 } from '../services/analytics.js?v=2026-09-24-v13';
 import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
 import { register as register14 } from '../app/routing.js?v=2026-09-24-v11';

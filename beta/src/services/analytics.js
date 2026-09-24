@@ -1963,6 +1963,8 @@ export function initialize(appContext,runtime){
 
   appContext.qualifiedViewTotalsByCard = new Map();
 
+  appContext.ownerCardConversionSummaryCache = new Map();
+
   appContext.saleSnapshotBackendState = "unknown";
 
 window.collectTrackEngagement=(eventType,cardId,platform="")=>
