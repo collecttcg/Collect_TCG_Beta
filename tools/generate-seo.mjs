@@ -239,9 +239,35 @@ async function fetchCards(){
 
   try{return await fetchWithColumns(light);}
   catch(error){
-    if(error?.status!==400) throw error;
-    return fetchWithColumns(full);
+    if(error?.status===400){
+      try{return await fetchWithColumns(full);}
+      catch(fullError){
+        if(fullError?.status!==401 && fullError?.status!==403) throw fullError;
+      }
+    }else if(error?.status!==401 && error?.status!==403){
+      throw error;
+    }
   }
+
+  const rpcEndpoint=new URL('/rest/v1/rpc/get_public_seo_cards',runtime.url);
+  const response=await fetch(rpcEndpoint,{
+    method:'POST',
+    headers:{
+      apikey:runtime.key,
+      Authorization:`Bearer ${runtime.key}`,
+      'Content-Type':'application/json'
+    },
+    body:'{}'
+  });
+  if(!response.ok){
+    const body=await response.text();
+    throw new Error(
+      `SEO catalogue RPC unavailable (${response.status}). Run 2026-09-24-v01-SEO-PUBLIC-CATALOG.sql in Supabase before generating SEO pages. ${body.slice(0,350)}`
+    );
+  }
+  const data=await response.json();
+  if(!Array.isArray(data)) throw new Error('SEO catalogue RPC response was not an array');
+  return data;
 }
 
 async function readSlugState(){
