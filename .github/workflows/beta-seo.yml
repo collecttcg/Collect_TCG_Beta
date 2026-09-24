@@ -98,6 +98,7 @@ jobs:
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
           grep -q 'routing.js?v=2026-09-24-v09' beta/src/app/initialize.js
           grep -q 'details.js?v=2026-09-24-v09' beta/src/app/initialize.js
+          grep -q 'event.stopPropagation()' beta/src/features/content/home.js
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -124,13 +125,13 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Final v09 packaging after restoring the validated v08 manifest.
+      # Beta v10 packaging after duplicate-open regression fix.
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v09
-          PREVIOUS_VERSION: 2026-09-24-v08
-          PREVIOUS_COMMIT: caf267842d341d0d13b8599dabad94b2b51413ad
+          RELEASE_VERSION: 2026-09-24-v10
+          PREVIOUS_VERSION: 2026-09-24-v09
+          PREVIOUS_COMMIT: ad0e4fb8130695a6eb7a2e60965487dd8ac9c3b7
         run: |
           set -euo pipefail
           mkdir -p release
@@ -158,10 +159,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v09-packages
+          name: Collect-TCG-Beta-2026-09-24-v10-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v09-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v08-to-2026-09-24-v09-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v10-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v09-to-2026-09-24-v10-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -170,16 +171,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v09.txt"
+          MANIFEST="release-manifests/2026-09-24-v10.txt"
           {
-            echo "Version: 2026-09-24-v09"
-            echo "Previous version: 2026-09-24-v08"
+            echo "Version: 2026-09-24-v10"
+            echo "Previous version: 2026-09-24-v09"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v09-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v08-to-2026-09-24-v09-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v10-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v09-to-2026-09-24-v10-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v09: record package validation"
+          git commit -m "Beta 2026-09-24-v10: record package validation"
           git push
