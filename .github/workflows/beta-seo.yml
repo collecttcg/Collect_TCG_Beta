@@ -125,7 +125,7 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Beta v10 packaging after duplicate-open regression fix.
+      # Final v10 packaging after restoring the validated v09 manifest.
       - name: Create Beta release packages
         shell: bash
         env:
