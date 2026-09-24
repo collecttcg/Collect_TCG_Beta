@@ -1488,7 +1488,7 @@ function renderInventoryPage(scope = "inventory"){
           grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↗</div><h3>Trending is temporarily unavailable</h3><p>We could not load the shared 7-day Trending leaderboard. Please try again shortly.</p></div>`;
         }else{
           grid.setAttribute("aria-busy","true");
-          grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↻</div><h3>Loading 7-day Trending…</h3><p>Ranking cards by qualified views from the last 7 days.</p></div>`;
+          grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↻</div><h3>Loading 7-day Trending…</h3><p>Ranking cards by unique qualified collector interest from the last 7 days.</p></div>`;
         }
         return;
       }
