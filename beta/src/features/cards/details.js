@@ -550,7 +550,7 @@ function getWebsiteShareUrl(){
 function getCardShareUrl(cardId){
     const id=appContext.safeCardId(cardId);
     const card=id ? appContext.getCardById(id) : null;
-    const clean=card ? appContext.seoCardUrl(card) : "";
+    const clean=card ? appContext.publishedSeoCardUrl(card) : "";
     if(clean) return clean;
 
     const base = `${location.origin}${location.pathname}${location.search}`;
