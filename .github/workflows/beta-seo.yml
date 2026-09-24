@@ -12,6 +12,12 @@ on:
       - 'tools/generate-seo.mjs'
       - '2026-09-24-v01-SEO-PUBLIC-CATALOG.sql'
       - '2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql'
+      - 'beta/src/features/owner/insights-dashboard.js'
+      - 'beta/src/features/inventory/page.js'
+      - 'beta/src/features/content/home.js'
+      - 'beta/src/features/inventory/filtering.js'
+      - 'beta/src/features/cards/related.js'
+      - '2026-09-24-v08-DISCOVERY-SUMMARY.sql'
       - 'beta/index.html'
       - 'beta/src/app/register-features.js'
       - 'beta/src/app/routing.js'
@@ -61,6 +67,21 @@ jobs:
           grep -q 'create or replace function public.record_card_discovery_view' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
           grep -q 'grant execute on function public.record_card_discovery_view' 2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql
 
+      - name: Validate Phase 2 completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s 2026-09-24-v08-DISCOVERY-SUMMARY.sql
+          grep -q 'create or replace function public.get_card_discovery_summary' 2026-09-24-v08-DISCOVERY-SUMMARY.sql
+          grep -q 'public.is_app_owner()' 2026-09-24-v08-DISCOVERY-SUMMARY.sql
+          grep -q 'revoke all on function public.get_card_discovery_summary' 2026-09-24-v08-DISCOVERY-SUMMARY.sql
+          grep -q 'grant execute on function public.get_card_discovery_summary' 2026-09-24-v08-DISCOVERY-SUMMARY.sql
+          grep -q 'function relatedSeriesAffinity' beta/src/features/cards/related.js
+          grep -q 'function relatedGradeAffinity' beta/src/features/cards/related.js
+          grep -q 'unique*100' beta/src/features/inventory/filtering.js
+          grep -q 'fetchDiscoverySourceSummary' beta/src/services/analytics.js
+          grep -q 'Where card interest starts' beta/src/features/owner/insights-dashboard.js
+
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
 
@@ -89,9 +110,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-24-v07
-          PREVIOUS_VERSION: 2026-09-24-v06
-          PREVIOUS_COMMIT: f018f00dc62a685caac48fabbb5ef4ada434f0a0
+          RELEASE_VERSION: 2026-09-24-v08
+          PREVIOUS_VERSION: 2026-09-24-v07
+          PREVIOUS_COMMIT: 8dc5761ffd147e6bab58b41e585f323233b4a333
         run: |
           set -euo pipefail
           mkdir -p release
@@ -119,10 +140,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-24-v07-packages
+          name: Collect-TCG-Beta-2026-09-24-v08-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-24-v07-full.zip
-            release/Collect-TCG-Beta-2026-09-24-v06-to-2026-09-24-v07-patch.zip
+            release/Collect-TCG-Beta-2026-09-24-v08-full.zip
+            release/Collect-TCG-Beta-2026-09-24-v07-to-2026-09-24-v08-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -131,16 +152,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-24-v07.txt"
+          MANIFEST="release-manifests/2026-09-24-v08.txt"
           {
-            echo "Version: 2026-09-24-v07"
-            echo "Previous version: 2026-09-24-v06"
+            echo "Version: 2026-09-24-v08"
+            echo "Previous version: 2026-09-24-v07"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v07-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v06-to-2026-09-24-v07-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-24-v08-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-24-v07-to-2026-09-24-v08-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-24-v07: record package validation"
+          git commit -m "Beta 2026-09-24-v08: record package validation"
           git push
