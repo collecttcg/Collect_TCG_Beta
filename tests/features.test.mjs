@@ -48,7 +48,7 @@ test('card list generator keeps the detailed format and limits the short drop po
  assert.match(drop,/CARD DROP/);
  assert.match(drop,/More cards are available beyond this drop/);
  assert.match(drop,/Browse the full inventory/);
- assert.match(drop,/INTERNATIONAL SHIPPING — BELOW USD 6,000 ONLY/);
+ assert.match(drop,/WORLDWIDE SHIPPING AVAILABLE/);
  assert.match(drop,/COD \/ MEETUP: MALAYSIA OR SINGAPORE/);
  for(const card of cards.slice(0,3)) assert.match(drop,new RegExp(card.card_code));
  for(const card of cards.slice(3)) assert.doesNotMatch(drop,new RegExp(card.card_code));
@@ -179,7 +179,7 @@ test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD'
  assert.match(details,/Is international shipping available to my location\?/);
  assert.match(details,/COD \/ meetup in MY &amp; SG/);
  assert.match(html,/data-inquiry-intent="shipping">Shipping \/ delivery/);
- assert.match(html,/Eligible orders · COD \/ meetup in Malaysia &amp; Singapore/);
+ assert.match(html,/High-value delivery by arrangement · COD \/ meetup in Malaysia &amp; Singapore/);
  assert.match(mobile,/shipping:"Copy a shipping inquiry"/);
 });
 
