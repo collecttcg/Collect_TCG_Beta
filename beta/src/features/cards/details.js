@@ -917,7 +917,11 @@ function sameSeriesNavigationIsRedundant(seriesNav,filteredNav){
 function replaceCardRouteWithoutRefresh(cardId){
     const id=appContext.safeCardId(cardId);
     if(!id) return;
-    const target=appContext.cardShareHash(id);
+    const card=appContext.getCardById(id);
+    const clean=card && appContext.isLiveLifecycle(card)
+      ? appContext.publishedSeoCardUrl(card)
+      : "";
+    const target=clean || appContext.cardShareHash(id);
     try{
       history.replaceState(history.state,"",target);
     }catch{
@@ -1682,12 +1686,17 @@ function closeDetailsModal(navigateBack = true){
           appContext.detailsPreservedListingHash="";
           return;
         }catch{
-          // Fall through to normal hash navigation.
+          // Fall through to normal navigation.
         }
       }
 
       appContext.detailsPreservedListingHash="";
-      if(location.hash!==target) location.hash=target;
+      const cleanPage=!!document.querySelector('meta[name="collect-tcg-card-id"]');
+      if(cleanPage){
+        location.assign(new URL(target,appContext.siteRootUrl()).toString());
+      }else if(location.hash!==target){
+        location.hash=target;
+      }
     }
   }
 
