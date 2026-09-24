@@ -254,6 +254,7 @@ function renderHomePage(){
         const trending=source
           .filter(card=>appContext.trendingCardViews(card)>0)
           .sort((a,b)=>
+            appContext.trendingCardScore(b)-appContext.trendingCardScore(a) ||
             appContext.trendingCardUniqueViews(b)-appContext.trendingCardUniqueViews(a) ||
             appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
             byNewest(a,b)
@@ -290,6 +291,7 @@ function renderHomePage(){
       const image=firstImage(card);
       const grade=compactGrade(card);
       const views=trending ? Number(appContext.trendingCardViews(card)||0) : 0;
+      const uniqueViews=trending ? Number(appContext.trendingCardUniqueViews(card)||0) : 0;
       return `
         <article class="card home-premium-card" data-card-id="${appContext.escapeHtml(card.id)}" data-discovery-source="${appContext.escapeHtml(source)}" tabindex="0" role="button" aria-label="View ${appContext.escapeHtml(card.name)}">
           <div class="home-premium-card-media">
@@ -310,7 +312,7 @@ function renderHomePage(){
           <div class="home-premium-card-copy">
             <div class="home-premium-card-name">${appContext.escapeHtml(card.name)}</div>
             <div class="home-premium-card-reference">${appContext.escapeHtml(referenceText(card) || card.series || "Collectible listing")}</div>
-            ${trending && views>0 ? `<div class="home-premium-interest">🔥 ${views.toLocaleString()} view${views===1?"":"s"} this week</div>` : ""}
+            ${trending && views>0 ? `<div class="home-premium-interest">🔥 ${uniqueViews.toLocaleString()} collector${uniqueViews===1?"":"s"} · ${views.toLocaleString()} qualified view${views===1?"":"s"}</div>` : ""}
             <div class="home-premium-card-price">${appContext.escapeHtml(primaryPrice(card))}</div>
           </div>
         </article>`;
@@ -478,13 +480,14 @@ function renderHomePage(){
         const trending=liveInventory
           .filter(card=>appContext.trendingCardViews(card)>0)
           .sort((a,b)=>
-            appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
+            appContext.trendingCardScore(b)-appContext.trendingCardScore(a) ||
             appContext.trendingCardUniqueViews(b)-appContext.trendingCardUniqueViews(a) ||
+            appContext.trendingCardViews(b)-appContext.trendingCardViews(a) ||
             String(a.name||"").localeCompare(String(b.name||""))
           )
           .slice(0,4);
         mount.innerHTML=trending.length
-          ? premiumShelf("Trending This Week","The cards receiving the most qualified attention over the rolling last 7 days.",trending,"#/inventory?quick=trending",{eyebrow:"Collector Interest",trending:true,source:"trending"})
+          ? premiumShelf("Trending This Week","Ranked by unique qualified collector interest over the rolling last 7 days, with repeat views damped.",trending,"#/inventory?quick=trending",{eyebrow:"Collector Interest",trending:true,source:"trending"})
           : "";
 
         const spotlight=selectCollectorSpotlight({preferTrending:true});
