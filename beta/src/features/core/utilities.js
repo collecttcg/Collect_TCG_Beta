@@ -64,7 +64,7 @@ function seoCardUrl(card,slugOverride=""){
     if(!id) return "";
     const slug=appContext.seoSlugPart(slugOverride)||appContext.seoCardSlug(card);
     return new URL(
-      `cards/${slug}--${encodeURIComponent(id)}/`,
+      `cards/${slug}/`,
       appContext.siteRootUrl()
     ).toString();
   }
