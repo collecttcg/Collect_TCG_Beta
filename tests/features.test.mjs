@@ -263,3 +263,22 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.doesNotMatch(generator,/slug\}--\$\{encodeURIComponent\(card\.id\)\}/);
 });
 
+test('Phase 2A discovery surfaces keep clean-card routing and source context',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const routing=source('../beta/src/app/routing.js');
+ const home=source('../beta/src/features/content/home.js');
+ const tiles=source('../beta/src/features/cards/tiles.js');
+ const details=source('../beta/src/features/cards/details.js');
+
+ assert.match(routing,/function rememberCardDiscoverySource\(cardId,source\)/);
+ assert.match(routing,/function currentCardDiscoverySource\(\)/);
+ assert.match(routing,/openCardRoute\(cardId,discoverySource=""\)/);
+ assert.match(routing,/location\.assign\(clean\)/);
+ assert.doesNotMatch(home,/home-collector-spotlight-media" href="#\/card\//);
+ assert.match(home,/data-spotlight-card-id/);
+ assert.match(home,/source:"recently-added"/);
+ assert.match(home,/source:"trending"/);
+ assert.match(tiles,/data-discovery-source="related"/);
+ assert.match(tiles,/openCardRoute\(card\.id,tile\.dataset\.discoverySource\|\|""\)/);
+ assert.match(details,/rememberCardDiscoverySource\(id,el\.dataset\.discoverySource\|\|"related"\)/);
+});
