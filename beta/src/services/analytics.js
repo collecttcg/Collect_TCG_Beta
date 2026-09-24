@@ -722,6 +722,52 @@ async function fetchCardEngagementInsights(start,end){
     }
   }
 
+async function fetchOwnerCardConversionSummary(cardId,{force=false}={}){
+    const id=appContext.safeCardId(cardId);
+    if(!id || !appContext.isOwnerMode()) return null;
+
+    const cached=appContext.ownerCardConversionSummaryCache.get(id);
+    if(!force && cached && Date.now()-cached.cached_at<60*1000){
+      return cached.value;
+    }
+
+    try{
+      const start=new Date("2000-01-01T00:00:00");
+      const end=new Date();
+      const [viewRows,engagementResult]=await Promise.all([
+        appContext.fetchInsights(start,end,{silent:true}),
+        appContext.fetchCardEngagementInsights(start,end)
+      ]);
+
+      const viewRow=(Array.isArray(viewRows)?viewRows:[]).find(row=>
+        String(row.card_id||row.id||"")===id
+      )||{};
+      const engagement=(Array.isArray(engagementResult?.rows)?engagementResult.rows:[]).find(row=>
+        String(row.card_id||"")===id
+      )||{};
+      const contact=appContext.insightContactMetrics?.(engagement)||{};
+      const uniqueViews=Math.max(0,Number(viewRow.unique_views||0));
+      const intent=Math.max(0,Number(contact.intent_count||0));
+      const value={
+        card_id:id,
+        qualified_views:Math.max(0,Number(viewRow.views||0)),
+        unique_views:uniqueViews,
+        favorite_adds:Math.max(0,Number(engagement.favorite_adds||0)),
+        contact_opens:Math.max(0,Number(contact.contact_opens||0)),
+        inquiry_copies:Math.max(0,Number(contact.inquiry_copies||0)),
+        platform_clicks:Math.max(0,Number(contact.platform_clicks||0)),
+        intent_count:intent,
+        intent_rate:uniqueViews>0 ? intent/uniqueViews*100 : 0
+      };
+
+      appContext.ownerCardConversionSummaryCache.set(id,{cached_at:Date.now(),value});
+      return value;
+    }catch(error){
+      console.warn("Owner card conversion summary unavailable:",error);
+      return null;
+    }
+  }
+
 function freshQualifiedViewCount(cardId){
     const id=String(cardId||"");
     if(!id) return 0;
@@ -1883,7 +1929,7 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,fetchOwnerCardConversionSummary,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */
