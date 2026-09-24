@@ -17,7 +17,58 @@ function safeCardId(value){
     return /^[0-9a-fA-F-]{20,40}$/.test(id) ? id : "";
   }
 
-  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId});
+function seoSlugPart(value){
+    return String(value||"")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .toLowerCase()
+      .replace(/&/g," and ")
+      .replace(/['’]/g,"")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"")
+      .replace(/-{2,}/g,"-");
+  }
+
+function seoCardSlug(card){
+    if(!card) return "card";
+    const grade=Array.isArray(card.grading)
+      ? card.grading.find(entry=>entry && entry.company)
+      : null;
+    const gradeLabel=grade
+      ? [grade.company,grade.grade].filter(Boolean).join(" ")
+      : "";
+    const parts=[
+      card.year,
+      card.game,
+      card.series,
+      card.name,
+      card.card_code,
+      gradeLabel
+    ].map(appContext.seoSlugPart).filter(Boolean);
+    const slug=parts.join("-").replace(/-{2,}/g,"-").slice(0,120).replace(/-+$/,"");
+    return slug || "card";
+  }
+
+function siteRootUrl(){
+    try{
+      const explicit=document.querySelector('meta[name="collect-tcg-site-base"]')?.content;
+      if(explicit) return new URL(explicit,location.origin).toString();
+      return new URL("./",document.baseURI).toString();
+    }catch{
+      return `${location.origin}${location.pathname.replace(/[^/]*$/,"")}`;
+    }
+  }
+
+function seoCardUrl(card){
+    const id=appContext.safeCardId(card?.id);
+    if(!id) return "";
+    return new URL(
+      `cards/${appContext.seoCardSlug(card)}--${encodeURIComponent(id)}/`,
+      appContext.siteRootUrl()
+    ).toString();
+  }
+
+  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId,seoSlugPart,seoCardSlug,siteRootUrl,seoCardUrl});
 }
 
 /** State and event initialization; called in preserved startup order. */
