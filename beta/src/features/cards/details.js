@@ -745,8 +745,8 @@ async function shareCurrentCard(){
     appContext.showToast(copied ? "Card preview and link copied" : "Could not copy card link");
   }
 
-function publicContactSellerMessage(card){
-    if(!card) return "";
+function contactCardReferenceLines(card){
+    if(!card) return [];
 
     const status=appContext.canonicalAvailability(card.availability);
     const gradeCondition=appContext.compareGradeLabel(card);
@@ -755,6 +755,20 @@ function publicContactSellerMessage(card){
       ? "NOT FOR SALE"
       : (prices[0] ? appContext.formatCurrencyValue(prices[0].currency,prices[0].value) : "Please inquire");
 
+    return [
+      `Name: ${card.name||"Trading card"}`,
+      card.card_code ? `Card Code: ${card.card_code}` : "",
+      gradeCondition ? `Grade / Condition: ${gradeCondition}` : "",
+      card.language ? `Language: ${String(card.language).toUpperCase()}` : "",
+      `Price: ${priceText}`,
+      `Link: ${appContext.getCardShareUrl(card.id)}`
+    ].filter(Boolean);
+  }
+
+function publicContactSellerMessage(card){
+    if(!card) return "";
+
+    const status=appContext.canonicalAvailability(card.availability);
     const opening=status==="Collection (NFS)"
       ? "Hi, I have a question about this Collection / NFS card:"
       : (status==="Sold"
@@ -766,12 +780,8 @@ function publicContactSellerMessage(card){
     return [
       opening,
       "",
-      `Name: ${card.name||"Trading card"}`,
-      card.card_code ? `Card Code: ${card.card_code}` : "",
-      gradeCondition ? `Grade / Condition: ${gradeCondition}` : "",
-      `Price: ${priceText}`,
-      `Link: ${appContext.getCardShareUrl(card.id)}`
-    ].filter(line=>line!=="").join("\n");
+      ...appContext.contactCardReferenceLines(card)
+    ].join("\n");
   }
 
 function contactInquiryIntent(){
@@ -791,19 +801,19 @@ function contactInquiryMessage(card,intent=appContext.contactInquiryIntent()){
     if(!card) return "";
 
     const chosen=appContext.setContactInquiryIntent(intent);
-    const code=card.card_code ? ` (${card.card_code})` : "";
-    const name=`${card.name||"Trading card"}${code}`;
-    const url=appContext.getCardShareUrl(card.id);
-
     const messages={
-      availability:`Hi, is this still available? I'm interested in: ${name}`,
-      offer:`Hi, I'm interested in: ${name}. Would you be open to an offer?`,
-      photos:`Hi, I'm interested in: ${name}. Could I get more photos or a short video of the card?`,
-      shipping:`Hi, I'm interested in: ${name}. Is international shipping available to my location?`,
-      cod:`Hi, I'm interested in: ${name}. Is COD / meetup available in Malaysia or Singapore?`
+      availability:"Hi, is this card still available?",
+      offer:"Hi, I'm interested in this card. Would you be open to an offer?",
+      photos:"Hi, I'm interested in this card. Could I get more photos or a short video?",
+      shipping:"Hi, I'm interested in this card. Is international shipping available to my location?",
+      cod:"Hi, I'm interested in this card. Is COD / meetup available in Malaysia or Singapore?"
     };
 
-    return `${messages[chosen]||messages.availability}\n${url}`;
+    return [
+      messages[chosen]||messages.availability,
+      "",
+      ...appContext.contactCardReferenceLines(card)
+    ].join("\n");
   }
 
 function contactIntentButtonsHtml(extraClass=""){
@@ -1472,7 +1482,10 @@ async function openDetailsModal(card){
         appContext.copyTextToClipboard(message)
           .then(copied=>{
             if(copied){
-              appContext.showToast(`${platform} opened · inquiry copied`);
+              appContext.recordCardEngagement(card.id,"inquiry_copy",platform).catch(()=>{});
+              appContext.showToast(`${platform} opened · inquiry copied and ready to paste`);
+            }else{
+              appContext.showToast(`${platform} opened · copy the card link if needed`);
             }
           })
           .catch(()=>{});
@@ -1720,7 +1733,7 @@ function closeDetailsModal(navigateBack = true){
     }
   }
 
-  Object.assign(appContext,{syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadInventoryQrImage,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
+  Object.assign(appContext,{contactCardReferenceLines,syncDetailsStatusCornerToVisibleImage,scheduleDetailsStatusCornerSync,renderLightboxImage,openImageLightbox,closeImageLightbox,safeDownloadName,getDownloadStatusWatermarkMeta,createStatusWatermarkedDownloadBlob,downloadImageSource,createInventoryQrDownloadBlob,downloadInventoryQrImage,downloadSingleCardImagesZip,getWebsiteShareUrl,getCardShareUrl,publicCardSharePreview,copySharePreview,loadPublicSharePreviewImage,createPublicCardSharePreviewBlob,downloadPublicCardSharePreview,shareCurrentCard,publicContactSellerMessage,contactInquiryIntent,setContactInquiryIntent,contactInquiryMessage,contactIntentButtonsHtml,messageSellerOnFacebook,shareCurrentCardWhatsApp,getSameSeriesNeighbors,sameSeriesNavigationIsRedundant,replaceCardRouteWithoutRefresh,smoothNavigateDetailsCard,syncDetailsFavoriteButton,closeDetailsMoreMenu,toggleDetailsMoreMenu,openDetailsModal,closeDetailsModal});
 }
 
 /** State and event initialization; called in preserved startup order. */
