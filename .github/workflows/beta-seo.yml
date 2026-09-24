@@ -78,7 +78,7 @@ jobs:
           grep -q 'grant execute on function public.get_card_discovery_summary' 2026-09-24-v08-DISCOVERY-SUMMARY.sql
           grep -q 'function relatedSeriesAffinity' beta/src/features/cards/related.js
           grep -q 'function relatedGradeAffinity' beta/src/features/cards/related.js
-          grep -q 'unique*100' beta/src/features/inventory/filtering.js
+          grep -Fq 'unique*100' beta/src/features/inventory/filtering.js
           grep -q 'fetchDiscoverySourceSummary' beta/src/services/analytics.js
           grep -q 'Where card interest starts' beta/src/features/owner/insights-dashboard.js
 
