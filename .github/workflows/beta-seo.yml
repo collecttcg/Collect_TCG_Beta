@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/beta-seo.yml'
       - 'tools/generate-seo.mjs'
+      - '2026-09-24-v01-SEO-PUBLIC-CATALOG.sql'
       - 'beta/index.html'
       - 'beta/src/app/register-features.js'
       - 'beta/src/app/routing.js'
