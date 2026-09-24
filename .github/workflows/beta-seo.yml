@@ -145,7 +145,7 @@ jobs:
           grep -q 'Needs attention' beta/src/features/owner/insights-dashboard.js
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
-          grep -q 'insights-dashboard.js?v=2026-09-24-v14' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-24-v15' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-24-v15' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-24-v15' beta/index.html
 
