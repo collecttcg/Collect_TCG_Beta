@@ -2124,6 +2124,27 @@ function renderInventoryPage(scope = "inventory"){
       }
     },{signal:inventorySignal});
 
+    function currentPaginationFilterSignature(){
+      const pillState={};
+      Object.entries(appContext.pillFilterState).forEach(([key,set])=>{
+        pillState[key]=Array.from(set||[]).map(appContext.normalizeFilterValue).sort();
+      });
+      return JSON.stringify({
+        q:String(appContext.$("search")?.value||"").trim(),
+        game:appContext.$("filterGame")?.value||"",
+        grade:appContext.$("filterGrade")?.value||"",
+        language:appContext.$("filterLanguage")?.value||"",
+        era:appContext.$("filterEra")?.value||"",
+        availability:appContext.$("filterAvailability")?.value||"",
+        series:appContext.$("filterSeries")?.value||"",
+        pmin:appContext.safePriceFilterValue(appContext.$("filterPriceMin")?.value),
+        pmax:appContext.safePriceFilterValue(appContext.$("filterPriceMax")?.value),
+        sort:appContext.$("sortBy")?.value||"",
+        quick:appContext.activeQuickFilter||"all",
+        pills:pillState
+      });
+    }
+
     inventoryPagination=createInventoryPagination(appContext,{draw,getFilterSignature:currentPaginationFilterSignature,scrollToListingStart});
     appContext.$("listingPerPageSelect")?.addEventListener("change",e=>inventoryPagination.changePerPage(e.target.value));
     appContext.$("mobileListingPerPageSelect")?.addEventListener("change",e=>inventoryPagination.changePerPage(e.target.value));
