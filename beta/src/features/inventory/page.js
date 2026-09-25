@@ -1,3 +1,4 @@
+import { createInventoryPagination } from './pagination.js?v=2026-09-25-v07';
 /** V93 beta: features/inventory/page. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function syncQuickFilterUI(){
@@ -1329,103 +1330,7 @@ function renderInventoryPage(scope = "inventory"){
       }).join("");
     }
 
-    let paginationFilterSignature=null;
-    let paginationFirstDraw=true;
-
-    function currentPaginationFilterSignature(){
-      const pillState={};
-      Object.entries(appContext.pillFilterState).forEach(([key,set])=>{
-        pillState[key]=Array.from(set||[]).map(appContext.normalizeFilterValue).sort();
-      });
-
-      return JSON.stringify({
-        q:String(appContext.$("search")?.value||"").trim(),
-        game:appContext.$("filterGame")?.value||"",
-        grade:appContext.$("filterGrade")?.value||"",
-        language:appContext.$("filterLanguage")?.value||"",
-        era:appContext.$("filterEra")?.value||"",
-        availability:appContext.$("filterAvailability")?.value||"",
-        series:appContext.$("filterSeries")?.value||"",
-        pmin:appContext.safePriceFilterValue(appContext.$("filterPriceMin")?.value),
-        pmax:appContext.safePriceFilterValue(appContext.$("filterPriceMax")?.value),
-        sort:appContext.$("sortBy")?.value||"",
-        quick:appContext.activeQuickFilter||"all",
-        pills:pillState
-      });
-    }
-
-    function paginationPageItems(current,total){
-      if(total<=7) return Array.from({length:total},(_,i)=>i+1);
-
-      const pages=new Set([1,total,current-1,current,current+1]);
-      if(current<=4){
-        [2,3,4,5].forEach(page=>pages.add(page));
-      }
-      if(current>=total-3){
-        [total-4,total-3,total-2,total-1].forEach(page=>pages.add(page));
-      }
-
-      const sorted=Array.from(pages)
-        .filter(page=>page>=1 && page<=total)
-        .sort((a,b)=>a-b);
-
-      const items=[];
-      sorted.forEach((page,index)=>{
-        if(index && page-sorted[index-1]>1) items.push("ellipsis");
-        items.push(page);
-      });
-      return items;
-    }
-
-    function paginationHTML(totalItems){
-      const totalPages=Math.max(1,Math.ceil(totalItems/appContext.listingPerPage));
-      const start=totalItems ? ((appContext.listingCurrentPage-1)*appContext.listingPerPage)+1 : 0;
-      const end=totalItems ? Math.min(appContext.listingCurrentPage*appContext.listingPerPage,totalItems) : 0;
-
-      const pages=paginationPageItems(appContext.listingCurrentPage,totalPages);
-      return `
-        <nav class="listing-pagination" aria-label="Listing pages">
-          <div class="listing-pagination-summary">
-            <strong>Showing ${start.toLocaleString()}–${end.toLocaleString()}</strong>
-            of ${totalItems.toLocaleString()} listings
-            · Page ${appContext.listingCurrentPage.toLocaleString()} of ${totalPages.toLocaleString()}
-          </div>
-          <div class="listing-pagination-pages">
-            <button type="button"
-                    class="listing-page-btn"
-                    data-page-direction="prev"
-                    aria-label="Previous page"
-                    ${appContext.listingCurrentPage<=1?"disabled":""}>‹</button>
-
-            ${pages.map(page=>page==="ellipsis"
-              ? `<span class="listing-page-ellipsis" aria-hidden="true">…</span>`
-              : `<button type="button"
-                         class="listing-page-btn ${page===appContext.listingCurrentPage?"active":""}"
-                         data-listing-page="${page}"
-                         ${page===appContext.listingCurrentPage?'aria-current="page"':""}>${page}</button>`
-            ).join("")}
-
-            <button type="button"
-                    class="listing-page-btn"
-                    data-page-direction="next"
-                    aria-label="Next page"
-                    ${appContext.listingCurrentPage>=totalPages?"disabled":""}>›</button>
-          </div>
-        </nav>
-      `;
-    }
-
-    function renderPagination(totalItems){
-      const totalPages=Math.max(1,Math.ceil(totalItems/appContext.listingPerPage));
-      appContext.listingCurrentPage=Math.min(Math.max(1,appContext.listingCurrentPage),totalPages);
-
-      ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{
-        const mount=appContext.$(id);
-        if(!mount) return;
-        mount.hidden=totalItems<=appContext.listingPerPage;
-        mount.innerHTML=totalItems>appContext.listingPerPage ? paginationHTML(totalItems) : "";
-      });
-    }
+    let inventoryPagination=null;
 
     function scrollToListingStart(){
       const target=appContext.$("listingPaginationTop") || appContext.$("invGrid");
@@ -1440,58 +1345,7 @@ function renderInventoryPage(scope = "inventory"){
       const drawGeneration=++inventoryDrawGeneration;
       const grid=appContext.$("invGrid");
 
-      const nextFilterSignature=currentPaginationFilterSignature();
-      if(paginationFirstDraw){
-        paginationFirstDraw=false;
-        paginationFilterSignature=nextFilterSignature;
-      }else if(nextFilterSignature!==paginationFilterSignature){
-        paginationFilterSignature=nextFilterSignature;
-        if(appContext.listingCurrentPage!==1){
-          appContext.listingCurrentPage=1;
-          appContext.updateListingUrlFromControls();
-        }
-      }
-
-      updateActiveFilterIndicators();
-      syncPillFilterSummary();
-      syncInventoryGameBrowser();
-      if(grid) grid.setAttribute("aria-busy","false");
-
-      if(appContext.cards.length===0){
-        appContext.captureFilteredResultsBrowseContext([]);
-        const mobileResultCount=appContext.$("stickyMobileResultCount");
-        if(mobileResultCount) mobileResultCount.textContent="0";
-        const desktopResultCount=appContext.$("inventoryResultCount");
-        if(desktopResultCount) desktopResultCount.textContent="0";
-        const compactMobileResultCount=appContext.$("inventoryMobileCompactResultCount");
-        if(compactMobileResultCount) compactMobileResultCount.textContent="0";
-        const footerResultCount=appContext.$("mobileFilterFooterResultCount");
-        if(footerResultCount) footerResultCount.textContent="0";
-        renderPagination(0);
-        ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{ const el=appContext.$(id); if(el) el.hidden=true; });
-        grid.className="";
-        grid.innerHTML=`<div class="empty-state">${appContext.EMPTY_ICON}<h2>No listings yet</h2><p>The catalogue is currently empty.</p></div>`;
-        return;
-      }
-
-      if(appContext.activeQuickFilter==="trending" && appContext.trending7dBackendState!=="available"){
-        appContext.captureFilteredResultsBrowseContext([]);
-        const desktopResultCount=appContext.$("inventoryResultCount");
-        if(desktopResultCount) desktopResultCount.textContent="0";
-        const compactMobileResultCount=appContext.$("inventoryMobileCompactResultCount");
-        if(compactMobileResultCount) compactMobileResultCount.textContent="0";
-        renderPagination(0);
-        ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{ const el=appContext.$(id); if(el) el.hidden=true; });
-        grid.className="";
-        if(appContext.trending7dBackendState==="error"){
-          grid.setAttribute("aria-busy","false");
-          grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↗</div><h3>Trending is temporarily unavailable</h3><p>We could not load the shared 7-day Trending leaderboard. Please try again shortly.</p></div>`;
-        }else{
-          grid.setAttribute("aria-busy","true");
-          grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↻</div><h3>Loading 7-day Trending…</h3><p>Ranking cards by unique qualified collector interest from the last 7 days.</p></div>`;
-        }
-        return;
-      }
+      inventoryPagination?.syncFilterPage();
 
       const list=appContext.getFiltered();
       appContext.captureFilteredResultsBrowseContext(list);
@@ -1504,7 +1358,7 @@ function renderInventoryPage(scope = "inventory"){
       const footerResultCount=appContext.$("mobileFilterFooterResultCount");
       if(footerResultCount) footerResultCount.textContent=list.length.toLocaleString();
       if(list.length===0 && appContext.activeQuickFilter==="trending"){
-        renderPagination(0);
+        inventoryPagination.render(0);
         ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{ const el=appContext.$(id); if(el) el.hidden=true; });
         grid.className="";
         grid.innerHTML=`<div class="empty-state inventory-no-results"><div class="empty-icon">↗</div><h3>No trending cards in the last 7 days</h3><p>No matching listing received a qualified view during the rolling 7-day window.</p></div>`;
@@ -1518,7 +1372,7 @@ function renderInventoryPage(scope = "inventory"){
 
         const noScopeCards=scopedCards.length===0;
 
-        renderPagination(0);
+        inventoryPagination.render(0);
         ["listingPaginationTop","listingPaginationBottom"].forEach(id=>{ const el=appContext.$(id); if(el) el.hidden=true; });
         grid.className="";
         grid.innerHTML=appContext.inventoryNoResultsHTML({
@@ -1567,7 +1421,7 @@ function renderInventoryPage(scope = "inventory"){
           appContext.updateListingUrlFromControls();
         }
 
-        renderPagination(list.length);
+        inventoryPagination.render(list.length);
 
         const pageStart=(appContext.listingCurrentPage-1)*appContext.listingPerPage;
         const pageEnd=Math.min(pageStart+appContext.listingPerPage,list.length);
@@ -2270,103 +2124,10 @@ function renderInventoryPage(scope = "inventory"){
       }
     },{signal:inventorySignal});
 
-    function changeListingPerPage(value){
-      appContext.listingPerPage=appContext.setSavedListingPerPage(Number(value));
-      appContext.listingCurrentPage=1;
-
-      // Keep desktop and mobile controls synchronized. The desktop control is
-      // hidden on phones but still exists in the page markup.
-      ["listingPerPageSelect","mobileListingPerPageSelect"].forEach(id=>{
-        const select=appContext.$(id);
-        if(select && Number(select.value)!==appContext.listingPerPage){
-          select.value=String(appContext.listingPerPage);
-        }
-      });
-
-      appContext.updateListingUrlFromControls();
-      draw();
-    }
-
-    appContext.$("listingPerPageSelect")?.addEventListener("change",e=>{
-      changeListingPerPage(e.target.value);
-    });
-
-    appContext.$("mobileListingPerPageSelect")?.addEventListener("change",e=>{
-      changeListingPerPage(e.target.value);
-    });
-
-    const handlePaginationClick=e=>{
-      const button=e.target.closest(".listing-page-btn");
-      if(!button || button.disabled) return;
-
-      const list=appContext.getFiltered();
-      const totalPages=Math.max(1,Math.ceil(list.length/appContext.listingPerPage));
-      let nextPage=appContext.listingCurrentPage;
-
-      if(button.dataset.pageDirection==="prev"){
-        nextPage=Math.max(1,appContext.listingCurrentPage-1);
-      }else if(button.dataset.pageDirection==="next"){
-        nextPage=Math.min(totalPages,appContext.listingCurrentPage+1);
-      }else if(button.dataset.listingPage){
-        nextPage=appContext.safeListingPage(button.dataset.listingPage);
-      }
-
-      nextPage=Math.min(Math.max(1,nextPage),totalPages);
-      if(nextPage===appContext.listingCurrentPage) return;
-
-      const fromBottom=!!button.closest("#listingPaginationBottom");
-      try{button.blur();}catch{}
-
-      appContext.listingCurrentPage=nextPage;
-      appContext.updateListingUrlFromControls();
-      draw();
-
-      if(fromBottom){
-        const scrollToNewListingTop=()=>{
-          const heading=document.querySelector(".listing-page-head");
-          if(!heading) return;
-
-          const shell=document.querySelector(".shell");
-          const mobileShellScroll=
-            window.matchMedia("(max-width:800px)").matches &&
-            shell &&
-            getComputedStyle(shell).overflowY!=="visible";
-
-          if(mobileShellScroll){
-            // Mobile uses .shell as the real scrolling viewport.
-            const shellRect=shell.getBoundingClientRect();
-            const headingRect=heading.getBoundingClientRect();
-            const target=
-              shell.scrollTop +
-              (headingRect.top-shellRect.top) -
-              6;
-
-            shell.scrollTo({
-              top:Math.max(0,target),
-              left:0,
-              behavior:"auto"
-            });
-          }else{
-            // Desktop/laptop use the normal document viewport.
-            const target=
-              window.scrollY +
-              heading.getBoundingClientRect().top -
-              6;
-
-            window.scrollTo({
-              top:Math.max(0,target),
-              left:window.scrollX,
-              behavior:"auto"
-            });
-          }
-        };
-
-        // draw() updates the listing synchronously, but run once immediately
-        // and once after layout paint for image/font/mobile viewport settling.
-        scrollToNewListingTop();
-        requestAnimationFrame(scrollToNewListingTop);
-      }
-    };
+    inventoryPagination=createInventoryPagination(appContext,{draw,getFilterSignature:currentPaginationFilterSignature,scrollToListingStart});
+    appContext.$("listingPerPageSelect")?.addEventListener("change",e=>inventoryPagination.changePerPage(e.target.value));
+    appContext.$("mobileListingPerPageSelect")?.addEventListener("change",e=>inventoryPagination.changePerPage(e.target.value));
+    const handlePaginationClick=e=>inventoryPagination.handleClick(e);
 
     appContext.$("listingPaginationTop")?.addEventListener("click",handlePaginationClick);
     appContext.$("listingPaginationBottom")?.addEventListener("click",handlePaginationClick);
