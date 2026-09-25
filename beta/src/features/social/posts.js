@@ -629,8 +629,8 @@ function renderFbPostGeneratorPage(nfsMode=false){
             <div class="field">
               <label for="fbPostTemplateMode">Facebook template</label>
               <select id="fbPostTemplateMode">
-                <option value="group" selected>Group-friendly (short)</option>
-                <option value="detailed">Detailed listing</option>
+                <option value="group">Group-friendly (short)</option>
+                <option value="detailed" selected>Detailed listing</option>
               </select>
               <div class="hint">Group-friendly keeps the card link, COD / meetup, worldwide shipping and DM contact while leaving detailed shipping terms on the website.</div>
             </div>`}
@@ -755,7 +755,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
       return {
         title:titleInput.value,
         language:languageInput.value,
-        templateMode:templateModeInput?.value||"group",
+        templateMode:templateModeInput?.value||"detailed",
         carousellShopUrl:shopInput.value,
         instagramUrl:instagramInput.value,
         hashtags:hashtagsInput.value
