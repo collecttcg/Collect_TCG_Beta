@@ -29,6 +29,8 @@ on:
       - 'beta/src/services/analytics.js'
       - 'beta/src/features/core/utilities.js'
       - 'beta/src/features/cards/details.js'
+      - 'beta/src/features/cards/compare.js'
+      - 'beta/src/styles/29-home-brand-spotlight.css'
       - 'beta/src/main.js'
       - 'tests/**'
       - 'tools/check.mjs'
