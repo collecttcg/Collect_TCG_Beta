@@ -494,3 +494,17 @@ test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',
  assert.match(keyboard,/event\.key!=="Tab"/);
  assert.match(keyboard,/preventScroll:true/);
 });
+
+
+test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZIP download',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const details=source('../beta/src/features/cards/details.js');
+ const posts=source('../beta/src/features/social/posts.js');
+ assert.doesNotMatch(details,/class="details-desktop-contact-socials"/);
+ assert.match(details,/class="detail-buy-cta"/);
+ assert.match(details,/detailsContactSocialLinksHtml\("details-buy-social-links"\)/);
+ assert.match(posts,/id="ebayDownloadImages"/);
+ assert.match(posts,/downloadSingleCardImagesZip\(selected/);
+ assert.match(posts,/download eBay listing images/);
+ assert.match(posts,/eBay images ZIP downloaded/);
+});
