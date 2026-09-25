@@ -508,3 +508,13 @@ test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZI
  assert.match(posts,/download eBay listing images/);
  assert.match(posts,/eBay images ZIP downloaded/);
 });
+
+
+test('2026-09-25-v09 keeps inventory pagination filter signature defined before initialization',()=>{
+ const source=fs.readFileSync(new URL('../beta/src/features/inventory/page.js',import.meta.url),'utf8');
+ const definition=source.indexOf('function currentPaginationFilterSignature()');
+ const use=source.indexOf('getFilterSignature:currentPaginationFilterSignature');
+ assert.ok(definition>=0,'pagination filter signature must be defined');
+ assert.ok(use>definition,'pagination filter signature must be defined before pagination initialization');
+ assert.match(source,/pills:pillState/);
+});
