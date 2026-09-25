@@ -152,8 +152,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v08' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v08' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v09' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v09' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -183,7 +183,7 @@ jobs:
           grep -q 'createInventoryPagination' beta/src/features/inventory/page.js
           grep -q 'function pageItems' beta/src/features/inventory/pagination.js
           grep -q 'createModalKeyboardController' beta/src/features/cards/details.js
-          grep -q 'page.js?v=2026-09-25-v07' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-25-v09' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-25-v08' beta/src/app/initialize.js
 
       - name: Validate visitor UX improvements
@@ -201,6 +201,15 @@ jobs:
           grep -q 'id="pillFilterSummary"' beta/src/features/inventory/page.js
           grep -q 'function cardSearchScore' beta/src/features/inventory/filtering.js
           grep -q 'navigator.share' beta/src/features/cards/details.js
+
+      - name: Validate Beta v09 inventory render regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/features/inventory/page.js
+          grep -q 'function currentPaginationFilterSignature()' beta/src/features/inventory/page.js
+          grep -q 'getFilterSignature:currentPaginationFilterSignature' beta/src/features/inventory/page.js
+          grep -q 'page.js?v=2026-09-25-v09' beta/src/app/register-features.js
 
       - name: Validate Beta v08 card details and eBay images
         shell: bash
@@ -234,8 +243,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-25-v08' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v08' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v08' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v09' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v09' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -266,9 +275,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-25-v08
-          PREVIOUS_VERSION: 2026-09-25-v07
-          PREVIOUS_COMMIT: a6fd98804e292c435442dca3c455ccb49a84c193
+          RELEASE_VERSION: 2026-09-25-v09
+          PREVIOUS_VERSION: 2026-09-25-v08
+          PREVIOUS_COMMIT: 31342655d5cb8a0b9b3c76b6e488651270b2b7cf
         run: |
           set -euo pipefail
           mkdir -p release
@@ -296,10 +305,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-25-v08-packages
+          name: Collect-TCG-Beta-2026-09-25-v09-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-25-v08-full.zip
-            release/Collect-TCG-Beta-2026-09-25-v07-to-2026-09-25-v08-patch.zip
+            release/Collect-TCG-Beta-2026-09-25-v09-full.zip
+            release/Collect-TCG-Beta-2026-09-25-v08-to-2026-09-25-v09-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -308,16 +317,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-25-v08.txt"
+          MANIFEST="release-manifests/2026-09-25-v09.txt"
           {
-            echo "Version: 2026-09-25-v08"
-            echo "Previous version: 2026-09-25-v07"
+            echo "Version: 2026-09-25-v09"
+            echo "Previous version: 2026-09-25-v08"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v08-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v07-to-2026-09-25-v08-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v09-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v08-to-2026-09-25-v09-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-25-v08: record package validation"
+          git commit -m "Beta 2026-09-25-v09: record package validation"
           git push
