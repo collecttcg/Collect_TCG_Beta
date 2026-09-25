@@ -268,3 +268,25 @@
   .insights-v20-performance-controls>label{flex:1 1 180px;margin-top:0;}
   .insights-v20-performance-controls .insights-v20-pagination{justify-content:flex-start;margin-top:0;}
 }
+
+
+/* 2026-09-25-v05 — Owner Sales Action Queue. */
+.insights-v21-action-queue{padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--surface);}
+.insights-v21-action-list{display:flex;flex-direction:column;gap:9px;}
+.insights-v21-action-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 14px;border:1px solid var(--border-soft);border-radius:12px;background:var(--bg);}
+.insights-v21-action-row.good{border-left:3px solid var(--success);}
+.insights-v21-action-row.watch{border-left:3px solid var(--accent-gold);}
+.insights-v21-action-row.focus{border-left:3px solid var(--accent-magenta);}
+.insights-v21-action-copy{min-width:0;}
+.insights-v21-action-copy>span{display:block;margin-bottom:3px;color:var(--text-muted);font-size:10.5px;font-weight:800;letter-spacing:.35px;text-transform:uppercase;}
+.insights-v21-action-copy strong{display:block;font-size:14px;line-height:1.3;}
+.insights-v21-action-copy small{display:block;margin-top:4px;color:var(--text-muted);font-size:11.5px;line-height:1.4;}
+.insights-v21-action-buttons{display:flex;flex:0 0 auto;gap:8px;}
+.insights-v21-action-buttons button{min-height:38px;padding:8px 11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;}
+.insights-v21-action-buttons button.primary{border-color:var(--accent-gold);color:var(--accent-gold);}
+@media(max-width:700px){
+  .insights-v21-action-queue{padding:14px;border-radius:14px;}
+  .insights-v21-action-row{display:block;padding:12px;}
+  .insights-v21-action-buttons{margin-top:10px;}
+  .insights-v21-action-buttons button{flex:1 1 0;min-height:44px;}
+}

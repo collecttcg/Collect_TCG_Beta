@@ -870,8 +870,16 @@ function renderFbPostGeneratorPage(nfsMode=false){
 
     const requestedCardId=appContext.safeCardId(appContext.currentHashParams().get("card"));
     if(requestedCardId && selectableCards.some(card=>String(card.id)===requestedCardId)){
-      select.value=requestedCardId;
-      selectCard(requestedCardId);
+      const requestedCard=appContext.getCardById(requestedCardId);
+      if(requestedCard){
+        searchInput.value="";
+        gameFilter.value="";
+        if(!nfsMode) statusFilter.value="";
+        typeFilter.value="";
+        renderFbSingleCardOptions();
+        select.value=requestedCardId;
+        selectCard(requestedCardId);
+      }
     }
 
     [titleInput,languageInput,templateModeInput,shopInput,instagramInput,hashtagsInput].filter(Boolean).forEach(input=>{

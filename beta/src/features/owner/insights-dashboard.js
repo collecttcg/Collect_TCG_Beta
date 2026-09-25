@@ -366,6 +366,66 @@ export function register(appContext){
     return picks.slice(0,3);
   }
 
+  function salesActionQueueRows(rows){
+    const items=cardPerformanceRows(rows).map(item=>{
+      let type="";
+      let detail="";
+      let action="";
+      let tone="neutral";
+      let priority=0;
+      if(item.intent>0){
+        type=item.intent>=2 ? "High buyer intent" : "Buyer intent";
+        detail=`${item.intent} buyer intent · ${item.views} unique views`;
+        action="Follow up while interest is active";
+        tone="good";
+        priority=500+item.intent*40+item.saves*5+item.views;
+      }else if(item.saves>0 && item.viewed===0){
+        type="Saved, no contact";
+        detail=`${item.saves} save${item.saves===1?"":"s"} · ${item.views} unique views`;
+        action="Consider a fresh post or review the listing";
+        tone="watch";
+        priority=400+item.saves*20+item.views;
+      }else if(item.views>=3 && item.saves===0){
+        type="Views, low engagement";
+        detail=`${item.views} unique views · no saves or buyer intent`;
+        action="Review price, photos or listing clarity";
+        tone="watch";
+        priority=300+item.views;
+      }else if(item.views<=6 && (item.saves>0 || item.viewed>0)){
+        type="Low exposure, positive signal";
+        detail=`${item.views} unique views · ${item.saves} saves · ${item.viewed} contact views`;
+        action="Increase exposure with a new post";
+        tone="focus";
+        priority=200+item.saves*15+item.viewed*10-item.views;
+      }
+      return {...item,type,detail,action,tone,priority};
+    }).filter(item=>item.type);
+    return items.sort((a,b)=>b.priority-a.priority || b.views-a.views).slice(0,8);
+  }
+
+  function salesActionQueueHtml(rows){
+    const items=salesActionQueueRows(rows);
+    return `<section class="insights-v21-action-queue" data-insights-v21-action-queue>
+      <div class="insights-v14-panel-head">
+        <div><span>Sales action queue</span><h4>What to act on next</h4></div>
+        <p>Signals from existing views, saves and buyer intent. These are prompts for review, not automatic pricing or inventory decisions.</p>
+      </div>
+      <div class="insights-v21-action-list">
+        ${items.length ? items.map(item=>`<article class="insights-v21-action-row ${item.tone}">
+          <div class="insights-v21-action-copy">
+            <span>${appContext.escapeHtml(item.type)}</span>
+            <strong>${appContext.escapeHtml(item.card?.name||item.row?.name||"Untitled card")}</strong>
+            <small>${appContext.escapeHtml(item.detail)} · ${appContext.escapeHtml(item.action)}</small>
+          </div>
+          <div class="insights-v21-action-buttons">
+            <button type="button" data-insights-v14-open-card="${appContext.escapeHtml(item.card?.id||"")}">Open Card</button>
+            <button type="button" class="primary" data-insights-v21-generate-post="${appContext.escapeHtml(item.card?.id||"")}">Generate Post</button>
+          </div>
+        </article>`).join("") : `<div class="insights-v14-empty">No cards currently meet the action-queue thresholds for this selection.</div>`}
+      </div>
+    </section>`;
+  }
+
   function topRow(rows,key="visits"){
     return (Array.isArray(rows)?rows:[]).slice().sort((a,b)=>Number(b?.[key]||0)-Number(a?.[key]||0))[0]||null;
   }
@@ -633,6 +693,18 @@ export function register(appContext){
     });
   }
 
+  function bindGeneratePostButtons(root){
+    root?.querySelectorAll("[data-insights-v21-generate-post]").forEach(btn=>{
+      if(btn.dataset.insightsV21Bound==="1") return;
+      btn.dataset.insightsV21Bound="1";
+      btn.addEventListener("click",()=>{
+        const id=String(btn.dataset.insightsV21GeneratePost||"");
+        if(!id || !appContext.isOwnerMode?.()) return;
+        location.hash=`#/fb-tools?mode=single&card=${encodeURIComponent(id)}`;
+      });
+    });
+  }
+
   function renderDashboard(mount){
     const m=metrics();
     const rangeText=String(appContext.$?.("insightsRange")?.selectedOptions?.[0]?.textContent||"Selected period").trim();
@@ -717,6 +789,8 @@ export function register(appContext){
 
       ${cardPerformanceHtml(m.rows)}
 
+      ${salesActionQueueHtml(m.rows)}
+
       <section class="insights-v14-panel insights-v18-market-panel">
         <div class="insights-v14-panel-head">
           <div><span>Market demand</span><h4>Card views by country</h4></div>
@@ -762,6 +836,7 @@ export function register(appContext){
     }
 
     bindCardOpenButtons(mount);
+    bindGeneratePostButtons(mount);
   }
 
   function detailsShell(){
