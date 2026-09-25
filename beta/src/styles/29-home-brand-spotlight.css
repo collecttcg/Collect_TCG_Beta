@@ -370,3 +370,10 @@ body.light-mode .home-collector-spotlight-meta strong{
   .home-collector-spotlight-media img{height:144px;padding:5px;}
   .home-collector-spotlight-copy h3{font-size:14px;}
 }
+
+
+/* 2026-09-25-v06 — Recently Viewed continuation shelf uses the existing Home card system. */
+.home-premium-section + .home-premium-section{scroll-margin-top:16px;}
+@media(max-width:800px){
+  .home-premium-section .home-premium-view-all{min-height:44px;display:inline-flex;align-items:center;}
+}

@@ -449,3 +449,28 @@ test('Phase 3 Owner Insights surfaces saved cards that have not produced buyer i
  assert.match(dashboard,/review price or trust signals/);
 });
 
+
+
+test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard behavior together',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const inventory=source('../beta/src/features/inventory/page.js');
+ const filtering=source('../beta/src/features/inventory/filtering.js');
+ const details=source('../beta/src/features/cards/details.js');
+ const home=source('../beta/src/features/content/home.js');
+ const compare=source('../beta/src/features/cards/compare.js');
+
+ assert.match(inventory,/id="pillFilterSummary"/);
+ assert.match(inventory,/id="inventoryResultCount"/);
+ assert.match(inventory,/data-empty-clear-all/);
+ assert.match(inventory,/data-empty-clear-search/);
+ assert.match(inventory,/data-empty-clear-price/);
+ assert.match(filtering,/function cardSearchScore\(card,query\)/);
+ assert.match(filtering,/function cardMatchesSmartSearch\(card,query\)/);
+ assert.match(details,/navigator\.share/);
+ assert.match(details,/detailsLastFocusedElement/);
+ assert.match(home,/premiumShelf\("Recently Viewed"/);
+ assert.match(home,/source:"recently-viewed"/);
+ assert.match(compare,/function handleCompareModalKeydown\(event\)/);
+ assert.match(compare,/event\.key==="Escape"/);
+ assert.match(compare,/compareCloseBtn/);
+});

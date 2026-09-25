@@ -198,6 +198,7 @@ function renderHomePage(){
     const byValue=(a,b)=>(appContext.cardUsdListedPrice(b)||0)-(appContext.cardUsdListedPrice(a)||0) || byNewest(a,b);
 
     const newest=liveInventory.slice().sort(byNewest).slice(0,4);
+    const recentlyViewed=appContext.getRecentlyViewedCards().filter(card=>appContext.cardMatchesListingScope(card,"inventory")).slice(0,4);
     const championship=liveInventory
       .filter(c=>appContext.isChampionshipSeries(c.series))
       .sort(byValue);
@@ -427,7 +428,9 @@ function renderHomePage(){
         </section>
       </div>
 
-      ${premiumShelf("Recently Added","The newest available pieces to enter the catalogue.",newest,"#/inventory?sort=newest",{eyebrow:"New Arrivals",isNew:true,source:"recently-added"})}
+      ${premiumShelf("Recently Viewed","Pick up where you left off on this device.",recentlyViewed,"#/recent",{eyebrow:"Continue Browsing",source:"recently-viewed"})}
+
+            ${premiumShelf("Recently Added","The newest available pieces to enter the catalogue.",newest,"#/inventory?sort=newest",{eyebrow:"New Arrivals",isNew:true,source:"recently-added"})}
 
       <section class="home-premium-trust">
         <div class="home-premium-trust-copy">
