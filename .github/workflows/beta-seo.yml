@@ -148,8 +148,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v01' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v03' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v03' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v04' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v04' beta/index.html
 
       - name: Validate Facebook group-friendly post generator
         shell: bash
@@ -161,13 +161,15 @@ jobs:
           grep -q 'Group-friendly (short)' beta/src/features/social/posts.js
           grep -q 'Detailed listing' beta/src/features/social/posts.js
           grep -Fq 'Price & full details:' beta/src/features/social/posts.js
+          grep -Fq 'groupCopy.price' beta/src/features/social/posts.js
+          ! grep -Fq 'groupFriendly ? groupCopy.price : text.priceRefer' beta/src/features/social/posts.js
           grep -Fq 'Worldwide shipping available' beta/src/features/social/posts.js
           grep -Fq 'more photos / video' beta/src/features/social/posts.js
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
-          grep -q 'posts.js?v=2026-09-25-v03' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v03' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v03' beta/index.html
+          grep -q 'posts.js?v=2026-09-25-v04' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-25-v04' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v04' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -198,9 +200,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-25-v03
-          PREVIOUS_VERSION: 2026-09-25-v02
-          PREVIOUS_COMMIT: 6187b96fa7dfdb1665bc628dbfc5009314298670
+          RELEASE_VERSION: 2026-09-25-v04
+          PREVIOUS_VERSION: 2026-09-25-v03
+          PREVIOUS_COMMIT: 01c5552fd0a9a8bb5c6323be89e7162bcb5df80f
         run: |
           set -euo pipefail
           mkdir -p release
@@ -228,10 +230,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-25-v03-packages
+          name: Collect-TCG-Beta-2026-09-25-v04-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-25-v03-full.zip
-            release/Collect-TCG-Beta-2026-09-25-v02-to-2026-09-25-v03-patch.zip
+            release/Collect-TCG-Beta-2026-09-25-v04-full.zip
+            release/Collect-TCG-Beta-2026-09-25-v03-to-2026-09-25-v04-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -240,16 +242,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-25-v03.txt"
+          MANIFEST="release-manifests/2026-09-25-v04.txt"
           {
-            echo "Version: 2026-09-25-v03"
-            echo "Previous version: 2026-09-25-v02"
+            echo "Version: 2026-09-25-v04"
+            echo "Previous version: 2026-09-25-v03"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v03-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v02-to-2026-09-25-v03-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v04-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v03-to-2026-09-25-v04-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-25-v03: record package validation"
+          git commit -m "Beta 2026-09-25-v04: record package validation"
           git push

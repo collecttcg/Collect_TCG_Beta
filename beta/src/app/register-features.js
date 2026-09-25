@@ -31,7 +31,7 @@ import { register as registerInsightsIntentRates } from '../features/owner/insig
 import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-25-v01';
 import { register as register28 } from '../features/content/reviews.js';
 import { register as register29 } from '../features/content/information.js';
-import { register as register30 } from '../features/social/posts.js?v=2026-09-25-v03';
+import { register as register30 } from '../features/social/posts.js?v=2026-09-25-v04';
 import { register as register31 } from '../features/owner/quality.js';
 import { register as register32 } from '../features/owner/tools.js?v=2026-09-18-v15';
 import { register as register33 } from '../features/owner/bulk-status.js?v=2026-09-19-v02';

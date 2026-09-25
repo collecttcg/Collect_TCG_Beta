@@ -327,7 +327,7 @@ function buildFbPostText(card, values){
     const lines = [
       title,
       "",
-      groupFriendly ? groupCopy.price : text.priceRefer,
+      groupCopy.price,
       "",
       websiteCardUrl,
       "",
