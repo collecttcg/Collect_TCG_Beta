@@ -22,7 +22,7 @@ import { register as register19 } from '../features/inventory/filtering.js?v=202
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
 import { register as register21 } from '../features/cards/compare.js?v=2026-09-25-v06';
 import { register as register22 } from '../features/cards/tiles.js?v=2026-09-24-v12';
-import { register as register23 } from '../features/inventory/page.js?v=2026-09-25-v07';
+import { register as register23 } from '../features/inventory/page.js?v=2026-09-25-v09';
 import { register as register24 } from '../features/content/giveaways.js';
 import { register as register25 } from '../features/content/showcase.js';
 import { register as register26 } from '../features/content/giveaway-pages.js';
