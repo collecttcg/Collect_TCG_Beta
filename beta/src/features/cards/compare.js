@@ -169,5 +169,6 @@ function handleCompareModalKeydown(event){
     else if(!event.shiftKey && document.activeElement===last){ event.preventDefault(); first.focus(); }
   }
 
+  if(typeof document!=="undefined") document.addEventListener("keydown",handleCompareModalKeydown);
   Object.assign(appContext,{isCompareSelected,compareSelectedCards,updateCompareTray,toggleCompareCard,compareGradeLabel,comparePriceText,closeCompareModal,renderCompareModal,handleCompareModalKeydown});
 }
