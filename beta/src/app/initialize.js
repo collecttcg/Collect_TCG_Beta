@@ -29,7 +29,7 @@ import { initialize as initialize26 } from '../features/owner/quality.js';
 import { initialize as initialize27 } from '../features/owner/tools.js';
 import { initialize as initialize28 } from '../features/owner/image-maintenance.js';
 import { initialize as initialize29 } from '../features/owner/add.js';
-import { initialize as initialize30 } from '../features/cards/details.js?v=2026-09-25-v07';
+import { initialize as initialize30 } from '../features/cards/details.js?v=2026-09-25-v08';
 import { initialize as initialize31 } from '../features/owner/editor.js';
 import { initialize as initialize32 } from '../app/theme.js';
 import { initialize as initialize33 } from '../app/startup.js?v=2026-09-24-v12';
