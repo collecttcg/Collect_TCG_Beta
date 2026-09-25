@@ -22,7 +22,7 @@ import { register as register19 } from '../features/inventory/filtering.js?v=202
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
 import { register as register21 } from '../features/cards/compare.js?v=2026-09-25-v06';
 import { register as register22 } from '../features/cards/tiles.js?v=2026-09-24-v12';
-import { register as register23 } from '../features/inventory/page.js?v=2026-09-24-v08';
+import { register as register23 } from '../features/inventory/page.js?v=2026-09-25-v07';
 import { register as register24 } from '../features/content/giveaways.js';
 import { register as register25 } from '../features/content/showcase.js';
 import { register as register26 } from '../features/content/giveaway-pages.js';
@@ -42,7 +42,7 @@ import { register as register37 } from '../features/owner/bulk-metadata.js';
 import { register as register38 } from '../features/owner/history.js';
 import { register as register39 } from '../features/owner/export.js';
 import { register as register40 } from '../features/owner/add.js';
-import { register as register41 } from '../features/cards/details.js?v=2026-09-24-v12';
+import { register as register41 } from '../features/cards/details.js?v=2026-09-25-v07';
 import { register as register42 } from '../features/owner/editor.js';
 import { register as register43 } from '../app/theme.js';
 import { register as register44 } from '../app/startup.js?v=2026-09-24-v12';
