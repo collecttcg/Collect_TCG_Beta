@@ -1,3 +1,4 @@
+import { createModalKeyboardController } from './modal-keyboard.js?v=2026-09-25-v07';
 /** V93 beta: features/cards/details. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function syncDetailsStatusCornerToVisibleImage(){
@@ -68,6 +69,7 @@ function openImageLightbox(images, startIndex){
     });
     appContext.$("imageLightbox").hidden = false;
     document.body.style.overflow = "hidden";
+    appContext.imageLightboxKeyboard?.open();
     appContext.renderLightboxImage(startIndex || 0);
   }
 
@@ -78,6 +80,7 @@ function closeImageLightbox(){
     appContext.lightboxImages = [];
     appContext.lightboxIndex = 0;
     document.body.style.overflow = "";
+    appContext.imageLightboxKeyboard?.close();
   }
 
 function safeDownloadName(value){
@@ -1779,6 +1782,12 @@ function closeDetailsModal(navigateBack = true){
 export function initialize(appContext,runtime){
   appContext.lightboxImages = [];
 
+  appContext.imageLightboxKeyboard=createModalKeyboardController({
+    getOverlay:()=>appContext.$("imageLightbox"),
+    getInitialFocus:()=>appContext.$("imageLightboxClose"),
+    onEscape:()=>appContext.closeImageLightbox()
+  });
+  document.addEventListener("keydown",appContext.imageLightboxKeyboard.keydown);
   appContext.lightboxIndex = 0;
 
   appContext.COLLECT_TCG_FACEBOOK_MESSENGER_URL = "https://m.me/61590041416102";
@@ -1982,7 +1991,6 @@ appContext.detailsOverlay.addEventListener("click", e=>{
 
 document.addEventListener("keydown", e=>{
     if(!appContext.$("imageLightbox").hidden){
-      if(e.key === "Escape"){ appContext.closeImageLightbox(); return; }
       if(e.key === "ArrowLeft" && appContext.lightboxImages.length > 1){ appContext.renderLightboxImage(appContext.lightboxIndex - 1); return; }
       if(e.key === "ArrowRight" && appContext.lightboxImages.length > 1){ appContext.renderLightboxImage(appContext.lightboxIndex + 1); return; }
     }
