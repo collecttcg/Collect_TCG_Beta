@@ -474,3 +474,23 @@ test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard 
  assert.match(compare,/event\.key==="Escape"/);
  assert.match(compare,/compareCloseBtn/);
 });
+
+
+test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const page=source('../beta/src/features/inventory/page.js');
+ const pagination=source('../beta/src/features/inventory/pagination.js');
+ const details=source('../beta/src/features/cards/details.js');
+ const keyboard=source('../beta/src/features/cards/modal-keyboard.js');
+ assert.match(page,/createInventoryPagination/);
+ assert.match(page,/inventoryPagination\.render/);
+ assert.match(pagination,/function pageItems\(current,total\)/);
+ assert.match(pagination,/data-page-direction="prev"/);
+ assert.match(pagination,/data-page-direction="next"/);
+ assert.match(details,/createModalKeyboardController/);
+ assert.match(details,/imageLightboxKeyboard\?\.open/);
+ assert.match(details,/imageLightboxKeyboard\?\.close/);
+ assert.match(keyboard,/event\.key==="Escape"/);
+ assert.match(keyboard,/event\.key!=="Tab"/);
+ assert.match(keyboard,/preventScroll:true/);
+});
