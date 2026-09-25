@@ -15,6 +15,8 @@ on:
       - 'beta/src/features/owner/insights-dashboard.js'
       - 'beta/src/features/social/posts.js'
       - 'beta/src/features/inventory/page.js'
+      - 'beta/src/features/inventory/pagination.js'
+      - 'beta/src/features/cards/modal-keyboard.js'
       - 'beta/src/features/content/home.js'
       - 'beta/src/features/inventory/filtering.js'
       - 'beta/src/features/cards/related.js'
@@ -103,7 +105,7 @@ jobs:
           ! grep -q 'location.assign(clean)' beta/src/app/routing.js
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
           grep -q 'routing.js?v=2026-09-24-v11' beta/src/app/initialize.js
-          grep -q 'details.js?v=2026-09-24-v12' beta/src/app/initialize.js
+          grep -q 'details.js?v=2026-09-25-v07' beta/src/app/initialize.js
           grep -q 'event.stopPropagation()' beta/src/features/content/home.js
           grep -q 'appContext.openDetailsModal(card)' beta/src/app/routing.js
 
@@ -131,7 +133,7 @@ jobs:
           grep -q 'catalogue.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-24-v12' beta/src/app/register-features.js
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'details.js?v=2026-09-24-v12' beta/src/app/register-features.js
+          grep -q 'details.js?v=2026-09-25-v07' beta/src/app/register-features.js
           grep -q 'startup.js?v=2026-09-24-v12' beta/src/app/register-features.js
 
       - name: Validate Phase 4 owner sales intelligence
@@ -150,8 +152,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v06' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v06' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v07' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -169,6 +171,20 @@ jobs:
           grep -q 'renderFbSingleCardOptions();' beta/src/features/social/posts.js
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
           grep -q 'posts.js?v=2026-09-25-v05' beta/src/app/register-features.js
+
+      - name: Validate Phase 7 code safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/features/inventory/page.js
+          node --check beta/src/features/inventory/pagination.js
+          node --check beta/src/features/cards/details.js
+          node --check beta/src/features/cards/modal-keyboard.js
+          grep -q 'createInventoryPagination' beta/src/features/inventory/page.js
+          grep -q 'function pageItems' beta/src/features/inventory/pagination.js
+          grep -q 'createModalKeyboardController' beta/src/features/cards/details.js
+          grep -q 'page.js?v=2026-09-25-v07' beta/src/app/register-features.js
+          grep -q 'details.js?v=2026-09-25-v07' beta/src/app/initialize.js
 
       - name: Validate visitor UX improvements
         shell: bash
@@ -203,8 +219,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-25-v06' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-25-v06' beta/index.html
+          grep -q 'register-features.js?v=2026-09-25-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-25-v07' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -235,9 +251,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-25-v06
-          PREVIOUS_VERSION: 2026-09-25-v05
-          PREVIOUS_COMMIT: 7632bcd3e11663b2dafeda75e40152238ceb2a5c
+          RELEASE_VERSION: 2026-09-25-v07
+          PREVIOUS_VERSION: 2026-09-25-v06
+          PREVIOUS_COMMIT: f4e1370a01bce7c9030dde1da8747d3fedfceb31
         run: |
           set -euo pipefail
           mkdir -p release
@@ -265,10 +281,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-25-v06-packages
+          name: Collect-TCG-Beta-2026-09-25-v07-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-25-v06-full.zip
-            release/Collect-TCG-Beta-2026-09-25-v05-to-2026-09-25-v06-patch.zip
+            release/Collect-TCG-Beta-2026-09-25-v07-full.zip
+            release/Collect-TCG-Beta-2026-09-25-v06-to-2026-09-25-v07-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -277,16 +293,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-25-v06.txt"
+          MANIFEST="release-manifests/2026-09-25-v07.txt"
           {
-            echo "Version: 2026-09-25-v06"
-            echo "Previous version: 2026-09-25-v05"
+            echo "Version: 2026-09-25-v07"
+            echo "Previous version: 2026-09-25-v06"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v06-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v05-to-2026-09-25-v06-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-25-v07-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-25-v06-to-2026-09-25-v07-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-25-v06: record package validation"
+          git commit -m "Beta 2026-09-25-v07: record package validation"
           git push
