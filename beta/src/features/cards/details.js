@@ -1406,19 +1406,6 @@ async function openDetailsModal(card){
 
           ${card.notes ? `<div class="detail-section"><h3>Notes</h3><div class="detail-notes">${appContext.escapeHtml(card.notes)}</div></div>` : ""}
 
-          ${!isNfsListing && !isSoldListing && appContext.normalizeFilterValue(card.availability||"Available")==="available" ? `
-            <div class="details-desktop-contact-socials">
-              <div class="details-contact-copy">
-                <strong>Contact to Buy</strong>
-                <span class="details-contact-description">Contact us to confirm current availability, transaction method and delivery / meetup options before payment.</span>
-                <span class="details-contact-location">🌍 Worldwide shipping · High-value delivery by arrangement · COD / meetup in MY &amp; SG</span>
-              </div>
-              <div class="details-contact-actions">
-                <span class="details-contact-via-label">Contact via</span>
-                ${detailsContactSocialLinksHtml("details-social-links")}
-              </div>
-            </div>
-          ` : ""}
         </div>
       </div>
 
