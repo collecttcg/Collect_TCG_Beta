@@ -518,3 +518,28 @@ test('2026-09-25-v09 keeps inventory pagination filter signature defined before 
  assert.ok(use>definition,'pagination filter signature must be defined before pagination initialization');
  assert.match(source,/pills:pillState/);
 });
+
+
+test('Inventory default order keeps slabs first, raw conditions best-to-worst, and sealed last',()=>{
+ const a=app();
+ const cards=[
+  {id:'sealed',name:'Sealed',format:'Sealed',condition:'SEALED',grading:[]},
+  {id:'raw-dmg',name:'Raw Damaged',format:'Raw',condition:'DMG',grading:[]},
+  {id:'raw-hp',name:'Raw HP',format:'Raw',condition:'HP',grading:[]},
+  {id:'raw-mp',name:'Raw MP',format:'Raw',condition:'MP',grading:[]},
+  {id:'raw-lp',name:'Raw LP',format:'Raw',condition:'LP',grading:[]},
+  {id:'raw-nm',name:'Raw NM',format:'Raw',condition:'NM',grading:[]},
+  {id:'raw-m',name:'Raw Mint',format:'Raw',condition:'M',grading:[]},
+  {id:'raw-na',name:'Raw NA',format:'Raw',condition:'NA',grading:[]},
+  {id:'cgc10',name:'CGC 10',format:'Graded',grading:[{company:'CGC',grade:'10'}]},
+  {id:'bgs10',name:'BGS 10',format:'Graded',grading:[{company:'BGS',grade:'10'}]},
+  {id:'psa9',name:'PSA 9',format:'Graded',grading:[{company:'PSA',grade:'9'}]},
+  {id:'psa10',name:'PSA 10',format:'Graded',grading:[{company:'PSA',grade:'10'}]}
+ ];
+ cards.sort(a.compareInventoryAutomaticOrder);
+ assert.deepEqual(cards.map(card=>card.id),[
+  'psa10','psa9','bgs10','cgc10',
+  'raw-m','raw-nm','raw-lp','raw-mp','raw-hp','raw-dmg','raw-na',
+  'sealed'
+ ]);
+});
