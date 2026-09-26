@@ -187,7 +187,7 @@ jobs:
           grep -q 'requestedCardId' beta/src/features/social/posts.js
           grep -q 'renderFbSingleCardOptions();' beta/src/features/social/posts.js
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'posts.js?v=2026-09-25-v08' beta/src/app/register-features.js
+          grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
 
       - name: Validate Phase 7 code safety
         shell: bash
@@ -243,7 +243,7 @@ jobs:
           grep -q 'downloadSingleCardImagesZip(selected' beta/src/features/social/posts.js
           grep -q 'download eBay listing images' beta/src/features/social/posts.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
-          grep -q 'posts.js?v=2026-09-25-v08' beta/src/app/register-features.js
+          grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
 
       - name: Validate Facebook group-friendly post generator
         shell: bash
@@ -261,7 +261,7 @@ jobs:
           grep -Fq 'more photos / video' beta/src/features/social/posts.js
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
-          grep -q 'posts.js?v=2026-09-25-v08' beta/src/app/register-features.js
+          grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-26-v06' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v06' beta/index.html
 
