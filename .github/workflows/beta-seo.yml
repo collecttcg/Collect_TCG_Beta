@@ -481,10 +481,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v15-packages
+          name: Collect-TCG-Beta-2026-09-26-v16-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v15-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v14-to-2026-09-26-v15-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v16-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v15-to-2026-09-26-v16-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -493,13 +493,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v15.txt"
+          MANIFEST="release-manifests/2026-09-26-v16.txt"
           {
-            echo "Version: 2026-09-26-v15"
-            echo "Previous version: 2026-09-26-v14"
+            echo "Version: 2026-09-26-v16"
+            echo "Previous version: 2026-09-26-v15"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v15-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v14-to-2026-09-26-v15-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v16-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v15-to-2026-09-26-v16-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
