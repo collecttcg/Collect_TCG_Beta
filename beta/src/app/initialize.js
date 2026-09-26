@@ -11,12 +11,12 @@ import { initialize as initialize8 } from '../features/content/giveaways-data.js
 import { initialize as initialize9 } from '../features/content/showcase-data.js';
 import { initialize as initialize10 } from '../services/analytics.js?v=2026-09-24-v13';
 import { initialize as initialize11 } from '../features/owner/psa.js';
-import { initialize as initialize12 } from '../app/routing.js?v=2026-09-26-v12';
+import { initialize as initialize12 } from '../app/routing.js?v=2026-09-26-v17';
 import { initialize as initialize13 } from '../features/media/images.js';
 import { initialize as initialize14 } from '../features/cards/presentation.js';
 import { initialize as initialize15 } from '../features/owner/forms.js';
 import { initialize as initialize16 } from '../features/content/home.js?v=2026-09-26-v02';
-import { initialize as initialize17 } from '../features/inventory/filtering.js?v=2026-09-26-v12';
+import { initialize as initialize17 } from '../features/inventory/filtering.js?v=2026-09-26-v17';
 import { initialize as initialize18 } from '../features/cards/related.js';
 import { initialize as initialize19 } from '../features/cards/tiles.js?v=2026-09-26-v02';
 import { initialize as initialize20 } from '../features/content/giveaways.js';
