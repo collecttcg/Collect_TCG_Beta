@@ -241,6 +241,60 @@ function cardGradeSortScore(card){
   }
 
 
+function inventoryAutomaticOrderDescriptor(card){
+    const format=appContext.effectiveFormat(card);
+    const formatRank={Graded:0,Raw:1,Sealed:2}[format] ?? 3;
+
+    if(format==="Graded"){
+      const graderPriority=["PSA","BGS","CGC"];
+      const slabs=(Array.isArray(card.grading)?card.grading:[])
+        .filter(g=>g && String(g.company||"").trim())
+        .map(g=>{
+          const company=String(g.company||"").trim().toUpperCase();
+          const priorityIndex=graderPriority.indexOf(company);
+          const companyRank=priorityIndex>=0 ? priorityIndex : graderPriority.length;
+          const numericGrade=parseFloat(String(g.grade??""));
+          return {company,companyRank,grade:Number.isFinite(numericGrade)?numericGrade:null};
+        })
+        .sort((a,b)=>
+          a.companyRank-b.companyRank ||
+          (a.companyRank===graderPriority.length ? a.company.localeCompare(b.company) : 0) ||
+          (a.grade==null ? 1 : 0)-(b.grade==null ? 1 : 0) ||
+          ((b.grade??0)-(a.grade??0))
+        );
+      const slab=slabs[0]||{company:"",companyRank:graderPriority.length,grade:null};
+      return {formatRank,companyRank:slab.companyRank,company:slab.company,grade:slab.grade,conditionRank:0};
+    }
+
+    if(format==="Raw"){
+      const rawConditionRank={M:0,NM:1,LP:2,MP:3,HP:4,DMG:5,NA:6};
+      return {formatRank,companyRank:0,company:"",grade:null,conditionRank:rawConditionRank[String(card.condition||"").toUpperCase()] ?? 7};
+    }
+
+    return {formatRank,companyRank:0,company:"",grade:null,conditionRank:0};
+  }
+
+function compareInventoryAutomaticOrder(a,b){
+    const ao=inventoryAutomaticOrderDescriptor(a);
+    const bo=inventoryAutomaticOrderDescriptor(b);
+    if(ao.formatRank!==bo.formatRank) return ao.formatRank-bo.formatRank;
+
+    if(ao.formatRank===0){
+      if(ao.companyRank!==bo.companyRank) return ao.companyRank-bo.companyRank;
+      if(ao.companyRank===3 && ao.company!==bo.company) return ao.company.localeCompare(bo.company);
+      if(ao.grade==null && bo.grade!=null) return 1;
+      if(ao.grade!=null && bo.grade==null) return -1;
+      if(ao.grade!=null && bo.grade!=null && ao.grade!==bo.grade) return bo.grade-ao.grade;
+    }else if(ao.formatRank===1 && ao.conditionRank!==bo.conditionRank){
+      return ao.conditionRank-bo.conditionRank;
+    }
+
+    const customA=appContext.inventoryCustomOrderValue(a);
+    const customB=appContext.inventoryCustomOrderValue(b);
+    if(customA!==customB) return customA-customB;
+    return String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true});
+  }
+
 function trendingSevenDayRange(){
     const end=new Date();
     const start=new Date(end.getTime()-(7*24*60*60*1000));
@@ -359,7 +413,7 @@ function getFiltered(){
     const sortBy = (appContext.$("sortBy") && appContext.$("sortBy").value) || (
       appContext.listingAvailabilityScope === "sold"
         ? "recent-sold"
-        : (["collection","inventory"].includes(appContext.listingAvailabilityScope) ? "custom" : "name")
+        : (appContext.listingAvailabilityScope === "inventory" ? "format-condition" : (appContext.listingAvailabilityScope === "collection" ? "custom" : "name"))
     );
 
     let list = appContext.cards.filter(c=>{
@@ -456,6 +510,7 @@ function getFiltered(){
 
     list.sort((a,b)=>{
       switch(sortBy){
+        case "format-condition": return appContext.compareInventoryAutomaticOrder(a,b);
         case "custom": {
           if(appContext.listingAvailabilityScope==="collection"){
             const ao=appContext.collectionCustomOrderValue(a);
@@ -497,7 +552,7 @@ function getFiltered(){
     return list;
   }
 
-  Object.assign(appContext,{isNewCard,cardLifecycle,isLiveLifecycle,cardMatchesListingScope,listingScopeMeta,normalizeFilterValue,normalizeSearchText,smartSearchTokens,cardSearchValues,cardSearchDocument,cardMatchesSmartSearch,cardSearchScore,titleCaseWords,giveawayDisplayTitle,normalizeStoredLabel,canonicalAvailability,selectedSetMatches,effectiveFormat,isChampionshipSeries,cardGradeSortScore,trendingSevenDayRange,trendingCardViews,trendingCardUniqueViews,trendingCardScore,refreshTrending7dPerformance,compareNullableNumber,getFiltered});
+  Object.assign(appContext,{isNewCard,cardLifecycle,isLiveLifecycle,cardMatchesListingScope,listingScopeMeta,normalizeFilterValue,normalizeSearchText,smartSearchTokens,cardSearchValues,cardSearchDocument,cardMatchesSmartSearch,cardSearchScore,titleCaseWords,giveawayDisplayTitle,normalizeStoredLabel,canonicalAvailability,selectedSetMatches,effectiveFormat,isChampionshipSeries,cardGradeSortScore,inventoryAutomaticOrderDescriptor,compareInventoryAutomaticOrder,trendingSevenDayRange,trendingCardViews,trendingCardUniqueViews,trendingCardScore,refreshTrending7dPerformance,compareNullableNumber,getFiltered});
 }
 
 /** State and event initialization; called in preserved startup order. */
