@@ -123,52 +123,53 @@ function renderHiddenListingsPage(){
     }
 
     const drafts=appContext.cards.filter(card=>appContext.cardLifecycle(card)==="draft");
+    const compact=appContext.effectiveInventoryViewMode()==="compact";
 
     appContext.view.innerHTML=`
-      <div class="page-head">
-        <div>
+      <div class="page-head listing-page-head">
+        <div class="listing-page-title-copy">
           <div class="eyebrow">Owner · Hidden Listings</div>
           <h2>Hidden Listings</h2>
-          <p>These listings are hidden from visitors and all normal catalogue surfaces. Publish a listing to return it to its Inventory or Collection page.</p>
+          <p>Hidden from visitors and normal catalogue pages. Use the owner menu on any card to edit, unhide/publish, archive or delete it.</p>
         </div>
       </div>
 
-      <div class="lifecycle-stats">
-        <div><strong>${drafts.length}</strong><span>Hidden</span></div>
+      <div class="inventory-display-tools">
+        <div class="inventory-result-summary">
+          <strong>${drafts.length.toLocaleString()}</strong>
+          <span>${drafts.length===1 ? "hidden listing" : "hidden listings"}</span>
+        </div>
+        <button type="button"
+                class="view-mode-toggle desktop-compact-view-toggle"
+                id="hiddenListingsViewToggle"
+                aria-pressed="${compact?"true":"false"}">
+          ${compact?"▦ Grid View":"☷ Compact View"}
+        </button>
       </div>
 
-      <section class="panel lifecycle-section">
-        <div class="lifecycle-section-head"><h3>Hidden Listings</h3><span>Owner access only.</span></div>
-        <div class="lifecycle-list">${drafts.length ? drafts.map(card=>appContext.lifecycleCardRowHTML(card,"draft")).join("") : `<div class="hint">No hidden listings.</div>`}</div>
-      </section>
+      ${drafts.length
+        ? `<div id="hiddenListingsGrid" class="${compact ? "grid compact-list" : "grid"}">${drafts.map(appContext.cardTileHTML).join("")}</div>`
+        : `<div class="empty-state inventory-no-results">
+             <div class="empty-icon">◌</div>
+             <h3>No hidden listings</h3>
+             <p>Listings you hide from visitors will appear here.</p>
+           </div>`}
     `;
 
-    appContext.view.querySelectorAll("[data-life-edit]").forEach(btn=>btn.addEventListener("click",()=>{
-      const card=appContext.getCardById(btn.dataset.lifeEdit);
-      if(card) appContext.openEditModal(card);
-    }));
+    const grid=appContext.$("hiddenListingsGrid");
+    if(grid){
+      appContext.wireShimmer(grid);
+      appContext.wireCardActions(grid);
+    }
 
-    appContext.view.querySelectorAll("[data-life-publish]").forEach(btn=>btn.addEventListener("click",async()=>{
-      if(!appContext.requireOwner("publish hidden listing")) return;
-      const card=appContext.getCardById(btn.dataset.lifePublish);
-      if(!card) return;
-      if(!confirm(`Unhide "${card.name}"? It will become visible to normal visitors immediately.`)) return;
-      if(await appContext.setCardLifecycle(card,"live")){
-        appContext.showToast("Listing published");
-        appContext.renderHiddenListingsPage();
-      }
-    }));
+    appContext.$("hiddenListingsViewToggle")?.addEventListener("click",()=>{
+      if(appContext.isMobileInventoryLayout()) return;
+      const next=appContext.getInventoryViewMode()==="compact" ? "grid" : "compact";
+      appContext.setInventoryViewMode(next);
+      appContext.renderHiddenListingsPage();
+    });
 
-    appContext.view.querySelectorAll("[data-life-archive]").forEach(btn=>btn.addEventListener("click",async()=>{
-      if(!appContext.requireOwner("archive hidden listing")) return;
-      const card=appContext.getCardById(btn.dataset.lifeArchive);
-      if(!card) return;
-      if(!confirm(`Archive "${card.name}"?`)) return;
-      if(await appContext.setCardLifecycle(card,"archived")){
-        appContext.showToast("Listing archived");
-        appContext.renderHiddenListingsPage();
-      }
-    }));
+    appContext.updateCompareTray();
   }
 
 function duplicateGradeKey(card){
