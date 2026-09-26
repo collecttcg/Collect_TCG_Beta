@@ -81,6 +81,21 @@ function renderContactPage(){
             <span>Carousell Singapore</span><span class="contact-arrow">↗</span>
           </a>
         </div>
+
+        <section class="official-ebay-accounts" id="official-ebay-accounts" aria-labelledby="officialEbayAccountsTitle">
+          <div class="official-ebay-head">
+            <div><div class="eyebrow">Verified marketplace accounts</div><h3 id="officialEbayAccountsTitle">Official eBay Accounts</h3></div>
+            <span class="official-account-badge" aria-label="Official accounts">✓ Official</span>
+          </div>
+          <p>Collect TCG operates multiple official eBay accounts. All accounts listed below are owned and operated by Collect TCG MY &amp; SG.</p>
+          <div class="contact-links official-ebay-links">
+            <a class="contact-link" href="https://www.ebay.com/usr/COLLECT_TCG_1" target="_blank" rel="noopener noreferrer"><span><b>COLLECT_TCG_1</b><small>Official Collect TCG eBay account</small></span><span class="contact-arrow">↗</span></a>
+            <a class="contact-link" href="https://www.ebay.com/usr/COLLECT_TCG_2" target="_blank" rel="noopener noreferrer"><span><b>COLLECT_TCG_2</b><small>Official Collect TCG eBay account</small></span><span class="contact-arrow">↗</span></a>
+            <a class="contact-link" href="https://www.ebay.com/usr/COLLECT_TCG_3" target="_blank" rel="noopener noreferrer"><span><b>COLLECT_TCG_3</b><small>Official Collect TCG eBay account</small></span><span class="contact-arrow">↗</span></a>
+            <a class="contact-link" href="https://www.ebay.com/usr/COLLECT_TCG_4" target="_blank" rel="noopener noreferrer"><span><b>COLLECT_TCG_4</b><small>Official Collect TCG eBay account</small></span><span class="contact-arrow">↗</span></a>
+          </div>
+          <p class="official-ebay-note">Only the eBay accounts listed here should be considered official Collect TCG eBay accounts.</p>
+        </section>
       </div>`;
   }
 
