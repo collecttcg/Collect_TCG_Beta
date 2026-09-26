@@ -705,6 +705,10 @@ function router(){
       if(appContext.isOwnerMode()) appContext.renderInventoryToolsPage();
       else { appContext.goToRoute("inventory"); return; }
     }
+    else if(route === "hidden-listings"){
+      if(appContext.isOwnerMode()) appContext.renderHiddenListingsPage();
+      else { appContext.goToRoute("inventory"); return; }
+    }
     else if(route === "bulk-prices"){
       if(appContext.isOwnerMode()) { location.hash="#/inventory-tools?mode=bulk&sub=prices"; return; }
       else { appContext.goToRoute("inventory"); return; }
