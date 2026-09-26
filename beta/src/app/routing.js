@@ -643,7 +643,20 @@ function router(){
         appContext.openDetailsModal(card);
       }else{
         appContext.closeDetailsModal(false);
-        appContext.showToast("Card not found");
+
+        // Public direct links to hidden/archived/missing listings should not
+        // leave a stale card URL in the address bar. Owner Mode keeps its
+        // existing ability to open non-live listings directly.
+        if(!appContext.isOwnerMode()){
+          try{
+            history.replaceState(null,"","#/inventory");
+          }catch{
+            location.hash="#/inventory";
+          }
+          appContext.showToast("This listing is no longer available.",{prominent:true});
+        }else{
+          appContext.showToast("Card not found");
+        }
       }
     }
     else if(route === "analytics-exclude") appContext.renderAnalyticsExclusionPairingPage();
