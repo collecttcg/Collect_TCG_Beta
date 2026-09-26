@@ -649,9 +649,11 @@ function router(){
         // existing ability to open non-live listings directly.
         if(!appContext.isOwnerMode()){
           try{
-            history.replaceState(null,"","#/inventory");
+            const inventoryUrl=new URL("#/inventory",appContext.siteRootUrl());
+            history.replaceState(null,"",inventoryUrl.pathname+inventoryUrl.search+inventoryUrl.hash);
           }catch{
-            location.hash="#/inventory";
+            location.href=new URL("#/inventory",appContext.siteRootUrl()).toString();
+            return;
           }
           appContext.showToast("This listing is no longer available.",{prominent:true});
         }else{
