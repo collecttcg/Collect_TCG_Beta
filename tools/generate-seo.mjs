@@ -291,9 +291,13 @@ async function generate(){
     readSlugState()
   ]);
 
+  if(cards.some(card=>!Object.prototype.hasOwnProperty.call(card,'lifecycle_status'))){
+    throw new Error('SEO catalogue lifecycle_status is unavailable. Run 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql before regenerating public card pages.');
+  }
+
   const liveCards=cards.filter(card=>{
     if(!card||!card.id||!card.name) return false;
-    const lifecycle=String(card.lifecycle_status||'live').toLowerCase();
+    const lifecycle=String(card.lifecycle_status||'').toLowerCase();
     const availability=String(card.availability||'').trim().toLowerCase();
     return lifecycle==='live' && availability!=='hidden' && availability!=='archived';
   });
