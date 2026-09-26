@@ -10,6 +10,10 @@ on:
     paths:
       - '.github/workflows/beta-seo.yml'
       - 'tools/generate-seo.mjs'
+      - 'COLLECT_TCG_BASELINE.md'
+      - 'README.md'
+      - 'package.json'
+      - 'docs/**'
       - 'migrations/**'
       - 'beta/src/features/owner/insights-dashboard.js'
       - 'beta/src/features/social/posts.js'
@@ -447,9 +451,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v19
-          PREVIOUS_VERSION: 2026-09-26-v18
-          PREVIOUS_COMMIT: 91ea160dad5ce92de67340a719bf37471b43733a
+          RELEASE_VERSION: 2026-09-26-v20
+          PREVIOUS_VERSION: 2026-09-26-v19
+          PREVIOUS_COMMIT: b2ed9dcf5f06650023f86e13224bd046e1903213
         run: |
           set -euo pipefail
           mkdir -p release
@@ -477,10 +481,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v19-packages
+          name: Collect-TCG-Beta-2026-09-26-v20-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v19-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v18-to-2026-09-26-v19-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v20-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v19-to-2026-09-26-v20-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -489,16 +493,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v19.txt"
+          MANIFEST="release-manifests/2026-09-26-v20.txt"
           {
-            echo "Version: 2026-09-26-v19"
-            echo "Previous version: 2026-09-26-v18"
+            echo "Version: 2026-09-26-v20"
+            echo "Previous version: 2026-09-26-v19"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v19-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v18-to-2026-09-26-v19-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v20-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v19-to-2026-09-26-v20-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v19: record package validation"
+          git commit -m "Beta 2026-09-26-v20: record package validation"
           git push

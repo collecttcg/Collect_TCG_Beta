@@ -71,6 +71,22 @@ for(const rel of requiredMigrations){
   if(!fs.existsSync(path.join(repoRoot,rel))) throw new Error('Missing migration history: '+rel);
 }
 
+const baselinePath=path.join(repoRoot,'COLLECT_TCG_BASELINE.md');
+if(!fs.existsSync(baselinePath)) throw new Error('Missing COLLECT_TCG_BASELINE.md');
+const baseline=fs.readFileSync(baselinePath,'utf8');
+for(const required of [
+  'Latest Beta: `2026-09-26-v20`',
+  'Latest Production: `2026-09-26-v08`',
+  'Production promoted from Beta: `2026-09-26-v16`',
+  'migrations/2026/',
+  'migrations/legacy/',
+  'Custom Order',
+  'QR Generator',
+  '27-insights-dashboard.css'
+]){
+  if(!baseline.includes(required)) throw new Error('Baseline missing required marker: '+required);
+}
+
 const styleOrder=JSON.parse(fs.readFileSync(path.join(repoRoot,'docs/style-order.json'),'utf8'));
 for(const row of styleOrder){
   const file=path.join(betaRoot,row.file);
