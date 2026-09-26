@@ -2547,12 +2547,13 @@ function renderInventoryPage(scope = "inventory"){
 function renderByGamePage(){
     appContext.view.innerHTML = `<div class="page-head"><div><div class="eyebrow">Organize</div><h2>By Game</h2><p>Collect TCG MY & SG inventory, organized by game.</p></div></div><div id="byGameMount"></div>`;
     const mount = appContext.$("byGameMount");
-    if(appContext.cards.length === 0){
+    const visibleCards=appContext.cards.filter(card=>appContext.isLiveLifecycle(card));
+    if(visibleCards.length === 0){
       mount.innerHTML = `<div class="empty-state">${appContext.EMPTY_ICON}<h2>Nothing to group yet</h2><p>Add a few cards and they'll be sorted here by game.</p><a href="#/add" class="btn-primary" style="display:inline-block;">+ Add a card</a></div>`;
       return;
     }
     const byGame = {};
-    appContext.cards.forEach(c=>{ (byGame[c.game] = byGame[c.game] || []).push(c); });
+    visibleCards.forEach(c=>{ (byGame[c.game] = byGame[c.game] || []).push(c); });
     const games = Object.keys(byGame).sort();
     mount.innerHTML = games.map(g=>{
       const list = byGame[g].slice().sort((a,b)=>a.name.localeCompare(b.name));
