@@ -322,7 +322,7 @@ function inventoryPageHTML(scopeMeta,scope){
               <span>${scope==="sold" ? "Sort: Recently Sold" : "Sort: Newest Added"}</span><i></i>
             </button>
             <div class="overview-select-menu" id="sortByMenu" hidden></div>
-            <input type="hidden" id="sortBy" value="${scope==="sold" ? "recent-sold" : "newest"}">
+            <input type="hidden" id="sortBy" value="${scope==="sold" ? "recent-sold" : (scope==="inventory" ? "format-condition" : (scope==="collection" ? "custom" : "name"))}">
           </div>
 
           ${!isCollection ? `
@@ -477,6 +477,7 @@ function inventoryFilterOptions(scopedCards){
 function inventorySortOptions(scope){
     return [
       ...(scope==="sold" ? [{value:"recent-sold",label:"Sort: Recently Sold"}] : []),
+      ...(scope==="inventory" ? [{value:"format-condition",label:"Slabs → Raw Condition → Sealed"}] : []),
       ...(["collection","inventory"].includes(scope) ? [{value:"custom",label:"Custom Order"}] : []),
       {value:"name",label:"Name: A → Z"},
       {value:"name-desc",label:"Name: Z → A"},
@@ -943,18 +944,19 @@ function renderInventoryPage(scope = "inventory"){
           : (appContext.listingAvailabilityScope==="collection"
               ? ["custom","name","name-desc","newest","oldest","year-new","year-old","grade-high","grade-low"]
               : (appContext.listingAvailabilityScope==="inventory"
-                  ? ["custom","name","name-desc","newest","oldest","year-new","year-old","grade-high","grade-low","price-low","price-high"]
+                  ? ["format-condition","custom","name","name-desc","newest","oldest","year-new","year-old","grade-high","grade-low","price-low","price-high"]
                   : ["name","name-desc","newest","oldest","year-new","year-old","grade-high","grade-low","price-low","price-high"]))
       );
       const defaultSort = appContext.listingAvailabilityScope === "sold"
         ? "recent-sold"
-        : (["inventory","collection"].includes(appContext.listingAvailabilityScope)
-            ? "custom"
-            : "name");
+        : (appContext.listingAvailabilityScope === "inventory"
+            ? "format-condition"
+            : (appContext.listingAvailabilityScope === "collection" ? "custom" : "name"));
       const sort = appContext.safeUrlFilterText(params.get("sort"), 24);
       appContext.$("sortBy").value = allowedSort.has(sort) ? sort : defaultSort;
       const sortLabel = {
         "recent-sold":"Sort: Recently Sold",
+        "format-condition":"Slabs → Raw Condition → Sealed",
         custom:"Custom Order",
         name:"Name: A → Z",
         "name-desc":"Name: Z → A",
@@ -1064,6 +1066,7 @@ function renderInventoryPage(scope = "inventory"){
       const value=String(appContext.$("sortBy")?.value||"");
       const labels={
         "recent-sold":"Recent",
+        "format-condition":"Slabs / condition",
         custom:"Custom",
         name:"Name A–Z",
         "name-desc":"Name Z–A",
@@ -2283,16 +2286,18 @@ function renderInventoryPage(scope = "inventory"){
 
       const defaultSort=appContext.listingAvailabilityScope==="sold"
         ? "recent-sold"
-        : (["inventory","collection"].includes(appContext.listingAvailabilityScope)
-            ? "custom"
-            : "name");
+        : (appContext.listingAvailabilityScope==="inventory"
+            ? "format-condition"
+            : (appContext.listingAvailabilityScope==="collection" ? "custom" : "name"));
       appContext.$("sortBy").value=defaultSort;
       appContext.$("sortByBtn").querySelector("span").textContent=
         defaultSort==="recent-sold"
           ? "Sort: Recently Sold"
-          : (defaultSort==="newest"
-              ? "Newest Added"
-              : (defaultSort==="custom" ? "Custom Order" : "Name: A → Z"));
+          : (defaultSort==="format-condition"
+              ? "Slabs → Raw Condition → Sealed"
+              : (defaultSort==="newest"
+                  ? "Newest Added"
+                  : (defaultSort==="custom" ? "Custom Order" : "Name: A → Z")));
 
       appContext.activeQuickFilter="all";
       Object.values(appContext.pillFilterState).forEach(set=>set.clear());
