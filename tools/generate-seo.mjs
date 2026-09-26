@@ -211,14 +211,15 @@ async function runtimeConfig(){
 
 async function fetchCards(){
   const runtime=await runtimeConfig();
-  const light='id,name,card_code,year,game,language,era,availability,set_name,series,format,rarity,condition,quantity,price,price_usd,price_myr,price_sgd,notes,thumbnail_url,grading,created_at,updated_at';
-  const full='id,name,card_code,year,game,language,era,availability,set_name,series,format,rarity,condition,quantity,price,price_usd,price_myr,price_sgd,notes,images,grading,created_at,updated_at';
+  const light='id,name,card_code,year,game,language,era,availability,set_name,series,format,rarity,condition,quantity,price,price_usd,price_myr,price_sgd,notes,thumbnail_url,grading,lifecycle_status,created_at,updated_at';
+  const full='id,name,card_code,year,game,language,era,availability,set_name,series,format,rarity,condition,quantity,price,price_usd,price_myr,price_sgd,notes,images,grading,lifecycle_status,created_at,updated_at';
 
   async function fetchWithColumns(columns){
     const rows=[];
     for(let offset=0;;offset+=1000){
       const endpoint=new URL('/rest/v1/cards',runtime.url);
       endpoint.searchParams.set('select',columns);
+      endpoint.searchParams.set('lifecycle_status','eq.live');
       endpoint.searchParams.set('order','created_at.asc');
       endpoint.searchParams.set('limit','1000');
       endpoint.searchParams.set('offset',String(offset));
@@ -289,7 +290,7 @@ async function generate(){
     readSlugState()
   ]);
 
-  const liveCards=cards.filter(card=>card&&card.id&&card.name);
+  const liveCards=cards.filter(card=>card&&card.id&&card.name&&String(card.lifecycle_status||'live').toLowerCase()==='live');
   const nextState={version:1,cards:{}};
   const cardsDir=path.join(config.outputDir,'cards');
   await fs.rm(cardsDir,{recursive:true,force:true});
