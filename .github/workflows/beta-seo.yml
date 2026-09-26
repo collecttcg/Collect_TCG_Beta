@@ -58,10 +58,14 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Run feature regression tests
+        run: npm test
+
       - name: Validate JavaScript and repository references
+        run: npm run check
+
+      - name: Validate SEO generator syntax and self-test
         run: |
-          npm test
-          npm run check
           node --check tools/generate-seo.mjs
           node tools/generate-seo.mjs --self-test
 
