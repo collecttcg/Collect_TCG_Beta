@@ -191,14 +191,14 @@ function renderAnalyticsExclusionPairingPage(){
 
 function renderHomePage(){
     const liveInventory=appContext.cards
-      .filter(c=>appContext.cardMatchesListingScope(c,"inventory"))
+      .filter(c=>appContext.isLiveLifecycle(c) && appContext.cardMatchesListingScope(c,"inventory"))
       .slice();
 
     const byNewest=(a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||""));
     const byValue=(a,b)=>(appContext.cardUsdListedPrice(b)||0)-(appContext.cardUsdListedPrice(a)||0) || byNewest(a,b);
 
     const newest=liveInventory.slice().sort(byNewest).slice(0,4);
-    const recentlyViewed=appContext.getRecentlyViewedCards().filter(card=>appContext.cardMatchesListingScope(card,"inventory")).slice(0,4);
+    const recentlyViewed=appContext.getRecentlyViewedCards().filter(card=>appContext.isLiveLifecycle(card) && appContext.cardMatchesListingScope(card,"inventory")).slice(0,4);
     const championship=liveInventory
       .filter(c=>appContext.isChampionshipSeries(c.series))
       .sort(byValue);
