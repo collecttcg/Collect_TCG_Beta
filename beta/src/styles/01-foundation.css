@@ -286,8 +286,6 @@
   .official-ebay-links .contact-link b{display:block;}
   .official-ebay-links .contact-link small{display:block;margin-top:3px;color:var(--text-muted);font-size:9.5px;font-weight:400;}
   .official-ebay-accounts .official-ebay-note{margin-top:12px;color:var(--text);font-size:11px;font-weight:600;}
-  .official-ebay-footer-link{display:inline-block;margin-top:7px;color:var(--accent-gold);font-size:10.5px;font-weight:600;text-decoration:none;}
-  .official-ebay-footer-link:hover{text-decoration:underline;}
   @media(max-width:520px){.official-ebay-head{align-items:center}.official-ebay-head h3{font-size:19px}.official-account-badge{font-size:9px}}
 
   /* ---------- Larger card detail view + full gallery lightbox ---------- */
