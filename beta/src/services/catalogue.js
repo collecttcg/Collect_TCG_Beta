@@ -140,15 +140,18 @@ async function fetchPublicCards(){
     let light=true;
     let includeLanguageDetails=appContext.languageDetailsSupported!==false;
     let includeSoldAt=true;
+    let includeLifecycle=true;
     let result;
 
-    for(let attempt=0;attempt<4;attempt++){
+    for(let attempt=0;attempt<5;attempt++){
       const base=light ? appContext.CARD_PUBLIC_COLUMNS_LIGHT : appContext.CARD_PUBLIC_COLUMNS_BASE;
-      const columns=`${base}${includeLanguageDetails ? ",language_details" : ""}${includeSoldAt ? ",sold_at" : ""}`;
-      result=await appContext.supabaseClient
+      const columns=`${base}${includeLanguageDetails ? ",language_details" : ""}${includeSoldAt ? ",sold_at" : ""}${includeLifecycle ? ",lifecycle_status" : ""}`;
+      let query=appContext.supabaseClient
         .from("cards")
         .select(columns)
         .order("created_at",{ascending:true});
+      if(includeLifecycle) query=query.eq("lifecycle_status","live");
+      result=await query;
       if(!result.error) break;
 
       if(includeLanguageDetails && appContext.optionalColumnUnavailable(result.error,"language_details")){
@@ -159,6 +162,11 @@ async function fetchPublicCards(){
       if(includeSoldAt && appContext.optionalColumnUnavailable(result.error,"sold_at")){
         includeSoldAt=false;
         appContext.soldAtSupported=false;
+        continue;
+      }
+      if(includeLifecycle && appContext.optionalColumnUnavailable(result.error,"lifecycle_status")){
+        includeLifecycle=false;
+        appContext.lifecycleSupported=false;
         continue;
       }
       if(light && appContext.optionalColumnUnavailable(result.error,"thumbnail_url")){
@@ -173,6 +181,7 @@ async function fetchPublicCards(){
       appContext.thumbnailUrlSupported=light;
       appContext.soldAtSupported=includeSoldAt;
       appContext.languageDetailsSupported=includeLanguageDetails;
+      if(includeLifecycle) appContext.lifecycleSupported=true;
     }
     return result;
   }
