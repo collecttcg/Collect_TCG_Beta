@@ -23,6 +23,9 @@ function mergeOwnerOnlyCardFields(saved,source){
   }
 
 function dbToCard(row){
+    const legacyAvailability=appContext.normalizeFilterValue(row?.availability||"");
+    const legacyHidden=legacyAvailability==="hidden";
+    const legacyArchived=legacyAvailability==="archived";
     return {
       id: row.id,
       name: (row.name || "").toUpperCase(),
@@ -64,9 +67,13 @@ function dbToCard(row){
       })(),
       view_count: Number(row.view_count || 0),
       sold_at: row.sold_at || null,
-      lifecycle_status: appContext.LIFECYCLE_OPTIONS.includes(String(row.lifecycle_status||"").toLowerCase())
-        ? String(row.lifecycle_status).toLowerCase()
-        : "live",
+      lifecycle_status: legacyArchived
+        ? "archived"
+        : (legacyHidden
+          ? "draft"
+          : (appContext.LIFECYCLE_OPTIONS.includes(String(row.lifecycle_status||"").toLowerCase())
+            ? String(row.lifecycle_status).toLowerCase()
+            : "live")),
       created_at: row.created_at || null,
       updated_at: row.updated_at || null
     };
