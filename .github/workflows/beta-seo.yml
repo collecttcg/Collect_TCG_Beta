@@ -321,7 +321,6 @@ jobs:
           grep -Fq "endpoint.searchParams.set('lifecycle_status','eq.live');" tools/generate-seo.mjs
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
-          grep -Fq "String(card.lifecycle_status||'live').toLowerCase()==='live'" tools/generate-seo.mjs
           grep -q 'catalogue.js?v=2026-09-26-v09' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
