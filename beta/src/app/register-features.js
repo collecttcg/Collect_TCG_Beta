@@ -2,7 +2,7 @@ import { register as register0 } from '../features/core/utilities.js?v=2026-09-2
 import { register as register1 } from '../features/cards/favorites.js';
 import { register as register2 } from '../features/inventory/ordering.js';
 import { register as register3 } from '../services/auth.js?v=2026-09-26-v02';
-import { register as register4 } from '../features/media/collage.js';
+import { register as register4 } from '../features/media/collage.js?v=2026-09-26-v05';
 import { register as register5 } from '../features/cards/repository.js';
 import { register as register6 } from '../app/navigation.js';
 import { register as register7 } from '../ui/notifications.js?v=2026-09-26-v03';
