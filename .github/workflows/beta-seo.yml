@@ -150,7 +150,7 @@ jobs:
           grep -q 'analytics.js?v=2026-09-24-v13' beta/src/app/register-features.js
           grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
-          grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-26-v19' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'startup.js?v=2026-09-24-v12' beta/src/app/register-features.js
 
@@ -169,7 +169,7 @@ jobs:
           grep -q 'Needs attention' beta/src/features/owner/insights-dashboard.js
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
-          grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-26-v19' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-26-v19' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v19' beta/index.html
 
@@ -187,7 +187,7 @@ jobs:
           grep -q 'insights-v21-action-queue' beta/src/styles/27-insights-dashboard.css
           grep -q 'requestedCardId' beta/src/features/social/posts.js
           grep -q 'renderFbSingleCardOptions();' beta/src/features/social/posts.js
-          grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
+          grep -q 'insights-dashboard.js?v=2026-09-26-v19' beta/src/app/register-features.js
           grep -q 'posts.js?v=2026-09-26-v15' beta/src/app/register-features.js
 
       - name: Validate Phase 7 code safety
