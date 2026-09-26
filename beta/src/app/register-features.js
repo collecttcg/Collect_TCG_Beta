@@ -7,7 +7,7 @@ import { register as register5 } from '../features/cards/repository.js';
 import { register as register6 } from '../app/navigation.js';
 import { register as register7 } from '../ui/notifications.js?v=2026-09-26-v03';
 import { register as register8 } from '../features/cards/pricing.js';
-import { register as register9 } from '../services/catalogue.js?v=2026-09-24-v12';
+import { register as register9 } from '../services/catalogue.js?v=2026-09-26-v08';
 import { register as register10 } from '../features/content/giveaways-data.js';
 import { register as register11 } from '../features/content/showcase-data.js';
 import { register as register12 } from '../services/analytics.js?v=2026-09-24-v13';
