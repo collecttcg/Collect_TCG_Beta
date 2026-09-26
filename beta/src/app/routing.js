@@ -498,7 +498,7 @@ function updateListingUrlFromControls(){
     const sort = appContext.safeUrlFilterText(appContext.$("sortBy")?.value, 24);
     const defaultSort = route === "sold"
       ? "recent-sold"
-      : (route === "collection" ? "custom" : "name");
+      : (route === "inventory" ? "format-condition" : (route === "collection" ? "custom" : "name"));
     if(sort && sort !== defaultSort) params.set("sort", sort);
 
     if(appContext.activeQuickFilter && appContext.activeQuickFilter !== "all"){
