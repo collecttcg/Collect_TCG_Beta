@@ -91,6 +91,7 @@ export function initialize(appContext,runtime){
     "fb-card-list",
     "quality",
     "inventory-tools",
+    "hidden-listings",
     "bulk-prices",
     "bulk-metadata",
     "recent-edits",
