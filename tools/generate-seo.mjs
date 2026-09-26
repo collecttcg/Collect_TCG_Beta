@@ -243,7 +243,7 @@ async function fetchCards(){
     if(error?.status===400){
       try{return await fetchWithColumns(full);}
       catch(fullError){
-        if(fullError?.status!==401 && fullError?.status!==403) throw fullError;
+        if(![400,401,403].includes(fullError?.status)) throw fullError;
       }
     }else if(error?.status!==401 && error?.status!==403){
       throw error;
