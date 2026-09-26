@@ -16,7 +16,7 @@ function lifecycleCardRowHTML(card,status){
         <div class="lifecycle-actions">
           <button type="button" class="btn-ghost" data-life-edit="${appContext.escapeHtml(card.id)}">Edit</button>
           ${status==="draft"
-            ? `<button type="button" class="btn-primary" data-life-publish="${appContext.escapeHtml(card.id)}">Publish</button>
+            ? `<button type="button" class="btn-primary" data-life-publish="${appContext.escapeHtml(card.id)}">Unhide / Publish</button>
                <button type="button" class="btn-ghost" data-life-archive="${appContext.escapeHtml(card.id)}">Archive</button>`
             : `<button type="button" class="btn-primary" data-life-restore="${appContext.escapeHtml(card.id)}">Restore to Draft</button>`}
         </div>
