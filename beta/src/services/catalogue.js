@@ -330,7 +330,10 @@ async function loadCards(){
       return false;
     }
 
-    appContext.cards=(data||[]).map(appContext.dbToCard);
+    const loadedCards=(data||[]).map(appContext.dbToCard);
+    appContext.cards=appContext.isOwnerMode()
+      ? loadedCards
+      : loadedCards.filter(card=>appContext.isLiveLifecycle(card));
 
     // Collection custom order is stored separately so the existing Cards
     // schema and secure owner-card RPC do not need to change.
