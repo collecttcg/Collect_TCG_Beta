@@ -24,6 +24,7 @@ function shouldHighlightMore(route){
         "fb-tools",
         "quality",
         "inventory-tools",
+        "hidden-listings",
         "export",
         "add"
       ]).has(base);
@@ -39,6 +40,7 @@ function shouldHighlightMore(route){
       "fb-tools",
       "quality",
       "inventory-tools",
+      "hidden-listings",
       "export",
       "add"
     ]);
