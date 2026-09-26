@@ -23,12 +23,9 @@ function isLiveLifecycle(card){
 function cardMatchesListingScope(card, scope = appContext.listingAvailabilityScope){
     const lifecycle=appContext.cardLifecycle(card);
 
-    // Public visitors only ever see live listings. Verified owners may also
-    // browse Draft listings directly in the normal Inventory/Reserved/Sold/NFS
-    // pages so newly added hidden cards remain easy to manage. Archived items
-    // stay in the dedicated owner lifecycle tools.
-    if(lifecycle==="archived") return false;
-    if(lifecycle!=="live" && !(appContext.isOwnerMode() && lifecycle==="draft")) return false;
+    // Normal catalogue/listing surfaces only show live listings. Draft and
+    // archived cards remain available through owner-specific lifecycle/admin tools.
+    if(lifecycle!=="live") return false;
 
     const availability = appContext.normalizeFilterValue(card && card.availability ? card.availability : "Available");
     if(scope === "collection") return availability === "collection (nfs)";
