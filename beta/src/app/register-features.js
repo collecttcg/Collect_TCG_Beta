@@ -28,7 +28,7 @@ import { register as register25 } from '../features/content/showcase.js';
 import { register as register26 } from '../features/content/giveaway-pages.js';
 import { register as register27 } from '../features/owner/insights.js';
 import { register as registerInsightsIntentRates } from '../features/owner/insights-intent-rates.js?v=2026-09-17-v16';
-import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-25-v05';
+import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-26-v19';
 import { register as register28 } from '../features/content/reviews.js';
 import { register as register29 } from '../features/content/information.js?v=2026-09-26-v04';
 import { register as register30 } from '../features/social/posts.js?v=2026-09-26-v15';

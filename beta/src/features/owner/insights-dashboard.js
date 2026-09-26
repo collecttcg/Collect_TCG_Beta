@@ -597,7 +597,7 @@ export function register(appContext){
 
   function marketDemandHtml(markets,supported){
     if(supported===false){
-      return `<div class="insights-v14-empty"><strong>Country × Card data is ready in the UI.</strong><br>Run <code>2026-09-17-v18-COUNTRY-CARD-DEMAND.sql</code> in Supabase to enable this panel.</div>`;
+      return `<div class="insights-v14-empty"><strong>Country × Card data is ready in the UI.</strong><br>Run <code>migrations/2026/2026-09-17-v18-COUNTRY-CARD-DEMAND.sql</code> in Supabase to enable this panel.</div>`;
     }
     if(!markets.length){
       return `<div class="insights-v14-empty">No country-attributed card views for this selection yet.</div>`;
@@ -649,7 +649,7 @@ export function register(appContext){
 
   function discoverySummaryHtml(){
     if(discoverySupported===false){
-      return `<div class="insights-v14-empty">Discovery attribution is not available yet. Run <code>2026-09-24-v08-DISCOVERY-SUMMARY.sql</code> after the Phase 2B1 migration.</div>`;
+      return `<div class="insights-v14-empty">Discovery attribution is not available yet. Run <code>migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql</code> after the Phase 2B1 migration.</div>`;
     }
     if(!discoveryRows.length){
       return `<div class="insights-v14-empty">No attributed Qualified Views in this period yet. With low traffic, let this accumulate naturally.</div>`;

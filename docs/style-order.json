@@ -1,106 +1,147 @@
 [
   {
     "file": "src/styles/01-foundation.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/02-supplement.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/03-responsive.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/04-layout.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/05-compatibility.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/06-desktop-collapsible-filters-v9.css",
-    "originalId": "desktop-collapsible-filters-v9"
+    "originalId": "desktop-collapsible-filters-v9",
+    "load": "global"
   },
   {
     "file": "src/styles/07-mobile-header-social-links-v17.css",
-    "originalId": "mobile-header-social-links-v17"
+    "originalId": "mobile-header-social-links-v17",
+    "load": "global"
   },
   {
     "file": "src/styles/08-owner-public-visibility-v19.css",
-    "originalId": "owner-public-visibility-v19"
+    "originalId": "owner-public-visibility-v19",
+    "load": "global"
   },
   {
     "file": "src/styles/09-mobile-header-theme-page-currency-v22.css",
-    "originalId": "mobile-header-theme-page-currency-v22"
+    "originalId": "mobile-header-theme-page-currency-v22",
+    "load": "global"
   },
   {
     "file": "src/styles/10-mobile-currency-polish-v24.css",
-    "originalId": "mobile-currency-polish-v24"
+    "originalId": "mobile-currency-polish-v24",
+    "load": "global"
   },
   {
     "file": "src/styles/11-mobile-page-head-currency-row-v25.css",
-    "originalId": "mobile-page-head-currency-row-v25"
+    "originalId": "mobile-page-head-currency-row-v25",
+    "load": "global"
   },
   {
     "file": "src/styles/12-currency-font-only-v26.css",
-    "originalId": "currency-font-only-v26"
+    "originalId": "currency-font-only-v26",
+    "load": "global"
   },
   {
     "file": "src/styles/13-currency-compact-spacing-v27.css",
-    "originalId": "currency-compact-spacing-v27"
+    "originalId": "currency-compact-spacing-v27",
+    "load": "global"
   },
   {
     "file": "src/styles/14-currency-label-style-v28.css",
-    "originalId": "currency-label-style-v28"
+    "originalId": "currency-label-style-v28",
+    "load": "global"
   },
   {
     "file": "src/styles/15-currency-match-card-details-v29.css",
-    "originalId": "currency-match-card-details-v29"
+    "originalId": "currency-match-card-details-v29",
+    "load": "global"
   },
   {
     "file": "src/styles/16-mobile-currency-true-center-v32.css",
-    "originalId": "mobile-currency-true-center-v32"
+    "originalId": "mobile-currency-true-center-v32",
+    "load": "global"
   },
   {
     "file": "src/styles/17-mobile-currency-vertical-center-v30.css",
-    "originalId": "mobile-currency-vertical-center-v30"
+    "originalId": "mobile-currency-vertical-center-v30",
+    "load": "global"
   },
   {
     "file": "src/styles/18-all-currency-true-center-v33.css",
-    "originalId": "all-currency-true-center-v33"
+    "originalId": "all-currency-true-center-v33",
+    "load": "global"
   },
   {
     "file": "src/styles/19-pc-card-details-side-layout-v38.css",
-    "originalId": "pc-card-details-side-layout-v38"
+    "originalId": "pc-card-details-side-layout-v38",
+    "load": "global"
   },
   {
     "file": "src/styles/20-compatibility.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/21-desktop-quick-filters-collapsible-v41.css",
-    "originalId": "desktop-quick-filters-collapsible-v41"
+    "originalId": "desktop-quick-filters-v41",
+    "load": "global"
   },
   {
     "file": "src/styles/22-desktop-collapse-collection-repair-v42.css",
-    "originalId": "desktop-collapse-collection-repair-v42"
+    "originalId": "desktop-collapse-collection-repair-v42",
+    "load": "global"
   },
   {
     "file": "src/styles/23-card-overview-pill-collapse-v43.css",
-    "originalId": "card-overview-pill-collapse-v43"
+    "originalId": "card-overview-pill-collapse-v43",
+    "load": "global"
   },
   {
     "file": "src/styles/24-card-overview-pill-toggle-inline-v44.css",
-    "originalId": "card-overview-pill-toggle-inline-v44"
+    "originalId": "card-overview-pill-toggle-inline-v44",
+    "load": "global"
   },
   {
     "file": "src/styles/25-compatibility.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
   },
   {
     "file": "src/styles/26-compatibility.css",
-    "originalId": null
+    "originalId": null,
+    "load": "global"
+  },
+  {
+    "file": "src/styles/27-insights-dashboard.css",
+    "originalId": null,
+    "load": "dynamic-owner-insights"
+  },
+  {
+    "file": "src/styles/28-inventory-game-logo-fit.css",
+    "originalId": null,
+    "load": "global"
+  },
+  {
+    "file": "src/styles/29-home-brand-spotlight.css",
+    "originalId": null,
+    "load": "global"
   }
 ]

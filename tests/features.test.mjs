@@ -311,7 +311,7 @@ test('Phase 2A discovery surfaces keep clean-card routing and source context',()
 test('Phase 2B1 records discovery attribution only after qualified views',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const analytics=source('../beta/src/services/analytics.js');
- const sql=source('../2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql');
+ const sql=source('../migrations/2026/2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql');
 
  assert.match(analytics,/async function recordQualifiedViewDiscoveryAttribution\(cardId,visitorId\)/);
  assert.match(analytics,/getCardDiscoverySource\?\.\(id\)/);
@@ -341,7 +341,7 @@ test('Phase 2 Trending ranks unique collectors ahead of repeat-heavy views',()=>
 
 test('Phase 2 discovery summary is owner-only and intentionally lightweight',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const sql=source('../2026-09-24-v08-DISCOVERY-SUMMARY.sql');
+ const sql=source('../migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql');
  const analytics=source('../beta/src/services/analytics.js');
  const dashboard=source('../beta/src/features/owner/insights-dashboard.js');
  assert.match(sql,/create or replace function public\.get_card_discovery_summary/);
@@ -538,4 +538,40 @@ test('new Inventory cards slot into custom order without rearranging existing ca
  const ids=a.inventoryCustomOrderWithNewCard(newNm);
  assert.deepEqual(ids,['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000007','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
  assert.deepEqual(existing.map(card=>card.id),['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
+});
+
+
+test('Beta cleanup keeps migrations centralized and retained owner tools wired',()=>{
+ const exists=path=>fs.existsSync(new URL(path,import.meta.url));
+ for(const path of [
+  '../beta/src/app/beta-config.js',
+  '../beta/src/features/content/retention.js',
+  '../beta/src/styles/beta.css',
+  '../beta/assets/one-piece-card-game-logo.png',
+  '../beta/README.md',
+  '../docs/SANDBOX.md',
+  '../docs/package-checksums.json'
+ ]) assert.equal(exists(path),false,path);
+
+ for(const path of [
+  '../migrations/legacy/V208-GIVEAWAY-FACEBOOK-GROUP-BONUS.sql',
+  '../migrations/2026/2026-09-15-v10-LANGUAGE-DETAILS.sql',
+  '../migrations/2026/2026-09-15-v13-EXTEND-LANGUAGE-OPTIONS.sql',
+  '../migrations/2026/2026-09-17-v18-COUNTRY-CARD-DEMAND.sql',
+  '../migrations/2026/2026-09-24-v01-SEO-PUBLIC-CATALOG.sql',
+  '../migrations/2026/2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql',
+  '../migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql',
+  '../migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql'
+ ]) assert.equal(exists(path),true,path);
+
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const dashboard=source('../beta/src/features/owner/insights-dashboard.js');
+ const bulkStatus=source('../beta/src/features/owner/bulk-status.js');
+ const tools=source('../beta/src/features/owner/tools.js');
+ const index=source('../beta/index.html');
+ assert.match(dashboard,/27-insights-dashboard\.css/);
+ assert.match(bulkStatus,/function renderQrGeneratorPage\(\)/);
+ assert.match(bulkStatus,/submode==="qr"/);
+ assert.match(tools,/\["qr","QR Generator"\]/);
+ assert.match(index,/qrcodejs\/1\.0\.0\/qrcode\.min\.js/);
 });
