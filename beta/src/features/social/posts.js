@@ -406,6 +406,17 @@ async function copyPlainText(text,successMessage){
     return ok;
   }
 
+function postGeneratorCardPricePreview(card){
+    if(!card) return "Please inquire";
+    const pieces=[];
+    if(appContext.hasListedPrice(card.price_myr)) pieces.push(appContext.fmtMYR(card.price_myr));
+    if(appContext.hasListedPrice(card.price_usd ?? card.price)){
+      pieces.push(`${Math.round(Number(card.price_usd ?? card.price)).toLocaleString("en-US")} USD`);
+    }
+    if(appContext.hasListedPrice(card.price_sgd)) pieces.push(appContext.fmtSGD(card.price_sgd));
+    return pieces.length ? pieces.join(" / ") : "Please inquire";
+  }
+
 function currentFacebookToolMode(){
     const mode=appContext.currentHashParams().get("mode");
     return ["single","nfs","list","giveaway","winner","carousell","ebay"].includes(mode) ? mode : "single";
@@ -822,6 +833,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
             selectedCard.series
           ].filter(Boolean).join(" · "))}</span>
           <small>${appContext.escapeHtml(selectedCard.availability || "Available")} · ${appContext.getImages(selectedCard).length} image${appContext.getImages(selectedCard).length === 1 ? "" : "s"}</small>
+          ${nfsMode ? "" : `<small class="fb-post-card-price"><strong>Price:</strong> ${appContext.escapeHtml(appContext.postGeneratorCardPricePreview(selectedCard))}</small>`}
         </div>
       `;
     }
@@ -2105,7 +2117,7 @@ function renderEbayListingGeneratorPage(){
     const search=appContext.$("ebayCardSearch"),select=appContext.$("ebayCardSelect"),count=appContext.$("ebayCardCount"),mount=appContext.$("ebaySelectedCard"),title=appContext.$("ebayTitleOutput"),titleCount=appContext.$("ebayTitleCount"),specifics=appContext.$("ebaySpecificsOutput"),description=appContext.$("ebayDescriptionOutput"),copyTitle=appContext.$("ebayCopyTitle"),copySpecifics=appContext.$("ebayCopySpecifics"),copyDescription=appContext.$("ebayCopyDescription"),copyAll=appContext.$("ebayCopyAll"),downloadImages=appContext.$("ebayDownloadImages"),open=appContext.$("ebayOpenCard");
     let selected=null;
     function renderOptions(){const q=appContext.normalizeFilterValue(search.value);const visible=cards.filter(c=>!q||[c.name,c.card_code,c.series,c.game,c.year,c.language].map(v=>appContext.normalizeFilterValue(v)).join(" ").includes(q));const id=String(selected?.id||select.value||"");select.innerHTML='<option value="">Select a card…</option>'+visible.map(c=>'<option value="'+appContext.escapeHtml(c.id)+'">'+appContext.escapeHtml([c.name,c.card_code,c.series].filter(Boolean).join(" · "))+'</option>').join("");if(id&&visible.some(c=>String(c.id)===id))select.value=id;count.textContent=visible.length+" of "+cards.length+" cards shown";}
-    function update(){if(!selected){title.value=specifics.value=description.value="";mount.hidden=true;[copyTitle,copySpecifics,copyDescription,copyAll,downloadImages,open].forEach(b=>b.disabled=true);titleCount.textContent="0 / 80";return;}title.value=appContext.ebayListingTitle(selected);specifics.value=appContext.ebayItemSpecifics(selected);description.value=appContext.ebayListingDescription(selected);titleCount.textContent=title.value.length+" / 80";mount.hidden=false;const image=appContext.getImages(selected)[0]||"";mount.innerHTML='<div class="fb-post-card-image">'+(image?'<img src="'+appContext.escapeHtml(image)+'" alt="">':'<div class="fb-post-no-image">No image</div>')+'</div><div class="fb-post-card-copy"><strong>'+appContext.escapeHtml(selected.name||"Untitled card")+'</strong><span>'+appContext.escapeHtml([selected.card_code,selected.series,selected.year].filter(Boolean).join(" · "))+'</span></div>';[copyTitle,copySpecifics,copyDescription,copyAll,open].forEach(b=>b.disabled=false);downloadImages.disabled=appContext.getImages(selected).length===0;}
+    function update(){if(!selected){title.value=specifics.value=description.value="";mount.hidden=true;[copyTitle,copySpecifics,copyDescription,copyAll,downloadImages,open].forEach(b=>b.disabled=true);titleCount.textContent="0 / 80";return;}title.value=appContext.ebayListingTitle(selected);specifics.value=appContext.ebayItemSpecifics(selected);description.value=appContext.ebayListingDescription(selected);titleCount.textContent=title.value.length+" / 80";mount.hidden=false;const image=appContext.getImages(selected)[0]||"";mount.innerHTML='<div class="fb-post-card-image">'+(image?'<img src="'+appContext.escapeHtml(image)+'" alt="">':'<div class="fb-post-no-image">No image</div>')+'</div><div class="fb-post-card-copy"><strong>'+appContext.escapeHtml(selected.name||"Untitled card")+'</strong><span>'+appContext.escapeHtml([selected.card_code,selected.series,selected.year].filter(Boolean).join(" · "))+'</span><small class="fb-post-card-price"><strong>Price:</strong> '+appContext.escapeHtml(appContext.postGeneratorCardPricePreview(selected))+'</small></div>';[copyTitle,copySpecifics,copyDescription,copyAll,open].forEach(b=>b.disabled=false);downloadImages.disabled=appContext.getImages(selected).length===0;}
     search.addEventListener("input",renderOptions);select.addEventListener("change",()=>{selected=cards.find(card=>String(card.id)===String(select.value))||null;update();});title.addEventListener("input",()=>{titleCount.textContent=title.value.length+" / 80";copyTitle.disabled=!title.value.trim();copyAll.disabled=!title.value.trim();});copyTitle.addEventListener("click",()=>appContext.copyPlainText(title.value,"eBay title copied"));copySpecifics.addEventListener("click",()=>appContext.copyPlainText(specifics.value,"eBay item specifics copied"));copyDescription.addEventListener("click",()=>appContext.copyPlainText(description.value,"eBay description copied"));copyAll.addEventListener("click",()=>appContext.copyPlainText("TITLE\n"+title.value+"\n\nITEM SPECIFICS\n"+specifics.value+"\n\nDESCRIPTION\n"+description.value,"eBay listing copied"));
     downloadImages.addEventListener("click",async()=>{
       if(!selected || !appContext.requireOwner("download eBay listing images")) return;
@@ -2399,6 +2411,7 @@ function renderCarousellPostGeneratorPage(){
           <small>${appContext.escapeHtml(isGiveaway
             ? `Giveaway · ${String(selected.status||"active").replace(/_/g," ")}`
             : (selected.availability||"Available"))} · ${images.length} image${images.length===1?"":"s"}</small>
+          ${isGiveaway ? "" : `<small class="fb-post-card-price"><strong>Price:</strong> ${appContext.escapeHtml(appContext.postGeneratorCardPricePreview(selected))}</small>`}
         </div>
       `;
       downloadBtn.disabled=images.length===0;
@@ -3923,7 +3936,7 @@ function renderFbCardListGeneratorPage(){
     loadTrendingDropScores();
   }
 
-  Object.assign(appContext,{compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,facebookGroupSalesCopy,facebookGroupSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,ebayListingTitle,ebayItemSpecifics,ebayListingDescription,renderEbayListingGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
+  Object.assign(appContext,{postGeneratorCardPricePreview,compactGeneratedPostSpacing,normalizePostLanguage,getPostGeneratorLanguage,savePostGeneratorLanguage,postLanguageSelectHTML,postLocale,replacePostTokens,postSalesFooterLines,facebookGroupSalesCopy,facebookGroupSalesFooterLines,getFbPostPrefs,saveFbPostPrefs,getFbCardMeta,saveFbCardMeta,safeHttpUrl,openSafeExternalUrl,fbFormatLabel,postEraLabel,postPopLabel,fbGameLabel,defaultFbPostTitle,singleCardCopyTitle,defaultFbHashtags,buildFbPostText,buildFbNfsPostText,copyTextToClipboard,copyPlainText,currentFacebookToolMode,facebookToolsHeaderHTML,renderFacebookToolsPage,renderFbPostGeneratorPage,getFbGiveawayPostPrefs,saveFbGiveawayPostPrefs,giveawayNumberFromTitle,formatGiveawayEndsGmt8,getGiveawayShareUrl,buildGiveawayWinnerAnnouncementPost,renderGiveawayWinnerPostGeneratorPage,buildFbGiveawayPost,renderFbGiveawayPostGeneratorPage,defaultCarousellProductDetails,carousellGiveawayImages,defaultCarousellGiveawayProductDetails,downloadCarousellGiveawayImagesZip,getCarousellPostPrefs,saveCarousellPostPrefs,buildCarousellPostText,renderCarousellPostGeneratorPage,ebayListingTitle,ebayItemSpecifics,ebayListingDescription,renderEbayListingGeneratorPage,getFbCardListPostPrefs,saveFbCardListPostPrefs,ordinalDay,fbCardListDateLabel,cardListFormat,rawConditionPostLabel,gradedPostLabel,cardListPriceLine,cardListGroupHeading,cardListItemLine,dropDisplayText,dropCardName,dropCardLanguageLabel,dropCardMetaLine,dropCardPriceLine,dropCardEntryLines,sortCardListCards,buildFbCardListSection,buildFbCardDropPost,balancedCardDropCards,buildFbCardListPost,dataUrlToBlob,imageSourceToBlob,imageExtensionFromBlob,loadScriptOnce,ensureJsZip,downloadCardListFirstImagesZip,renderFbCardListGeneratorPage});
 }
 
 /** State and event initialization; called in preserved startup order. */
