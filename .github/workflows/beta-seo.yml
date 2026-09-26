@@ -263,8 +263,8 @@ jobs:
           grep -Fq 'document.querySelectorAll(".owner-private-analytics")' beta/src/services/auth.js
           grep -Fq 'el.style.setProperty("display","none","important")' beta/src/services/auth.js
           grep -q 'auth.js?v=2026-09-26-v02' beta/src/app/register-features.js
-          grep -Fq 'appContext.isOwnerMode() ? `<div class="detail-item owner-only">' beta/src/features/cards/details.js
-          grep -Fq 'appContext.isOwnerMode() ? `<div class="owner-only clean-owner-views"' beta/src/features/cards/tiles.js
+          grep -Fq 'appContext.isOwnerMode() ? `<div class="detail-item owner-only owner-private-analytics">' beta/src/features/cards/details.js
+          grep -Fq 'appContext.isOwnerMode() ? `<div class="owner-only owner-private-analytics clean-owner-views"' beta/src/features/cards/tiles.js
           grep -q 'home.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
