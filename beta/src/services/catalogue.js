@@ -530,12 +530,34 @@ async function setCardLifecycle(card,status){
     const safeStatus=appContext.LIFECYCLE_OPTIONS.includes(status) ? status : "";
     if(!safeStatus) return false;
 
-    const candidate={...card,lifecycle_status:safeStatus};
-    const saved=await appContext.updateCardStorage(candidate);
-    if(!saved) return false;
+    try{
+      const {data,error}=await appContext.supabaseClient
+        .from("cards")
+        .update({lifecycle_status:safeStatus})
+        .eq("id",card.id)
+        .select("id,lifecycle_status")
+        .maybeSingle();
 
-    appContext.replaceCardInMemory(saved);
-    return true;
+      if(error){
+        console.error("Lifecycle update error:",error);
+        appContext.showToast(appContext.cardWriteErrorText(error,"update"));
+        return false;
+      }
+
+      const persisted=String(data?.lifecycle_status||"").toLowerCase();
+      if(!data?.id || persisted!==safeStatus){
+        console.error("Lifecycle update was not persisted as requested:",{id:card.id,requested:safeStatus,persisted});
+        appContext.showToast("Listing visibility was not saved. Please retry after the lifecycle migration is confirmed.");
+        return false;
+      }
+
+      appContext.replaceCardInMemory({...card,lifecycle_status:persisted,updated_at:new Date().toISOString()});
+      return true;
+    }catch(error){
+      console.error("Lifecycle update request failed:",error);
+      appContext.showToast(appContext.cardWriteErrorText(error,"update"));
+      return false;
+    }
   }
 
 async function deleteListingPermanently(card){
