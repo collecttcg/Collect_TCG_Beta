@@ -7,7 +7,7 @@ function isCompareSelected(id){
 function compareSelectedCards(){
     return [...appContext.compareSelectedIds]
       .map(id=>appContext.cards.find(card=>String(card.id)===id))
-      .filter(Boolean)
+      .filter(card=>card && appContext.isLiveLifecycle(card))
       .slice(0,appContext.COMPARE_MAX);
   }
 
@@ -52,7 +52,7 @@ function toggleCompareCard(id){
       return false;
     }
 
-    if(!appContext.cards.some(card=>String(card.id)===safe)) return false;
+    if(!appContext.cards.some(card=>String(card.id)===safe && appContext.isLiveLifecycle(card))) return false;
     appContext.compareSelectedIds.add(safe);
     appContext.updateCompareTray();
     return true;
