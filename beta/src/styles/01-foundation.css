@@ -3068,6 +3068,13 @@
     text-transform:uppercase;
   }
 
+  .fb-post-card-copy .fb-post-card-price{
+    margin-left:6px;
+    border-color:rgba(227,179,65,.28);
+    color:var(--accent-gold);
+    text-transform:none;
+  }
+
   .fb-post-settings{
     margin-top:12px;
     border:1px solid var(--border);
