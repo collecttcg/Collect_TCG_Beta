@@ -106,6 +106,71 @@ function renderLifecycleManagerPage(){
     }));
   }
 
+function renderHiddenListingsPage(){
+    if(!appContext.requireOwner("open Hidden Listings")) return;
+
+    if(!appContext.lifecycleSupported){
+      appContext.view.innerHTML=`
+        <div class="page-head">
+          <div><div class="eyebrow">Owner · Hidden Listings</div><h2>Hidden Listings</h2>
+          <p>Secure hidden-listing support requires the supplied Supabase lifecycle migration.</p></div>
+        </div>
+        <div class="panel lifecycle-migration-needed">
+          <strong>Migration required</strong>
+          <span>Hidden listings must be protected by database lifecycle/RLS rules.</span>
+        </div>`;
+      return;
+    }
+
+    const drafts=appContext.cards.filter(card=>appContext.cardLifecycle(card)==="draft");
+
+    appContext.view.innerHTML=`
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">Owner · Hidden Listings</div>
+          <h2>Hidden Listings</h2>
+          <p>These listings are hidden from visitors and all normal catalogue surfaces. Publish a listing to return it to its Inventory or Collection page.</p>
+        </div>
+      </div>
+
+      <div class="lifecycle-stats">
+        <div><strong>${drafts.length}</strong><span>Hidden</span></div>
+      </div>
+
+      <section class="panel lifecycle-section">
+        <div class="lifecycle-section-head"><h3>Hidden Listings</h3><span>Owner access only.</span></div>
+        <div class="lifecycle-list">${drafts.length ? drafts.map(card=>appContext.lifecycleCardRowHTML(card,"draft")).join("") : `<div class="hint">No hidden listings.</div>`}</div>
+      </section>
+    `;
+
+    appContext.view.querySelectorAll("[data-life-edit]").forEach(btn=>btn.addEventListener("click",()=>{
+      const card=appContext.getCardById(btn.dataset.lifeEdit);
+      if(card) appContext.openEditModal(card);
+    }));
+
+    appContext.view.querySelectorAll("[data-life-publish]").forEach(btn=>btn.addEventListener("click",async()=>{
+      if(!appContext.requireOwner("publish hidden listing")) return;
+      const card=appContext.getCardById(btn.dataset.lifePublish);
+      if(!card) return;
+      if(!confirm(`Unhide "${card.name}"? It will become visible to normal visitors immediately.`)) return;
+      if(await appContext.setCardLifecycle(card,"live")){
+        appContext.showToast("Listing published");
+        appContext.renderHiddenListingsPage();
+      }
+    }));
+
+    appContext.view.querySelectorAll("[data-life-archive]").forEach(btn=>btn.addEventListener("click",async()=>{
+      if(!appContext.requireOwner("archive hidden listing")) return;
+      const card=appContext.getCardById(btn.dataset.lifeArchive);
+      if(!card) return;
+      if(!confirm(`Archive "${card.name}"?`)) return;
+      if(await appContext.setCardLifecycle(card,"archived")){
+        appContext.showToast("Listing archived");
+        appContext.renderHiddenListingsPage();
+      }
+    }));
+  }
+
 function duplicateGradeKey(card){
     const grades=Array.isArray(card.grading)?card.grading.filter(g=>g&&g.company):[];
     if(grades.length){
@@ -675,5 +740,5 @@ function renderImageHealthPage(fromInventoryTools=false){
     updateSummary();
   }
 
-  Object.assign(appContext,{lifecycleCardRowHTML,renderLifecycleManagerPage,duplicateGradeKey,duplicateFingerprint,findDuplicateGroups,renderDuplicateDetectorPage,historyChangedFields,historyCardLabel,fetchEditHistory,undoHistoryEntry,renderEditHistoryPage,imageHealthSourceType,checkImageHealthSource,imageHealthIssuesForCard,renderImageHealthPage});
+  Object.assign(appContext,{lifecycleCardRowHTML,renderLifecycleManagerPage,renderHiddenListingsPage,duplicateGradeKey,duplicateFingerprint,findDuplicateGroups,renderDuplicateDetectorPage,historyChangedFields,historyCardLabel,fetchEditHistory,undoHistoryEntry,renderEditHistoryPage,imageHealthSourceType,checkImageHealthSource,imageHealthIssuesForCard,renderImageHealthPage});
 }
