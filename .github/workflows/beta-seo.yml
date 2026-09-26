@@ -169,8 +169,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v06' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v06' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v07' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -200,7 +200,8 @@ jobs:
           grep -q 'createInventoryPagination' beta/src/features/inventory/page.js
           grep -q 'function pageItems' beta/src/features/inventory/pagination.js
           grep -q 'createModalKeyboardController' beta/src/features/cards/details.js
-          grep -q 'page.js?v=2026-09-25-v09' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'filtering.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
 
       - name: Validate visitor UX improvements
@@ -215,8 +216,8 @@ jobs:
           grep -Fq 'source:"recently-viewed"' beta/src/features/content/home.js
           grep -q 'function handleCompareModalKeydown' beta/src/features/cards/compare.js
           grep -q 'compareLastFocusedElement' beta/src/features/cards/compare.js
-          grep -q 'home.js?v=2026-09-26-v02' beta/src/app/register-features.js
-          grep -q 'compare.js?v=2026-09-25-v06' beta/src/app/register-features.js
+          grep -q 'home.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'compare.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'id="pillFilterSummary"' beta/src/features/inventory/page.js
           grep -q 'function cardSearchScore' beta/src/features/inventory/filtering.js
           grep -q 'navigator.share' beta/src/features/cards/details.js
@@ -228,7 +229,7 @@ jobs:
           node --check beta/src/features/inventory/page.js
           grep -q 'function currentPaginationFilterSignature()' beta/src/features/inventory/page.js
           grep -q 'getFilterSignature:currentPaginationFilterSignature' beta/src/features/inventory/page.js
-          grep -q 'page.js?v=2026-09-25-v09' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v07' beta/src/app/register-features.js
 
       - name: Validate Beta v08 card details and eBay images
         shell: bash
@@ -262,8 +263,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v06' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v06' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v07' beta/index.html
 
       - name: Validate buyer privacy guards
         shell: bash
@@ -279,12 +280,32 @@ jobs:
           grep -q 'auth.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -Fq 'appContext.isOwnerMode() ? `<div class="detail-item owner-only owner-private-analytics">' beta/src/features/cards/details.js
           grep -Fq 'appContext.isOwnerMode() ? `<div class="owner-only owner-private-analytics clean-owner-views"' beta/src/features/cards/tiles.js
-          grep -q 'home.js?v=2026-09-26-v02' beta/src/app/register-features.js
+          grep -q 'home.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-26-v06' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v06' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v07' beta/index.html
+
+      - name: Validate hidden-card visibility guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/features/inventory/filtering.js
+          node --check beta/src/features/content/home.js
+          node --check beta/src/features/inventory/page.js
+          node --check beta/src/features/cards/compare.js
+          grep -Fq 'if(lifecycle!=="live") return false;' beta/src/features/inventory/filtering.js
+          grep -Fq '.filter(c=>appContext.isLiveLifecycle(c) && appContext.cardMatchesListingScope(c,"inventory"))' beta/src/features/content/home.js
+          grep -Fq 'const visibleCards=appContext.cards.filter(card=>appContext.isLiveLifecycle(card));' beta/src/features/inventory/page.js
+          grep -Fq '.filter(card=>card && appContext.isLiveLifecycle(card))' beta/src/features/cards/compare.js
+          grep -Fq 'String(card.id)===safe && appContext.isLiveLifecycle(card)' beta/src/features/cards/compare.js
+          grep -q 'home.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'filtering.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'compare.js?v=2026-09-26-v07' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-26-v07' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v07' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -315,9 +336,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v06
-          PREVIOUS_VERSION: 2026-09-26-v05
-          PREVIOUS_COMMIT: 757a05e5eecb2b80886e0adbf9387b6a21daf721
+          RELEASE_VERSION: 2026-09-26-v07
+          PREVIOUS_VERSION: 2026-09-26-v06
+          PREVIOUS_COMMIT: bb1d805870796bde76f60f7c83011e61528fc608
         run: |
           set -euo pipefail
           mkdir -p release
@@ -345,10 +366,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v06-packages
+          name: Collect-TCG-Beta-2026-09-26-v07-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v06-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v05-to-2026-09-26-v06-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v07-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v06-to-2026-09-26-v07-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -357,16 +378,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v06.txt"
+          MANIFEST="release-manifests/2026-09-26-v07.txt"
           {
-            echo "Version: 2026-09-26-v06"
-            echo "Previous version: 2026-09-26-v05"
+            echo "Version: 2026-09-26-v07"
+            echo "Previous version: 2026-09-26-v06"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v06-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v05-to-2026-09-26-v06-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v07-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v06-to-2026-09-26-v07-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v06: record package validation"
+          git commit -m "Beta 2026-09-26-v07: record package validation"
           git push
