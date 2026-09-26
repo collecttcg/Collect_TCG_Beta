@@ -58,6 +58,7 @@ jobs:
         with:
           node-version: '22'
 
+      # Buyer-preview privacy hotfix validation
       - name: Run feature regression tests
         run: npm test
 
