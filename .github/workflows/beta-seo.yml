@@ -119,7 +119,7 @@ jobs:
           grep -q 'history.back()' beta/src/features/cards/details.js
           ! grep -q 'location.assign(clean)' beta/src/app/routing.js
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
-          grep -q 'routing.js?v=2026-09-26-v12' beta/src/app/register-features.js
+          grep -q 'routing.js?v=2026-09-26-v17' beta/src/app/register-features.js
           grep -q 'notifications.js?v=2026-09-26-v03' beta/src/app/register-features.js
           grep -q 'information.js?v=2026-09-26-v04' beta/src/app/register-features.js
           grep -q 'collage.js?v=2026-09-26-v05' beta/src/app/register-features.js
@@ -205,8 +205,8 @@ jobs:
           grep -q 'createInventoryPagination' beta/src/features/inventory/page.js
           grep -q 'function pageItems' beta/src/features/inventory/pagination.js
           grep -q 'createModalKeyboardController' beta/src/features/cards/details.js
-          grep -q 'page.js?v=2026-09-26-v14' beta/src/app/register-features.js
-          grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v17' beta/src/app/register-features.js
+          grep -q 'filtering.js?v=2026-09-26-v17' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
 
       - name: Validate visitor UX improvements
@@ -234,7 +234,7 @@ jobs:
           node --check beta/src/features/inventory/page.js
           grep -q 'function currentPaginationFilterSignature()' beta/src/features/inventory/page.js
           grep -q 'getFilterSignature:currentPaginationFilterSignature' beta/src/features/inventory/page.js
-          grep -q 'page.js?v=2026-09-26-v14' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v17' beta/src/app/register-features.js
 
       - name: Validate Beta v08 card details and eBay images
         shell: bash
@@ -306,8 +306,8 @@ jobs:
           grep -Fq '.filter(card=>card && appContext.isLiveLifecycle(card))' beta/src/features/cards/compare.js
           grep -Fq 'String(card.id)===safe && appContext.isLiveLifecycle(card)' beta/src/features/cards/compare.js
           grep -q 'home.js?v=2026-09-26-v07' beta/src/app/register-features.js
-          grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/register-features.js
-          grep -q 'page.js?v=2026-09-26-v14' beta/src/app/register-features.js
+          grep -q 'filtering.js?v=2026-09-26-v17' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v17' beta/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-26-v17' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v17' beta/index.html
@@ -339,13 +339,13 @@ jobs:
           test "$(grep -o 'data-route="hidden-listings" class="owner-only' beta/index.html | wc -l | tr -d ' ')" -ge "2"
           grep -q 'repository.js?v=2026-09-26-v12' beta/src/app/register-features.js
           grep -q 'navigation.js?v=2026-09-26-v12' beta/src/app/register-features.js
-          grep -q 'routing.js?v=2026-09-26-v12' beta/src/app/register-features.js
-          grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/register-features.js
+          grep -q 'routing.js?v=2026-09-26-v17' beta/src/app/register-features.js
+          grep -q 'filtering.js?v=2026-09-26-v17' beta/src/app/register-features.js
           grep -q 'lifecycle.js?v=2026-09-26-v13' beta/src/app/register-features.js
           grep -q 'repository.js?v=2026-09-26-v12' beta/src/app/initialize.js
           grep -q 'navigation.js?v=2026-09-26-v12' beta/src/app/initialize.js
-          grep -q 'routing.js?v=2026-09-26-v12' beta/src/app/initialize.js
-          grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/initialize.js
+          grep -q 'routing.js?v=2026-09-26-v17' beta/src/app/initialize.js
+          grep -q 'filtering.js?v=2026-09-26-v17' beta/src/app/initialize.js
           grep -q 'register-features.js?v=2026-09-26-v17' beta/src/main.js
           grep -q 'initialize.js?v=2026-09-26-v12' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v17' beta/index.html
@@ -398,7 +398,7 @@ jobs:
           grep -Fq 'data-inventory-game-series="${appContext.escapeHtml(value)}"' beta/src/features/inventory/page.js
           grep -Fq 'bucket.clear();' beta/src/features/inventory/page.js
           grep -Fq 'bucket.add(value);' beta/src/features/inventory/page.js
-          grep -q 'page.js?v=2026-09-26-v14' beta/src/app/register-features.js
+          grep -q 'page.js?v=2026-09-26-v17' beta/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-26-v17' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-26-v17' beta/index.html
 
