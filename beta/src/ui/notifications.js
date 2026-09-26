@@ -1,10 +1,18 @@
 /** V93 beta: ui/notifications. Shared dependencies are explicit on appContext. */
 export function register(appContext){
-function showToast(msg){
+function showToast(msg,options={}){
+    const prominent=!!options.prominent;
     appContext.toastEl.textContent = msg;
     appContext.toastEl.hidden = false;
+    appContext.toastEl.style.fontSize=prominent ? "18px" : "";
+    appContext.toastEl.style.fontWeight=prominent ? "700" : "";
+    appContext.toastEl.style.lineHeight=prominent ? "1.35" : "";
+    appContext.toastEl.style.textAlign=prominent ? "center" : "";
+    appContext.toastEl.style.padding=prominent ? "16px 22px" : "";
+    appContext.toastEl.style.width=prominent ? "min(520px, calc(100vw - 32px))" : "";
+    appContext.toastEl.style.maxWidth=prominent ? "calc(100vw - 32px)" : "";
     clearTimeout(appContext.showToast._t);
-    appContext.showToast._t = setTimeout(()=>{ appContext.toastEl.hidden = true; }, 2200);
+    appContext.showToast._t = setTimeout(()=>{ appContext.toastEl.hidden = true; }, prominent ? 4200 : 2200);
   }
 
 function soldDateInputValue(value){
