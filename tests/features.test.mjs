@@ -524,18 +524,18 @@ test('new Inventory cards slot into custom order without rearranging existing ca
  const a=app();
  a.cardMatchesListingScope=(card,scope)=>scope==='inventory' && card.availability!=='Collection (NFS)';
  const existing=[
-  {id:'slab-a',name:'Slab A',format:'Graded',grading:[{company:'PSA',grade:'9'}]},
-  {id:'slab-b',name:'Slab B',format:'Graded',grading:[{company:'BGS',grade:'10'}]},
-  {id:'mint-a',name:'Mint A',format:'Raw',condition:'M',grading:[]},
-  {id:'nm-a',name:'Near Mint A',format:'Raw',condition:'NM',grading:[]},
-  {id:'lp-a',name:'LP A',format:'Raw',condition:'LP',grading:[]},
-  {id:'sealed-a',name:'Sealed A',format:'Sealed',condition:'SEALED',grading:[]}
+  {id:'00000000-0000-4000-8000-000000000001',name:'Slab A',format:'Graded',grading:[{company:'PSA',grade:'9'}]},
+  {id:'00000000-0000-4000-8000-000000000002',name:'Slab B',format:'Graded',grading:[{company:'BGS',grade:'10'}]},
+  {id:'00000000-0000-4000-8000-000000000003',name:'Mint A',format:'Raw',condition:'M',grading:[]},
+  {id:'00000000-0000-4000-8000-000000000004',name:'Near Mint A',format:'Raw',condition:'NM',grading:[]},
+  {id:'00000000-0000-4000-8000-000000000005',name:'LP A',format:'Raw',condition:'LP',grading:[]},
+  {id:'00000000-0000-4000-8000-000000000006',name:'Sealed A',format:'Sealed',condition:'SEALED',grading:[]}
  ];
  a.cards=existing.slice();
  existing.forEach((card,index)=>a.inventoryCardOrderById.set(card.id,index+1));
- const newNm={id:'nm-new',name:'New Near Mint',format:'Raw',condition:'NM',grading:[],availability:'Available'};
+ const newNm={id:'00000000-0000-4000-8000-000000000007',name:'New Near Mint',format:'Raw',condition:'NM',grading:[],availability:'Available'};
  a.cards.push(newNm);
  const ids=a.inventoryCustomOrderWithNewCard(newNm);
- assert.deepEqual(ids,['slab-a','slab-b','mint-a','nm-a','nm-new','lp-a','sealed-a']);
- assert.deepEqual(existing.map(card=>card.id),['slab-a','slab-b','mint-a','nm-a','lp-a','sealed-a']);
+ assert.deepEqual(ids,['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000007','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
+ assert.deepEqual(existing.map(card=>card.id),['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
 });
