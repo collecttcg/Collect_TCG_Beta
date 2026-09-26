@@ -131,7 +131,7 @@ function cardTileHTML(c, renderIndex=999){
           ${appContext.isOwnerMode() && appContext.normalizeFilterValue(c.availability)==="reserved"
             ? `<div class="owner-reserved-age" data-owner-reserved-age-card="${appContext.escapeHtml(c.id)}">Checking reserved age…</div>`
             : ""}
-          ${appContext.isOwnerMode() ? `<div class="owner-only clean-owner-views"
+          ${appContext.isOwnerMode() ? `<div class="owner-only owner-private-analytics clean-owner-views"
                title="Qualified views · card kept open for at least 5 seconds">
             👁 ${appContext.freshQualifiedViewDisplay(c.id)}
           </div>` : ""}

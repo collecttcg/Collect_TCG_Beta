@@ -1382,23 +1382,23 @@ async function openDetailsModal(card){
             ${card.era ? `<div class="detail-item"><div class="detail-label">Era</div><div class="detail-value">${appContext.escapeHtml(card.era)}</div></div>` : ""}
             ${card.series ? `<div class="detail-item"><div class="detail-label">Series</div><div class="detail-value">${appContext.escapeHtml(card.series)}</div></div>` : ""}
             <div class="detail-item"><div class="detail-label">Pictures</div><div class="detail-value">${images.length}</div></div>
-            ${appContext.isOwnerMode() ? `<div class="detail-item owner-only">
+            ${appContext.isOwnerMode() ? `<div class="detail-item owner-only owner-private-analytics">
               <div class="detail-label">Qualified Views</div>
               <div class="detail-value" data-owner-conversion="qualified">${appContext.freshQualifiedViewDisplay(card.id)}</div>
             </div>
-            <div class="detail-item owner-only">
+            <div class="detail-item owner-only owner-private-analytics">
               <div class="detail-label">Unique Collectors</div>
               <div class="detail-value" data-owner-conversion="unique">—</div>
             </div>
-            <div class="detail-item owner-only">
+            <div class="detail-item owner-only owner-private-analytics">
               <div class="detail-label">Favorite Adds</div>
               <div class="detail-value" data-owner-conversion="favorites">—</div>
             </div>
-            <div class="detail-item owner-only">
+            <div class="detail-item owner-only owner-private-analytics">
               <div class="detail-label">Buyer Intents</div>
               <div class="detail-value" data-owner-conversion="intent">—</div>
             </div>
-            <div class="detail-item owner-only">
+            <div class="detail-item owner-only owner-private-analytics">
               <div class="detail-label">Intent Rate</div>
               <div class="detail-value" data-owner-conversion="intent-rate">—</div>
             </div>` : ""}

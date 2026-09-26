@@ -124,7 +124,7 @@ function applyOwnerMode(){
 
     // Fail closed in both desktop and mobile navigation. Responsive CSS must
     // never be the only thing deciding whether an owner tool is visible.
-    document.querySelectorAll(".owner-only").forEach(el=>{
+    document.querySelectorAll(".owner-private-analytics").forEach(el=>{\n      if(owner) el.style.removeProperty("display");\n      else el.style.setProperty("display","none","important");\n    });\n\n    document.querySelectorAll(".owner-only").forEach(el=>{
       if(el.id==="detailsEditBtn" || el.id==="detailsCloneBtn" || el.id==="detailsDeleteBtn"){
         el.hidden=!owner;
         return;

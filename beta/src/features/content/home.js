@@ -313,7 +313,7 @@ function renderHomePage(){
           <div class="home-premium-card-copy">
             <div class="home-premium-card-name">${appContext.escapeHtml(card.name)}</div>
             <div class="home-premium-card-reference">${appContext.escapeHtml(referenceText(card) || card.series || "Collectible listing")}</div>
-            ${appContext.isOwnerMode() && trending && views>0 ? `<div class="home-premium-interest owner-only">🔥 ${uniqueViews.toLocaleString()} collector${uniqueViews===1?"":"s"} · ${views.toLocaleString()} qualified view${views===1?"":"s"}</div>` : ""}
+            ${appContext.isOwnerMode() && trending && views>0 ? `<div class="home-premium-interest owner-only owner-private-analytics">🔥 ${uniqueViews.toLocaleString()} collector${uniqueViews===1?"":"s"} · ${views.toLocaleString()} qualified view${views===1?"":"s"}</div>` : ""}
             <div class="home-premium-card-price">${appContext.escapeHtml(primaryPrice(card))}</div>
           </div>
         </article>`;
