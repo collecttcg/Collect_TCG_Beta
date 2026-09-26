@@ -2,15 +2,19 @@
 export function register(appContext){
 function renderAddPage(){
     if(!appContext.requireOwner("open add card")) return;
-    const cloneDraft = appContext.pendingCloneCard;
-    appContext.pendingCloneCard = null;
+    const isCloneRoute=appContext.currentHashParams?.().get("clone")==="1";
+    const cloneDraft=isCloneRoute ? appContext.pendingCloneCard : null;
+    // Keep the clone draft alive while this clone Add route is active. Some
+    // browsers can dispatch more than one same-document route event; consuming
+    // the draft on the first render made the next render appear blank.
+    if(!isCloneRoute) appContext.pendingCloneCard=null;
     appContext.view.innerHTML = `
       <div class="page-head"><div><div class="eyebrow">${cloneDraft ? "Clone Listing" : "New listing"}</div><h2>${cloneDraft ? "Clone card" : "Add a card"}</h2><p>${cloneDraft ? "Review the copied details and add new photos before saving." : "List a new card in your inventory."}</p></div></div>
       ${cloneDraft ? `<div class="clone-card-notice"><strong>Cloning safely</strong><span>Review every field before saving. PSA certificate numbers are copied when available, while POP data, sold information, timestamps and view count are cleared.</span></div>` : ""}
       <form class="form-card" id="addForm">
         ${appContext.fieldsTemplate("add")}
         <div class="modal-actions">
-          <a href="#/inventory" class="btn-ghost" style="text-decoration:none; display:inline-flex; align-items:center;">Cancel</a>
+          <a href="#/inventory" id="addCancelBtn" class="btn-ghost" style="text-decoration:none; display:inline-flex; align-items:center;">Cancel</a>
           <button type="submit" class="btn-primary">${cloneDraft ? "Save cloned card" : "Save card"}</button>
         </div>
       </form>
@@ -27,6 +31,10 @@ function renderAddPage(){
     };
     appContext.wireGameCombobox("add");
     if(cloneDraft) appContext.populateFields("add", cloneDraft);
+    const cancelBtn=appContext.$("addCancelBtn");
+    if(cancelBtn){
+      cancelBtn.addEventListener("click",()=>{ appContext.pendingCloneCard=null; });
+    }
     appContext.wireSoldDateField("add");
     appContext.wireAvailabilityPriceState("add");
     appContext.wireImageControls("add", formState);
@@ -133,6 +141,7 @@ function renderAddPage(){
         }
 
         postSaveStep="opening the updated inventory";
+        appContext.pendingCloneCard=null;
         appContext.goToRoute("inventory");
       }catch(error){
         console.error("Add card submit error:",error);
