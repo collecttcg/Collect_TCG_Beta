@@ -413,7 +413,7 @@ function getFiltered(){
     const sortBy = (appContext.$("sortBy") && appContext.$("sortBy").value) || (
       appContext.listingAvailabilityScope === "sold"
         ? "recent-sold"
-        : (appContext.listingAvailabilityScope === "inventory" ? "format-condition" : (appContext.listingAvailabilityScope === "collection" ? "custom" : "name"))
+        : (["collection","inventory"].includes(appContext.listingAvailabilityScope) ? "custom" : "name")
     );
 
     let list = appContext.cards.filter(c=>{
@@ -510,7 +510,6 @@ function getFiltered(){
 
     list.sort((a,b)=>{
       switch(sortBy){
-        case "format-condition": return appContext.compareInventoryAutomaticOrder(a,b);
         case "custom": {
           if(appContext.listingAvailabilityScope==="collection"){
             const ao=appContext.collectionCustomOrderValue(a);

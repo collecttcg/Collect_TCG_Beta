@@ -113,6 +113,11 @@ function renderAddPage(){
         postSaveStep="updating the inventory";
         appContext.cards.push(saved);
 
+        if(appContext.cardMatchesListingScope(saved,"inventory")){
+          postSaveStep="placing the new card in custom inventory order";
+          await appContext.insertNewInventoryCardIntoCustomOrder(saved);
+        }
+
         let privateMetaSaved=true;
         if(appContext.ownerPrivateSupported && (data._owner_tags.length || data._owner_notes)){
           postSaveStep="saving private owner information";

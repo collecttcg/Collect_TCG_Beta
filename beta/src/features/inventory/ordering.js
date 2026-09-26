@@ -260,6 +260,40 @@ async function saveInventoryCardOrder(cardIds){
     }
   }
 
+function inventoryNewCardBucketRank(card){
+    const format=appContext.effectiveFormat(card);
+    if(format==="Graded") return 0;
+    if(format==="Sealed") return 8;
+    const rawRank={M:1,NM:2,LP:3,MP:4,HP:5,DMG:6,NA:7};
+    return rawRank[String(card?.condition||"").toUpperCase()] ?? 7;
+  }
+
+function inventoryCustomOrderWithNewCard(newCard){
+    const newId=appContext.safeCardId(newCard?.id||"");
+    if(!newId || !appContext.cardMatchesListingScope(newCard,"inventory")) return null;
+    const existing=appContext.cards
+      .filter(card=>card && appContext.safeCardId(card.id)!==newId && appContext.cardMatchesListingScope(card,"inventory"))
+      .slice()
+      .sort((a,b)=>{
+        const ao=appContext.inventoryCustomOrderValue(a);
+        const bo=appContext.inventoryCustomOrderValue(b);
+        if(ao!==bo) return ao-bo;
+        return String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true});
+      });
+    const newRank=appContext.inventoryNewCardBucketRank(newCard);
+    const insertAt=existing.findIndex(card=>appContext.inventoryNewCardBucketRank(card)>newRank);
+    const ordered=existing.map(card=>appContext.safeCardId(card.id)).filter(Boolean);
+    ordered.splice(insertAt<0?ordered.length:insertAt,0,newId);
+    return ordered;
+  }
+
+async function insertNewInventoryCardIntoCustomOrder(newCard){
+    if(appContext.inventoryCardOrderSupported===false) return false;
+    const ids=appContext.inventoryCustomOrderWithNewCard(newCard);
+    if(!ids) return true;
+    return appContext.saveInventoryCardOrder(ids);
+  }
+
 function runWhenIdle(callback,timeout=1200){
     if("requestIdleCallback" in window){
       return requestIdleCallback(callback,{timeout});
@@ -267,7 +301,7 @@ function runWhenIdle(callback,timeout=1200){
     return setTimeout(callback,80);
   }
 
-  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,saveInventoryCardOrder,runWhenIdle});
+  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,saveInventoryCardOrder,inventoryNewCardBucketRank,inventoryCustomOrderWithNewCard,insertNewInventoryCardIntoCustomOrder,runWhenIdle});
 }
 
 /** State and event initialization; called in preserved startup order. */
