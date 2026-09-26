@@ -1,0 +1,8 @@
+Version: 2026-09-26-v18
+Previous version: 2026-09-26-v17
+Source commit: 747077c1fef0b4b6ddd2a345f86fe70f6158592e
+Full ZIP: Collect-TCG-Beta-2026-09-26-v18-full.zip
+Patch ZIP: Collect-TCG-Beta-2026-09-26-v17-to-2026-09-26-v18-patch.zip
+
+8fcb86389fcc03da10dd8ef4fea0409ec412ddcf3c633301ca26208d0000bd0e  release/Collect-TCG-Beta-2026-09-26-v17-to-2026-09-26-v18-patch.zip
+08699a29b54c097cf635eb100957199b8b89de9c5360757c55d190602c458403  release/Collect-TCG-Beta-2026-09-26-v18-full.zip
