@@ -1346,6 +1346,10 @@ function renderInventoryPage(scope = "inventory"){
       const grid=appContext.$("invGrid");
 
       inventoryPagination?.syncFilterPage();
+      updateActiveFilterIndicators();
+      syncPillFilterSummary();
+      syncInventoryGameBrowser();
+      if(grid) grid.setAttribute("aria-busy","false");
 
       const list=appContext.getFiltered();
       appContext.captureFilteredResultsBrowseContext(list);
