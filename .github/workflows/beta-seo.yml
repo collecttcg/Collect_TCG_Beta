@@ -451,9 +451,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v15
-          PREVIOUS_VERSION: 2026-09-26-v14
-          PREVIOUS_COMMIT: 4ee19136e886b9e28b0a06502f35252fed2cd0f8
+          RELEASE_VERSION: 2026-09-26-v16
+          PREVIOUS_VERSION: 2026-09-26-v15
+          PREVIOUS_COMMIT: dd3dccc601f897386dfd01a8ee6ea38cf44b996a
         run: |
           set -euo pipefail
           mkdir -p release
