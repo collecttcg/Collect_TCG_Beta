@@ -23,9 +23,12 @@ function isLiveLifecycle(card){
 function cardMatchesListingScope(card, scope = appContext.listingAvailabilityScope){
     const lifecycle=appContext.cardLifecycle(card);
 
-    // Normal catalogue/listing surfaces only show live listings. Draft and
-    // archived cards remain available through owner-specific lifecycle/admin tools.
-    if(lifecycle!=="live") return false;
+    // Public visitors and Buyer Preview only see live listings. Verified Owner
+    // Mode may also show Draft listings in normal listing scopes so they remain
+    // manageable and can be edited or published again. Archived listings stay
+    // in the dedicated lifecycle tools.
+    if(lifecycle==="archived") return false;
+    if(lifecycle!=="live" && !(appContext.isOwnerMode() && lifecycle==="draft")) return false;
 
     const availability = appContext.normalizeFilterValue(card && card.availability ? card.availability : "Available");
     if(scope === "collection") return availability === "collection (nfs)";
