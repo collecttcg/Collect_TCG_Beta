@@ -277,6 +277,18 @@
   .contact-link{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);text-decoration:none;font-size:13px;font-weight:600;transition:.15s ease;}
   .contact-link:hover{border-color:var(--accent-gold);transform:translateY(-1px);}
   .contact-arrow{color:var(--accent-gold);font-size:15px;}
+  .official-ebay-accounts{margin-top:24px;padding-top:22px;border-top:1px solid var(--border);}
+  .official-ebay-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
+  .official-ebay-head h3{margin:0;font-size:20px;}
+  .official-ebay-accounts>p{margin:10px 0 0;color:var(--text-muted);font-size:12.5px;line-height:1.65;}
+  .official-account-badge{flex:0 0 auto;padding:5px 8px;border:1px solid var(--accent-gold);border-radius:999px;color:var(--accent-gold);font-size:10px;font-weight:700;letter-spacing:.35px;}
+  .official-ebay-links{margin-top:14px;}
+  .official-ebay-links .contact-link b{display:block;}
+  .official-ebay-links .contact-link small{display:block;margin-top:3px;color:var(--text-muted);font-size:9.5px;font-weight:400;}
+  .official-ebay-accounts .official-ebay-note{margin-top:12px;color:var(--text);font-size:11px;font-weight:600;}
+  .official-ebay-footer-link{display:inline-block;margin-top:7px;color:var(--accent-gold);font-size:10.5px;font-weight:600;text-decoration:none;}
+  .official-ebay-footer-link:hover{text-decoration:underline;}
+  @media(max-width:520px){.official-ebay-head{align-items:center}.official-ebay-head h3{font-size:19px}.official-account-badge{font-size:9px}}
 
   /* ---------- Larger card detail view + full gallery lightbox ---------- */
   .card-details-modal{max-width:1120px;width:min(96vw,1120px);padding:24px;}
