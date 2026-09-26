@@ -28,6 +28,7 @@ on:
       - 'beta/src/features/cards/tiles.js'
       - 'beta/src/services/catalogue.js'
       - 'beta/src/app/routing.js'
+      - 'beta/src/ui/notifications.js'
       - 'beta/src/services/analytics.js'
       - 'beta/src/features/core/utilities.js'
       - 'beta/src/features/cards/details.js'
@@ -101,6 +102,7 @@ jobs:
         run: |
           set -euo pipefail
           node --check beta/src/app/routing.js
+          node --check beta/src/ui/notifications.js
           node --check beta/src/features/cards/details.js
           node --check beta/src/app/initialize.js
           grep -Fq 'history.pushState(state,"",cleanUrl.pathname+cleanUrl.search+cleanUrl.hash)' beta/src/app/routing.js
@@ -109,7 +111,8 @@ jobs:
           grep -q 'history.back()' beta/src/features/cards/details.js
           ! grep -q 'location.assign(clean)' beta/src/app/routing.js
           grep -q 'meta\[name="collect-tcg-card-id"\]' beta/src/app/routing.js
-          grep -q 'routing.js?v=2026-09-24-v11' beta/src/app/initialize.js
+          grep -q 'routing.js?v=2026-09-26-v03' beta/src/app/register-features.js
+          grep -q 'notifications.js?v=2026-09-26-v03' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
           grep -q 'event.stopPropagation()' beta/src/features/content/home.js
           grep -q 'appContext.openDetailsModal(card)' beta/src/app/routing.js
@@ -157,8 +160,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v02' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v02' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v03' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v03' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -248,8 +251,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-25-v08' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v02' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v02' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v03' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v03' beta/index.html
 
       - name: Validate buyer privacy guards
         shell: bash
@@ -269,8 +272,8 @@ jobs:
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-26-v02' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v02' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v03' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v03' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -297,13 +300,13 @@ jobs:
           git commit -m "chore: refresh Beta SEO card pages [skip ci]"
           git push
 
-      # Final Beta v13 packaging after validated v12.
+      # Package the validated Beta v03 release.
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v02
-          PREVIOUS_VERSION: 2026-09-26-v01
-          PREVIOUS_COMMIT: a65d1025a260e8a986641dcf4bd1040603bfdc3f
+          RELEASE_VERSION: 2026-09-26-v03
+          PREVIOUS_VERSION: 2026-09-26-v02
+          PREVIOUS_COMMIT: 1ec3a8ccbd5bdde11cda4269c8d54309956e7515
         run: |
           set -euo pipefail
           mkdir -p release
@@ -331,10 +334,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-25-v09-packages
+          name: Collect-TCG-Beta-2026-09-26-v03-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v02-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v01-to-2026-09-26-v02-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v03-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v02-to-2026-09-26-v03-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -343,16 +346,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v02.txt"
+          MANIFEST="release-manifests/2026-09-26-v03.txt"
           {
-            echo "Version: 2026-09-26-v02"
-            echo "Previous version: 2026-09-26-v01"
+            echo "Version: 2026-09-26-v03"
+            echo "Previous version: 2026-09-26-v02"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v02-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v01-to-2026-09-26-v02-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v03-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v02-to-2026-09-26-v03-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v02: record package validation"
+          git commit -m "Beta 2026-09-26-v03: record package validation"
           git push
