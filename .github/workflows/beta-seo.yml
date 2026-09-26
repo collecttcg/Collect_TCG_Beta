@@ -451,9 +451,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v20
-          PREVIOUS_VERSION: 2026-09-26-v19
-          PREVIOUS_COMMIT: b2ed9dcf5f06650023f86e13224bd046e1903213
+          RELEASE_VERSION: 2026-09-27-v01
+          PREVIOUS_VERSION: 2026-09-26-v20
+          PREVIOUS_COMMIT: 46783f9758e2f4ecaeef90a9139aa40147c2a811
         run: |
           set -euo pipefail
           mkdir -p release
@@ -481,10 +481,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v20-packages
+          name: Collect-TCG-Beta-2026-09-27-v01-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v20-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v19-to-2026-09-26-v20-patch.zip
+            release/Collect-TCG-Beta-2026-09-27-v01-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v20-to-2026-09-27-v01-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -493,16 +493,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v20.txt"
+          MANIFEST="release-manifests/2026-09-27-v01.txt"
           {
-            echo "Version: 2026-09-26-v20"
-            echo "Previous version: 2026-09-26-v19"
+            echo "Version: 2026-09-27-v01"
+            echo "Previous version: 2026-09-26-v20"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v20-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v19-to-2026-09-26-v20-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-27-v01-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v20-to-2026-09-27-v01-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v20: record package validation"
+          git commit -m "Beta 2026-09-27-v01: record package validation"
           git push

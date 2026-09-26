@@ -2,6 +2,12 @@
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.
 
+## 2026-09-27-v01 Beta
+
+- Synchronizes `COLLECT_TCG_BASELINE.md` after Production `2026-09-27-v01` repository cleanup.
+- Records that Production cleanup was Production-only and did not promote Beta v18 custom-order application behavior.
+- Documentation/baseline sync only; no Beta runtime, SQL, RLS, analytics or UI behavior changes.
+
 ## 2026-09-26-v20 Beta
 
 - Restores `COLLECT_TCG_BASELINE.md` to the Beta repository root as the project source of truth.

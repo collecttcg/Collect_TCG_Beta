@@ -1,6 +1,6 @@
 # Collect TCG Current Baseline
 
-Last reconciled against GitHub: 2026-09-26
+Last reconciled against GitHub: 2026-09-27
 
 ## Repositories
 
@@ -28,41 +28,42 @@ Use the actual build date. Beta and Production have independent counters and res
 
 ## Current Versions
 
-Latest Beta: `2026-09-26-v20`
+Latest Beta: `2026-09-27-v01`
 
-Previous Beta: `2026-09-26-v19`
+Previous Beta: `2026-09-26-v20`
 
-Latest validated Beta before this baseline-only release: `2026-09-26-v19`
+Previous validated Beta release: `2026-09-26-v20`
 
-Beta v19 package-validation HEAD: `b2ed9dcf5f06650023f86e13224bd046e1903213`
+Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-26-v08`
+Latest Production: `2026-09-27-v01`
 
-Previous Production: `2026-09-26-v07`
+Previous Production: `2026-09-26-v08`
 
-Production promoted from Beta: `2026-09-26-v16`
+Production functional baseline last promoted from Beta: `2026-09-26-v16`
 
-Production package-validation HEAD: `9a054025115c152219e25aae3d7944060063ccd0`
+Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
 GitHub Pages status at reconciliation:
-- Beta v19 final HEAD deployment: successful
-- Production v08 final HEAD deployment: successful
+- Beta v20 final HEAD deployment: successful
+- Production 2026-09-27-v01 final HEAD deployment: successful
 
 Important promotion state:
-- Production v08 includes the validated Beta v16 clone fix.
+- Production 2026-09-27-v01 retains the validated Beta v16 functional baseline and adds Production-only repository cleanup plus QR Generator registration repair.
 - Beta v18 new-card custom-order insertion behavior is **not yet promoted to Production**.
-- Beta v19 repository cleanup/migration reorganization is **not yet promoted to Production**.
-- Beta v20 is a baseline/documentation reconciliation release and is **not yet promoted to Production**.
+- Beta v19 Beta-repository cleanup/migration reorganization is not an application-code promotion.
+- Beta v20 baseline/documentation reconciliation was not an application-code promotion.
+- Beta 2026-09-27-v01 is a documentation-only baseline sync after the Production cleanup.
 
 ---
 
 ## Current Release State
 
-### Beta `2026-09-26-v20`
+### Beta `2026-09-27-v01`
 
-Purpose: restore `COLLECT_TCG_BASELINE.md` as the repository source of truth and reconcile it with the current Beta/Production state.
+Purpose: synchronize the canonical baseline after Production `2026-09-27-v01` cleanup. No Beta runtime behavior changes.
 
-The functional Beta baseline carried forward into v20 includes:
+The functional Beta baseline carried forward unchanged from v20 includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.
 - v18 Inventory behavior: default remains **Custom Order**; only newly added Inventory cards are inserted automatically into the current custom order using the slab/raw-condition/sealed grouping rule without reordering existing cards.
 - v19 repository cleanup and structure normalization.
@@ -104,21 +105,24 @@ Inventory behavior:
 - Existing cards retain their relative order.
 - Collection/NFS custom ordering is not changed by this insertion behavior.
 
-### Production `2026-09-26-v08`
+### Production `2026-09-27-v01`
 
-Previous Production: `2026-09-26-v07`
+Previous Production: `2026-09-26-v08`
 
-Promoted from Beta: `2026-09-26-v16`
+Beta promoted from: none — Production-only cleanup; functional baseline remains Beta `2026-09-26-v16`
 
-Purpose: promote the validated clone-function fix while preserving Production behavior.
+Purpose: clean and normalize the Production repository without promoting newer Beta application behavior.
 
-Production v08 includes:
-- Clone draft persistence across Add-route rerenders.
-- Clone draft clearing on successful save/cancel/normal Add as appropriate.
-- Production cache/version references aligned to v08.
+Production 2026-09-27-v01 includes:
+- the existing Production v08/Beta v16 functional baseline, including clone draft persistence/cleanup;
+- Production SQL migration history moved under `migrations/2026/` without changing SQL contents;
+- obsolete `PRODUCTION-DEPLOY.txt` removed;
+- canonical Owner QR Generator module registered so the retained QR route works;
+- Production Insights SQL help text corrected to Production migration filenames/paths;
+- Production repository-structure validation added;
 - Production SEO regenerated and validated independently.
 
-Production v08 does **not** yet contain the Beta v18-v20 changes listed above.
+Production 2026-09-27-v01 still does **not** contain Beta v18 new-card custom-order insertion behavior.
 
 ---
 
@@ -374,9 +378,9 @@ Production `2026-09-26-v08`:
 - `Collect-TCG-Production-2026-09-26-v08-full.zip`
 - `Collect-TCG-Production-2026-09-26-v07-to-2026-09-26-v08-patch.zip`
 
-Beta v20 packages, once validation completes, must be:
-- `Collect-TCG-Beta-2026-09-26-v20-full.zip`
-- `Collect-TCG-Beta-2026-09-26-v19-to-2026-09-26-v20-patch.zip`
+Beta 2026-09-27-v01 packages must be:
+- `Collect-TCG-Beta-2026-09-27-v01-full.zip`
+- `Collect-TCG-Beta-2026-09-26-v20-to-2026-09-27-v01-patch.zip`
 
 ---
 
@@ -423,7 +427,7 @@ When a Beta version is approved for Production:
 - validate Production independently after promotion
 - create and verify the Production full and patch packages
 
-Current pending Beta-only changes relative to Production v08 include the v18 new-card insertion behavior, v19 repository cleanup/structure changes, and this v20 baseline reconciliation. Do not assume all Beta-only structural changes should be promoted without reviewing Production-specific paths and retained behavior.
+Current Beta-only application behavior relative to Production 2026-09-27-v01 includes the v18 new-card custom-order insertion behavior. Beta repository-structure/documentation releases remain separate from Production application promotion. Do not assume all Beta-only structural changes should be promoted without reviewing Production-specific paths and retained behavior.
 
 ---
 

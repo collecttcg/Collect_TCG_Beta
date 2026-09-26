@@ -1,6 +1,6 @@
 {
   "name": "collect-tcg-beta",
-  "version": "2026.9.26-beta.20",
+  "version": "2026.9.27-beta.1",
   "private": true,
   "type": "module",
   "description": "Development and validation repository for Collect TCG MY & SG",

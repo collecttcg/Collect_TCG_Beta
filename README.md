@@ -4,7 +4,7 @@ Development repository for the Collect TCG MY & SG website.
 
 - Production: `collecttcg/Collect_TCG`
 - Beta: `collecttcg/Collect_TCG_Beta`
-- Current Beta release: `2026-09-26-v20`
+- Current Beta release: `2026-09-27-v01`
 - Production is protected and is not changed by Beta releases.
 
 ## Repository layout
