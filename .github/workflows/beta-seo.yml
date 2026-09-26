@@ -11,6 +11,7 @@ on:
       - '.github/workflows/beta-seo.yml'
       - 'tools/generate-seo.mjs'
       - '2026-09-24-v01-SEO-PUBLIC-CATALOG.sql'
+      - '2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql'
       - '2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql'
       - 'beta/src/features/owner/insights-dashboard.js'
       - 'beta/src/features/social/posts.js'
@@ -147,7 +148,7 @@ jobs:
           grep -q 'const directCardEntry=' beta/src/app/startup.js
           grep -q 'Promise.allSettled' beta/src/app/startup.js
           grep -q 'analytics.js?v=2026-09-24-v13' beta/src/app/register-features.js
-          grep -q 'catalogue.js?v=2026-09-26-v09' beta/src/app/register-features.js
+          grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
@@ -169,8 +170,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -263,8 +264,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
 
       - name: Validate buyer privacy guards
         shell: bash
@@ -284,8 +285,8 @@ jobs:
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
 
       - name: Validate hidden-card visibility guards
         shell: bash
@@ -304,8 +305,8 @@ jobs:
           grep -q 'filtering.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'page.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
 
       - name: Validate public hidden-card source guards
         shell: bash
@@ -321,9 +322,26 @@ jobs:
           grep -Fq "endpoint.searchParams.set('lifecycle_status','eq.live');" tools/generate-seo.mjs
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
-          grep -q 'catalogue.js?v=2026-09-26-v09' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v09' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v09' beta/index.html
+          grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
+
+      - name: Validate Beta v10 hidden-listing persistence contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check beta/src/services/catalogue.js
+          node --check tools/generate-seo.mjs
+          test -s 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
+          grep -Fq '.update({lifecycle_status:safeStatus})' beta/src/services/catalogue.js
+          grep -Fq '.select("id,lifecycle_status")' beta/src/services/catalogue.js
+          grep -Fq 'persisted!==safeStatus' beta/src/services/catalogue.js
+          grep -Fq "Object.prototype.hasOwnProperty.call(card,'lifecycle_status')" tools/generate-seo.mjs
+          grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
+          grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
+          grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
+          grep -q 'register-features.js?v=2026-09-26-v10' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v10' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -354,9 +372,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v09
-          PREVIOUS_VERSION: 2026-09-26-v08
-          PREVIOUS_COMMIT: 19b95d54bb79bf282c2d53a62c5825b88de14ef9
+          RELEASE_VERSION: 2026-09-26-v10
+          PREVIOUS_VERSION: 2026-09-26-v09
+          PREVIOUS_COMMIT: 43cc7efe0afb0eea91991ead5670768a17136c09
         run: |
           set -euo pipefail
           mkdir -p release
@@ -384,10 +402,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v09-packages
+          name: Collect-TCG-Beta-2026-09-26-v10-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v09-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v08-to-2026-09-26-v09-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v10-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v09-to-2026-09-26-v10-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -396,16 +414,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v09.txt"
+          MANIFEST="release-manifests/2026-09-26-v10.txt"
           {
-            echo "Version: 2026-09-26-v09"
-            echo "Previous version: 2026-09-26-v08"
+            echo "Version: 2026-09-26-v10"
+            echo "Previous version: 2026-09-26-v09"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v09-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v08-to-2026-09-26-v09-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v10-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v09-to-2026-09-26-v10-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v09: record package validation"
+          git commit -m "Beta 2026-09-26-v10: record package validation"
           git push
