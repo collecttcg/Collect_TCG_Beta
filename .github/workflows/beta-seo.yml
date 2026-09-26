@@ -174,8 +174,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' beta/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' beta/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-25-v05' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -268,8 +268,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' beta/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' beta/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-26-v06' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate buyer privacy guards
         shell: bash
@@ -289,8 +289,8 @@ jobs:
           grep -q 'tiles.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' beta/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate hidden-card visibility guards
         shell: bash
@@ -309,8 +309,8 @@ jobs:
           grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/register-features.js
           grep -q 'page.js?v=2026-09-26-v07' beta/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate owner-only Hidden Listings page
         shell: bash
@@ -327,9 +327,13 @@ jobs:
           grep -Fq 'appContext.renderHiddenListingsPage()' beta/src/app/routing.js
           grep -Fq 'function renderHiddenListingsPage()' beta/src/features/owner/lifecycle.js
           grep -Fq 'appContext.cardLifecycle(card)==="draft"' beta/src/features/owner/lifecycle.js
-          grep -Fq 'No hidden listings.' beta/src/features/owner/lifecycle.js
-          grep -Fq 'Unhide / Publish' beta/src/features/owner/lifecycle.js
-          grep -Fq 'data-life-archive' beta/src/features/owner/lifecycle.js
+          grep -Fq 'drafts.map(appContext.cardTileHTML).join("")' beta/src/features/owner/lifecycle.js
+          grep -Fq 'class="${compact ? "grid compact-list" : "grid"}"' beta/src/features/owner/lifecycle.js
+          grep -Fq 'id="hiddenListingsViewToggle"' beta/src/features/owner/lifecycle.js
+          grep -Fq 'appContext.wireShimmer(grid);' beta/src/features/owner/lifecycle.js
+          grep -Fq 'appContext.wireCardActions(grid);' beta/src/features/owner/lifecycle.js
+          grep -Fq 'appContext.getInventoryViewMode()==="compact"' beta/src/features/owner/lifecycle.js
+          grep -Fq 'No hidden listings' beta/src/features/owner/lifecycle.js
           grep -Fq 'renderHiddenListingsPage' beta/src/features/owner/lifecycle.js
           test "$(grep -o 'href="#/hidden-listings"' beta/index.html | wc -l | tr -d ' ')" = "3"
           test "$(grep -o 'data-route="hidden-listings" class="owner-only' beta/index.html | wc -l | tr -d ' ')" -ge "2"
@@ -337,14 +341,14 @@ jobs:
           grep -q 'navigation.js?v=2026-09-26-v12' beta/src/app/register-features.js
           grep -q 'routing.js?v=2026-09-26-v12' beta/src/app/register-features.js
           grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/register-features.js
-          grep -q 'lifecycle.js?v=2026-09-26-v12' beta/src/app/register-features.js
+          grep -q 'lifecycle.js?v=2026-09-26-v13' beta/src/app/register-features.js
           grep -q 'repository.js?v=2026-09-26-v12' beta/src/app/initialize.js
           grep -q 'navigation.js?v=2026-09-26-v12' beta/src/app/initialize.js
           grep -q 'routing.js?v=2026-09-26-v12' beta/src/app/initialize.js
           grep -q 'filtering.js?v=2026-09-26-v12' beta/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
           grep -q 'initialize.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate public hidden-card source guards
         shell: bash
@@ -361,8 +365,8 @@ jobs:
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
           grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Validate Beta v10 hidden-listing persistence contract
         shell: bash
@@ -378,8 +382,8 @@ jobs:
           grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" 2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -q 'catalogue.js?v=2026-09-26-v10' beta/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-26-v12' beta/src/main.js
-          grep -q 'src/main.js?v=2026-09-26-v12' beta/index.html
+          grep -q 'register-features.js?v=2026-09-26-v13' beta/src/main.js
+          grep -q 'src/main.js?v=2026-09-26-v13' beta/index.html
 
       - name: Generate Beta SEO card pages
         run: node tools/generate-seo.mjs --beta
@@ -411,9 +415,9 @@ jobs:
       - name: Create Beta release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-26-v12
-          PREVIOUS_VERSION: 2026-09-26-v11
-          PREVIOUS_COMMIT: 919024d28451f598e8a134eccc91a871a82e26e8
+          RELEASE_VERSION: 2026-09-26-v13
+          PREVIOUS_VERSION: 2026-09-26-v12
+          PREVIOUS_COMMIT: 217801816a5d55184295c10480e89d90bc85ca73
         run: |
           set -euo pipefail
           mkdir -p release
@@ -441,10 +445,10 @@ jobs:
       - name: Upload Beta release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-26-v12-packages
+          name: Collect-TCG-Beta-2026-09-26-v13-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-26-v12-full.zip
-            release/Collect-TCG-Beta-2026-09-26-v11-to-2026-09-26-v12-patch.zip
+            release/Collect-TCG-Beta-2026-09-26-v13-full.zip
+            release/Collect-TCG-Beta-2026-09-26-v12-to-2026-09-26-v13-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -453,16 +457,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-26-v12.txt"
+          MANIFEST="release-manifests/2026-09-26-v13.txt"
           {
-            echo "Version: 2026-09-26-v12"
-            echo "Previous version: 2026-09-26-v11"
+            echo "Version: 2026-09-26-v13"
+            echo "Previous version: 2026-09-26-v12"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v12-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v11-to-2026-09-26-v12-patch.zip"
+            echo "Full ZIP: Collect-TCG-Beta-2026-09-26-v13-full.zip"
+            echo "Patch ZIP: Collect-TCG-Beta-2026-09-26-v12-to-2026-09-26-v13-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-26-v12: record package validation"
+          git commit -m "Beta 2026-09-26-v13: record package validation"
           git push
