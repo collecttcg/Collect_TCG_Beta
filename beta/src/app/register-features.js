@@ -41,7 +41,7 @@ import { register as register36 } from '../features/owner/bulk-price.js';
 import { register as register37 } from '../features/owner/bulk-metadata.js';
 import { register as register38 } from '../features/owner/history.js';
 import { register as register39 } from '../features/owner/export.js';
-import { register as register40 } from '../features/owner/add.js';
+import { register as register40 } from '../features/owner/add.js?v=2026-09-26-v16';
 import { register as register41 } from '../features/cards/details.js?v=2026-09-26-v02';
 import { register as register42 } from '../features/owner/editor.js';
 import { register as register43 } from '../app/theme.js';
