@@ -19,7 +19,7 @@ function collageScopeLabel(){
 
 function collageCardsForCurrentScope(){
     if(!["collection","inventory"].includes(appContext.listingAvailabilityScope)) return [];
-    return appContext.getFiltered().filter(card=>appContext.cardMatchesListingScope(card,appContext.listingAvailabilityScope));
+    return appContext.getFiltered().filter(card=>appContext.isLiveLifecycle(card) && appContext.cardMatchesListingScope(card,appContext.listingAvailabilityScope));
   }
 
 function collageCardPriceLabel(card){
@@ -596,7 +596,7 @@ function createCollectionCollageQrCode(text,size=640){
   }
 
 function collagePickerCards(){
-    return appContext.cards.filter(card=>["inventory","collection","sold","reserved"].some(scope=>appContext.cardMatchesListingScope(card,scope)));
+    return appContext.cards.filter(card=>appContext.isLiveLifecycle(card) && ["inventory","collection","sold","reserved"].some(scope=>appContext.cardMatchesListingScope(card,scope)));
   }
 
 function collageResolveSelected(ids){
