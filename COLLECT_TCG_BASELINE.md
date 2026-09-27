@@ -92,11 +92,27 @@ Changes:
 - Preserves the Development v12 Owner Add/Edit fix: per-photo watermark/privacy/rotation controls stay below the image rather than covering it.
 - No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/asset checks passed
+- approved-mockup watermark geometry/wiring checks passed
+- Development v12 Owner image-editor footer fix remained validated
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages Development deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v13-full.zip`
+  - SHA-256: `d3d04e439587b24d1a4191717870bf74729e1e982013c3cced1a52f2725f5fd4`
 - `Collect-TCG-Dev-2026-09-27-v12-to-2026-09-27-v13-patch.zip`
+  - SHA-256: `0dc6f5abea893a054593dc17532b4fd86adf695b21de16c1ca5bc9880eb6c153`
+
+Development v13 feature commit: `e340e004c97c7e94c14d3ecfbc5cb49977321e24`
+
+Development v13 packaged source commit: `f98d266af58eb6d943bd383315346523467a8148`
+
+Development v13 package-validation HEAD: `c12bceb555d61f53dc71ddacf565400afbc5835d`
 
 ### Development `2026-09-27-v12`
 
