@@ -103,7 +103,16 @@ function loadWatermarkBannerTemplate(){
 
     appContext.watermarkBannerTemplatePromise = new Promise((resolve,reject)=>{
       const template = new Image();
-      template.onload = ()=>resolve(template);
+      template.onload = ()=>{
+        const w=template.naturalWidth||template.width||0;
+        const h=template.naturalHeight||template.height||0;
+        if(w < 1000 || h < 200){
+          appContext.watermarkBannerTemplatePromise = null;
+          reject(new Error("watermark banner template is incomplete"));
+          return;
+        }
+        resolve(template);
+      };
       template.onerror = ()=>{
         appContext.watermarkBannerTemplatePromise = null;
         reject(new Error("watermark banner template unavailable"));
