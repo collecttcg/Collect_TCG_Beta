@@ -18632,3 +18632,62 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
   bottom:auto !important;
   left:40px !important;
 }
+
+
+/* =========================================================
+   ADD / EDIT OWNER WORKSPACE — WIDE DESKTOP LAYOUT
+   ========================================================= */
+@media(min-width:901px){
+  #editForm.modal{
+    width:min(94vw,1180px);
+    max-width:1180px;
+    padding:28px 30px;
+  }
+
+  #addForm.form-card{
+    width:min(100%,1180px);
+    max-width:1180px;
+    padding:28px 30px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:16px !important;
+  }
+
+  #editForm .image-gallery-preview .image-preview-box[data-image-index] > img,
+  #addForm .image-gallery-preview .image-preview-box[data-image-index] > img{
+    height:380px !important;
+    flex-basis:380px;
+  }
+
+  #editFieldsMount > :not(.image-field),
+  #addForm > :not(.image-field){
+    max-width:900px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
+  #editFieldsMount > .image-field,
+  #addForm > .image-field{
+    width:100%;
+  }
+}
+
+@media(min-width:701px) and (max-width:900px){
+  #editForm.modal{
+    width:min(96vw,820px);
+    max-width:820px;
+  }
+
+  #addForm.form-card{
+    width:100%;
+    max-width:820px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
