@@ -524,7 +524,7 @@ jobs:
           MANIFEST="release-manifests/2026-09-27-v09.txt"
           {
             echo "Version: 2026-09-27-v09"
-            echo "Previous version: 2026-09-27-v07"
+            echo "Previous version: 2026-09-27-v08"
             echo "Source commit: $(git rev-parse HEAD)"
             echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v09-full.zip"
             echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v08-to-2026-09-27-v09-patch.zip"
