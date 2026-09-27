@@ -91,7 +91,26 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress. Do not call this release complete until v19 workflow validation, package integrity and Development Pages deployment succeed.
+Validation:
+- Feature regression suite: 43/43 passed.
+- Changed JavaScript syntax checks: passed.
+- Approved banner asset identity/path, 1113×242 artwork integration and dynamic QR wiring: passed.
+- Complete routing/initialize/register-features/main/index cache chain: passed.
+- Owner/privacy, Inventory, generator and SEO regression checks: passed.
+- Full and previous-to-new patch ZIP integrity/SHA-256 checks: passed.
+- Development GitHub Pages deployment: passed.
+- Desktop visual validation: user confirmed the generated Mini Tin watermark matches the approved banner on 2026-09-27.
+- Mobile/Safari-specific visual rendering of this watermark was not separately exercised.
+
+Packages:
+- `Collect-TCG-Dev-2026-09-27-v19-full.zip`
+  - SHA-256: `7a216916cb46c0a226dfc6b67054f7bee361db6f41ed6fba90aa2601fc3a054b`
+- `Collect-TCG-Dev-2026-09-27-v17-to-2026-09-27-v19-patch.zip`
+  - SHA-256: `5b03a382a45cbc3bfaf48a40a4235cfc72a0a75844169ddc06098178b8f2d3f4`
+
+Packaged source commit: `ec5435b319b267ca0b6e08a3156145d9e2b0e399`
+
+Package-validation commit: `d485433442135d79909be616a7a46530325b18ae`
 
 ### Development `2026-09-27-v17`
 
