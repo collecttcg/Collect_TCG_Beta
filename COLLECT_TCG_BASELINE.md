@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v20`
+Latest Development: `2026-09-27-v21`
 
-Previous Development: `2026-09-27-v19`
+Previous Development: `2026-09-27-v20`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v21`
+
+Previous Development: `2026-09-27-v20`
+
+Purpose: keep Add/Edit photo previews fully visible while retaining all owner watermark, PSA privacy and rotation controls.
+
+Changes:
+- Moves the per-photo Logo/CTA/QR, Original, Hide PSA info, Undo hide and rotation controls below the photo instead of overlaying the lower half.
+- Lets each Add/Edit preview render at its natural full image aspect ratio.
+- Keeps drag handle, photo number and remove control accessible at the top of the preview.
+- Does not change watermark generation, PSA masking behavior, image ordering/storage, public inventory images or Production.
+
+SQL required: No.
+
+Validation status: in progress. Desktop visual confirmation of the unobstructed Edit-card preview is required before this release is accepted.
 
 ### Development `2026-09-27-v20`
 
