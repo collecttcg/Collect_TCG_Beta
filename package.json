@@ -1,6 +1,6 @@
 {
   "name": "collect-tcg-dev",
-  "version": "2026.9.27-dev.22",
+  "version": "2026.9.27-dev.23",
   "private": true,
   "type": "module",
   "description": "Development and validation repository for Collect TCG MY & SG",
