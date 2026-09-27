@@ -92,7 +92,25 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress. Do not call this release complete until the v17 workflow, package integrity and Development Pages deployment succeed.
+Validation:
+- feature regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/cache-reference checks passed
+- reference watermark CTA/geometry/QR wiring checks passed
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity and SHA-256 checks passed
+- GitHub Pages Development deployment passed
+- browser visual comparison of a newly regenerated card image has not been performed in this tool environment
+
+Packages:
+- `Collect-TCG-Dev-2026-09-27-v17-full.zip`
+  - SHA-256: `737095553cdb5f0681a9973e89d5ad45eb6a077150d7a3bd6c35b9c5282f7f01`
+- `Collect-TCG-Dev-2026-09-27-v10-to-2026-09-27-v17-patch.zip`
+  - SHA-256: `34494e64461da788d0127418e43bea724ca125402b85fe676abcd5d6809cc217`
+
+Development v17 packaged source commit: `c2990f43e4f2e88903567cba05e97e3d8d0a47d8`
+
+Development v17 package-validation HEAD: `1a9de40db02d9ea517e2b5cd75afc928b62f6a96`
 
 ### Development `2026-09-27-v10`
 
