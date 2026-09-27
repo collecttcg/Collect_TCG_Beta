@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v21`
+Latest Development: `2026-09-27-v22`
 
-Previous Development: `2026-09-27-v20`
+Previous Development: `2026-09-27-v21`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v22`
+
+Previous Development: `2026-09-27-v21`
+
+Purpose: align Add/Edit photo preview heights while keeping every source image fully visible.
+
+Changes:
+- Gives each desktop Add/Edit photo a consistent 430px preview stage so left/right controls align even when source aspect ratios differ.
+- Keeps `object-fit: contain`, so no part of a source image is cropped.
+- Uses responsive equal-height stages on mobile while preserving the v21 controls-below-image layout.
+- Does not change watermark generation, PSA masking behavior, image ordering/storage, public inventory images or Production.
+
+SQL required: No.
+
+Validation status: in progress. Screenshot/browser confirmation of equal-height preview rows is required before acceptance.
 
 ### Development `2026-09-27-v21`
 
