@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v17`
+Latest Development: `2026-09-27-v19`
 
-Previous Development: `2026-09-27-v10`
+Previous Development: `2026-09-27-v17`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v19`
+
+Previous Development: `2026-09-27-v17`
+
+Purpose: integrate the user-confirmed approved inventory watermark banner as the canonical artwork after the rejected v18 asset experiment was rolled back.
+
+Changes:
+- Uses `dev/assets/collect-tcg-inventory-watermark-approved.png` as the complete 1113×242 banner artwork.
+- The approved artwork is rendered as one intact layer; browser fonts no longer recreate the banner.
+- Only the QR interior is regenerated dynamically, preserving the approved QR surround while keeping the inventory destination functional.
+- Preserves the existing optional top-right logo path and owner-only watermark controls.
+- No Supabase/RLS, Inventory data/order/filtering, Contact to Buy, giveaway, analytics, navigation or Production behavior is intentionally changed.
+
+SQL required: No.
+
+Validation status: in progress. Do not call this release complete until v19 workflow validation, package integrity and Development Pages deployment succeed.
 
 ### Development `2026-09-27-v17`
 
