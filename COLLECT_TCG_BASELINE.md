@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v19`
+Latest Development: `2026-09-27-v20`
 
-Previous Development: `2026-09-27-v17`
+Previous Development: `2026-09-27-v19`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v20`
+
+Previous Development: `2026-09-27-v19`
+
+Purpose: reduce the approved inventory watermark banner size after visual review on a portrait listing photo.
+
+Changes:
+- Scales the existing approved watermark banner to 82% of the source image width instead of nearly full width.
+- Keeps the banner centered and bottom-aligned.
+- Preserves the exact approved artwork, aspect ratio and dynamic QR behavior from v19.
+- No other visual, Inventory, Owner Mode, Supabase/RLS, Contact to Buy, giveaway, analytics, navigation or Production behavior is intentionally changed.
+
+SQL required: No.
+
+Validation status: in progress. Desktop visual confirmation of the new 82% size is required before this release is accepted.
 
 ### Development `2026-09-27-v19`
 
