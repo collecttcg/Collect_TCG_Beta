@@ -90,11 +90,26 @@ Changes:
 - `CTA + QR only` still omits the separate floating top-right logo; `Logo + CTA + QR` still includes it.
 - No Supabase/RLS, inventory behavior, buyer navigation, Contact to Buy, generator, giveaway, or analytics behavior is intentionally changed.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax check passed
+- repository/import/asset checks passed
+- QR CTA/branding/wiring checks passed
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages Development deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v11-full.zip`
+  - SHA-256: `f4747f1cf368ac9e0005dce2a1efcfe1a73307eab1ec25ec3a5668810a712569`
 - `Collect-TCG-Dev-2026-09-27-v10-to-2026-09-27-v11-patch.zip`
+  - SHA-256: `e11199db01e32a64b55f02bd2cc6bc89d535adbe04999c1169429fe17d639498`
+
+Development v11 feature commit: `0972331fe98b080159bd81c925d8312ba1ebe9c5`
+
+Development v11 packaged source commit: `dccce268327e36c7c18c9ab3e3e682bfe8e25cff`
+
+Development v11 package-validation HEAD: `1a5d70f2bae99107993e21f53a4ef3659d42e03f`
 
 ### Development `2026-09-27-v10`
 
