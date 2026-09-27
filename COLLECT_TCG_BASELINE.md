@@ -90,7 +90,17 @@ Changes:
 - The One Piece Hyper Battle / One Piece Card Game distinction is therefore preserved during new-card insertion.
 - No database schema change or SQL migration is required.
 
-Validation status: in progress.
+Validation status: completed successfully. Feature regression tests, changed JavaScript syntax, import/cache references, game-aware new-card insertion tests, Inventory filter/game-browser regression checks, Owner/privacy/hidden-card guards, retained v27 Bulk Images, SEO generation, release ZIP creation/integrity and Development Pages deployment all passed.
+
+Release records:
+- Source commit: `b3e3a211575957570571d2e96cdf6134019b50ed`
+- Package-validation HEAD: `7ffb73b1d6e9d5c695dfcf29450593693a2effd8`
+- Full ZIP: `Collect-TCG-Dev-2026-09-27-v28-full.zip`
+  - SHA-256: `1c15ec471f5e55d32a075b373a3970aee677d90c4dc600619c4385e4cff9f87f`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-27-v27-to-2026-09-27-v28-patch.zip`
+  - SHA-256: `2437c1a9979a75f9634752cdc0f91d5b3a1c0921627f3c7e07f890dda4fc7599`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed in the current tool environment.
 
 ### Development `2026-09-27-v27`
 
