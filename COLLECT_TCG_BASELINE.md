@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v27`
+Latest Development: `2026-09-27-v28`
 
-Previous Development: `2026-09-27-v26`
+Previous Development: `2026-09-27-v27`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v08`
+Latest Production: `2026-09-27-v09`
 
-Previous Production: `2026-09-27-v07`
+Previous Production: `2026-09-27-v08`
 
-Production functional baseline last promoted from Development: `2026-09-27-v25`
+Production functional baseline last promoted from Development: `2026-09-27-v27`
 
-Production package-validation HEAD: `7e4fdb224d901e747c4d5639d9bfc7952d852d33`
+Production package-validation HEAD: `840ba48e1f39481229790da0871cccd396b2ac46`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v28`
+
+Previous Development: `2026-09-27-v27`
+
+Purpose: correct new Inventory-card automatic placement so the saved game/category is respected before grade/condition/format ordering.
+
+Changes:
+- Newly added Inventory cards are inserted inside their own exact `game` category instead of using one global slab/raw/sealed bucket across all games.
+- Within that game/category, new-card placement is: Graded first (highest numeric grade first), then Raw M → NM → LP → MP → HP → DMG → N/A, then Sealed.
+- Existing cards retain their relative custom order; this change does not globally rearrange existing Inventory cards.
+- A brand-new game/category uses the saved Inventory game-group order where available.
+- The One Piece Hyper Battle / One Piece Card Game distinction is therefore preserved during new-card insertion.
+- No database schema change or SQL migration is required.
+
+Validation status: in progress.
 
 ### Development `2026-09-27-v27`
 
