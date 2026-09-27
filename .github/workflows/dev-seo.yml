@@ -436,11 +436,6 @@ jobs:
           ! grep -Fq '2025-one-piece-card-game-championship-cs-25-26-top-player-pack-finalist-complete-luffy-nami-chopper-ace-buggy-perona' dev/sitemap.xml
           git diff --check
 
-      - name: Switch GitHub Pages to Actions
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api --method PUT "repos/${{ github.repository }}/pages" -f build_type=workflow
-
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
