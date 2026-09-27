@@ -381,7 +381,7 @@ For every completed Production update provide:
 - Previous → new Production patch ZIP
 - SQL migration separately when required
 - Previous Production version
-- Beta version promoted from
+- Development version promoted from
 - Validation summary
 
 Current package records before v20 packaging:
@@ -402,13 +402,13 @@ Beta 2026-09-27-v01 packages must be:
 
 ## Version Naming Rules
 
-### Beta full package
+### Development full package
 
-`Collect-TCG-Beta-YYYY-MM-DD-vNN-full.zip`
+`Collect-TCG-Dev-YYYY-MM-DD-vNN-full.zip`
 
-### Beta patch
+### Development patch
 
-`Collect-TCG-Beta-OLDVERSION-to-NEWVERSION-patch.zip`
+`Collect-TCG-Dev-OLDVERSION-to-NEWVERSION-patch.zip`
 
 ### Production full package
 
