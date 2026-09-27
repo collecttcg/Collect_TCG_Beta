@@ -75,7 +75,7 @@ const baselinePath=path.join(repoRoot,'COLLECT_TCG_BASELINE.md');
 if(!fs.existsSync(baselinePath)) throw new Error('Missing COLLECT_TCG_BASELINE.md');
 const baseline=fs.readFileSync(baselinePath,'utf8');
 for(const required of [
-  'Latest Development: `2026-09-27-v06`',
+  'Latest Development: `2026-09-27-v07`',
   'Latest Production: `2026-09-27-v06`',
   'Production functional baseline last promoted from Development (then named Beta): `2026-09-27-v02`',
   'migrations/2026/',
@@ -96,6 +96,7 @@ for(const row of styleOrder){
 console.log(`Checked ${count} JavaScript files, imports, HTML assets, migrations and repository structure.`);
 
 const devUrlFiles=[
+  ['index.html','./beta/'],
   ['beta/index.html','https://collecttcg.github.io/Collect_TCG_Dev/beta/'],
   ['beta/robots.txt','https://collecttcg.github.io/Collect_TCG_Dev/beta/sitemap.xml'],
   ['tools/generate-seo.mjs','Collect_TCG_Dev/beta/'],

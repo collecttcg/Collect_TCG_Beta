@@ -31,7 +31,7 @@ Node.js 22+:
 - `npm run build` — validated deployable copy under `dist/beta/`.
 - `npm run dev` — local HTTP preview.
 
-The website uses native ES modules and does not require a framework build for GitHub Pages. The validated `beta/` directory is deployed to the Development Pages site at `https://collecttcg.github.io/Collect_TCG_Dev/`.
+The website uses native ES modules and does not require a framework build for GitHub Pages. The application remains under `beta/` for compatibility, and the repository-root Pages URL `https://collecttcg.github.io/Collect_TCG_Dev/` redirects to it.
 
 ## Database migrations
 

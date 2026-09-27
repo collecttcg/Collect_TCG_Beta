@@ -54,7 +54,7 @@ Production functional baseline last promoted from Development (then named Beta):
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
 GitHub Pages status at reconciliation:
-- Development `2026-09-27-v07` adds the missing GitHub Pages artifact/deploy path for the renamed Development repository; deployment success must be confirmed by the workflow before the release is called completed.
+- Development `2026-09-27-v07` adds a root redirect into the retained `/beta/` Development application path; deployment success must be confirmed before the release is called completed.
 - Production remains unchanged and protected.
 
 Important promotion state:
@@ -78,7 +78,7 @@ Important promotion state:
 
 ### Development `2026-09-27-v07`
 
-Purpose: restore Development GitHub Pages access after the Beta → Development repository rename. The validated `beta/` site is uploaded as the Pages artifact and deployed through the `github-pages` environment. No application runtime behavior changes.
+Purpose: restore Development access after the Beta → Development repository rename. GitHub Pages continues serving the repository with the application under `/beta/`, and a root `index.html` now redirects `https://collecttcg.github.io/Collect_TCG_Dev/` to the existing Development application path. No application runtime behavior changes.
 
 The functional Beta baseline carried forward unchanged from v20 includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.

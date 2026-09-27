@@ -48,8 +48,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: dev-seo-refresh
@@ -436,14 +434,6 @@ jobs:
           ! grep -Fq '2025-one-piece-card-game-championship-cs-25-26-top-player-pack-finalist-complete-luffy-nami-chopper-ace-buggy-perona' beta/sitemap.xml
           git diff --check
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Development site for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: beta
-
       - name: Commit refreshed SEO pages
         shell: bash
         run: |
@@ -516,14 +506,3 @@ jobs:
           git add "$MANIFEST"
           git commit -m "Development 2026-09-27-v07: record package validation"
           git push
-
-  deploy:
-    needs: refresh
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy Development site to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
