@@ -89,11 +89,27 @@ Changes:
 - Increased preview-card height and tuned Owner control sizing so the photo remains visible while editing.
 - No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/asset checks passed
+- compact watermark branding/wiring checks passed
+- Owner preview footer/layout checks passed
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages Development deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v12-full.zip`
+  - SHA-256: `39bd17dd5180077cde56e83d57e7393c1e540285f9a723f94ae48d75e8084d4b`
 - `Collect-TCG-Dev-2026-09-27-v11-to-2026-09-27-v12-patch.zip`
+  - SHA-256: `726808ced9dfb7efcb3597dbfc45165085f999e0def6c8b8d7af711a83649616`
+
+Development v12 feature commit: `b85f1ef32467b2bfbeed060398bcf2853f269c6e`
+
+Development v12 packaged source commit: `71799d9f66f9d971427b7ccbb529fe35e6dfe671`
+
+Development v12 package-validation HEAD: `e3eed7e106d0bb99f1784b2dcf107e72579094e0`
 
 ### Development `2026-09-27-v11`
 
