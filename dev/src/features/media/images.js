@@ -167,25 +167,6 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
     ctx.drawImage(template,bannerX,bannerY,bannerWidth,bannerHeight);
-
-    // The approved template intentionally reserves this center strip for the CTA.
-    // Keep the template artwork untouched and overlay only the approved dynamic wording.
-    const sx=bannerWidth/sourceW;
-    const sy=bannerHeight/sourceH;
-    const cta="SEE MORE CARDS • BROWSE INVENTORY";
-    const titleX=bannerX+(392*sx);
-    const titleY=bannerY+(104*sy);
-    const titleMaxWidth=469*sx;
-    let titleSize=Math.max(12,Math.round(48*sy));
-    ctx.textAlign="left";
-    ctx.textBaseline="middle";
-    while(titleSize>10){
-      ctx.font="800 "+titleSize+"px 'Barlow Condensed', Arial, sans-serif";
-      if(ctx.measureText(cta).width<=titleMaxWidth) break;
-      titleSize-=1;
-    }
-    ctx.fillStyle="#f8c64e";
-    ctx.fillText(cta,titleX,titleY,titleMaxWidth);
     ctx.restore();
   }
 

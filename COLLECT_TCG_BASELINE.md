@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v15`
+Latest Development: `2026-09-27-v16`
 
-Previous Development: `2026-09-27-v14`
+Previous Development: `2026-09-27-v15`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,20 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v16`
+
+Previous Development: `2026-09-27-v15`
+
+Purpose: correct the website watermark renderer so the approved banner asset is rendered as one complete image with no code-drawn reinterpretation.
+
+Changes:
+- Removes the separately code-drawn CTA text from `drawWebsiteWatermark()`.
+- The renderer now only sizes, positions, and draws the approved banner template asset.
+- No logo, CTA, URL, QR, border, glow, or branding element is reconstructed in JavaScript.
+- Production is unchanged.
+
+Validation: pending. The renderer correction is committed to Development main; the banner binary itself must also be confirmed complete on GitHub before this release can be called complete.
 
 ### Development `2026-09-27-v15`
 
