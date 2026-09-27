@@ -548,8 +548,8 @@ jobs:
           mkdir -p release-manifests
           MANIFEST="release-manifests/2026-09-27-v22.txt"
           {
-            echo "Version: ${RELEASE_VERSION}"
-            echo "Previous version: ${PREVIOUS_VERSION}"
+            echo "Version: 2026-09-27-v22"
+            echo "Previous version: 2026-09-27-v21"
             echo "Source commit: $(git rev-parse HEAD)"
             echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v22-full.zip"
             echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v21-to-2026-09-27-v22-patch.zip"
