@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v10`
+Latest Development: `2026-09-27-v17`
 
-Previous Development: `2026-09-27-v09`
+Previous Development: `2026-09-27-v10`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v17`
+
+Previous Development: `2026-09-27-v10`
+
+Purpose: rebuild the inventory CTA watermark from the clean v10 baseline to match the user-approved visual reference without reusing the abandoned v11-v16 watermark redesign implementations.
+
+Changes:
+- Keeps the existing v10 watermark modes and QR destination.
+- Rebuilds only the bottom inventory CTA banner with the reference's near-edge-to-edge ~4.67:1 proportions.
+- Uses a black/gold double frame and glow, left Collect TCG branding treatment, centered `CHECK PRICE • AVAILABILITY` CTA, outlined URL pill, right-side QR card and decorative gold slashes.
+- Keeps the optional top-right logo behavior from v10 unchanged.
+- No Supabase/RLS, public navigation, Inventory ordering/filtering, Contact to Buy, giveaway or analytics behavior is intentionally changed.
+- Development v11-v16 watermark redesign attempts were rolled back and remain abandoned; do not restore them as active behavior.
+
+SQL required: No.
+
+Validation status: in progress. Do not call this release complete until the v17 workflow, package integrity and Development Pages deployment succeed.
 
 ### Development `2026-09-27-v10`
 
