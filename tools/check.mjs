@@ -102,7 +102,7 @@ const devUrlFiles=[
   ['insights/README.md','https://collecttcg.github.io/Collect_TCG_Dev/insights/']
 ];
 for(const [rel,marker] of devUrlFiles){
-  const content=fs.readFileSync(path.join(root,rel),'utf8');
+  const content=fs.readFileSync(path.join(repoRoot,rel),'utf8');
   if(!content.includes(marker)) throw new Error('Development rename marker missing in '+rel);
   if(content.includes('Collect_TCG_Beta')) throw new Error('Active old repository name remains in '+rel);
 }
