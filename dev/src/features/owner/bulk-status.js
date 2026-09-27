@@ -840,6 +840,7 @@ function renderInventoryToolsPage(){
     else if(submode==="history") appContext.renderEditHistoryPage();
     else if(submode==="qr") renderQrGeneratorPage();
     else if(submode==="audit") appContext.renderCatalogueAuditPage();
+    else if(mode==="bulk" && submode==="images") appContext.renderImageReprocessPage(true);
     else if(submode==="images") appContext.renderImageHealthPage(true);
     else if(submode==="duplicates") appContext.renderDuplicateDetectorPage();
     else if(submode==="reprocess") appContext.renderImageReprocessPage();
