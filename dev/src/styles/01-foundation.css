@@ -18691,3 +18691,313 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
     grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   }
 }
+
+
+/* =========================================================
+   ADD / EDIT OWNER WORKSPACE V24 — RESPONSIVE TABBED EDITOR
+   ========================================================= */
+#editForm .owner-editor-tabs,
+#addForm .owner-editor-tabs{
+  display:flex;
+  gap:8px;
+  width:100%;
+  margin:4px 0 18px;
+  padding:5px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface-2);
+  position:sticky;
+  top:8px;
+  z-index:30;
+}
+
+#editForm .owner-editor-tab,
+#addForm .owner-editor-tab{
+  flex:1;
+  min-height:44px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:var(--text-muted);
+  font-size:14px;
+  font-weight:800;
+  letter-spacing:.02em;
+  cursor:pointer;
+}
+
+#editForm .owner-editor-tab.is-active,
+#addForm .owner-editor-tab.is-active{
+  color:var(--accent);
+  border-color:rgba(255,193,7,.38);
+  background:rgba(255,193,7,.08);
+}
+
+#editForm .owner-editor-panel,
+#addForm .owner-editor-panel{
+  width:100%;
+  min-width:0;
+}
+
+#editFieldsMount > .owner-editor-tabs,
+#editFieldsMount > .owner-editor-panel,
+#addForm > .owner-editor-tabs,
+#addForm > .owner-editor-panel{
+  max-width:none !important;
+  margin-left:0 !important;
+  margin-right:0 !important;
+}
+
+#editForm [data-owner-editor-panel="details"],
+#addForm [data-owner-editor-panel="details"]{
+  max-width:960px;
+  margin:0 auto;
+}
+
+#editForm .owner-editor-section-heading,
+#addForm .owner-editor-section-heading{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:16px;
+  margin:26px 0 13px;
+  padding:0 0 9px;
+  border-bottom:1px solid rgba(255,193,7,.22);
+}
+
+#editForm .owner-editor-section-heading:first-child,
+#addForm .owner-editor-section-heading:first-child{
+  margin-top:2px;
+}
+
+#editForm .owner-editor-section-heading span,
+#addForm .owner-editor-section-heading span{
+  color:var(--accent);
+  font-size:17px;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+#editForm .owner-editor-section-heading small,
+#addForm .owner-editor-section-heading small{
+  color:var(--text-muted);
+  font-size:12.5px;
+  line-height:1.35;
+  text-align:right;
+}
+
+#editForm .field > label,
+#addForm .field > label{
+  font-size:13.5px;
+  font-weight:750;
+  letter-spacing:.045em;
+}
+
+#editForm input,
+#editForm select,
+#editForm textarea,
+#addForm input,
+#addForm select,
+#addForm textarea{
+  font-size:16px;
+}
+
+#editForm .hint,
+#addForm .hint,
+#editForm .image-gallery-note,
+#addForm .image-gallery-note{
+  font-size:13px;
+  line-height:1.45;
+}
+
+#editForm .image-field,
+#addForm .image-field{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+#editForm .image-controls,
+#addForm .image-controls{
+  display:contents;
+}
+
+#editForm .image-watermark-all-actions,
+#addForm .image-watermark-all-actions{order:1;}
+
+#editForm .psa-image-privacy-control,
+#addForm .psa-image-privacy-control{order:2;}
+
+#editForm .image-controls > input[type="file"],
+#addForm .image-controls > input[type="file"]{order:3;}
+
+#editForm .image-url-row,
+#addForm .image-url-row{order:4;}
+
+#editForm .image-gallery-preview,
+#addForm .image-gallery-preview{order:5;}
+
+#editForm .image-gallery-note,
+#addForm .image-gallery-note{order:6;}
+
+#editForm .image-watermark-all-actions strong,
+#addForm .image-watermark-all-actions strong{
+  font-size:14px;
+}
+
+#editForm .image-watermark-all-actions span,
+#addForm .image-watermark-all-actions span{
+  font-size:12.5px;
+}
+
+#editForm .image-watermark-all-buttons button,
+#addForm .image-watermark-all-buttons button{
+  min-height:40px;
+  font-size:12.5px;
+  padding:9px 13px;
+}
+
+#editForm .image-preview-watermark-actions button,
+#addForm .image-preview-watermark-actions button{
+  min-height:34px;
+  font-size:12px;
+  padding:7px 9px;
+}
+
+#editForm .image-preview-watermark-status,
+#addForm .image-preview-watermark-status{
+  font-size:11.5px;
+}
+
+#editForm > .modal-actions,
+#addForm > .modal-actions{
+  position:sticky;
+  bottom:0;
+  z-index:35;
+  margin:24px -30px -28px;
+  padding:14px 30px;
+  border-top:1px solid var(--border);
+  background:rgba(18,20,25,.96);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+#editForm > .modal-actions button,
+#addForm > .modal-actions button,
+#addForm > .modal-actions a{
+  min-height:44px;
+  font-size:14px;
+  font-weight:800;
+  padding:10px 18px;
+}
+
+@media(min-width:1201px){
+  #editForm.modal{
+    width:min(95vw,1240px);
+    max-width:1240px;
+  }
+
+  #addForm.form-card{
+    width:min(100%,1240px);
+    max-width:1240px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:18px !important;
+  }
+}
+
+@media(min-width:701px) and (max-width:1200px){
+  #editForm.modal{
+    width:min(96vw,940px);
+    max-width:940px;
+  }
+
+  #addForm.form-card{
+    width:min(100%,940px);
+    max-width:940px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+@media(max-width:700px){
+  #editForm .owner-editor-tabs,
+  #addForm .owner-editor-tabs{
+    top:4px;
+    margin-bottom:14px;
+  }
+
+  #editForm .owner-editor-tab,
+  #addForm .owner-editor-tab{
+    min-height:46px;
+    font-size:14px;
+  }
+
+  #editForm [data-owner-editor-panel="details"],
+  #addForm [data-owner-editor-panel="details"]{
+    max-width:none;
+  }
+
+  #editForm .owner-editor-section-heading,
+  #addForm .owner-editor-section-heading{
+    display:block;
+    margin-top:22px;
+  }
+
+  #editForm .owner-editor-section-heading span,
+  #addForm .owner-editor-section-heading span{
+    display:block;
+    font-size:16px;
+  }
+
+  #editForm .owner-editor-section-heading small,
+  #addForm .owner-editor-section-heading small{
+    display:block;
+    margin-top:3px;
+    font-size:12px;
+    text-align:left;
+  }
+
+  #editForm .field-row,
+  #addForm .field-row{
+    flex-direction:column;
+  }
+
+  #editForm .field > label,
+  #addForm .field > label{
+    font-size:13px;
+  }
+
+  #editForm input,
+  #editForm select,
+  #editForm textarea,
+  #addForm input,
+  #addForm select,
+  #addForm textarea{
+    font-size:16px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:1fr !important;
+  }
+
+  #editForm > .modal-actions,
+  #addForm > .modal-actions{
+    margin:20px -16px -16px;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  #editForm > .modal-actions button,
+  #addForm > .modal-actions button,
+  #addForm > .modal-actions a{
+    flex:1;
+    justify-content:center;
+  }
+}
