@@ -20,7 +20,7 @@ function currentInventoryToolMode(){
 function currentInventoryToolSubmode(mode){
     const requested=String(appContext.currentHashParams().get("sub")||"");
     const allowed={
-      bulk:["prices","metadata","status","psa","missing-certs"],
+      bulk:["prices","metadata","status","images","psa","missing-certs"],
       activity:["recent","history","qr"],
       quality:["audit","images","duplicates","reprocess"],
       lifecycle:["lifecycle"],
@@ -36,7 +36,7 @@ function currentInventoryToolSubmode(mode){
 
 function inventoryToolsSwitcher(mode,submode){
     const tabs=[
-      ["bulk","Bulk Edit","Prices · metadata · status","prices"],
+      ["bulk","Bulk Edit","Prices · metadata · status · images","prices"],
       ["activity","Activity","Recent · history","recent"],
       ["quality","Quality","Audit · images · duplicates · reprocess","audit"],
       ["lifecycle","Lifecycle","Drafts · archive","lifecycle"],
@@ -44,7 +44,7 @@ function inventoryToolsSwitcher(mode,submode){
     ];
 
     const subtabs={
-      bulk:[["prices","Bulk Prices"],["metadata","Bulk Metadata"],["status","Bulk Status"],["psa","PSA POP"],["missing-certs","Missing Certs"]],
+      bulk:[["prices","Bulk Prices"],["metadata","Bulk Metadata"],["status","Bulk Status"],["images","Bulk Images"],["psa","PSA POP"],["missing-certs","Missing Certs"]],
       activity:[["recent","Recently Edited"],["history","Edit History"],["qr","QR Generator"]],
       quality:[["audit","Catalogue Audit"],["images","Image Health"],["duplicates","Duplicates"],["reprocess","Reprocess Images"]],
       lifecycle:[["lifecycle","Drafts & Archive"]],
