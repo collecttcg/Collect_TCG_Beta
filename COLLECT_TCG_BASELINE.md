@@ -37,19 +37,19 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v09`
+Latest Development: `2026-09-27-v10`
 
-Previous Development: `2026-09-27-v08`
+Previous Development: `2026-09-27-v09`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v06`
+Latest Production: `2026-09-27-v07`
 
-Previous Production: `2026-09-27-v05`
+Previous Production: `2026-09-27-v06`
 
-Production functional baseline last promoted from Development (then named Beta): `2026-09-27-v02`
+Production functional baseline last promoted from Development: `2026-09-27-v09`
 
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
@@ -75,6 +75,26 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v10`
+
+Previous Development: `2026-09-27-v09`
+
+Purpose: improve generated card-image website watermarks so social images actively drive buyers to browse more inventory.
+
+Changes:
+- Website watermark banner now says `SEE MORE CARDS • BROWSE INVENTORY`.
+- Adds a real QR code pointing to the Production Inventory URL already defined by `CARD_WATERMARK_URL`.
+- Keeps the visible short site address `collecttcg.github.io/Collect_TCG`.
+- Owner image controls now describe the choices as `Logo + CTA + QR` and `CTA + QR only`.
+- Existing logo watermark remains optional; the CTA + QR-only option provides the cleaner no-top-logo layout.
+- No Supabase/RLS or public navigation behavior changes.
+
+Validation: in progress through the Development workflow.
+
+Expected packages:
+- `Collect-TCG-Dev-2026-09-27-v10-full.zip`
+- `Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip`
 
 ### Development `2026-09-27-v09`
 
