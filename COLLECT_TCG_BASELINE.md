@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v24`
+Latest Development: `2026-09-27-v25`
 
-Previous Development: `2026-09-27-v23`
+Previous Development: `2026-09-27-v24`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,28 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v25`
+
+Previous Development: `2026-09-27-v24`
+
+Purpose: make the Add/Edit owner editor more compact and restore the single continuous photos + details workflow requested after reviewing v24.
+
+Changes:
+- Removes the v24 Photos / Card Details tabs and restores one continuous Add/Edit scroll flow.
+- Photos remain first; card details follow immediately below.
+- Reduces the large-desktop editor to a maximum 1100px width with tighter padding.
+- Keeps readable v24 typography but slightly reduces section, label, hint and action sizing for a denser layout.
+- Uses 3 photo columns on large desktop, 2 on medium screens, and 1 on mobile.
+- Reduces the large-desktop photo stage from 380/430px behavior to a compact 350px stage while preserving full-image `object-fit: contain` behavior.
+- Retains section headings and sticky Save / Cancel controls.
+- Restores standard native form validation because no required fields are hidden behind tabs.
+- Preserves watermark generation, PSA privacy controls, image ordering/storage, Supabase/RLS, Owner Mode and public inventory behavior.
+- Production is unchanged.
+
+SQL required: No.
+
+Validation status: in progress. Automated validation, package integrity, Development deployment, and responsive visual confirmation are required before acceptance.
 
 ### Development `2026-09-27-v24`
 
