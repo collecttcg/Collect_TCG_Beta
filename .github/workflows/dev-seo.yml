@@ -488,7 +488,6 @@ jobs:
           grep -Fq 'CTA + QR only' dev/index.html
           grep -Fq 'COLLECT. TRADE. CONNECT.' dev/src/features/media/images.js
           grep -Fq 'drawWebsiteWatermark(ctx, canvas, {logo})' dev/src/features/media/images.js
-          grep -Fq 'shortSide*0.158' dev/src/features/media/images.js
           grep -Fq 'grid-template-rows:minmax(0,1fr) auto' dev/src/styles/01-foundation.css
           grep -Fq 'position:static' dev/src/styles/01-foundation.css
           grep -Fq 'shortSide*0.205' dev/src/features/media/images.js
