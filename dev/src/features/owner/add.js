@@ -11,7 +11,7 @@ function renderAddPage(){
     appContext.view.innerHTML = `
       <div class="page-head"><div><div class="eyebrow">${cloneDraft ? "Clone Listing" : "New listing"}</div><h2>${cloneDraft ? "Clone card" : "Add a card"}</h2><p>${cloneDraft ? "Review the copied details and add new photos before saving." : "List a new card in your inventory."}</p></div></div>
       ${cloneDraft ? `<div class="clone-card-notice"><strong>Cloning safely</strong><span>Review every field before saving. PSA certificate numbers are copied when available, while POP data, sold information, timestamps and view count are cleared.</span></div>` : ""}
-      <form class="form-card" id="addForm">
+      <form class="form-card" id="addForm" novalidate>
         ${appContext.fieldsTemplate("add")}
         <div class="modal-actions">
           <a href="#/inventory" id="addCancelBtn" class="btn-ghost" style="text-decoration:none; display:inline-flex; align-items:center;">Cancel</a>
