@@ -156,12 +156,12 @@ jobs:
           grep -q 'Saved without contact' dev/src/features/owner/insights-dashboard.js
           grep -q 'const directCardEntry=' dev/src/app/startup.js
           grep -q 'Promise.allSettled' dev/src/app/startup.js
-          grep -q 'analytics.js?v=2026-09-24-v13' dev/src/app/register-features.js
+          grep -q 'analytics.js?v=2026-09-27-v09' dev/src/app/register-features.js
           grep -q 'catalogue.js?v=2026-09-26-v10' dev/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-26-v02' dev/src/app/register-features.js
           grep -q 'insights-dashboard.js?v=2026-09-26-v19' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/register-features.js
-          grep -q 'startup.js?v=2026-09-24-v12' dev/src/app/register-features.js
+          grep -q 'startup.js?v=2026-09-27-v09' dev/src/app/register-features.js
 
       - name: Validate Phase 4 owner sales intelligence
         shell: bash
@@ -275,6 +275,24 @@ jobs:
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v05' dev/src/main.js
           grep -q 'src/main.js?v=2026-09-27-v05' dev/index.html
+
+      - name: Validate Development analytics test exclusion
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check dev/src/services/analytics.js
+          node --check dev/src/app/startup.js
+          grep -q 'function developmentAnalyticsTestSource()' dev/src/services/analytics.js
+          grep -q 'hostname!=="collecttcg.github.io"' dev/src/services/analytics.js
+          grep -Fq '!pathname.startsWith("/Collect_TCG_Dev/")' dev/src/services/analytics.js
+          grep -Fq 'get("analytics_test")' dev/src/services/analytics.js
+          grep -Fq 'new Set(["chatgpt","github","openai","automation"])' dev/src/services/analytics.js
+          grep -Fq 'appContext.isDevelopmentAnalyticsTestSession()' dev/src/services/analytics.js
+          grep -Fq '!appContext.isDevelopmentAnalyticsTestSession()' dev/src/app/startup.js
+          grep -q 'analytics.js?v=2026-09-27-v09' dev/src/app/register-features.js
+          grep -q 'analytics.js?v=2026-09-27-v09' dev/src/app/initialize.js
+          grep -q 'startup.js?v=2026-09-27-v09' dev/src/app/register-features.js
+          grep -q 'startup.js?v=2026-09-27-v09' dev/src/app/initialize.js
 
       - name: Validate buyer privacy guards
         shell: bash
@@ -461,9 +479,9 @@ jobs:
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v08
-          PREVIOUS_VERSION: 2026-09-27-v07
-          PREVIOUS_COMMIT: de93975500d8cd28c4e7e4c4b087fb57ff192a3c
+          RELEASE_VERSION: 2026-09-27-v09
+          PREVIOUS_VERSION: 2026-09-27-v08
+          PREVIOUS_COMMIT: 219a33b2fbb90341d0ab0b4d33564a4a0fc56184
         run: |
           set -euo pipefail
           mkdir -p release
@@ -491,10 +509,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v08-packages
+          name: Collect-TCG-Dev-2026-09-27-v09-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v08-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v07-to-2026-09-27-v08-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v09-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v08-to-2026-09-27-v09-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -503,18 +521,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v08.txt"
+          MANIFEST="release-manifests/2026-09-27-v09.txt"
           {
-            echo "Version: 2026-09-27-v08"
+            echo "Version: 2026-09-27-v09"
             echo "Previous version: 2026-09-27-v07"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v08-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v07-to-2026-09-27-v08-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v09-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v08-to-2026-09-27-v09-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v08: record package validation"
+          git commit -m "Development 2026-09-27-v09: record package validation"
           git push
 
   deploy:

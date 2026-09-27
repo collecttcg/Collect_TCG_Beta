@@ -324,9 +324,30 @@ function socialAnalyticsNeedsHumanInteraction(){
       !appContext.analyticsHumanInteractionObserved;
   }
 
+function developmentAnalyticsTestSource(){
+    try{
+      const hostname=String(location.hostname||"").trim().toLowerCase();
+      const pathname=String(location.pathname||"");
+      if(hostname!=="collecttcg.github.io" || !pathname.startsWith("/Collect_TCG_Dev/")) return "";
+
+      const value=String(new URLSearchParams(String(location.search||"")).get("analytics_test")||"")
+        .trim()
+        .toLowerCase();
+
+      return appContext.DEVELOPMENT_ANALYTICS_TEST_SOURCES.has(value) ? value : "";
+    }catch{
+      return "";
+    }
+  }
+
+function isDevelopmentAnalyticsTestSession(){
+    return !!appContext.developmentAnalyticsTestSource();
+  }
+
 function isBuyerAnalyticsBlocked(){
     return appContext.isOwnerAuthenticated() ||
       appContext.isAnalyticsExcludedDevice() ||
+      appContext.isDevelopmentAnalyticsTestSession() ||
       appContext.isKnownAutomatedSocialFetcher() ||
       appContext.socialAnalyticsNeedsHumanInteraction();
   }
@@ -1929,11 +1950,13 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,fetchOwnerCardConversionSummary,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,developmentAnalyticsTestSource,isDevelopmentAnalyticsTestSession,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,fetchOwnerCardConversionSummary,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
+  appContext.DEVELOPMENT_ANALYTICS_TEST_SOURCES = new Set(["chatgpt","github","openai","automation"]);
+
   appContext.CARD_VIEW_QUALIFY_MS = 2000;
 
   appContext.cardViewQualificationToken = 0;

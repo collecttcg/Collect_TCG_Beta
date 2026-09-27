@@ -10,7 +10,7 @@ import { register as register8 } from '../features/cards/pricing.js';
 import { register as register9 } from '../services/catalogue.js?v=2026-09-26-v10';
 import { register as register10 } from '../features/content/giveaways-data.js';
 import { register as register11 } from '../features/content/showcase-data.js';
-import { register as register12 } from '../services/analytics.js?v=2026-09-24-v13';
+import { register as register12 } from '../services/analytics.js?v=2026-09-27-v09';
 import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
 import { register as register14 } from '../app/routing.js?v=2026-09-26-v18';
@@ -45,7 +45,7 @@ import { register as register40 } from '../features/owner/add.js?v=2026-09-26-v1
 import { register as register41 } from '../features/cards/details.js?v=2026-09-26-v02';
 import { register as register42 } from '../features/owner/editor.js';
 import { register as register43 } from '../app/theme.js';
-import { register as register44 } from '../app/startup.js?v=2026-09-24-v12';
+import { register as register44 } from '../app/startup.js?v=2026-09-27-v09';
 
 export function registerFeatures(appContext){
   register0(appContext);

@@ -604,3 +604,17 @@ test('filtered rearrange stays enabled while game-order dragging is protected',(
  assert.match(source,/filteredRearrange\s*\?\s*Promise\.resolve\(true\)/);
  assert.match(source,/function collectionCanRearrangeGameGroups\(\)/);
 });
+
+
+test('Development ChatGPT/GitHub test URLs are excluded from buyer analytics without affecting Production',()=>{
+  const analytics=source('../dev/src/services/analytics.js');
+  const startup=source('../dev/src/app/startup.js');
+  assert.match(analytics,/function developmentAnalyticsTestSource\(\)/);
+  assert.match(analytics,/hostname!=="collecttcg\.github\.io"/);
+  assert.match(analytics,/!pathname\.startsWith\("\/Collect_TCG_Dev\/"\)/);
+  assert.match(analytics,/get\("analytics_test"\)/);
+  assert.match(analytics,/DEVELOPMENT_ANALYTICS_TEST_SOURCES\.has\(value\)/);
+  assert.match(analytics,/isDevelopmentAnalyticsTestSession\(\)/);
+  assert.match(analytics,/new Set\(\["chatgpt","github","openai","automation"\]\)/);
+  assert.match(startup,/!appContext\.isDevelopmentAnalyticsTestSession\(\)/);
+});

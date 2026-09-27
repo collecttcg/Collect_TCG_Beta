@@ -1,3 +1,11 @@
+## 2026-09-27-v09 Development
+
+- Adds a Development-only analytics test exclusion for ChatGPT/GitHub/OpenAI/automation UI checks.
+- Test URLs use `?analytics_test=chatgpt`, `github`, `openai`, or `automation`.
+- The exclusion activates only on `https://collecttcg.github.io/Collect_TCG_Dev/`; Production is unaffected.
+- Test sessions are blocked from Website Visits, sessions, Qualified Views, buyer-intent, search, duration, discovery attribution and other buyer analytics through the existing centralized analytics guard.
+- No SQL or RLS changes.
+
 ## 2026-09-27-v08 Development
 
 - Completes the Beta → Development environment migration.

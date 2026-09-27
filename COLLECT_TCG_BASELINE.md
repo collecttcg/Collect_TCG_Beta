@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v08`
+Latest Development: `2026-09-27-v09`
 
-Previous Development: `2026-09-27-v07`
+Previous Development: `2026-09-27-v08`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,10 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v09`
+
+Purpose: add a Development-only analytics test exclusion for ChatGPT/GitHub/OpenAI/automation UI checks so Dev can be exercised without contaminating buyer Insights. The explicit `analytics_test` query flag is honored only on `collecttcg.github.io/Collect_TCG_Dev/`, grants no Owner permissions, and does not change Production.
 
 ### Development `2026-09-27-v08`
 

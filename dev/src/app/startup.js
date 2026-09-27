@@ -74,7 +74,7 @@ async function startApp(){
 
     // Record an anonymous session before the normal Website Visit so
     // later Qualified Views can contribute to Browsing Depth.
-    if(!appContext.isOwnerMode() && !appContext.isAnalyticsExcludedDevice()){
+    if(!appContext.isOwnerMode() && !appContext.isAnalyticsExcludedDevice() && !appContext.isDevelopmentAnalyticsTestSession()){
       await appContext.recordAnalyticsSession();
       appContext.startSessionDurationTracking();
       appContext.recordWebsiteVisit();
