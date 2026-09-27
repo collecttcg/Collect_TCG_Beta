@@ -131,7 +131,7 @@ jobs:
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
           test "$(grep -o 'appContext.isLiveLifecycle(card)' dev/src/features/social/posts.js | wc -l | tr -d ' ')" -ge "2"
           grep -Fq 'appContext.isLiveLifecycle(card) && appContext.cardMatchesListingScope' dev/src/features/media/collage.js
-          grep -q '01-foundation.css?v=2026-09-26-v15' dev/index.html
+          grep -q '01-foundation.css?v=2026-09-27-v21' dev/index.html
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/initialize.js
           grep -q 'event.stopPropagation()' dev/src/features/content/home.js
           grep -q 'appContext.openDetailsModal(card)' dev/src/app/routing.js
@@ -180,7 +180,7 @@ jobs:
           grep -q 'insights-v20-table-wrap' dev/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-26-v19' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -274,7 +274,7 @@ jobs:
           grep -q 'templateModeInput?.value||"detailed"' dev/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate Development analytics test exclusion
         shell: bash
@@ -313,7 +313,7 @@ jobs:
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/initialize.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate hidden-card visibility guards
         shell: bash
@@ -333,7 +333,7 @@ jobs:
           grep -q 'page.js?v=2026-09-27-v02' dev/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate owner-only Hidden Listings page
         shell: bash
@@ -371,7 +371,7 @@ jobs:
           grep -q 'filtering.js?v=2026-09-26-v18' dev/src/app/initialize.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
           grep -q 'initialize.js?v=2026-09-27-v19' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate public hidden-card source guards
         shell: bash
@@ -389,7 +389,7 @@ jobs:
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
           grep -q 'catalogue.js?v=2026-09-26-v10' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate Beta v10 hidden-listing persistence contract
         shell: bash
@@ -406,7 +406,7 @@ jobs:
           grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -q 'catalogue.js?v=2026-09-26-v10' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate inventory filter/game-browser resync
         shell: bash
@@ -423,7 +423,7 @@ jobs:
           grep -Fq 'bucket.add(value);' dev/src/features/inventory/page.js
           grep -q 'page.js?v=2026-09-27-v02' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate post generator preview prices
         shell: bash
@@ -440,9 +440,9 @@ jobs:
           grep -Fq 'isGiveaway ? "" : `<small class="fb-post-card-price">Price · ' dev/src/features/social/posts.js
           grep -Fq '.fb-post-card-copy .fb-post-card-price' dev/src/styles/01-foundation.css
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
-          grep -q '01-foundation.css?v=2026-09-26-v15' dev/index.html
+          grep -q '01-foundation.css?v=2026-09-27-v21' dev/index.html
           grep -q 'register-features.js?v=2026-09-27-v20' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v20' dev/index.html
+          grep -q 'src/main.js?v=2026-09-27-v21' dev/index.html
 
       - name: Validate generated SEO files
         run: |
@@ -489,6 +489,9 @@ jobs:
           grep -Fq 'const sourceW=1113' dev/src/features/media/images.js
           grep -Fq 'const sourceH=242' dev/src/features/media/images.js
           grep -Fq 'Math.round(canvas.width*0.82)' dev/src/features/media/images.js
+          grep -Fq 'ADD / EDIT PHOTO PREVIEW — KEEP IMAGE FULLY VISIBLE' dev/src/styles/01-foundation.css
+          grep -Fq 'position:static;' dev/src/styles/01-foundation.css
+          grep -Fq 'height:auto !important;' dev/src/styles/01-foundation.css
           grep -Fq 'const qrX=bannerX+885*scale' dev/src/features/media/images.js
           grep -Fq 'const qrY=bannerY+27*scale' dev/src/features/media/images.js
           grep -Fq 'const qrSize=166*scale' dev/src/features/media/images.js
@@ -497,13 +500,13 @@ jobs:
           grep -Fq 'Logo + CTA + QR' dev/index.html
           grep -Fq 'CTA + QR only' dev/index.html
 
-      # Package the validated Development v20 release.
+      # Package the validated Development v21 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v20
-          PREVIOUS_VERSION: 2026-09-27-v19
-          PREVIOUS_COMMIT: abddd02c5acae5c4edf6d23d26ff7450448e590e
+          RELEASE_VERSION: 2026-09-27-v21
+          PREVIOUS_VERSION: 2026-09-27-v20
+          PREVIOUS_COMMIT: db18333f73bb4ee66ba3bb7f1688b93833e1c5c6
         run: |
           set -euo pipefail
           mkdir -p release
@@ -531,10 +534,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v20-packages
+          name: Collect-TCG-Dev-2026-09-27-v21-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v20-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v19-to-2026-09-27-v20-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v21-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v20-to-2026-09-27-v21-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -543,18 +546,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v20.txt"
+          MANIFEST="release-manifests/2026-09-27-v21.txt"
           {
-            echo "Version: 2026-09-27-v20"
-            echo "Previous version: 2026-09-27-v19"
+            echo "Version: 2026-09-27-v21"
+            echo "Previous version: 2026-09-27-v20"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v20-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v19-to-2026-09-27-v20-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v21-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v20-to-2026-09-27-v21-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v20: record package validation"
+          git commit -m "Development 2026-09-27-v21: record package validation"
           git push
 
   deploy:
