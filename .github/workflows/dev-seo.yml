@@ -25,6 +25,7 @@ on:
       - 'dev/src/features/media/collage.js'
       - 'dev/src/styles/01-foundation.css'
       - 'dev/src/features/inventory/filtering.js'
+      - 'dev/src/features/inventory/ordering.js'
       - 'dev/src/features/owner/lifecycle.js'
       - 'dev/src/features/owner/tools.js'
       - 'dev/src/features/owner/bulk-status.js'
@@ -182,8 +183,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' dev/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' dev/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-26-v19' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -276,8 +277,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' dev/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' dev/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate Development analytics test exclusion
         shell: bash
@@ -315,8 +316,8 @@ jobs:
           grep -q 'tiles.js?v=2026-09-26-v02' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate hidden-card visibility guards
         shell: bash
@@ -335,8 +336,8 @@ jobs:
           grep -q 'filtering.js?v=2026-09-26-v18' dev/src/app/register-features.js
           grep -q 'page.js?v=2026-09-27-v02' dev/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate owner-only Hidden Listings page
         shell: bash
@@ -372,9 +373,9 @@ jobs:
           grep -q 'navigation.js?v=2026-09-26-v12' dev/src/app/initialize.js
           grep -q 'routing.js?v=2026-09-27-v19' dev/src/app/initialize.js
           grep -q 'filtering.js?v=2026-09-26-v18' dev/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'initialize.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'initialize.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate public hidden-card source guards
         shell: bash
@@ -391,8 +392,8 @@ jobs:
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
           grep -q 'catalogue.js?v=2026-09-26-v10' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate Beta v10 hidden-listing persistence contract
         shell: bash
@@ -408,8 +409,8 @@ jobs:
           grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -q 'catalogue.js?v=2026-09-26-v10' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate inventory filter/game-browser resync
         shell: bash
@@ -425,8 +426,8 @@ jobs:
           grep -Fq 'bucket.clear();' dev/src/features/inventory/page.js
           grep -Fq 'bucket.add(value);' dev/src/features/inventory/page.js
           grep -q 'page.js?v=2026-09-27-v02' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate post generator preview prices
         shell: bash
@@ -444,8 +445,8 @@ jobs:
           grep -Fq '.fb-post-card-copy .fb-post-card-price' dev/src/styles/01-foundation.css
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
           grep -q '01-foundation.css?v=2026-09-27-v25' dev/index.html
-          grep -q 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
       - name: Validate generated SEO files
         run: |
@@ -487,7 +488,7 @@ jobs:
           node --check dev/src/features/owner/add.js
           grep -Fq "owner/forms.js?v=2026-09-27-v25" dev/src/app/register-features.js
           grep -Fq "owner/add.js?v=2026-09-27-v25" dev/src/app/register-features.js
-          grep -Fq "register-features.js?v=2026-09-27-v27" dev/src/main.js
+          grep -Fq "register-features.js?v=2026-09-27-v28" dev/src/main.js
           ! grep -Fq 'owner-editor-tabs' dev/src/features/owner/forms.js
           ! grep -Fq 'function setOwnerEditorTab' dev/src/features/owner/forms.js
           ! grep -Fq 'data-owner-editor-panel="details"' dev/src/features/owner/forms.js
@@ -546,19 +547,41 @@ jobs:
           grep -Fq 'applyWebsiteWatermarkToCardImageSource(original,1800,0.94)' dev/src/features/owner/image-maintenance.js
           grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/register-features.js
           grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-27-v27' dev/src/main.js
-          grep -Fq 'initialize.js?v=2026-09-27-v27' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-27-v27' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -Fq 'initialize.js?v=2026-09-27-v28' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-27-v28' dev/index.html
           ! grep -Fq 'analytics_test' dev/src/features/owner/image-maintenance.js
           git diff --check
 
       # Package the validated Development v27 release.
+      - name: Validate Development v28 game-aware new-card ordering
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check dev/src/features/inventory/ordering.js
+          node --check dev/src/app/register-features.js
+          node --check dev/src/app/initialize.js
+          node --check dev/src/main.js
+          grep -Fq 'function inventoryNewCardGameKey(card)' dev/src/features/inventory/ordering.js
+          grep -Fq 'function inventoryNewCardOrderDescriptor(card)' dev/src/features/inventory/ordering.js
+          grep -Fq 'function compareInventoryNewCardPlacement(a,b)' dev/src/features/inventory/ordering.js
+          grep -Fq 'const newGameKey=appContext.inventoryNewCardGameKey(newCard);' dev/src/features/inventory/ordering.js
+          grep -Fq 'if(appContext.inventoryNewCardGameKey(card)===newGameKey)' dev/src/features/inventory/ordering.js
+          grep -Fq 'Math.max(...grades)' dev/src/features/inventory/ordering.js
+          grep -Fq 'const rawRank={M:0,NM:1,LP:2,MP:3,HP:4,DMG:5,NA:6};' dev/src/features/inventory/ordering.js
+          grep -Fq 'ordering.js?v=2026-09-27-v28' dev/src/app/register-features.js
+          grep -Fq 'ordering.js?v=2026-09-27-v28' dev/src/app/initialize.js
+          grep -Fq 'register-features.js?v=2026-09-27-v28' dev/src/main.js
+          grep -Fq 'initialize.js?v=2026-09-27-v28' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-27-v28' dev/index.html
+          git diff --check
+
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v27
-          PREVIOUS_VERSION: 2026-09-27-v26
-          PREVIOUS_COMMIT: b6f956c0b508d41c832eebd2af11d48936c405e4
+          RELEASE_VERSION: 2026-09-27-v28
+          PREVIOUS_VERSION: 2026-09-27-v27
+          PREVIOUS_COMMIT: 6399b565e18458c2d7e1b64084593039f153ca53
         run: |
           set -euo pipefail
           mkdir -p release
@@ -586,10 +609,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v27-packages
+          name: Collect-TCG-Dev-2026-09-27-v28-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v27-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v26-to-2026-09-27-v27-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v28-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v27-to-2026-09-27-v28-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -598,18 +621,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v27.txt"
+          MANIFEST="release-manifests/2026-09-27-v28.txt"
           {
-            echo "Version: 2026-09-27-v27"
-            echo "Previous version: 2026-09-27-v26"
+            echo "Version: 2026-09-27-v28"
+            echo "Previous version: 2026-09-27-v27"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v27-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v26-to-2026-09-27-v27-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v28-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v27-to-2026-09-27-v28-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v27: record package validation"
+          git commit -m "Development 2026-09-27-v28: record package validation"
           git push
 
   deploy:
