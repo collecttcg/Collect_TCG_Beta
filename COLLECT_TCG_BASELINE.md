@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v17`
+Latest Development: `2026-09-27-v18`
 
-Previous Development: `2026-09-27-v10`
+Previous Development: `2026-09-27-v17`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v18`
+
+Previous Development: `2026-09-27-v17`
+
+Purpose: replace the v17 browser-font approximation with the exact user-approved watermark artwork shown in the supplied reference.
+
+Changes:
+- Restores the approved banner artwork source for the Collect TCG wordmark, frame, URL treatment and QR surround.
+- Adds an exact CTA artwork crop from the approved reference for `CHECK PRICE • AVAILABILITY`; the CTA is no longer recreated with browser font fallbacks.
+- Keeps a dynamically generated QR over the approved QR frame so the inventory destination remains functional.
+- Keeps the existing v10/v17 image workflow and optional top-right logo behavior.
+- No Supabase/RLS, public navigation, Inventory ordering/filtering, Contact to Buy, giveaway or analytics behavior is intentionally changed.
+
+SQL required: No.
+
+Validation status: in progress. Do not call this release complete until the v18 workflow, package integrity and Development Pages deployment succeed.
 
 ### Development `2026-09-27-v17`
 
