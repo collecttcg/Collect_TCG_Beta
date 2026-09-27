@@ -28,19 +28,19 @@ Use the actual build date. Beta and Production have independent counters and res
 
 ## Current Versions
 
-Latest Beta: `2026-09-27-v02`
+Latest Beta: `2026-09-27-v03`
 
-Previous Beta: `2026-09-27-v01`
+Previous Beta: `2026-09-27-v02`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v01`
+Latest Production: `2026-09-27-v02`
 
-Previous Production: `2026-09-26-v08`
+Previous Production: `2026-09-27-v01`
 
-Production functional baseline last promoted from Beta: `2026-09-26-v16`
+Production functional baseline last promoted from Beta: `2026-09-27-v02`
 
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
@@ -49,6 +49,8 @@ GitHub Pages status at reconciliation:
 - Production 2026-09-27-v01 final HEAD deployment: successful
 
 Important promotion state:
+- Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
+- Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
 - Production 2026-09-27-v01 retains the validated Beta v16 functional baseline and adds Production-only repository cleanup plus QR Generator registration repair.
 - Beta v18 new-card custom-order insertion behavior is **not yet promoted to Production**.
 - Beta v19 Beta-repository cleanup/migration reorganization is not an application-code promotion.
@@ -61,7 +63,7 @@ Important promotion state:
 
 ### Beta `2026-09-27-v01`
 
-Purpose: synchronize the canonical baseline after Production `2026-09-27-v01` cleanup. No Beta runtime behavior changes.
+Purpose: synchronize the canonical baseline after Production `2026-09-27-v02` promoted filtered rearranging. No Beta runtime behavior changes.
 
 The functional Beta baseline carried forward unchanged from v20 includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.

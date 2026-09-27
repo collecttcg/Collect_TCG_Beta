@@ -2,6 +2,12 @@
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.
 
+## 2026-09-27-v03 Beta
+
+- Synchronizes the canonical baseline after Production `2026-09-27-v02` promoted filtered card rearranging from Beta `2026-09-27-v02`.
+- Records that filtered Inventory/Collection rearranging is now shared by Beta and Production.
+- Documentation/baseline sync only; no Beta runtime, SQL, RLS, analytics or UI behavior changes.
+
 ## 2026-09-27-v02 Beta
 
 - Allows Inventory/Collection card rearranging while filters/search/category filters are active.
