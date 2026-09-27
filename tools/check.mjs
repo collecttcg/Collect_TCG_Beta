@@ -75,7 +75,7 @@ const baselinePath=path.join(repoRoot,'COLLECT_TCG_BASELINE.md');
 if(!fs.existsSync(baselinePath)) throw new Error('Missing COLLECT_TCG_BASELINE.md');
 const baseline=fs.readFileSync(baselinePath,'utf8');
 for(const required of [
-  'Latest Beta: `2026-09-27-v01`',
+  'Latest Beta: `2026-09-27-v02`',
   'Latest Production: `2026-09-27-v01`',
   'Production functional baseline last promoted from Beta: `2026-09-26-v16`',
   'migrations/2026/',
