@@ -90,11 +90,23 @@ Changes:
 - Existing logo watermark remains optional; the CTA + QR-only option provides the cleaner no-top-logo layout.
 - No Supabase/RLS or public navigation behavior changes.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- QR inventory CTA/wiring/owner-label checks passed
+- repository, Owner/privacy, Inventory/generator and SEO checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v10-full.zip`
+  - SHA-256: `7a81bdcbb90ee4067e744c7f7f1d28eecf7c0d8ae4aa508e5e127a34e3aa28de`
 - `Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip`
+  - SHA-256: `684c34c5d39a315b9eb2c26b437cfcce9566ee88c58a68f1d3de0ccadd31de9e`
+
+Development v10 source commit from release manifest: `18674d6174927155baa05c215cfc5fd13fae1ece`
+
+Development v10 package-validation HEAD: `bc0ce7e50e11fed7ecf0cfa6bce4094f75a20ad3`
 
 ### Development `2026-09-27-v09`
 
