@@ -288,12 +288,45 @@ async function saveInventoryCardOrder(cardIds){
     }
   }
 
-function inventoryNewCardBucketRank(card){
+function inventoryNewCardGameKey(card){
+    return appContext.normalizeFilterValue(card?.game||"") || "__other__";
+  }
+
+function inventoryNewCardOrderDescriptor(card){
     const format=appContext.effectiveFormat(card);
-    if(format==="Graded") return 0;
-    if(format==="Sealed") return 8;
-    const rawRank={M:1,NM:2,LP:3,MP:4,HP:5,DMG:6,NA:7};
-    return rawRank[String(card?.condition||"").toUpperCase()] ?? 7;
+    if(format==="Graded"){
+      const grades=(Array.isArray(card?.grading)?card.grading:[])
+        .map(row=>parseFloat(String(row?.grade??"")))
+        .filter(Number.isFinite);
+      return {formatRank:0,grade:grades.length?Math.max(...grades):null,conditionRank:0};
+    }
+    if(format==="Sealed") return {formatRank:2,grade:null,conditionRank:0};
+    const rawRank={M:0,NM:1,LP:2,MP:3,HP:4,DMG:5,NA:6};
+    return {
+      formatRank:1,
+      grade:null,
+      conditionRank:rawRank[String(card?.condition||"").toUpperCase()] ?? 7
+    };
+  }
+
+function compareInventoryNewCardPlacement(a,b){
+    const ao=appContext.inventoryNewCardOrderDescriptor(a);
+    const bo=appContext.inventoryNewCardOrderDescriptor(b);
+    if(ao.formatRank!==bo.formatRank) return ao.formatRank-bo.formatRank;
+    if(ao.formatRank===0){
+      if(ao.grade==null && bo.grade!=null) return 1;
+      if(ao.grade!=null && bo.grade==null) return -1;
+      if(ao.grade!=null && bo.grade!=null && ao.grade!==bo.grade) return bo.grade-ao.grade;
+    }
+    if(ao.formatRank===1 && ao.conditionRank!==bo.conditionRank) return ao.conditionRank-bo.conditionRank;
+    return 0;
+  }
+
+function inventoryNewCardBucketRank(card){
+    const descriptor=appContext.inventoryNewCardOrderDescriptor(card);
+    if(descriptor.formatRank===0) return 0;
+    if(descriptor.formatRank===2) return 8;
+    return descriptor.conditionRank+1;
   }
 
 function inventoryCustomOrderWithNewCard(newCard){
@@ -308,10 +341,40 @@ function inventoryCustomOrderWithNewCard(newCard){
         if(ao!==bo) return ao-bo;
         return String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true});
       });
-    const newRank=appContext.inventoryNewCardBucketRank(newCard);
-    const insertAt=existing.findIndex(card=>appContext.inventoryNewCardBucketRank(card)>newRank);
+
+    const newGameKey=appContext.inventoryNewCardGameKey(newCard);
+    const sameGameIndexes=[];
+    existing.forEach((card,index)=>{
+      if(appContext.inventoryNewCardGameKey(card)===newGameKey) sameGameIndexes.push(index);
+    });
+
+    let insertAt=existing.length;
+    if(sameGameIndexes.length){
+      // Existing cards keep their relative order. Only the newly added card is
+      // slotted inside its own game/category using grade/condition/format.
+      insertAt=sameGameIndexes[sameGameIndexes.length-1]+1;
+      for(const index of sameGameIndexes){
+        if(appContext.compareInventoryNewCardPlacement(newCard,existing[index])<0){
+          insertAt=index;
+          break;
+        }
+      }
+    }else{
+      // For a brand-new game/category, respect the saved game-group order when
+      // possible without rearranging any existing card.
+      const newGameOrder=appContext.inventoryCustomGameOrderValue(newGameKey);
+      if(Number.isFinite(newGameOrder) && newGameOrder<Number.MAX_SAFE_INTEGER){
+        const nextGameIndex=existing.findIndex(card=>{
+          const key=appContext.inventoryNewCardGameKey(card);
+          const order=appContext.inventoryCustomGameOrderValue(key);
+          return Number.isFinite(order) && order>newGameOrder;
+        });
+        if(nextGameIndex>=0) insertAt=nextGameIndex;
+      }
+    }
+
     const ordered=existing.map(card=>appContext.safeCardId(card.id)).filter(Boolean);
-    ordered.splice(insertAt<0?ordered.length:insertAt,0,newId);
+    ordered.splice(insertAt,0,newId);
     return ordered;
   }
 
@@ -329,7 +392,7 @@ function runWhenIdle(callback,timeout=1200){
     return setTimeout(callback,80);
   }
 
-  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,mergeFilteredCustomOrder,saveInventoryCardOrder,inventoryNewCardBucketRank,inventoryCustomOrderWithNewCard,insertNewInventoryCardIntoCustomOrder,runWhenIdle});
+  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,mergeFilteredCustomOrder,saveInventoryCardOrder,inventoryNewCardGameKey,inventoryNewCardOrderDescriptor,compareInventoryNewCardPlacement,inventoryNewCardBucketRank,inventoryCustomOrderWithNewCard,insertNewInventoryCardIntoCustomOrder,runWhenIdle});
 }
 
 /** State and event initialization; called in preserved startup order. */
