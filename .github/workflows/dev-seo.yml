@@ -48,6 +48,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: dev-seo-refresh
@@ -434,6 +436,14 @@ jobs:
           ! grep -Fq '2025-one-piece-card-game-championship-cs-25-26-top-player-pack-finalist-complete-luffy-nami-chopper-ace-buggy-perona' beta/sitemap.xml
           git diff --check
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Development site for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: beta
+
       - name: Commit refreshed SEO pages
         shell: bash
         run: |
@@ -447,13 +457,13 @@ jobs:
           git commit -m "chore: refresh Development SEO card pages [skip ci]"
           git push
 
-      # Package the validated Development v05 release.
+      # Package the validated Development v07 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v06
-          PREVIOUS_VERSION: 2026-09-27-v05
-          PREVIOUS_COMMIT: a1fa7cb57321bc5333ea5db6612771dd6e23d9c4
+          RELEASE_VERSION: 2026-09-27-v07
+          PREVIOUS_VERSION: 2026-09-27-v06
+          PREVIOUS_COMMIT: bd750ead3e2cde88fe936d313d4f743fc2f24051
         run: |
           set -euo pipefail
           mkdir -p release
@@ -481,10 +491,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v06-packages
+          name: Collect-TCG-Dev-2026-09-27-v07-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v06-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v05-to-2026-09-27-v06-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v07-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v06-to-2026-09-27-v07-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -493,16 +503,27 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v06.txt"
+          MANIFEST="release-manifests/2026-09-27-v07.txt"
           {
-            echo "Version: 2026-09-27-v06"
-            echo "Previous version: 2026-09-27-v05"
+            echo "Version: 2026-09-27-v07"
+            echo "Previous version: 2026-09-27-v06"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v06-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v05-to-2026-09-27-v06-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v07-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v06-to-2026-09-27-v07-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v06: record package validation"
+          git commit -m "Development 2026-09-27-v07: record package validation"
           git push
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Development site to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v06`
+Latest Development: `2026-09-27-v07`
 
-Previous Development: `2026-09-27-v05`
+Previous Development: `2026-09-27-v06`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -54,8 +54,8 @@ Production functional baseline last promoted from Development (then named Beta):
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
 GitHub Pages status at reconciliation:
-- Beta v20 final HEAD deployment: successful
-- Production 2026-09-27-v01 final HEAD deployment: successful
+- Development `2026-09-27-v07` adds the missing GitHub Pages artifact/deploy path for the renamed Development repository; deployment success must be confirmed by the workflow before the release is called completed.
+- Production remains unchanged and protected.
 
 Important promotion state:
 - Production `2026-09-27-v06` reconciled active terminology with the renamed Development repository; no Development application behavior was promoted.
@@ -76,9 +76,9 @@ Important promotion state:
 
 ## Current Release State
 
-### Development `2026-09-27-v06`
+### Development `2026-09-27-v07`
 
-Purpose: synchronize the canonical Development baseline after Production `2026-09-27-v06` completed the terminology/baseline reconciliation. No Development runtime behavior changes.
+Purpose: restore Development GitHub Pages access after the Beta → Development repository rename. The validated `beta/` site is uploaded as the Pages artifact and deployed through the `github-pages` environment. No application runtime behavior changes.
 
 The functional Beta baseline carried forward unchanged from v20 includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.

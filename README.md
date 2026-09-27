@@ -4,7 +4,7 @@ Development repository for the Collect TCG MY & SG website.
 
 - Production: `collecttcg/Collect_TCG`
 - Development: `collecttcg/Collect_TCG_Dev`
-- Current Development release: `2026-09-27-v06`
+- Current Development release: `2026-09-27-v07`
 - Production is protected and is not changed by Development releases.
 
 ## Repository layout
@@ -31,7 +31,7 @@ Node.js 22+:
 - `npm run build` — validated deployable copy under `dist/beta/`.
 - `npm run dev` — local HTTP preview.
 
-The website uses native ES modules and does not require a framework build for GitHub Pages.
+The website uses native ES modules and does not require a framework build for GitHub Pages. The validated `beta/` directory is deployed to the Development Pages site at `https://collecttcg.github.io/Collect_TCG_Dev/`.
 
 ## Database migrations
 
