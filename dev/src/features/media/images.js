@@ -98,143 +98,176 @@ function loadWatermarkLogo(){
     return appContext.watermarkLogoPromise;
   }
 
-function drawWebsiteWatermark(ctx, canvas){
-    const watermarkText = appContext.CARD_WATERMARK_URL;
-    if(!watermarkText) return;
+function createWebsiteWatermarkQrCanvas(text,size=256){
+    if(!text || typeof document==="undefined" || typeof QRCode!=="function") return null;
 
-    const shortSide = Math.min(canvas.width, canvas.height);
-    const bannerMargin = Math.max(18, Math.round(shortSide * 0.024));
-    const bannerHeight = Math.max(40, Math.min(96, Math.round(shortSide * 0.088)));
-    const bannerRadius = Math.round(bannerHeight / 2);
-    const borderWidth = Math.max(1.6, Math.round(shortSide * 0.0032));
-    const bannerWidth = Math.min(
-      canvas.width - bannerMargin * 2,
-      Math.max(240, Math.round(canvas.width * 0.82))
+    const holder=document.createElement("div");
+    holder.setAttribute("aria-hidden","true");
+    holder.style.cssText="position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;overflow:hidden;pointer-events:none;";
+    document.body.appendChild(holder);
+
+    try{
+      new QRCode(holder,{
+        text:String(text),
+        width:size,
+        height:size,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
+        correctLevel:QRCode.CorrectLevel.M
+      });
+
+      const source=holder.querySelector("canvas");
+      if(!source) return null;
+
+      const copy=document.createElement("canvas");
+      copy.width=source.width;
+      copy.height=source.height;
+      const copyCtx=copy.getContext("2d");
+      if(!copyCtx) return null;
+      copyCtx.drawImage(source,0,0);
+      return copy;
+    }catch(error){
+      console.warn("Could not generate website watermark QR code:",error);
+      return null;
+    }finally{
+      holder.remove();
+    }
+  }
+
+function drawWebsiteWatermark(ctx, canvas){
+    const watermarkUrl=appContext.CARD_WATERMARK_URL;
+    if(!watermarkUrl) return;
+
+    const shortSide=Math.min(canvas.width,canvas.height);
+    const bannerMargin=Math.max(18,Math.round(shortSide*0.024));
+    const bannerHeight=Math.max(88,Math.min(150,Math.round(shortSide*0.16)));
+    const bannerRadius=Math.max(18,Math.round(bannerHeight*0.22));
+    const borderWidth=Math.max(2,Math.round(shortSide*0.0032));
+    const bannerWidth=Math.min(
+      canvas.width-bannerMargin*2,
+      Math.max(320,Math.round(canvas.width*0.92))
     );
-    const bannerX = Math.round((canvas.width - bannerWidth) / 2);
-    const bannerY = Math.round(canvas.height - bannerMargin - bannerHeight);
-    const innerPadX = Math.max(16, Math.round(bannerHeight * 0.40));
-    const iconSize = Math.max(18, Math.round(bannerHeight * 0.44));
-    const iconGap = Math.max(10, Math.round(bannerHeight * 0.22));
-    const rightAccentWidth = Math.max(20, Math.round(bannerHeight * 0.42));
-    const textLeft = bannerX + innerPadX + iconSize + iconGap;
-    const textRight = bannerX + bannerWidth - innerPadX - rightAccentWidth;
-    const maxTextWidth = Math.max(100, textRight - textLeft);
-    let fontSize = Math.max(12, Math.min(30, Math.round(shortSide * 0.032)));
-    const prefix = /^https:\/\//i.test(watermarkText) ? "https://" : "";
-    const rest = prefix ? watermarkText.slice(prefix.length) : watermarkText;
+    const bannerX=Math.round((canvas.width-bannerWidth)/2);
+    const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
+    const pad=Math.max(14,Math.round(bannerHeight*0.12));
+    const qrOuter=Math.max(64,bannerHeight-pad*2);
+    const qrX=bannerX+bannerWidth-pad-qrOuter;
+    const qrY=bannerY+pad;
+    const leftX=bannerX+pad;
+    const leftWidth=Math.max(140,qrX-leftX-Math.max(14,Math.round(bannerHeight*0.12)));
+    const cta="SEE MORE CARDS • BROWSE INVENTORY";
+    const displayUrl="collecttcg.github.io/Collect_TCG";
 
     function roundedRect(x,y,w,h,r){
       ctx.beginPath();
-      if(typeof ctx.roundRect === "function"){
+      if(typeof ctx.roundRect==="function"){
         ctx.roundRect(x,y,w,h,r);
       }else{
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.moveTo(x+r,y);
+        ctx.lineTo(x+w-r,y);
+        ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+        ctx.lineTo(x+w,y+h-r);
+        ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+        ctx.lineTo(x+r,y+h);
+        ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+        ctx.lineTo(x,y+r);
+        ctx.quadraticCurveTo(x,y,x+r,y);
         ctx.closePath();
       }
     }
 
     ctx.save();
-    ctx.imageSmoothingEnabled = true;
-    if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality = "high";
-    ctx.textBaseline = "middle";
+    ctx.imageSmoothingEnabled=true;
+    if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    // Outer glow and dark gold-framed banner inspired by the promo-style URL tag.
-    ctx.shadowColor = "rgba(255,191,47,0.52)";
-    ctx.shadowBlur = Math.max(12, Math.round(shortSide * 0.030));
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    roundedRect(bannerX, bannerY, bannerWidth, bannerHeight, bannerRadius);
-    ctx.fillStyle = "rgba(12,10,8,0.84)";
+    ctx.shadowColor="rgba(255,191,47,0.44)";
+    ctx.shadowBlur=Math.max(12,Math.round(shortSide*0.024));
+    roundedRect(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius);
+    ctx.fillStyle="rgba(11,10,8,0.91)";
     ctx.fill();
 
-    ctx.shadowColor = "transparent";
-    roundedRect(bannerX, bannerY, bannerWidth, bannerHeight, bannerRadius);
-    ctx.lineWidth = borderWidth;
-    ctx.strokeStyle = "rgba(255,198,56,0.94)";
+    ctx.shadowColor="transparent";
+    ctx.lineWidth=borderWidth;
+    ctx.strokeStyle="rgba(255,198,56,0.96)";
     ctx.stroke();
 
     roundedRect(
-      bannerX + borderWidth * 1.5,
-      bannerY + borderWidth * 1.5,
-      bannerWidth - borderWidth * 3,
-      bannerHeight - borderWidth * 3,
-      Math.max(8, bannerRadius - borderWidth * 2)
+      bannerX+borderWidth*1.5,
+      bannerY+borderWidth*1.5,
+      bannerWidth-borderWidth*3,
+      bannerHeight-borderWidth*3,
+      Math.max(12,bannerRadius-borderWidth*2)
     );
-    ctx.lineWidth = Math.max(1, borderWidth * 0.75);
-    ctx.strokeStyle = "rgba(255,221,132,0.34)";
+    ctx.lineWidth=Math.max(1,borderWidth*0.7);
+    ctx.strokeStyle="rgba(255,226,150,0.26)";
     ctx.stroke();
 
-    // Left globe icon.
-    const iconCx = bannerX + innerPadX + iconSize / 2;
-    const iconCy = bannerY + bannerHeight / 2;
-    const iconR = iconSize / 2;
-    ctx.strokeStyle = "rgba(255,208,92,0.96)";
-    ctx.lineWidth = Math.max(1.3, iconR * 0.16);
+    const iconSize=Math.max(24,Math.round(bannerHeight*0.25));
+    const iconCx=leftX+iconSize/2;
+    const iconCy=bannerY+bannerHeight/2;
+    const iconR=iconSize/2;
+    ctx.strokeStyle="rgba(255,208,92,0.98)";
+    ctx.lineWidth=Math.max(1.4,iconR*0.14);
     ctx.beginPath();
-    ctx.arc(iconCx, iconCy, iconR, 0, Math.PI * 2);
+    ctx.arc(iconCx,iconCy,iconR,0,Math.PI*2);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(iconCx - iconR * 0.92, iconCy);
-    ctx.lineTo(iconCx + iconR * 0.92, iconCy);
-    ctx.moveTo(iconCx, iconCy - iconR * 0.92);
-    ctx.lineTo(iconCx, iconCy + iconR * 0.92);
-    ctx.moveTo(iconCx - iconR * 0.58, iconCy - iconR * 0.78);
-    ctx.quadraticCurveTo(iconCx - iconR * 0.12, iconCy, iconCx - iconR * 0.58, iconCy + iconR * 0.78);
-    ctx.moveTo(iconCx + iconR * 0.58, iconCy - iconR * 0.78);
-    ctx.quadraticCurveTo(iconCx + iconR * 0.12, iconCy, iconCx + iconR * 0.58, iconCy + iconR * 0.78);
-    ctx.stroke();
-
-    // Right sparkle accent.
-    const accentCx = bannerX + bannerWidth - innerPadX - rightAccentWidth / 2;
-    const accentCy = bannerY + bannerHeight / 2;
-    const accentR = Math.max(5, Math.round(iconR * 0.56));
-    ctx.strokeStyle = "rgba(255,208,92,0.95)";
-    ctx.lineWidth = Math.max(1.1, accentR * 0.22);
-    ctx.beginPath();
-    ctx.moveTo(accentCx - accentR, accentCy);
-    ctx.lineTo(accentCx + accentR, accentCy);
-    ctx.moveTo(accentCx, accentCy - accentR);
-    ctx.lineTo(accentCx, accentCy + accentR);
-    ctx.moveTo(accentCx - accentR * 0.72, accentCy - accentR * 0.72);
-    ctx.lineTo(accentCx + accentR * 0.72, accentCy + accentR * 0.72);
-    ctx.moveTo(accentCx + accentR * 0.72, accentCy - accentR * 0.72);
-    ctx.lineTo(accentCx - accentR * 0.72, accentCy + accentR * 0.72);
+    ctx.moveTo(iconCx-iconR*0.92,iconCy);
+    ctx.lineTo(iconCx+iconR*0.92,iconCy);
+    ctx.moveTo(iconCx,iconCy-iconR*0.92);
+    ctx.lineTo(iconCx,iconCy+iconR*0.92);
+    ctx.moveTo(iconCx-iconR*0.55,iconCy-iconR*0.78);
+    ctx.quadraticCurveTo(iconCx-iconR*0.08,iconCy,iconCx-iconR*0.55,iconCy+iconR*0.78);
+    ctx.moveTo(iconCx+iconR*0.55,iconCy-iconR*0.78);
+    ctx.quadraticCurveTo(iconCx+iconR*0.08,iconCy,iconCx+iconR*0.55,iconCy+iconR*0.78);
     ctx.stroke();
 
-    const applyFont = ()=>{
-      ctx.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
-    };
-    applyFont();
-    while(fontSize > 10){
-      const totalWidth = ctx.measureText(prefix).width + ctx.measureText(rest).width;
-      if(totalWidth <= maxTextWidth) break;
-      fontSize -= 1;
-      applyFont();
+    const textX=leftX+iconSize+Math.max(12,Math.round(bannerHeight*0.11));
+    const textMaxWidth=Math.max(100,leftWidth-(textX-leftX));
+    let titleSize=Math.max(17,Math.min(34,Math.round(shortSide*0.032)));
+    ctx.textAlign="left";
+    ctx.textBaseline="middle";
+
+    const applyTitleFont=()=>{ctx.font=`800 ${titleSize}px Inter, Arial, sans-serif`;};
+    applyTitleFont();
+    while(titleSize>13 && ctx.measureText(cta).width>textMaxWidth){
+      titleSize-=1;
+      applyTitleFont();
     }
 
-    const prefixWidth = ctx.measureText(prefix).width;
-    const restWidth = ctx.measureText(rest).width;
-    const totalWidth = Math.min(maxTextWidth, prefixWidth + restWidth);
-    let textX = textLeft + Math.max(0, (maxTextWidth - totalWidth) / 2);
-    const textY = bannerY + bannerHeight / 2;
+    const titleY=bannerY+bannerHeight*0.39;
+    ctx.fillStyle="rgba(255,202,70,0.99)";
+    ctx.fillText(cta,textX,titleY,textMaxWidth);
 
-    if(prefix){
-      ctx.textAlign = "left";
-      ctx.fillStyle = "rgba(255,255,255,0.98)";
-      ctx.fillText(prefix, textX, textY, maxTextWidth);
-      textX += prefixWidth;
+    let urlSize=Math.max(13,Math.min(24,Math.round(titleSize*0.72)));
+    const applyUrlFont=()=>{ctx.font=`650 ${urlSize}px Inter, Arial, sans-serif`;};
+    applyUrlFont();
+    while(urlSize>11 && ctx.measureText(displayUrl).width>textMaxWidth){
+      urlSize-=1;
+      applyUrlFont();
     }
-    ctx.fillStyle = "rgba(255,198,56,0.98)";
-    ctx.fillText(rest, textX, textY, Math.max(0, maxTextWidth - (textX - textLeft)));
+    ctx.fillStyle="rgba(255,255,255,0.96)";
+    ctx.fillText(displayUrl,textX,bannerY+bannerHeight*0.67,textMaxWidth);
+
+    roundedRect(qrX,qrY,qrOuter,qrOuter,Math.max(8,Math.round(qrOuter*0.09)));
+    ctx.fillStyle="#ffffff";
+    ctx.fill();
+    ctx.lineWidth=Math.max(2,Math.round(qrOuter*0.025));
+    ctx.strokeStyle="rgba(255,205,73,0.98)";
+    ctx.stroke();
+
+    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,320);
+    if(qrCanvas){
+      const quiet=Math.max(7,Math.round(qrOuter*0.075));
+      ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
+    }else{
+      ctx.textAlign="center";
+      ctx.textBaseline="middle";
+      ctx.fillStyle="#111111";
+      ctx.font=`800 ${Math.max(11,Math.round(qrOuter*0.13))}px Inter, Arial, sans-serif`;
+      ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
+    }
+
     ctx.restore();
   }
 
