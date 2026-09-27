@@ -810,7 +810,13 @@ async function applyWatermarkToCardImageSource(source, maxDim = 1800, quality = 
       return appContext.renderCardImage(img,maxDim,quality,true);
     }
 
-    return appContext.processCardImageUrl(source,maxDim,quality,true);
+    try{
+      const {img}=await appContext.loadImageElementFromSource(source);
+      return appContext.renderCardImage(img,maxDim,quality,true);
+    }catch(error){
+      console.warn("Could not load clean image source for logo watermark:",error);
+      return appContext.processCardImageUrl(source,maxDim,quality,true);
+    }
   }
 
 async function applyWebsiteWatermarkToCardImageSource(source, maxDim = 1800, quality = 0.94){
@@ -821,7 +827,13 @@ async function applyWebsiteWatermarkToCardImageSource(source, maxDim = 1800, qua
       return appContext.renderCardImage(img,maxDim,quality,"website");
     }
 
-    return appContext.processCardImageUrl(source,maxDim,quality,"website");
+    try{
+      const {img}=await appContext.loadImageElementFromSource(source);
+      return appContext.renderCardImage(img,maxDim,quality,"website");
+    }catch(error){
+      console.warn("Could not load clean image source for website watermark:",error);
+      return appContext.processCardImageUrl(source,maxDim,quality,"website");
+    }
   }
 
 async function watermarkImageUrl(url, maxDim = 1800, quality = 0.94){
