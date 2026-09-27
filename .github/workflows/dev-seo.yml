@@ -1,4 +1,4 @@
-name: Refresh Beta SEO card pages
+name: Refresh Development SEO card pages
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/beta-seo.yml'
+      - '.github/workflows/dev-seo.yml'
       - 'tools/generate-seo.mjs'
       - 'COLLECT_TCG_BASELINE.md'
       - 'README.md'
@@ -50,7 +50,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: beta-seo-refresh
+  group: dev-seo-refresh
   cancel-in-progress: false
 
 jobs:
@@ -421,7 +421,7 @@ jobs:
           grep -q 'register-features.js?v=2026-09-27-v02' beta/src/main.js
           grep -q 'src/main.js?v=2026-09-27-v02' beta/index.html
 
-      - name: Generate Beta SEO card pages
+      - name: Generate Development SEO card pages
         run: node tools/generate-seo.mjs --beta
 
       - name: Validate generated SEO files
@@ -444,21 +444,21 @@ jobs:
             echo "SEO output already current."
             exit 0
           fi
-          git commit -m "chore: refresh Beta SEO card pages [skip ci]"
+          git commit -m "chore: refresh Development SEO card pages [skip ci]"
           git push
 
-      # Package the validated Beta v03 release.
-      - name: Create Beta release packages
+      # Package the validated Development v05 release.
+      - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v04
-          PREVIOUS_VERSION: 2026-09-27-v03
-          PREVIOUS_COMMIT: 54acff52899d7585fb450aa7706e71cf1792959d
+          RELEASE_VERSION: 2026-09-27-v05
+          PREVIOUS_VERSION: 2026-09-27-v04
+          PREVIOUS_COMMIT: 679bfd3f52dbc0a9456d848f914d769016baeefa
         run: |
           set -euo pipefail
           mkdir -p release
-          FULL="release/Collect-TCG-Beta-${RELEASE_VERSION}-full.zip"
-          PATCH="release/Collect-TCG-Beta-${PREVIOUS_VERSION}-to-${RELEASE_VERSION}-patch.zip"
+          FULL="release/Collect-TCG-Dev-${RELEASE_VERSION}-full.zip"
+          PATCH="release/Collect-TCG-Dev-${PREVIOUS_VERSION}-to-${RELEASE_VERSION}-patch.zip"
 
           git archive --format=zip --output="${FULL}" HEAD
 
@@ -478,13 +478,13 @@ jobs:
           unzip -tq "${FULL}"
           unzip -tq "${PATCH}"
 
-      - name: Upload Beta release packages
+      - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Beta-2026-09-27-v04-packages
+          name: Collect-TCG-Dev-2026-09-27-v05-packages
           path: |
-            release/Collect-TCG-Beta-2026-09-27-v04-full.zip
-            release/Collect-TCG-Beta-2026-09-27-v03-to-2026-09-27-v04-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v05-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v04-to-2026-09-27-v05-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -493,16 +493,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v04.txt"
+          MANIFEST="release-manifests/2026-09-27-v05.txt"
           {
-            echo "Version: 2026-09-27-v04"
-            echo "Previous version: 2026-09-27-v03"
+            echo "Version: 2026-09-27-v05"
+            echo "Previous version: 2026-09-27-v04"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Beta-2026-09-27-v04-full.zip"
-            echo "Patch ZIP: Collect-TCG-Beta-2026-09-27-v03-to-2026-09-27-v04-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v05-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v04-to-2026-09-27-v05-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Beta 2026-09-27-v04: record package validation"
+          git commit -m "Development 2026-09-27-v05: record package validation"
           git push

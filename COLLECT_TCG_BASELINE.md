@@ -5,10 +5,10 @@ Last reconciled against GitHub: 2026-09-27
 ## Repositories
 
 - Production: `collecttcg/Collect_TCG`
-- Beta: `collecttcg/Collect_TCG_Beta`
+- Development: `collecttcg/Collect_TCG_Dev`
 - Default branch: `main`
 
-Beta is development. Production is protected and must not be changed, promoted, deployed, or prepared unless explicitly requested.
+Development is the working environment. Production is protected and must not be changed, promoted, deployed, or prepared unless explicitly requested.
 
 Repository inspection and the latest release manifests take precedence over this document if an external change occurs after reconciliation.
 
@@ -22,25 +22,34 @@ All later releases use:
 
 `YYYY-MM-DD-vNN`
 
-Use the actual build date. Beta and Production have independent counters and restart at `v01` on each date.
+Use the actual build date. Development and Production have independent counters and restart at `v01` on each date.
 
 ---
 
+## Repository rename transition
+
+- Active environment terminology changes from **Beta** to **Development/Dev** starting with `2026-09-27-v05`.
+- Repository target name: `collecttcg/Collect_TCG_Dev`.
+- Historical Beta release names, manifests, package names and references remain unchanged.
+- The internal `beta/` directory is intentionally retained in this migration to minimize regression risk.
+- Future Development packages use `Collect-TCG-Dev-...`.
+- Production `2026-09-27-v05` removed the final runtime dependency on the old Beta repository by localizing the Zatch Bell logo.
+
 ## Current Versions
 
-Latest Beta: `2026-09-27-v04`
+Latest Development: `2026-09-27-v05`
 
-Previous Beta: `2026-09-27-v03`
+Previous Development/Beta: `2026-09-27-v04`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v04`
+Latest Production: `2026-09-27-v05`
 
-Previous Production: `2026-09-27-v03`
+Previous Production: `2026-09-27-v04`
 
-Production functional baseline last promoted from Beta: `2026-09-27-v02`
+Production functional baseline last promoted from Development (then named Beta): `2026-09-27-v02`
 
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
@@ -132,11 +141,11 @@ Production 2026-09-27-v01 still does **not** contain Beta v18 new-card custom-or
 
 ---
 
-## Current Beta Repository Structure
+## Current Development Repository Structure
 
-The active Beta structure is:
+The active Development structure is:
 
-- `beta/` — deployable Beta website
+- `beta/` — deployable Development website; the directory name is intentionally retained during the repository rename
 - `beta/src/` — active application modules/styles
 - `beta/assets/` — active local runtime image assets
 - `beta/cards/` — generated SEO card pages
@@ -145,7 +154,7 @@ The active Beta structure is:
 - `tests/` — regression tests
 - `tools/` — validation/build/local preview/SEO tooling
 - `docs/` — current engineering documentation
-- `insights/` — standalone Owner-only Insights Beta PWA
+- `insights/` — standalone Owner-only Insights Development PWA
 - `release-manifests/` — release package/checksum records
 - `COLLECT_TCG_BASELINE.md` — current project baseline/source of truth
 
@@ -242,7 +251,7 @@ The following newer behavior is part of the current baseline and must not be acc
 
 ## SQL / Database Baseline
 
-All Beta SQL migration history is centralized under `migrations/`.
+All Development-era SQL migration history is centralized under `migrations/`; historical Beta filenames remain unchanged.
 
 Current migration files:
 
@@ -319,7 +328,7 @@ Do not browse/open the live Production website for testing unless explicitly aut
 Prefer:
 - repository inspection
 - static/local validation
-- Beta testing
+- Development testing
 - GitHub Actions/Pages deployment status
 - screenshots provided by the user
 
@@ -331,7 +340,7 @@ Production must not be modified, promoted, deployed, or prepared unless the user
 
 A commit alone does not complete a release.
 
-Before reporting a Beta or Production release completed:
+Before reporting a Development or Production release completed:
 - run syntax checks on every changed JS file
 - validate changed relative imports and targets
 - validate changed HTML/assets and IDs/classes
@@ -344,7 +353,7 @@ Before reporting a Beta or Production release completed:
 - confirm package creation and checksums
 - distinguish browser/visual testing from static inspection
 
-Current Beta validation also checks:
+Current Development validation also checks:
 - SQL files remain under `migrations/`
 - required migration history remains present
 - retired v19 files do not return
@@ -359,9 +368,9 @@ If validation is incomplete, report: `Implemented, validation pending.`
 
 ## Package Expectations
 
-For every completed Beta update provide:
-- Full Beta ZIP
-- Previous → new Beta patch ZIP
+For every completed Development update provide:
+- Full Development ZIP
+- Previous → new Development patch ZIP
 - SQL migration separately when required
 - Change summary
 - Changed-file summary
@@ -419,17 +428,17 @@ Historical migration filenames are immutable even when files are organized into 
 
 ## Production Promotion Rule
 
-When a Beta version is approved for Production:
+When a Development version is approved for Production:
 
 - identify the latest Production baseline
-- identify the approved Beta version
-- confirm Beta validation status
-- determine exactly which approved Beta changes are not yet in Production
-- promote only approved Beta changes
-- do not include abandoned or experimental Beta work
-- do not silently promote a Beta with unresolved regressions caused by that Beta
+- identify the approved Development version
+- confirm Development validation status
+- determine exactly which approved Development changes are not yet in Production
+- promote only approved Development changes
+- do not include abandoned or experimental Development work
+- do not silently promote Development with unresolved regressions caused by that Development release
 - record the previous Production version
-- record which Beta version was promoted
+- record which Development version was promoted
 - create a new date-based Production version using Production's independent daily counter
 - validate Production independently after promotion
 - create and verify the Production full and patch packages
@@ -440,17 +449,17 @@ Current Beta-only application behavior relative to Production 2026-09-27-v01 inc
 
 ## Update This File After Releases
 
-After every accepted Beta or Production release, update at minimum:
+After every accepted Development or Production release, update at minimum:
 - reconciliation date
-- Latest Beta
-- Previous Beta
+- Latest Development
+- Previous Development
 - Latest Production
 - Previous Production 
-- Beta promoted from, for Production
+- Development version promoted from, for Production
 - important release purpose / retained behavior
 - SQL status where relevant
 - validation/deployment status
 - package names
-- important Beta-only changes still pending Production promotion
+- important Development-only changes still pending Production promotion
 
-This file is the source of truth for the current Beta/Production baseline and intentionally removed/retained features. Repository inspection still takes precedence when determining the actual latest code before making a new change.
+This file is the source of truth for the current Development/Production baseline and intentionally removed/retained features. Repository inspection still takes precedence when determining the actual latest code before making a new change.

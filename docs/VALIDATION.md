@@ -1,6 +1,6 @@
-# Beta validation
+# Development validation
 
-Every Beta release must complete all applicable checks before it is reported complete.
+Every Development release must complete all applicable checks before it is reported complete.
 
 ## Automated checks
 
@@ -19,7 +19,7 @@ Every Beta release must complete all applicable checks before it is reported com
 
 For UI changes, inspect representative desktop/mobile behavior and Safari-sensitive areas where tooling allows. Static inspection is not browser testing.
 
-Do not open live Production merely to validate a Beta change.
+Do not open live Production merely to validate a Development change.
 
 ## Database status
 

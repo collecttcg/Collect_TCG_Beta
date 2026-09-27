@@ -1,17 +1,17 @@
-# Collect TCG Beta
+# Collect TCG Development
 
 Development repository for the Collect TCG MY & SG website.
 
 - Production: `collecttcg/Collect_TCG`
-- Beta: `collecttcg/Collect_TCG_Beta`
-- Current Beta release: `2026-09-27-v04`
-- Production is protected and is not changed by Beta releases.
+- Development: `collecttcg/Collect_TCG_Dev`
+- Current Development release: `2026-09-27-v05`
+- Production is protected and is not changed by Development releases.
 
 ## Repository layout
 
 | Path | Purpose |
 |---|---|
-| `beta/` | Deployable Beta website |
+| `beta/` | Deployable Development website (legacy internal directory name retained for compatibility) |
 | `beta/src/` | Active application modules and styles |
 | `beta/assets/` | Runtime image assets |
 | `beta/cards/` | Generated SEO card pages |
@@ -19,7 +19,7 @@ Development repository for the Collect TCG MY & SG website.
 | `tests/` | Automated regression tests |
 | `tools/` | Validation, build, local serve and SEO tools |
 | `docs/` | Current engineering documentation |
-| `insights/` | Standalone owner-only Insights Beta PWA |
+| `insights/` | Standalone owner-only Insights Development PWA |
 | `release-manifests/` | Immutable release/package checksum records |
 
 ## Development
@@ -39,6 +39,6 @@ All SQL history is kept under `migrations/`. Migration filenames are preserved e
 
 ## Release process
 
-Beta changes are complete only after implementation, regression/static validation, release-diff inspection, package creation/checksums and final committed-file inspection. Production promotion is a separate explicit operation.
+Development changes are complete only after implementation, regression/static validation, release-diff inspection, package creation/checksums and final committed-file inspection. Production promotion is a separate explicit operation.
 
 See `docs/ARCHITECTURE.md`, `docs/VALIDATION.md`, `docs/TEST-CHECKLIST.md`, and `docs/CHANGELOG.md`.

@@ -30,7 +30,7 @@ for(const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g)){
   const target=fileURLToPath(new URL(match[1],new URL('index.html',new URL('../beta/',import.meta.url))));
   if(!fs.existsSync(target)) throw new Error('Missing HTML asset: '+match[1]);
 }
-if(fs.existsSync(path.join(betaRoot,'collect-tcg-service-worker.js'))) throw new Error('Beta must not ship the production service worker.');
+if(fs.existsSync(path.join(betaRoot,'collect-tcg-service-worker.js'))) throw new Error('Development must not ship the production service worker.');
 
 const retired=[
   'beta/src/app/beta-config.js',
@@ -75,9 +75,9 @@ const baselinePath=path.join(repoRoot,'COLLECT_TCG_BASELINE.md');
 if(!fs.existsSync(baselinePath)) throw new Error('Missing COLLECT_TCG_BASELINE.md');
 const baseline=fs.readFileSync(baselinePath,'utf8');
 for(const required of [
-  'Latest Beta: `2026-09-27-v04`',
+  'Latest Development: `2026-09-27-v05`',
   'Latest Production: `2026-09-27-v04`',
-  'Production functional baseline last promoted from Beta: `2026-09-27-v02`',
+  'Production functional baseline last promoted from Development (then named Beta): `2026-09-27-v02`',
   'migrations/2026/',
   'migrations/legacy/',
   'Custom Order',
@@ -94,3 +94,15 @@ for(const row of styleOrder){
 }
 
 console.log(`Checked ${count} JavaScript files, imports, HTML assets, migrations and repository structure.`);
+
+const devUrlFiles=[
+  ['beta/index.html','https://collecttcg.github.io/Collect_TCG_Dev/beta/'],
+  ['beta/robots.txt','https://collecttcg.github.io/Collect_TCG_Dev/beta/sitemap.xml'],
+  ['tools/generate-seo.mjs','Collect_TCG_Dev/beta/'],
+  ['insights/README.md','https://collecttcg.github.io/Collect_TCG_Dev/insights/']
+];
+for(const [rel,marker] of devUrlFiles){
+  const content=fs.readFileSync(path.join(root,rel),'utf8');
+  if(!content.includes(marker)) throw new Error('Development rename marker missing in '+rel);
+  if(content.includes('Collect_TCG_Beta')) throw new Error('Active old repository name remains in '+rel);
+}

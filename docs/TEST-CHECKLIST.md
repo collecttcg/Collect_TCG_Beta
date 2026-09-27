@@ -1,4 +1,4 @@
-# Beta acceptance checklist
+# Development acceptance checklist
 
 ## Public browsing
 

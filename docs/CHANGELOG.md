@@ -2,6 +2,14 @@
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.
 
+## 2026-09-27-v05 Development
+
+- Prepares the environment rename from Beta to Development/Dev and repository rename to `collecttcg/Collect_TCG_Dev`.
+- Future Development packages use the `Collect-TCG-Dev-...` naming convention; historical Beta packages/manifests remain unchanged.
+- Updates Development GitHub Pages/SEO canonical paths to `/Collect_TCG_Dev/beta/` while intentionally retaining the internal `beta/` directory.
+- Renames the standalone owner Insights environment identity/cache namespace from Beta to Dev.
+- Production dependency prerequisite was completed separately in Production `2026-09-27-v05`.
+
 ## 2026-09-27-v04 Beta
 
 - Synchronizes the canonical baseline after Production `2026-09-27-v04` completed Pages-gated last-known-good rollback automation.

@@ -1,14 +1,14 @@
-# Collect TCG Insights — Standalone Beta
+# Collect TCG Insights — Standalone Development
 
 Version: `2026-09-18-v02`
 
-Standalone owner-only Beta PWA for Collect TCG Insights.
+Standalone owner-only Development PWA for Collect TCG Insights.
 
-Beta URL: `https://collecttcg.github.io/Collect_TCG_Beta/insights/`
+Development URL: `https://collecttcg.github.io/Collect_TCG_Dev/insights/`
 
 Production standalone Insights remains separate at `https://collecttcg.github.io/Collect_TCG_Insights/`.
 
-This initial Beta is functionally aligned with the current standalone Production Insights app, with a separate Beta identity, cache namespace, PWA scope, and deployment path. It reuses the existing Supabase owner authentication and owner-only analytics RPCs.
+This Development app is functionally aligned with the current standalone Production Insights app, with a separate Development identity, cache namespace, PWA scope, and deployment path. It reuses the existing Supabase owner authentication and owner-only analytics RPCs.
 
 ## v02 intelligence alignment
 

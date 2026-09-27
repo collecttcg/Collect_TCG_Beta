@@ -21,10 +21,10 @@ const config=mode==='production'
       outputDir:path.join(root,'beta'),
       sourceIndex:path.join(root,'beta/index.html'),
       runtimeFile:path.join(root,'beta/src/app/production-runtime.js'),
-      publicBase:'https://collecttcg.github.io/Collect_TCG_Beta/beta/',
-      sitePath:'/Collect_TCG_Beta/beta/',
+      publicBase:'https://collecttcg.github.io/Collect_TCG_Dev/beta/',
+      sitePath:'/Collect_TCG_Dev/beta/',
       robotsMeta:'noindex,nofollow,noarchive',
-      robotsTxt:'User-agent: *\nDisallow: /\nSitemap: https://collecttcg.github.io/Collect_TCG_Beta/beta/sitemap.xml\n'
+      robotsTxt:'User-agent: *\nDisallow: /\nSitemap: https://collecttcg.github.io/Collect_TCG_Dev/beta/sitemap.xml\n'
     };
 
 const SEO_START='<!-- SEO_PHASE1_META_START -->';

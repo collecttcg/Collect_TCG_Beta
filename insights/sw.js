@@ -1,4 +1,4 @@
-const CACHE="collect-tcg-insights-beta-2026-09-18-v02";
+const CACHE="collect-tcg-insights-dev-2026-09-27-v05";
 const STATIC=[
   "./",
   "./index.html",
@@ -13,7 +13,7 @@ self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(STATIC)).then(()=>self.skipWaiting()));
 });
 self.addEventListener("activate",event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith("collect-tcg-insights-beta-")&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith("collect-tcg-insights-beta-")||key.startsWith("collect-tcg-insights-dev-"))&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
 self.addEventListener("fetch",event=>{
   const request=event.request;

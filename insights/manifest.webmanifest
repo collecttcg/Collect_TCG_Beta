@@ -1,7 +1,7 @@
 {
-  "name": "Collect TCG Insights Beta",
-  "short_name": "TCG Insights Beta",
-  "description": "Private owner-only Beta analytics for Collect TCG MY & SG.",
+  "name": "Collect TCG Insights Dev",
+  "short_name": "TCG Insights Dev",
+  "description": "Private owner-only Development analytics for Collect TCG MY & SG.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

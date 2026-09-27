@@ -1,8 +1,8 @@
-# Collect TCG Beta architecture
+# Collect TCG Development architecture
 
 ## Runtime
 
-`beta/index.html` loads `beta/src/main.js`. The Beta currently uses the same production-runtime Supabase endpoint and browser storage model as the modular application; authorization remains enforced by Owner Mode and Supabase RLS/RPC policies.
+`beta/index.html` loads `beta/src/main.js`. The Development site currently uses the same production-runtime Supabase endpoint and browser storage model as the modular application; authorization remains enforced by Owner Mode and Supabase RLS/RPC policies.
 
 `main.js` creates the runtime context, registers all feature modules through `app/register-features.js`, then runs ordered initialization through `app/initialize.js`.
 
@@ -22,7 +22,7 @@
 | `beta/src/styles/` | active stylesheet layers |
 | `beta/assets/` | local runtime assets |
 | `migrations/` | immutable SQL migration history |
-| `insights/` | standalone Insights Beta PWA |
+| `insights/` | standalone Insights Development PWA |
 | `tests/`, `tools/` | validation/development tooling |
 
 ## Module contract

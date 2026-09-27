@@ -801,13 +801,13 @@ function renderStorageAuditPage(){
               <p>Files not referenced by any card image, thumbnail, original image or reversible watermark variant.</p>
             </div>
             <div class="storage-audit-inline-actions">
-              <span class="hint">Scan-only Beta</span>
+              <span class="hint">Scan-only Dev</span>
             </div>
           </div>
           ${appContext.storageAuditTableRows(audit.orphans,{limit:100})}
           <div class="storage-audit-safety-note">
             <strong>Analysis only</strong>
-            <span>This Beta reports unreferenced files and estimated reclaimable space. It cannot delete Storage objects.</span>
+            <span>This Development environment reports unreferenced files and estimated reclaimable space. It cannot delete Storage objects.</span>
           </div>
         </section>
 
