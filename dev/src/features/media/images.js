@@ -101,24 +101,31 @@ function loadWatermarkLogo(){
 function loadWatermarkBannerTemplate(){
     if(appContext.watermarkBannerTemplatePromise) return appContext.watermarkBannerTemplatePromise;
 
-    appContext.watermarkBannerTemplatePromise = new Promise((resolve,reject)=>{
-      const template = new Image();
-      template.onload = ()=>{
-        const w=template.naturalWidth||template.width||0;
-        const h=template.naturalHeight||template.height||0;
-        if(w < 1000 || h < 200){
-          appContext.watermarkBannerTemplatePromise = null;
-          reject(new Error("watermark banner template is incomplete"));
-          return;
-        }
-        resolve(template);
-      };
-      template.onerror = ()=>{
-        appContext.watermarkBannerTemplatePromise = null;
-        reject(new Error("watermark banner template unavailable"));
-      };
-      template.src = appContext.CARD_WATERMARK_BANNER_TEMPLATE;
-    });
+    appContext.watermarkBannerTemplatePromise = fetch(appContext.CARD_WATERMARK_BANNER_TEMPLATE, {cache:"no-store"})
+      .then(response=>{
+        if(!response.ok) throw new Error("watermark banner template unavailable");
+        return response.blob();
+      })
+      .then(blob=>{
+        if(blob.size < 100000) throw new Error("watermark banner template is incomplete");
+        return new Promise((resolve,reject)=>{
+          const template=new Image();
+          const objectUrl=URL.createObjectURL(blob);
+          template.onload=()=>{
+            URL.revokeObjectURL(objectUrl);
+            resolve(template);
+          };
+          template.onerror=()=>{
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error("watermark banner template could not be decoded"));
+          };
+          template.src=objectUrl;
+        });
+      })
+      .catch(error=>{
+        appContext.watermarkBannerTemplatePromise=null;
+        throw error;
+      });
 
     return appContext.watermarkBannerTemplatePromise;
   }
