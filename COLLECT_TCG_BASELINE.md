@@ -89,11 +89,29 @@ Changes:
 - Retains the Owner Add/Edit footer layout fix from v12-v14 so controls remain below the photo.
 - No Supabase/RLS, public buyer navigation, inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/asset checks passed
+- approved watermark template asset/wiring checks passed
+- CTA overlay validation passed
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages Development deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v15-full.zip`
+  - SHA-256: `30b1e6645b455efaf990270d05b1fde1489205d8092f139a87a7ec9fdfd11b99`
 - `Collect-TCG-Dev-2026-09-27-v14-to-2026-09-27-v15-patch.zip`
+  - SHA-256: `76c8936cac4a3ab3dc3942db51c954b3d179d905bcb33bcfb587feb58f663cae`
+
+Development v15 feature commit: `0fb70d1097b066ccd2aaa8213434f46931f0bde1`
+
+Development v15 validation-fix commit: `e0970dfdf2089ab651d7e7aed8823d9f2fae85b8`
+
+Development v15 packaged source commit: `37939ee1cb183a7091575b16660fc31afc857b67`
+
+Development v15 package-validation HEAD: `e88e04f810d4fec53d7fb2805e6c1b828e9bdf1b`
 
 ### Development `2026-09-27-v14`
 
