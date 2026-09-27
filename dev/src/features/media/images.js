@@ -134,6 +134,7 @@ function createWebsiteWatermarkQrCanvas(text,size=256){
     }
   }
 
+// v13 approved mockup geometry: retain the reference proportions unless the design is explicitly changed.
 function drawWebsiteWatermark(ctx, canvas, options = {}){
     const watermarkUrl=appContext.CARD_WATERMARK_URL;
     if(!watermarkUrl) return;
