@@ -133,11 +133,11 @@ function fieldsTemplate(p){
 <div class="owner-only image-watermark-all-actions" id="${p}WatermarkAllActions">
             <div>
               <strong>All photos on this card</strong>
-              <span>Choose logo + website, website only, or original for every photo in this Add/Edit form.</span>
+              <span>Choose logo + CTA + QR, CTA + QR only, or original for every photo in this Add/Edit form.</span>
             </div>
             <div class="image-watermark-all-buttons">
-              <button type="button" class="btn-ghost" id="${p}WatermarkAllPhotos">Logo + website all photos</button>
-              <button type="button" class="btn-ghost" id="${p}WebsiteOnlyAllPhotos">Website only all photos</button>
+              <button type="button" class="btn-ghost" id="${p}WatermarkAllPhotos">Logo + CTA + QR all photos</button>
+              <button type="button" class="btn-ghost" id="${p}WebsiteOnlyAllPhotos">CTA + QR only all photos</button>
               <button type="button" class="btn-ghost" id="${p}OriginalAllPhotos">Use originals for all photos</button>
             </div>
             <div class="image-watermark-all-status" id="${p}WatermarkAllStatus" hidden></div>
@@ -470,7 +470,7 @@ function wireImageControls(p, formState){
             appContext.showToast(
               normalizedMode==="website"
                 ? "Website-only watermark selected"
-                : "Logo + website watermark selected"
+                : "Logo + CTA + QR watermark selected"
             );
           }
         }
@@ -610,7 +610,7 @@ function wireImageControls(p, formState){
       const count=formState.images.length;
       const prompt=
         normalizedMode==="full"
-          ? `Apply logo + website watermark to all ${count} photo${count===1?"":"s"}?`
+          ? `Apply logo + CTA + QR watermark to all ${count} photo${count===1?"":"s"}?`
           : normalizedMode==="website"
             ? `Apply only the website watermark to all ${count} photo${count===1?"":"s"}?`
             : `Switch all ${count} photo${count===1?"":"s"} back to original?`;
@@ -702,24 +702,24 @@ function wireImageControls(p, formState){
               state ? "with-mark" : "without-mark"
             }">${
               watermarkMode==="website"
-                ? "Website only"
+                ? "CTA + QR only"
                 : watermarkMode==="full"
-                  ? "Logo + website"
+                  ? "Logo + CTA + QR"
                   : "Original"
             }</span>
 
             <button type="button"
                     class="image-preview-watermark-btn"
                     data-preview-watermark="full"
-                    title="Apply the Collect TCG logo + website watermark">
-              Logo + website
+                    title="Apply the Collect TCG logo + CTA + QR watermark">
+              Logo + CTA + QR
             </button>
 
             <button type="button"
                     class="image-preview-watermark-btn"
                     data-preview-watermark="website"
                     title="Apply only the website banner watermark">
-              Website only
+              CTA + QR only
             </button>
 
             <button type="button"
