@@ -524,7 +524,7 @@ jobs:
           grep -Fq 'Logo + CTA + QR' dev/index.html
           grep -Fq 'CTA + QR only' dev/index.html
 
-      - name: Validate Development v26 bulk image editor
+      - name: Validate Development v27 global bulk image editor
         shell: bash
         run: |
           set -euo pipefail
@@ -537,29 +537,28 @@ jobs:
           grep -Fq '["images","Bulk Images"]' dev/src/features/owner/tools.js
           grep -Fq 'mode==="bulk" && submode==="images"' dev/src/features/owner/bulk-status.js
           grep -Fq 'renderImageReprocessPage(true)' dev/src/features/owner/bulk-status.js
-          grep -Fq '["original","watermarked","website"]' dev/src/features/owner/image-maintenance.js
-          grep -Fq 'applyWebsiteWatermarkToCardImageSource(original,1800,0.94)' dev/src/features/owner/image-maintenance.js
+          grep -Fq 'Bulk Images — All Listings' dev/src/features/owner/image-maintenance.js
+          grep -Fq 'One action applies to every photo in every inventory listing. No listing selection is required.' dev/src/features/owner/image-maintenance.js
+          grep -Fq 'const eligibleCount=appContext.cards.filter(card=>appContext.getImages(card).length).length;' dev/src/features/owner/image-maintenance.js
+          grep -Fq 'if(fromBulkEdit) return;' dev/src/features/owner/image-maintenance.js
           grep -Fq 'CTA + QR only · All Photos' dev/src/features/owner/image-maintenance.js
           grep -Fq 'Use Originals · All Photos' dev/src/features/owner/image-maintenance.js
-          grep -Fq 'websiteOnlyAllCardsBtn' dev/src/features/owner/image-maintenance.js
-          grep -Fq 'owner/tools.js?v=2026-09-27-v26' dev/src/app/register-features.js
-          grep -Fq 'owner/bulk-status.js?v=2026-09-27-v26' dev/src/app/register-features.js
-          grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v26' dev/src/app/register-features.js
-          grep -Fq 'owner/tools.js?v=2026-09-27-v26' dev/src/app/initialize.js
-          grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v26' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-27-v26' dev/src/main.js
-          grep -Fq 'initialize.js?v=2026-09-27-v26' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-27-v26' dev/index.html
+          grep -Fq 'applyWebsiteWatermarkToCardImageSource(original,1800,0.94)' dev/src/features/owner/image-maintenance.js
+          grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/register-features.js
+          grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/initialize.js
+          grep -Fq 'register-features.js?v=2026-09-27-v27' dev/src/main.js
+          grep -Fq 'initialize.js?v=2026-09-27-v27' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-27-v27' dev/index.html
           ! grep -Fq 'analytics_test' dev/src/features/owner/image-maintenance.js
           git diff --check
 
-      # Package the validated Development v26 release.
+      # Package the validated Development v27 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v26
-          PREVIOUS_VERSION: 2026-09-27-v25
-          PREVIOUS_COMMIT: 539ce59adde4841300017e2c0327d8e17a42221c
+          RELEASE_VERSION: 2026-09-27-v27
+          PREVIOUS_VERSION: 2026-09-27-v26
+          PREVIOUS_COMMIT: b6f956c0b508d41c832eebd2af11d48936c405e4
         run: |
           set -euo pipefail
           mkdir -p release
@@ -587,10 +586,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v26-packages
+          name: Collect-TCG-Dev-2026-09-27-v27-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v26-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v25-to-2026-09-27-v26-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v27-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v26-to-2026-09-27-v27-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -599,18 +598,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v26.txt"
+          MANIFEST="release-manifests/2026-09-27-v27.txt"
           {
-            echo "Version: 2026-09-27-v26"
-            echo "Previous version: 2026-09-27-v25"
+            echo "Version: 2026-09-27-v27"
+            echo "Previous version: 2026-09-27-v26"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v26-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v25-to-2026-09-27-v26-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v27-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v26-to-2026-09-27-v27-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v26: record package validation"
+          git commit -m "Development 2026-09-27-v27: record package validation"
           git push
 
   deploy:
