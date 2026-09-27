@@ -95,7 +95,17 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress. Automated syntax/import/asset checks, owner/privacy regression checks, v26 bulk-image checks, package integrity and Development Pages deployment are required before acceptance.
+Validation status: completed successfully. Feature regression tests, JavaScript syntax/repository references, owner/privacy guards, hidden-listing and inventory regressions, QR inventory CTA watermark checks, Development v26 bulk-image checks, SEO generation, full/patch ZIP integrity and Development GitHub Pages deployment passed.
+
+Release records:
+- Source commit: `2c863e3c4755e496744ce2a60ef5a13dedcdc2b2`
+- Package-validation manifest commit: `a94d1cbfe7beb00cdca0ed9ef446013a3fd9f9ee`
+- Full ZIP: `Collect-TCG-Dev-2026-09-27-v26-full.zip`
+  - SHA-256: `ff0faf829d90a32cf5b57c818ef8e2e95e01b9f8f180ade43439e32848f152ca`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-27-v25-to-2026-09-27-v26-patch.zip`
+  - SHA-256: `de443e305dfcec9dcbb10d2a419f264409bdb24f9f3d4eff70820354505bcfdd`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not available in the current tool environment; responsive/browser behavior was not manually exercised.
 
 ### Development `2026-09-27-v25`
 
