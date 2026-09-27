@@ -92,7 +92,17 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress.
+Validation status: completed successfully. Repository-wide JavaScript/reference checks, feature regressions, Owner/privacy/hidden-listing guards, existing QR watermark behavior, v27 global Bulk Images assertions, package integrity and Development Pages deployment passed.
+
+Release records:
+- Source commit: `e85647c45372627f7362780e76fd4a0eb279b40c`
+- Package-validation manifest commit: `2bf7506517bab10c8ae42793884e3afe239d43cb`
+- Full ZIP: `Collect-TCG-Dev-2026-09-27-v27-full.zip`
+  - SHA-256: `d76e43137f4a15f4fb94726297000f3b6d2ea5016877acae8b5d672c11fe568f`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-27-v26-to-2026-09-27-v27-patch.zip`
+  - SHA-256: `c673ac18c9c03c6ee9f8739bbff4d242f56600f5f99a82129d58ce51a936d588`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not available in the current tool environment; responsive/browser behavior was not manually exercised.
 
 ### Development `2026-09-27-v26`
 
