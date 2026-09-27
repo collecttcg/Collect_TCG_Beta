@@ -91,7 +91,26 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress. Do not call this release complete until the v18 workflow, package integrity and Development Pages deployment succeed.
+Validation:
+- feature regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/cache-reference checks passed
+- exact watermark artwork asset/wiring checks passed
+- dynamic QR wiring check passed
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity and SHA-256 checks passed
+- GitHub Pages Development deployment passed
+- user supplied the visual reference used for the exact logo/CTA artwork; a newly regenerated v18 card image still requires user-side visual confirmation
+
+Packages:
+- `Collect-TCG-Dev-2026-09-27-v18-full.zip`
+  - SHA-256: `aa54c8a44e9b4fe7fc62c14aa0e8d8137b1c6a6d82e04027edb72799046c9e3c`
+- `Collect-TCG-Dev-2026-09-27-v17-to-2026-09-27-v18-patch.zip`
+  - SHA-256: `355658219b7a36102e3b1e11419ec383b0b63298cee2ed6772e95fae25e0abb8`
+
+Development v18 packaged source commit: `d9341e8e6071f901020188317d39b55ab6f6cbff`
+
+Development v18 package-validation HEAD: `d08c98c8ff869839accc69148f299ad66a9012fc`
 
 ### Development `2026-09-27-v17`
 
