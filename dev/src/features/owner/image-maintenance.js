@@ -376,7 +376,7 @@ function renderImageReprocessPage(fromBulkEdit=false){
     const selected=new Set();
 
     appContext.view.innerHTML=`
-      <div class="page-head"><div><div class="eyebrow">Inventory Tools · ${fromBulkEdit?"Bulk Editing":"Quality"}</div><h2>${fromBulkEdit?"Bulk Images":"Reprocess Images"}</h2><p>${fromBulkEdit?"Change every inventory photo between its saved original and approved watermark styles.":"Manage image quality and the reversible Collect TCG watermark."}</p></div></div>
+      <div class="page-head"><div><div class="eyebrow">Inventory Tools · ${fromBulkEdit?"Bulk Editing":"Quality"}</div><h2>${fromBulkEdit?"Bulk Images — All Listings":"Reprocess Images"}</h2><p>${fromBulkEdit?"One action applies to every photo in every inventory listing. No listing selection is required.":"Manage image quality and the reversible Collect TCG watermark."}</p></div></div>
 
       <section class="panel bulk-watermark-panel owner-only">
         <div class="bulk-watermark-copy">
@@ -394,10 +394,11 @@ function renderImageReprocessPage(fromBulkEdit=false){
       </section>
 
       <div class="image-reprocess-warning"><strong>Older images</strong><span>For photos that were already permanently watermarked before the reversible system was installed, the current file may be the only source available. Upload the clean original once if you need a truly unwatermarked version.</span></div>
+      ${fromBulkEdit?"":`
       <div class="image-reprocess-layout">
         <section class="panel"><div class="image-reprocess-toolbar"><button class="btn-ghost" id="reprocessSelectAll" type="button">Select All</button><button class="btn-ghost" id="reprocessClear" type="button">Clear</button><span id="reprocessCount">0 selected</span></div><div class="image-reprocess-list" id="reprocessList">${eligible.map(card=>`<label class="image-reprocess-row"><input type="checkbox" value="${appContext.escapeHtml(card.id)}"><span class="image-reprocess-thumb">${appContext.getImages(card)[0]?`<img src="${appContext.escapeHtml(appContext.getImages(card)[0])}" alt="" loading="lazy" decoding="async">`:"No image"}</span><span><strong>${appContext.escapeHtml(card.name)}</strong><small>${appContext.escapeHtml([card.card_code,card.series].filter(Boolean).join(" · "))} · ${appContext.getImages(card).length} image${appContext.getImages(card).length===1?"":"s"}</small></span></label>`).join("")}</div></section>
         <section class="panel image-reprocess-action"><h3>High-quality reprocess</h3><p>1800px maximum dimension · JPEG quality 0.94 · current transparent vibrant watermark.</p><button type="button" class="btn-primary" id="reprocessRun">Reprocess selected</button><div class="hint" id="reprocessStatus"></div></section>
-      </div>`;
+      </div>`}`;
 
     async function runBulkWatermarkSwitch(target){
       if(!appContext.requireOwner("change all card watermarks")) return;
@@ -519,6 +520,11 @@ function renderImageReprocessPage(fromBulkEdit=false){
     appContext.$("websiteOnlyAllCardsBtn")?.addEventListener("click",()=>runBulkWatermarkSwitch("website"));
     appContext.$("reapplyAllWatermarksBtn")?.addEventListener("click",runBulkWatermarkReapply);
     appContext.$("originalAllCardsBtn")?.addEventListener("click",()=>runBulkWatermarkSwitch("original"));
+
+    // Bulk Edit → Images is intentionally global: the controls above operate
+    // on every listing with images. The selective quality-reprocess UI remains
+    // available only under Inventory Tools → Quality.
+    if(fromBulkEdit) return;
 
     const sync=()=>{
       selected.clear();
