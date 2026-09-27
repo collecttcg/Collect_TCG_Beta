@@ -475,13 +475,25 @@ jobs:
           git commit -m "chore: refresh Development SEO card pages [skip ci]"
           git push
 
-      # Package the validated Development v08 release.
+      - name: Validate QR inventory CTA watermark
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check dev/src/features/media/images.js
+          node --check dev/src/features/owner/forms.js
+          grep -Fq 'SEE MORE CARDS • BROWSE INVENTORY' dev/src/features/media/images.js
+          grep -Fq 'createWebsiteWatermarkQrCanvas' dev/src/features/media/images.js
+          grep -Fq 'QRCode.CorrectLevel.M' dev/src/features/media/images.js
+          grep -Fq 'Logo + CTA + QR' dev/index.html
+          grep -Fq 'CTA + QR only' dev/index.html
+
+      # Package the validated Development v10 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v09
-          PREVIOUS_VERSION: 2026-09-27-v08
-          PREVIOUS_COMMIT: 219a33b2fbb90341d0ab0b4d33564a4a0fc56184
+          RELEASE_VERSION: 2026-09-27-v10
+          PREVIOUS_VERSION: 2026-09-27-v09
+          PREVIOUS_COMMIT: bfe224e9daaa99c59ff046f57dca3f32842dd7a4
         run: |
           set -euo pipefail
           mkdir -p release
@@ -509,10 +521,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v09-packages
+          name: Collect-TCG-Dev-2026-09-27-v10-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v09-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v08-to-2026-09-27-v09-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v10-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -521,18 +533,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v09.txt"
+          MANIFEST="release-manifests/2026-09-27-v10.txt"
           {
-            echo "Version: 2026-09-27-v09"
-            echo "Previous version: 2026-09-27-v08"
+            echo "Version: 2026-09-27-v10"
+            echo "Previous version: 2026-09-27-v09"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v09-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v08-to-2026-09-27-v09-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v10-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v09: record package validation"
+          git commit -m "Development 2026-09-27-v10: record package validation"
           git push
 
   deploy:
