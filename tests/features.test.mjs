@@ -607,8 +607,8 @@ test('filtered rearrange stays enabled while game-order dragging is protected',(
 
 
 test('Development ChatGPT/GitHub test URLs are excluded from buyer analytics without affecting Production',()=>{
-  const analytics=source('../dev/src/services/analytics.js');
-  const startup=source('../dev/src/app/startup.js');
+  const analytics=fs.readFileSync(new URL('../dev/src/services/analytics.js',import.meta.url),'utf8');
+  const startup=fs.readFileSync(new URL('../dev/src/app/startup.js',import.meta.url),'utf8');
   assert.match(analytics,/function developmentAnalyticsTestSource\(\)/);
   assert.match(analytics,/hostname!=="collecttcg\.github\.io"/);
   assert.match(analytics,/!pathname\.startsWith\("\/Collect_TCG_Dev\/"\)/);
