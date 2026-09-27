@@ -1,0 +1,8 @@
+Version: 2026-09-27-v25
+Previous version: 2026-09-27-v24
+Source commit: 304ec6ff953db5f337837363212a9ed7c75893fe
+Full ZIP: Collect-TCG-Dev-2026-09-27-v25-full.zip
+Patch ZIP: Collect-TCG-Dev-2026-09-27-v24-to-2026-09-27-v25-patch.zip
+
+526fb82b27d3801a57d60ed9312a951b1b9f695b0e4259a3cc06706010976ec9  release/Collect-TCG-Dev-2026-09-27-v24-to-2026-09-27-v25-patch.zip
+1b53a0d85f32b27d2888cd3e06c0da3176fb611483560a0ba62942e1e193676a  release/Collect-TCG-Dev-2026-09-27-v25-full.zip
