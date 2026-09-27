@@ -91,11 +91,27 @@ Changes:
 - Preserves the v12/v13 Owner Add/Edit image-control footer fix.
 - No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
 
-Validation: in progress through the Development workflow.
+Validation:
+- regression suite passed: 43/43
+- changed JavaScript syntax checks passed
+- repository/import/asset checks passed
+- exact mockup-ratio watermark geometry checks passed
+- Owner image-editor footer fix remained validated
+- Owner/privacy/Inventory/generator/SEO regression checks passed
+- full/patch ZIP integrity passed
+- GitHub Pages Development deployment passed
 
-Expected packages:
+Packages:
 - `Collect-TCG-Dev-2026-09-27-v14-full.zip`
+  - SHA-256: `a6d085c76386062cc58007bc5bd43ae35926dca0db5974f1af05a2e00865a741`
 - `Collect-TCG-Dev-2026-09-27-v13-to-2026-09-27-v14-patch.zip`
+  - SHA-256: `a7ae7a39a8ddaabc551ac7d7fced79b79f4d85bb14936f27ca1555f758281a3d`
+
+Development v14 feature commit: `134fbff9174e6dac7534e9fb168f64d1a9838d86`
+
+Development v14 packaged source commit: `b7f1cbc073d5f6c602a277bbde67f3605f6d2746`
+
+Development v14 package-validation HEAD: `04f1567d20a75187bcf3cb34e0230a2084b7ad90`
 
 ### Development `2026-09-27-v13`
 
