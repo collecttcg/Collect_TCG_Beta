@@ -161,7 +161,7 @@ function drawWebsiteWatermark(ctx, canvas, banner){
     const sourceH=242;
     const shortSide=Math.min(canvas.width,canvas.height);
     const margin=Math.max(8,Math.round(shortSide*0.012));
-    const bannerWidth=Math.max(320,canvas.width-margin*2);
+    const bannerWidth=Math.min(canvas.width-margin*2,Math.max(280,Math.round(canvas.width*0.82)));
     const bannerHeight=Math.round(bannerWidth*sourceH/sourceW);
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
     const bannerY=Math.max(margin,Math.round(canvas.height-margin-bannerHeight));
