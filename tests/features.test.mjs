@@ -520,24 +520,39 @@ test('2026-09-25-v09 keeps inventory pagination filter signature defined before 
 });
 
 
-test('new Inventory cards slot into custom order without rearranging existing cards',()=>{
- const a=app();
- a.cardMatchesListingScope=(card,scope)=>scope==='inventory' && card.availability!=='Collection (NFS)';
- const existing=[
-  {id:'00000000-0000-4000-8000-000000000001',name:'Slab A',format:'Graded',grading:[{company:'PSA',grade:'9'}]},
-  {id:'00000000-0000-4000-8000-000000000002',name:'Slab B',format:'Graded',grading:[{company:'BGS',grade:'10'}]},
-  {id:'00000000-0000-4000-8000-000000000003',name:'Mint A',format:'Raw',condition:'M',grading:[]},
-  {id:'00000000-0000-4000-8000-000000000004',name:'Near Mint A',format:'Raw',condition:'NM',grading:[]},
-  {id:'00000000-0000-4000-8000-000000000005',name:'LP A',format:'Raw',condition:'LP',grading:[]},
-  {id:'00000000-0000-4000-8000-000000000006',name:'Sealed A',format:'Sealed',condition:'SEALED',grading:[]}
- ];
- a.cards=existing.slice();
- existing.forEach((card,index)=>a.inventoryCardOrderById.set(card.id,index+1));
- const newNm={id:'00000000-0000-4000-8000-000000000007',name:'New Near Mint',format:'Raw',condition:'NM',grading:[],availability:'Available'};
- a.cards.push(newNm);
- const ids=a.inventoryCustomOrderWithNewCard(newNm);
- assert.deepEqual(ids,['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000007','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
- assert.deepEqual(existing.map(card=>card.id),['00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000003','00000000-0000-4000-8000-000000000004','00000000-0000-4000-8000-000000000005','00000000-0000-4000-8000-000000000006']);
+test('new Inventory cards stay inside their game and use grade/raw/sealed order without rearranging existing cards',()=>{
+  const a=app();
+  a.cardMatchesListingScope=(card,scope)=>scope==='inventory' && card.availability!=='Collection (NFS)';
+  const ids=Array.from({length:9},(_,index)=>`00000000-0000-4000-8000-${String(index+1).padStart(12,'0')}`);
+  const existing=[
+   {id:ids[0],name:'OPCG PSA 10',game:'One Piece Card Game',format:'Graded',grading:[{company:'PSA',grade:'10'}]},
+   {id:ids[1],name:'OPCG Near Mint',game:'One Piece Card Game',format:'Raw',condition:'NM',grading:[]},
+   {id:ids[2],name:'OPCG Sealed',game:'One Piece Card Game',format:'Sealed',condition:'SEALED',grading:[]},
+   {id:ids[3],name:'Hyper Battle PSA 9',game:'One Piece Hyper Battle',format:'Graded',grading:[{company:'PSA',grade:'9'}]},
+   {id:ids[4],name:'Hyper Battle LP',game:'One Piece Hyper Battle',format:'Raw',condition:'LP',grading:[]},
+   {id:ids[5],name:'Hyper Battle Sealed',game:'One Piece Hyper Battle',format:'Sealed',condition:'SEALED',grading:[]}
+  ];
+  a.cards=existing.slice();
+  existing.forEach((card,index)=>a.inventoryCardOrderById.set(card.id,index+1));
+  a.inventoryGameOrderByKey.set(a.normalizeFilterValue('One Piece Card Game'),1);
+  a.inventoryGameOrderByKey.set(a.normalizeFilterValue('One Piece Hyper Battle'),2);
+
+  const newHp={id:ids[6],name:'Zoro C401',game:'One Piece Hyper Battle',format:'Raw',condition:'HP',grading:[],availability:'Available'};
+  a.cards.push(newHp);
+  assert.deepEqual(a.inventoryCustomOrderWithNewCard(newHp),[
+    ids[0],ids[1],ids[2],
+    ids[3],ids[4],ids[6],ids[5]
+  ]);
+
+  a.cards=existing.slice();
+  const newPsa10={id:ids[7],name:'Hyper Battle PSA 10',game:'One Piece Hyper Battle',format:'Graded',grading:[{company:'PSA',grade:'10'}],availability:'Available'};
+  a.cards.push(newPsa10);
+  assert.deepEqual(a.inventoryCustomOrderWithNewCard(newPsa10),[
+    ids[0],ids[1],ids[2],
+    ids[7],ids[3],ids[4],ids[5]
+  ]);
+
+  assert.deepEqual(existing.map(card=>card.id),ids.slice(0,6));
 });
 
 
