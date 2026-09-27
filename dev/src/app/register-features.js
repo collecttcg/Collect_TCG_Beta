@@ -35,7 +35,7 @@ import { register as register30 } from '../features/social/posts.js?v=2026-09-26
 import { register as register31 } from '../features/owner/quality.js';
 import { register as register32 } from '../features/owner/tools.js?v=2026-09-27-v26';
 import { register as register33 } from '../features/owner/bulk-status.js?v=2026-09-27-v26';
-import { register as register34 } from '../features/owner/image-maintenance.js?v=2026-09-27-v26';
+import { register as register34 } from '../features/owner/image-maintenance.js?v=2026-09-27-v27';
 import { register as register35 } from '../features/owner/lifecycle.js?v=2026-09-26-v13';
 import { register as register36 } from '../features/owner/bulk-price.js';
 import { register as register37 } from '../features/owner/bulk-metadata.js';
