@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v12`
+Latest Development: `2026-09-27-v13`
 
-Previous Development: `2026-09-27-v11`
+Previous Development: `2026-09-27-v12`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,28 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v13`
+
+Previous Development: `2026-09-27-v12`
+
+Purpose: make the generated inventory QR watermark follow the approved visual mockup much more closely rather than treating it as a compact footer strip.
+
+Changes:
+- Restores the watermark to a substantial near-full-width banner with proportions based on the approved reference.
+- Enlarges the branded left section, CTA, website pill and QR block.
+- Adds angled/chamfered outer framing and the right-side QR rail to better match the reference composition.
+- Adds a globe mark in the branded left panel and gives the Collect TCG logo substantially more visual weight.
+- Keeps the approved `SEE MORE CARDS • BROWSE INVENTORY` wording.
+- Keeps shine/glow deliberately restrained compared with the visual mockup.
+- Preserves the Development v12 Owner Add/Edit fix: per-photo watermark/privacy/rotation controls stay below the image rather than covering it.
+- No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
+
+Validation: in progress through the Development workflow.
+
+Expected packages:
+- `Collect-TCG-Dev-2026-09-27-v13-full.zip`
+- `Collect-TCG-Dev-2026-09-27-v12-to-2026-09-27-v13-patch.zip`
 
 ### Development `2026-09-27-v12`
 

@@ -140,26 +140,25 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
 
     const {logo=null}=options||{};
     const shortSide=Math.min(canvas.width,canvas.height);
-    const bannerMargin=Math.max(16,Math.round(shortSide*0.022));
-    const bannerHeight=Math.max(84,Math.min(154,Math.round(shortSide*0.158)));
-    const bannerRadius=Math.max(16,Math.round(bannerHeight*0.17));
-    const borderWidth=Math.max(2,Math.round(shortSide*0.0026));
+    const bannerMargin=Math.max(12,Math.round(shortSide*0.014));
+    const bannerHeight=Math.max(112,Math.min(230,Math.round(shortSide*0.205)));
     const bannerWidth=Math.min(
       canvas.width-bannerMargin*2,
-      Math.max(340,Math.round(canvas.width*0.92))
+      Math.max(420,Math.round(canvas.width*0.965))
     );
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
     const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
-    const pad=Math.max(10,Math.round(bannerHeight*0.10));
-    const innerGap=Math.max(8,Math.round(bannerHeight*0.07));
-    const leftSectionWidth=Math.max(104,Math.min(Math.round(bannerWidth*0.245),Math.round(bannerHeight*1.95)));
-    const qrOuter=Math.max(68,Math.round(bannerHeight*0.70));
-    const qrSectionWidth=qrOuter+pad*2+Math.max(8,Math.round(bannerHeight*0.05));
-    const contentWidth=bannerWidth-pad*2-leftSectionWidth-innerGap-qrSectionWidth-innerGap;
+    const borderWidth=Math.max(2,Math.round(shortSide*0.003));
+    const pad=Math.max(10,Math.round(bannerHeight*0.075));
+    const gap=Math.max(10,Math.round(bannerHeight*0.065));
+    const leftSectionWidth=Math.max(145,Math.round(bannerWidth*0.315));
+    const qrOuter=Math.max(90,Math.round(bannerHeight*0.77));
+    const qrRailWidth=Math.max(12,Math.round(bannerHeight*0.075));
+    const qrSectionWidth=qrOuter+pad*1.35+qrRailWidth;
+    const contentWidth=Math.max(165,bannerWidth-pad*2-leftSectionWidth-gap*2-qrSectionWidth);
     const leftX=bannerX+pad;
-    const centerX=leftX+leftSectionWidth+innerGap;
-    const qrFrameX=bannerX+bannerWidth-pad-qrSectionWidth;
-    const qrX=qrFrameX+pad;
+    const centerX=leftX+leftSectionWidth+gap;
+    const qrX=bannerX+bannerWidth-pad-qrRailWidth-qrOuter;
     const qrY=bannerY+Math.round((bannerHeight-qrOuter)/2);
     const cta="SEE MORE CARDS • BROWSE INVENTORY";
     const displayUrl="collecttcg.github.io/Collect_TCG";
@@ -183,6 +182,27 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       }
     }
 
+    function shellPath(x,y,w,h,inset=0){
+      const xx=x+inset;
+      const yy=y+inset;
+      const ww=w-inset*2;
+      const hh=h-inset*2;
+      const bevel=Math.max(18,Math.round(hh*0.17));
+      const corner=Math.max(10,Math.round(hh*0.09));
+      ctx.beginPath();
+      ctx.moveTo(xx+bevel,yy);
+      ctx.lineTo(xx+ww-bevel,yy);
+      ctx.quadraticCurveTo(xx+ww-corner,yy,xx+ww-corner*0.45,yy+corner*0.6);
+      ctx.lineTo(xx+ww,yy+bevel);
+      ctx.lineTo(xx+ww,yy+hh-bevel);
+      ctx.lineTo(xx+ww-corner*0.55,yy+hh-corner*0.6);
+      ctx.quadraticCurveTo(xx+ww-corner,yy+hh,xx+ww-bevel,yy+hh);
+      ctx.lineTo(xx+bevel,yy+hh);
+      ctx.lineTo(xx,yy+hh-bevel);
+      ctx.lineTo(xx,yy+bevel);
+      ctx.closePath();
+    }
+
     function fillRoundedPanel(x,y,w,h,r,fillStyle,strokeStyle,lineWidth=borderWidth*0.75){
       roundedRect(x,y,w,h,r);
       ctx.fillStyle=fillStyle;
@@ -204,172 +224,241 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       return minSize;
     }
 
+    function drawGlobe(cx,cy,r){
+      ctx.save();
+      ctx.strokeStyle="rgba(255,204,80,0.96)";
+      ctx.lineWidth=Math.max(1.5,r*0.10);
+      ctx.beginPath();
+      ctx.arc(cx,cy,r,0,Math.PI*2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx-r*0.88,cy);
+      ctx.lineTo(cx+r*0.88,cy);
+      ctx.moveTo(cx,cy-r*0.9);
+      ctx.lineTo(cx,cy+r*0.9);
+      ctx.moveTo(cx-r*0.50,cy-r*0.76);
+      ctx.quadraticCurveTo(cx-r*0.06,cy,cx-r*0.50,cy+r*0.76);
+      ctx.moveTo(cx+r*0.50,cy-r*0.76);
+      ctx.quadraticCurveTo(cx+r*0.06,cy,cx+r*0.50,cy+r*0.76);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     ctx.save();
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    const outerGlow=Math.max(8,Math.round(shortSide*0.012));
-    ctx.shadowColor="rgba(255,186,51,0.26)";
-    ctx.shadowBlur=outerGlow;
+    ctx.shadowColor="rgba(245,178,38,0.22)";
+    ctx.shadowBlur=Math.max(8,Math.round(shortSide*0.014));
+    shellPath(bannerX,bannerY,bannerWidth,bannerHeight);
     const shellGradient=ctx.createLinearGradient(bannerX,bannerY,bannerX,bannerY+bannerHeight);
-    shellGradient.addColorStop(0,"rgba(27,24,19,0.97)");
-    shellGradient.addColorStop(0.55,"rgba(13,12,12,0.97)");
-    shellGradient.addColorStop(1,"rgba(9,9,9,0.98)");
-    fillRoundedPanel(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius,shellGradient,"rgba(247,190,62,0.88)");
-
-    ctx.shadowColor="transparent";
-    roundedRect(
-      bannerX+borderWidth*1.2,
-      bannerY+borderWidth*1.2,
-      bannerWidth-borderWidth*2.4,
-      bannerHeight-borderWidth*2.4,
-      Math.max(12,bannerRadius-borderWidth*1.6)
-    );
-    ctx.lineWidth=Math.max(1,borderWidth*0.55);
-    ctx.strokeStyle="rgba(255,223,149,0.18)";
+    shellGradient.addColorStop(0,"rgba(31,25,15,0.98)");
+    shellGradient.addColorStop(0.48,"rgba(11,10,9,0.98)");
+    shellGradient.addColorStop(1,"rgba(8,8,8,0.99)");
+    ctx.fillStyle=shellGradient;
+    ctx.fill();
+    ctx.lineWidth=Math.max(2,borderWidth*1.25);
+    ctx.strokeStyle="rgba(250,190,55,0.93)";
     ctx.stroke();
 
-    const leftPanelHeight=bannerHeight-pad*2;
+    ctx.shadowColor="transparent";
+    shellPath(bannerX,bannerY,bannerWidth,bannerHeight,borderWidth*2.1);
+    ctx.lineWidth=Math.max(1,borderWidth*0.65);
+    ctx.strokeStyle="rgba(255,226,151,0.22)";
+    ctx.stroke();
+
+    const topLine=ctx.createLinearGradient(bannerX,bannerY,bannerX+bannerWidth,bannerY);
+    topLine.addColorStop(0,"rgba(255,181,34,0)");
+    topLine.addColorStop(0.22,"rgba(255,204,88,0.38)");
+    topLine.addColorStop(0.72,"rgba(255,204,88,0.28)");
+    topLine.addColorStop(1,"rgba(255,181,34,0)");
+    ctx.strokeStyle=topLine;
+    ctx.lineWidth=Math.max(1,borderWidth*0.6);
+    ctx.beginPath();
+    ctx.moveTo(bannerX+bannerWidth*0.08,bannerY+borderWidth*2.2);
+    ctx.lineTo(bannerX+bannerWidth*0.88,bannerY+borderWidth*2.2);
+    ctx.stroke();
+
     const leftPanelY=bannerY+pad;
-    const leftPanelRadius=Math.max(10,Math.round(leftPanelHeight*0.17));
-    const leftPanelGradient=ctx.createLinearGradient(leftX,leftPanelY,leftX+leftSectionWidth,leftPanelY+leftPanelHeight);
-    leftPanelGradient.addColorStop(0,"rgba(13,13,12,0.98)");
-    leftPanelGradient.addColorStop(1,"rgba(8,8,8,0.98)");
-    fillRoundedPanel(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,leftPanelRadius,leftPanelGradient,"rgba(255,195,66,0.22)",borderWidth*0.55);
+    const leftPanelH=bannerHeight-pad*2;
+    const leftPanelRadius=Math.max(12,Math.round(leftPanelH*0.10));
+    const leftGradient=ctx.createLinearGradient(leftX,leftPanelY,leftX+leftSectionWidth,leftPanelY+leftPanelH);
+    leftGradient.addColorStop(0,"rgba(14,13,11,0.99)");
+    leftGradient.addColorStop(1,"rgba(7,7,7,0.99)");
+    fillRoundedPanel(
+      leftX,leftPanelY,leftSectionWidth,leftPanelH,leftPanelRadius,
+      leftGradient,"rgba(244,183,53,0.28)",borderWidth*0.65
+    );
 
     ctx.save();
-    roundedRect(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,leftPanelRadius);
+    roundedRect(leftX,leftPanelY,leftSectionWidth,leftPanelH,leftPanelRadius);
     ctx.clip();
-    const stripeWidth=Math.max(10,Math.round(leftSectionWidth*0.085));
-    ctx.strokeStyle="rgba(255,194,82,0.035)";
-    ctx.lineWidth=Math.max(4,Math.round(leftPanelHeight*0.045));
-    for(let i=-leftPanelHeight;i<leftSectionWidth+leftPanelHeight;i+=stripeWidth){
+    ctx.strokeStyle="rgba(239,180,60,0.035)";
+    ctx.lineWidth=Math.max(4,Math.round(leftPanelH*0.035));
+    const stripeGap=Math.max(16,Math.round(leftSectionWidth*0.09));
+    for(let i=-leftPanelH;i<leftSectionWidth+leftPanelH;i+=stripeGap){
       ctx.beginPath();
       ctx.moveTo(leftX+i,leftPanelY);
-      ctx.lineTo(leftX+i-leftPanelHeight*0.50,leftPanelY+leftPanelHeight);
+      ctx.lineTo(leftX+i-leftPanelH*0.46,leftPanelY+leftPanelH);
       ctx.stroke();
     }
     ctx.restore();
 
-    const dividerX=leftX+leftSectionWidth+Math.round(innerGap*0.55);
-    ctx.strokeStyle="rgba(255,206,92,0.44)";
-    ctx.lineWidth=Math.max(1,borderWidth*0.65);
-    ctx.beginPath();
-    ctx.moveTo(dividerX,bannerY+pad*1.2);
-    ctx.lineTo(dividerX,bannerY+bannerHeight-pad*1.2);
-    ctx.stroke();
+    const globeR=Math.max(18,Math.min(34,Math.round(leftPanelH*0.22)));
+    const globeCx=leftX+pad+globeR;
+    const globeCy=leftPanelY+leftPanelH*0.47;
+    drawGlobe(globeCx,globeCy,globeR);
 
-    const qrDividerX=qrFrameX-Math.round(innerGap*0.45);
-    ctx.strokeStyle="rgba(255,206,92,0.22)";
-    ctx.beginPath();
-    ctx.moveTo(qrDividerX,bannerY+pad*1.25);
-    ctx.lineTo(qrDividerX,bannerY+bannerHeight-pad*1.25);
-    ctx.stroke();
-
-    const logoAreaX=leftX+Math.max(10,Math.round(leftSectionWidth*0.06));
-    const logoAreaY=leftPanelY+Math.max(3,Math.round(leftPanelHeight*0.02));
-    const logoAreaW=leftSectionWidth-Math.max(18,Math.round(leftSectionWidth*0.11));
-    const taglineSize=Math.max(8,Math.min(13,Math.round(bannerHeight*0.105)));
-    const taglineReserved=Math.max(16,Math.round(taglineSize*2.1));
-    const logoAreaH=leftPanelHeight-taglineReserved-Math.max(6,Math.round(leftPanelHeight*0.05));
+    const logoX=globeCx+globeR+Math.max(8,Math.round(leftPanelH*0.065));
+    const logoW=Math.max(70,leftX+leftSectionWidth-pad-logoX);
+    const taglineSize=Math.max(9,Math.min(16,Math.round(bannerHeight*0.075)));
+    const taglineY=leftPanelY+leftPanelH-Math.max(8,Math.round(leftPanelH*0.09));
+    const logoY=leftPanelY+Math.max(4,Math.round(leftPanelH*0.03));
+    const logoH=Math.max(40,taglineY-logoY-taglineSize*1.45);
 
     if(logo){
       const sourceW=logo.naturalWidth||logo.width||1;
       const sourceH=logo.naturalHeight||logo.height||1;
-      const scale=Math.min(logoAreaW/sourceW,logoAreaH/sourceH);
+      const scale=Math.min(logoW/sourceW,logoH/sourceH);
       const drawW=Math.max(1,Math.round(sourceW*scale));
       const drawH=Math.max(1,Math.round(sourceH*scale));
-      const drawX=logoAreaX+Math.round((logoAreaW-drawW)/2);
-      const drawY=logoAreaY+Math.max(0,Math.round((logoAreaH-drawH)/2)-Math.round(leftPanelHeight*0.01));
+      const drawX=logoX+Math.round((logoW-drawW)/2);
+      const drawY=logoY+Math.round((logoH-drawH)/2);
       ctx.save();
-      ctx.shadowColor="rgba(0,0,0,0.20)";
-      ctx.shadowBlur=Math.max(5,Math.round(bannerHeight*0.035));
-      ctx.globalAlpha=0.96;
+      ctx.globalAlpha=0.98;
+      ctx.shadowColor="rgba(0,0,0,0.18)";
+      ctx.shadowBlur=Math.max(3,Math.round(bannerHeight*0.022));
       ctx.drawImage(logo,drawX,drawY,drawW,drawH);
       ctx.restore();
     }else{
-      const fallbackSize=Math.max(12,Math.round(bannerHeight*0.17));
-      ctx.fillStyle="rgba(255,242,214,0.96)";
-      ctx.font="900 "+fallbackSize+"px Inter, Arial, sans-serif";
+      const fallback=fitFont("COLLECT TCG",Math.round(bannerHeight*0.16),12,logoW,"900");
+      ctx.font="900 "+fallback+"px Inter, Arial, sans-serif";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
-      ctx.fillText("COLLECT",leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight*0.40,leftSectionWidth*0.82);
-      ctx.fillStyle="rgba(255,194,68,0.96)";
-      ctx.fillText("TCG",leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight*0.58,leftSectionWidth*0.58);
+      ctx.fillStyle="rgba(255,245,225,0.97)";
+      ctx.fillText("COLLECT TCG",logoX+logoW/2,logoY+logoH/2,logoW);
     }
 
-    ctx.fillStyle="rgba(255,202,92,0.94)";
     ctx.font="700 "+taglineSize+"px Inter, Arial, sans-serif";
     ctx.textAlign="center";
     ctx.textBaseline="alphabetic";
-    ctx.fillText(brandTagline,leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight-Math.max(7,Math.round(leftPanelHeight*0.10)),leftSectionWidth*0.90);
+    ctx.fillStyle="rgba(244,190,76,0.96)";
+    ctx.fillText(
+      brandTagline,
+      leftX+leftSectionWidth/2,
+      taglineY,
+      leftSectionWidth-pad*1.35
+    );
 
-    const titleX=centerX+Math.max(1,Math.round(innerGap*0.10));
-    const titleMaxWidth=Math.max(120,contentWidth-Math.max(8,Math.round(innerGap*0.10)));
-    ctx.textAlign="left";
-    ctx.textBaseline="middle";
-    const titleSize=fitFont(cta,Math.max(16,Math.min(28,Math.round(shortSide*0.027))),12,titleMaxWidth,"800");
-    ctx.font="800 "+titleSize+"px Inter, Arial, sans-serif";
-    ctx.fillStyle="rgba(255,198,68,0.98)";
-    ctx.fillText(cta,titleX,bannerY+bannerHeight*0.39,titleMaxWidth);
-
-    const pillX=titleX;
-    const pillY=bannerY+bannerHeight*0.57;
-    const pillH=Math.max(24,Math.round(bannerHeight*0.24));
-    const arrowDiameter=Math.max(18,Math.round(pillH*0.78));
-    const pillPadX=Math.max(11,Math.round(pillH*0.42));
-    const pillWidth=Math.min(titleMaxWidth,Math.max(150,Math.round(contentWidth*0.985)));
-    const pillGradient=ctx.createLinearGradient(pillX,pillY,pillX,pillY+pillH);
-    pillGradient.addColorStop(0,"rgba(19,19,19,0.96)");
-    pillGradient.addColorStop(1,"rgba(11,11,11,0.98)");
-    fillRoundedPanel(pillX,pillY,pillWidth,pillH,Math.round(pillH/2),pillGradient,"rgba(255,196,54,0.60)",borderWidth*0.55);
-
-    const urlMaxWidth=pillWidth-pillPadX*2-arrowDiameter-Math.max(12,Math.round(pillH*0.55));
-    const urlSize=fitFont(displayUrl,Math.max(11,Math.min(18,Math.round(titleSize*0.68))),9,urlMaxWidth,"700");
-    ctx.font="700 "+urlSize+"px Inter, Arial, sans-serif";
-    ctx.fillStyle="rgba(255,255,255,0.97)";
-    ctx.textAlign="left";
-    ctx.fillText(displayUrl,pillX+pillPadX,pillY+pillH/2,urlMaxWidth);
-
-    const arrowX=pillX+pillWidth-pillPadX-arrowDiameter;
-    const arrowY=pillY+(pillH-arrowDiameter)/2;
-    const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowDiameter);
-    arrowGradient.addColorStop(0,"rgba(255,208,86,1)");
-    arrowGradient.addColorStop(1,"rgba(245,167,28,1)");
-    fillRoundedPanel(arrowX,arrowY,arrowDiameter,arrowDiameter,Math.round(arrowDiameter/2),arrowGradient,null);
-    ctx.strokeStyle="rgba(18,18,18,0.82)";
-    ctx.lineWidth=Math.max(2,Math.round(arrowDiameter*0.08));
+    const dividerX=leftX+leftSectionWidth+gap*0.48;
+    ctx.strokeStyle="rgba(247,194,71,0.62)";
+    ctx.lineWidth=Math.max(1,borderWidth*0.8);
     ctx.beginPath();
-    ctx.moveTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.31);
-    ctx.lineTo(arrowX+arrowDiameter*0.62,arrowY+arrowDiameter*0.50);
-    ctx.lineTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.69);
+    ctx.moveTo(dividerX,bannerY+pad*1.15);
+    ctx.lineTo(dividerX,bannerY+bannerHeight-pad*1.15);
     ctx.stroke();
 
-    const qrPanelRadius=Math.max(9,Math.round(qrOuter*0.12));
-    fillRoundedPanel(qrX,qrY,qrOuter,qrOuter,qrPanelRadius,"#ffffff","rgba(255,205,73,0.86)",borderWidth*0.65);
-    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,320);
+    const centerPad=Math.max(2,Math.round(gap*0.12));
+    const titleX=centerX+centerPad;
+    const titleMaxWidth=Math.max(130,contentWidth-centerPad);
+    const titleSize=fitFont(
+      cta,
+      Math.max(22,Math.min(40,Math.round(shortSide*0.035))),
+      14,
+      titleMaxWidth,
+      "800"
+    );
+    ctx.textAlign="left";
+    ctx.textBaseline="middle";
+    ctx.font="800 "+titleSize+"px Inter, Arial, sans-serif";
+    ctx.fillStyle="rgba(255,200,67,0.99)";
+    const titleY=bannerY+bannerHeight*0.40;
+    ctx.fillText(cta,titleX,titleY,titleMaxWidth);
+
+    const separatorY=bannerY+bannerHeight*0.535;
+    const sepGradient=ctx.createLinearGradient(titleX,separatorY,titleX+titleMaxWidth,separatorY);
+    sepGradient.addColorStop(0,"rgba(255,196,57,0.62)");
+    sepGradient.addColorStop(0.80,"rgba(255,196,57,0.40)");
+    sepGradient.addColorStop(1,"rgba(255,196,57,0)");
+    ctx.strokeStyle=sepGradient;
+    ctx.lineWidth=Math.max(1,borderWidth*0.75);
+    ctx.beginPath();
+    ctx.moveTo(titleX,separatorY);
+    ctx.lineTo(titleX+titleMaxWidth,separatorY);
+    ctx.stroke();
+
+    const pillX=titleX;
+    const pillY=bannerY+bannerHeight*0.62;
+    const pillH=Math.max(34,Math.round(bannerHeight*0.245));
+    const pillWidth=titleMaxWidth;
+    const pillRadius=Math.round(pillH/2);
+    const pillGradient=ctx.createLinearGradient(pillX,pillY,pillX,pillY+pillH);
+    pillGradient.addColorStop(0,"rgba(21,20,18,0.98)");
+    pillGradient.addColorStop(1,"rgba(9,9,9,0.99)");
+    fillRoundedPanel(
+      pillX,pillY,pillWidth,pillH,pillRadius,
+      pillGradient,"rgba(248,190,57,0.88)",borderWidth*0.8
+    );
+
+    const arrowDiameter=Math.max(26,Math.round(pillH*0.78));
+    const arrowX=pillX+pillWidth-arrowDiameter-Math.max(6,Math.round(pillH*0.12));
+    const arrowY=pillY+(pillH-arrowDiameter)/2;
+    const urlPad=Math.max(15,Math.round(pillH*0.38));
+    const urlMaxWidth=Math.max(80,arrowX-pillX-urlPad*1.5);
+    const urlSize=fitFont(
+      displayUrl,
+      Math.max(14,Math.min(24,Math.round(titleSize*0.68))),
+      10,
+      urlMaxWidth,
+      "700"
+    );
+    ctx.font="700 "+urlSize+"px Inter, Arial, sans-serif";
+    ctx.textAlign="left";
+    ctx.fillStyle="rgba(255,255,255,0.98)";
+    ctx.fillText(displayUrl,pillX+urlPad,pillY+pillH/2,urlMaxWidth);
+
+    const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowDiameter);
+    arrowGradient.addColorStop(0,"rgba(255,211,87,1)");
+    arrowGradient.addColorStop(1,"rgba(242,166,30,1)");
+    fillRoundedPanel(
+      arrowX,arrowY,arrowDiameter,arrowDiameter,Math.round(arrowDiameter/2),
+      arrowGradient,null
+    );
+    ctx.strokeStyle="rgba(15,15,15,0.84)";
+    ctx.lineWidth=Math.max(2,Math.round(arrowDiameter*0.075));
+    ctx.beginPath();
+    ctx.moveTo(arrowX+arrowDiameter*0.40,arrowY+arrowDiameter*0.30);
+    ctx.lineTo(arrowX+arrowDiameter*0.62,arrowY+arrowDiameter*0.50);
+    ctx.lineTo(arrowX+arrowDiameter*0.40,arrowY+arrowDiameter*0.70);
+    ctx.stroke();
+
+    const qrRadius=Math.max(10,Math.round(qrOuter*0.10));
+    fillRoundedPanel(
+      qrX,qrY,qrOuter,qrOuter,qrRadius,
+      "#ffffff","rgba(246,190,56,0.96)",borderWidth*1.0
+    );
+    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,360);
     if(qrCanvas){
-      const quiet=Math.max(5,Math.round(qrOuter*0.072));
+      const quiet=Math.max(6,Math.round(qrOuter*0.066));
       ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
     }else{
       ctx.textAlign="center";
       ctx.textBaseline="middle";
       ctx.fillStyle="#111111";
-      ctx.font="800 "+Math.max(10,Math.round(qrOuter*0.13))+"px Inter, Arial, sans-serif";
+      ctx.font="800 "+Math.max(11,Math.round(qrOuter*0.13))+"px Inter, Arial, sans-serif";
       ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
     }
 
-    const accentX=qrX+qrOuter+Math.max(5,Math.round(pad*0.28));
-    const accentWidth=Math.max(3,Math.round(borderWidth*1.05));
-    const accentGap=Math.max(4,Math.round(qrOuter*0.055));
-    const accentTop=qrY+qrOuter*0.20;
-    const accentBottom=qrY+qrOuter*0.80;
-    ctx.strokeStyle="rgba(255,190,40,0.82)";
-    ctx.lineWidth=accentWidth;
-    for(const offset of [0,accentGap,accentGap*2]){
+    const railX=qrX+qrOuter+Math.max(7,Math.round(qrRailWidth*0.40));
+    const railTop=qrY+qrOuter*0.18;
+    const railBottom=qrY+qrOuter*0.82;
+    ctx.strokeStyle="rgba(244,182,44,0.86)";
+    ctx.lineWidth=Math.max(3,Math.round(borderWidth*1.25));
+    for(let i=0;i<3;i++){
+      const x=railX+i*Math.max(6,Math.round(qrRailWidth*0.33));
       ctx.beginPath();
-      ctx.moveTo(accentX+offset,accentTop+offset*0.12);
-      ctx.lineTo(accentX+offset,accentBottom-offset*0.12);
+      ctx.moveTo(x,railTop+i*2);
+      ctx.lineTo(x,railBottom-i*2);
       ctx.stroke();
     }
 

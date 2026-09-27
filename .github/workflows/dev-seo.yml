@@ -491,14 +491,18 @@ jobs:
           grep -Fq 'shortSide*0.158' dev/src/features/media/images.js
           grep -Fq 'grid-template-rows:minmax(0,1fr) auto' dev/src/styles/01-foundation.css
           grep -Fq 'position:static' dev/src/styles/01-foundation.css
+          grep -Fq 'shortSide*0.205' dev/src/features/media/images.js
+          grep -Fq 'canvas.width*0.965' dev/src/features/media/images.js
+          grep -Fq 'function shellPath' dev/src/features/media/images.js
+          grep -Fq 'function drawGlobe' dev/src/features/media/images.js
 
-      # Package the validated Development v12 release.
+      # Package the validated Development v13 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v12
-          PREVIOUS_VERSION: 2026-09-27-v11
-          PREVIOUS_COMMIT: dccce268327e36c7c18c9ab3e3e682bfe8e25cff
+          RELEASE_VERSION: 2026-09-27-v13
+          PREVIOUS_VERSION: 2026-09-27-v12
+          PREVIOUS_COMMIT: 71799d9f66f9d971427b7ccbb529fe35e6dfe671
         run: |
           set -euo pipefail
           mkdir -p release
@@ -526,10 +530,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v12-packages
+          name: Collect-TCG-Dev-2026-09-27-v13-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v12-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v11-to-2026-09-27-v12-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v13-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v12-to-2026-09-27-v13-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -538,18 +542,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v12.txt"
+          MANIFEST="release-manifests/2026-09-27-v13.txt"
           {
-            echo "Version: 2026-09-27-v12"
-            echo "Previous version: 2026-09-27-v11"
+            echo "Version: 2026-09-27-v13"
+            echo "Previous version: 2026-09-27-v12"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v12-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v11-to-2026-09-27-v12-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v13-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v12-to-2026-09-27-v13-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v12: record package validation"
+          git commit -m "Development 2026-09-27-v13: record package validation"
           git push
 
   deploy:
