@@ -98,34 +98,65 @@ function loadWatermarkLogo(){
     return appContext.watermarkLogoPromise;
   }
 
-function drawWebsiteWatermark(ctx, canvas, options = {}){
+function createWebsiteWatermarkQrCanvas(text,size=256){
+    if(!text || typeof document==="undefined" || typeof QRCode!=="function") return null;
+
+    const holder=document.createElement("div");
+    holder.setAttribute("aria-hidden","true");
+    holder.style.cssText="position:fixed;left:-10000px;top:-10000px;width:1px;height:1px;overflow:hidden;pointer-events:none;";
+    document.body.appendChild(holder);
+
+    try{
+      new QRCode(holder,{
+        text:String(text),
+        width:size,
+        height:size,
+        colorDark:"#000000",
+        colorLight:"#ffffff",
+        correctLevel:QRCode.CorrectLevel.M
+      });
+
+      const source=holder.querySelector("canvas");
+      if(!source) return null;
+
+      const copy=document.createElement("canvas");
+      copy.width=source.width;
+      copy.height=source.height;
+      const copyCtx=copy.getContext("2d");
+      if(!copyCtx) return null;
+      copyCtx.drawImage(source,0,0);
+      return copy;
+    }catch(error){
+      console.warn("Could not generate website watermark QR code:",error);
+      return null;
+    }finally{
+      holder.remove();
+    }
+  }
+
+function drawWebsiteWatermark(ctx, canvas){
     const watermarkUrl=appContext.CARD_WATERMARK_URL;
     if(!watermarkUrl) return;
 
-    const {logo=null}=options||{};
-    const cta="CHECK PRICE • AVAILABILITY";
-    const displayUrl="collecttcg.github.io/Collect_TCG";
-    const brandTagline="COLLECT. TRADE. CONNECT.";
-
-    // Approved mockup geometry. Do not reinterpret these proportions.
-    const MOCKUP_W=1113;
-    const MOCKUP_H=242;
+    const shortSide=Math.min(canvas.width,canvas.height);
+    const bannerMargin=Math.max(18,Math.round(shortSide*0.024));
+    const bannerHeight=Math.max(88,Math.min(150,Math.round(shortSide*0.16)));
+    const bannerRadius=Math.max(18,Math.round(bannerHeight*0.22));
+    const borderWidth=Math.max(2,Math.round(shortSide*0.0032));
     const bannerWidth=Math.min(
-      canvas.width-Math.max(8,Math.round(canvas.width*0.008))*2,
-      Math.round(canvas.width*0.992)
+      canvas.width-bannerMargin*2,
+      Math.max(320,Math.round(canvas.width*0.92))
     );
-    const bannerHeight=Math.round(bannerWidth*(MOCKUP_H/MOCKUP_W));
-    const bottomMargin=Math.max(10,Math.round(canvas.width*(28/1122)));
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
-    const bannerY=Math.max(8,Math.round(canvas.height-bottomMargin-bannerHeight));
-    const sx=bannerWidth/MOCKUP_W;
-    const sy=bannerHeight/MOCKUP_H;
-    const borderWidth=Math.max(2,Math.round(4*sx));
-
-    const X=v=>bannerX+v*sx;
-    const Y=v=>bannerY+v*sy;
-    const W=v=>v*sx;
-    const H=v=>v*sy;
+    const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
+    const pad=Math.max(14,Math.round(bannerHeight*0.12));
+    const qrOuter=Math.max(64,bannerHeight-pad*2);
+    const qrX=bannerX+bannerWidth-pad-qrOuter;
+    const qrY=bannerY+pad;
+    const leftX=bannerX+pad;
+    const leftWidth=Math.max(140,qrX-leftX-Math.max(14,Math.round(bannerHeight*0.12)));
+    const cta="SEE MORE CARDS • BROWSE INVENTORY";
+    const displayUrl="collecttcg.github.io/Collect_TCG";
 
     function roundedRect(x,y,w,h,r){
       ctx.beginPath();
@@ -145,288 +176,97 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       }
     }
 
-    function fitFont(text,maxSize,minSize,maxWidth,weight="800",family="Inter"){
-      let size=maxSize;
-      while(size>minSize){
-        ctx.font=weight+" "+size+"px '"+family+"', Arial, sans-serif";
-        if(ctx.measureText(text).width<=maxWidth) return size;
-        size-=1;
-      }
-      return minSize;
-    }
-
-    function drawGlobe(cx,cy,r){
-      ctx.save();
-      ctx.strokeStyle="#f7bd35";
-      ctx.lineWidth=Math.max(1.5,r*0.11);
-      ctx.beginPath();
-      ctx.arc(cx,cy,r,0,Math.PI*2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx-r*0.88,cy);
-      ctx.lineTo(cx+r*0.88,cy);
-      ctx.moveTo(cx,cy-r*0.90);
-      ctx.lineTo(cx,cy+r*0.90);
-      ctx.moveTo(cx-r*0.48,cy-r*0.78);
-      ctx.quadraticCurveTo(cx-r*0.07,cy,cx-r*0.48,cy+r*0.78);
-      ctx.moveTo(cx+r*0.48,cy-r*0.78);
-      ctx.quadraticCurveTo(cx+r*0.07,cy,cx+r*0.48,cy+r*0.78);
-      ctx.stroke();
-      ctx.restore();
-    }
-
     ctx.save();
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    // Main body: measured from the approved mockup.
-    ctx.shadowColor="rgba(246,176,35,0.26)";
-    ctx.shadowBlur=Math.max(7,Math.round(W(10)));
-    ctx.beginPath();
-    ctx.moveTo(X(42),Y(31));
-    ctx.lineTo(X(865),Y(31));
-    ctx.lineTo(X(885),Y(15));
-    ctx.lineTo(X(1052),Y(15));
-    ctx.lineTo(X(1073),Y(29));
-    ctx.lineTo(X(1103),Y(59));
-    ctx.lineTo(X(1108),Y(181));
-    ctx.lineTo(X(1083),Y(210));
-    ctx.lineTo(X(1053),Y(228));
-    ctx.lineTo(X(45),Y(228));
-    ctx.lineTo(X(18),Y(210));
-    ctx.lineTo(X(4),Y(188));
-    ctx.lineTo(X(4),Y(69));
-    ctx.lineTo(X(19),Y(49));
-    ctx.closePath();
-    const shellGradient=ctx.createLinearGradient(X(0),Y(20),X(0),Y(230));
-    shellGradient.addColorStop(0,"rgba(25,21,14,0.985)");
-    shellGradient.addColorStop(0.42,"rgba(10,10,9,0.99)");
-    shellGradient.addColorStop(1,"rgba(5,5,5,0.995)");
-    ctx.fillStyle=shellGradient;
+    ctx.shadowColor="rgba(255,191,47,0.44)";
+    ctx.shadowBlur=Math.max(12,Math.round(shortSide*0.024));
+    roundedRect(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius);
+    ctx.fillStyle="rgba(11,10,8,0.91)";
     ctx.fill();
-    ctx.lineWidth=Math.max(2,borderWidth*1.15);
-    ctx.strokeStyle="#f4b92e";
-    ctx.stroke();
 
     ctx.shadowColor="transparent";
-    ctx.lineWidth=Math.max(1,borderWidth*0.52);
-    ctx.strokeStyle="rgba(255,225,147,0.48)";
-    ctx.beginPath();
-    ctx.moveTo(X(48),Y(38));
-    ctx.lineTo(X(856),Y(38));
-    ctx.lineTo(X(875),Y(22));
-    ctx.lineTo(X(1046),Y(22));
-    ctx.lineTo(X(1066),Y(36));
-    ctx.lineTo(X(1095),Y(64));
-    ctx.lineTo(X(1099),Y(176));
-    ctx.lineTo(X(1076),Y(202));
-    ctx.lineTo(X(1048),Y(220));
-    ctx.lineTo(X(50),Y(220));
-    ctx.lineTo(X(25),Y(203));
-    ctx.lineTo(X(12),Y(184));
-    ctx.lineTo(X(12),Y(73));
-    ctx.lineTo(X(26),Y(55));
-    ctx.closePath();
+    ctx.lineWidth=borderWidth;
+    ctx.strokeStyle="rgba(255,198,56,0.96)";
     ctx.stroke();
 
-    // Very subtle approved honeycomb texture.
-    ctx.save();
-    ctx.globalAlpha=0.10;
-    ctx.strokeStyle="#d89d22";
-    ctx.lineWidth=Math.max(0.7,W(0.7));
-    const hexR=Math.max(4,W(7));
-    const rowH=hexR*1.5;
-    const colW=Math.sqrt(3)*hexR;
-    for(let row=0,y=Y(43);y<Y(213);row++,y+=rowH){
-      const offset=(row%2)*colW/2;
-      for(let x=X(25)+offset;x<X(850);x+=colW){
-        ctx.beginPath();
-        for(let i=0;i<6;i++){
-          const angle=Math.PI/3*i-Math.PI/6;
-          const px=x+Math.cos(angle)*hexR;
-          const py=y+Math.sin(angle)*hexR;
-          if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
-        }
-        ctx.closePath();
-        ctx.stroke();
-      }
-    }
-    ctx.restore();
-
-    // Top-left angular gold accent from the approved mockup.
-    const cornerGradient=ctx.createLinearGradient(X(15),Y(35),X(135),Y(90));
-    cornerGradient.addColorStop(0,"rgba(255,213,94,0.98)");
-    cornerGradient.addColorStop(0.45,"rgba(206,136,20,0.92)");
-    cornerGradient.addColorStop(1,"rgba(72,48,16,0.25)");
-    ctx.fillStyle=cornerGradient;
-    ctx.beginPath();
-    ctx.moveTo(X(30),Y(45));
-    ctx.lineTo(X(133),Y(45));
-    ctx.lineTo(X(88),Y(88));
-    ctx.lineTo(X(18),Y(95));
-    ctx.lineTo(X(18),Y(70));
-    ctx.closePath();
-    ctx.fill();
-
-    // Branding block exact measured placement.
-    const globeCx=X(70);
-    const globeCy=Y(128);
-    const globeR=H(30);
-    drawGlobe(globeCx,globeCy,globeR);
-
-    if(logo){
-      const sourceW=logo.naturalWidth||logo.width||1;
-      const sourceH=logo.naturalHeight||logo.height||1;
-      const maxW=W(226);
-      const maxH=H(128);
-      const scale=Math.min(maxW/sourceW,maxH/sourceH);
-      const dw=sourceW*scale;
-      const dh=sourceH*scale;
-      const dx=X(112)+(maxW-dw)/2;
-      const dy=Y(53)+(maxH-dh)/2;
-      ctx.save();
-      ctx.globalAlpha=1;
-      ctx.drawImage(logo,dx,dy,dw,dh);
-      ctx.restore();
-    }else{
-      ctx.fillStyle="#fff4df";
-      ctx.font="900 "+Math.round(H(38))+"px 'Barlow Condensed', Arial, sans-serif";
-      ctx.textAlign="center";
-      ctx.textBaseline="middle";
-      ctx.fillText("COLLECT TCG",X(221),Y(112),W(218));
-    }
-
-    ctx.font="700 "+Math.round(H(15))+"px Inter, Arial, sans-serif";
-    ctx.textAlign="center";
-    ctx.textBaseline="middle";
-    ctx.fillStyle="#f6bd39";
-    ctx.fillText(brandTagline,X(188),Y(201),W(295));
-
-    ctx.strokeStyle="#f0b42f";
-    ctx.lineWidth=Math.max(1,borderWidth*0.75);
-    ctx.beginPath();
-    ctx.moveTo(X(365),Y(55));
-    ctx.lineTo(X(365),Y(201));
-    ctx.stroke();
-
-    // CTA area exact measured mockup geometry.
-    const titleX=X(392);
-    const titleY=Y(104);
-    const titleMaxW=W(469);
-    const titleSize=fitFont(
-      cta,
-      Math.round(H(48)),
-      Math.round(H(25)),
-      titleMaxW,
-      "800",
-      "Barlow Condensed"
+    roundedRect(
+      bannerX+borderWidth*1.5,
+      bannerY+borderWidth*1.5,
+      bannerWidth-borderWidth*3,
+      bannerHeight-borderWidth*3,
+      Math.max(12,bannerRadius-borderWidth*2)
     );
-    ctx.font="800 "+titleSize+"px 'Barlow Condensed', Arial, sans-serif";
+    ctx.lineWidth=Math.max(1,borderWidth*0.7);
+    ctx.strokeStyle="rgba(255,226,150,0.26)";
+    ctx.stroke();
+
+    const iconSize=Math.max(24,Math.round(bannerHeight*0.25));
+    const iconCx=leftX+iconSize/2;
+    const iconCy=bannerY+bannerHeight/2;
+    const iconR=iconSize/2;
+    ctx.strokeStyle="rgba(255,208,92,0.98)";
+    ctx.lineWidth=Math.max(1.4,iconR*0.14);
+    ctx.beginPath();
+    ctx.arc(iconCx,iconCy,iconR,0,Math.PI*2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(iconCx-iconR*0.92,iconCy);
+    ctx.lineTo(iconCx+iconR*0.92,iconCy);
+    ctx.moveTo(iconCx,iconCy-iconR*0.92);
+    ctx.lineTo(iconCx,iconCy+iconR*0.92);
+    ctx.moveTo(iconCx-iconR*0.55,iconCy-iconR*0.78);
+    ctx.quadraticCurveTo(iconCx-iconR*0.08,iconCy,iconCx-iconR*0.55,iconCy+iconR*0.78);
+    ctx.moveTo(iconCx+iconR*0.55,iconCy-iconR*0.78);
+    ctx.quadraticCurveTo(iconCx+iconR*0.08,iconCy,iconCx+iconR*0.55,iconCy+iconR*0.78);
+    ctx.stroke();
+
+    const textX=leftX+iconSize+Math.max(12,Math.round(bannerHeight*0.11));
+    const textMaxWidth=Math.max(100,leftWidth-(textX-leftX));
+    let titleSize=Math.max(17,Math.min(34,Math.round(shortSide*0.032)));
     ctx.textAlign="left";
     ctx.textBaseline="middle";
-    ctx.fillStyle="#f8c64e";
-    ctx.fillText(cta,titleX,titleY,titleMaxW);
 
-    ctx.strokeStyle="rgba(247,188,49,0.82)";
-    ctx.lineWidth=Math.max(1,borderWidth*0.62);
-    ctx.beginPath();
-    ctx.moveTo(X(389),Y(139));
-    ctx.lineTo(X(854),Y(139));
-    ctx.stroke();
+    const applyTitleFont=()=>{ctx.font=`800 ${titleSize}px Inter, Arial, sans-serif`;};
+    applyTitleFont();
+    while(titleSize>13 && ctx.measureText(cta).width>textMaxWidth){
+      titleSize-=1;
+      applyTitleFont();
+    }
 
-    // URL pill exact mockup geometry.
-    roundedRect(X(386),Y(151),W(470),H(61),H(30));
-    const pillGradient=ctx.createLinearGradient(X(386),Y(151),X(386),Y(212));
-    pillGradient.addColorStop(0,"rgba(25,23,19,0.995)");
-    pillGradient.addColorStop(1,"rgba(7,7,7,0.995)");
-    ctx.fillStyle=pillGradient;
-    ctx.fill();
-    ctx.lineWidth=Math.max(2,borderWidth*0.85);
-    ctx.strokeStyle="#f1b52e";
-    ctx.stroke();
+    const titleY=bannerY+bannerHeight*0.39;
+    ctx.fillStyle="rgba(255,202,70,0.99)";
+    ctx.fillText(cta,textX,titleY,textMaxWidth);
 
-    const arrowD=H(43);
-    const arrowX=X(797);
-    const arrowY=Y(160);
-    roundedRect(arrowX,arrowY,arrowD,arrowD,arrowD/2);
-    const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowD);
-    arrowGradient.addColorStop(0,"#ffd45d");
-    arrowGradient.addColorStop(1,"#e99b17");
-    ctx.fillStyle=arrowGradient;
-    ctx.fill();
+    let urlSize=Math.max(13,Math.min(24,Math.round(titleSize*0.72)));
+    const applyUrlFont=()=>{ctx.font=`650 ${urlSize}px Inter, Arial, sans-serif`;};
+    applyUrlFont();
+    while(urlSize>11 && ctx.measureText(displayUrl).width>textMaxWidth){
+      urlSize-=1;
+      applyUrlFont();
+    }
+    ctx.fillStyle="rgba(255,255,255,0.96)";
+    ctx.fillText(displayUrl,textX,bannerY+bannerHeight*0.67,textMaxWidth);
 
-    const urlSize=fitFont(
-      displayUrl,
-      Math.round(H(28)),
-      Math.round(H(16)),
-      W(355),
-      "700",
-      "Inter"
-    );
-    ctx.font="700 "+urlSize+"px Inter, Arial, sans-serif";
-    ctx.textAlign="left";
-    ctx.textBaseline="middle";
-    ctx.fillStyle="#ffffff";
-    ctx.fillText(displayUrl,X(411),Y(181),W(355));
-
-    ctx.strokeStyle="#15120a";
-    ctx.lineWidth=Math.max(2,H(3));
-    ctx.beginPath();
-    ctx.moveTo(arrowX+arrowD*0.38,arrowY+arrowD*0.30);
-    ctx.lineTo(arrowX+arrowD*0.62,arrowY+arrowD*0.50);
-    ctx.lineTo(arrowX+arrowD*0.38,arrowY+arrowD*0.70);
-    ctx.stroke();
-
-    // QR housing exact measured mockup geometry.
-    roundedRect(X(873),Y(16),W(196),H(205),H(16));
-    ctx.fillStyle="#11100d";
-    ctx.fill();
-    ctx.lineWidth=Math.max(2,borderWidth*0.9);
-    ctx.strokeStyle="#f0b42f";
-    ctx.stroke();
-
-    roundedRect(X(884),Y(29),W(172),H(179),H(9));
+    roundedRect(qrX,qrY,qrOuter,qrOuter,Math.max(8,Math.round(qrOuter*0.09)));
     ctx.fillStyle="#ffffff";
     ctx.fill();
-    ctx.lineWidth=Math.max(1,borderWidth*0.48);
-    ctx.strokeStyle="rgba(255,215,105,0.92)";
+    ctx.lineWidth=Math.max(2,Math.round(qrOuter*0.025));
+    ctx.strokeStyle="rgba(255,205,73,0.98)";
     ctx.stroke();
 
-    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,512);
+    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,320);
     if(qrCanvas){
-      ctx.drawImage(qrCanvas,X(896),Y(41),W(148),H(155));
+      const quiet=Math.max(7,Math.round(qrOuter*0.075));
+      ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
     }else{
-      ctx.fillStyle="#111";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
-      ctx.font="800 "+Math.round(H(18))+"px Inter, Arial, sans-serif";
-      ctx.fillText("SCAN",X(970),Y(119),W(120));
+      ctx.fillStyle="#111111";
+      ctx.font=`800 ${Math.max(11,Math.round(qrOuter*0.13))}px Inter, Arial, sans-serif`;
+      ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
     }
-
-    // Approved right-side three accent rails.
-    ctx.strokeStyle="#f2b62f";
-    ctx.lineCap="round";
-    ctx.lineWidth=Math.max(3,W(5));
-    const railYs=[82,119,158];
-    for(const ry of railYs){
-      ctx.beginPath();
-      ctx.moveTo(X(1080),Y(ry));
-      ctx.lineTo(X(1095),Y(ry));
-      ctx.stroke();
-    }
-    ctx.lineCap="butt";
-
-    // Small restrained bottom highlight only; no reinterpretive flare effects.
-    const bottomGlow=ctx.createLinearGradient(X(330),Y(226),X(790),Y(226));
-    bottomGlow.addColorStop(0,"rgba(255,190,49,0)");
-    bottomGlow.addColorStop(0.78,"rgba(255,202,64,0.34)");
-    bottomGlow.addColorStop(1,"rgba(255,190,49,0)");
-    ctx.strokeStyle=bottomGlow;
-    ctx.lineWidth=Math.max(1,borderWidth*0.45);
-    ctx.beginPath();
-    ctx.moveTo(X(300),Y(226));
-    ctx.lineTo(X(820),Y(226));
-    ctx.stroke();
 
     ctx.restore();
   }
@@ -479,7 +319,7 @@ function drawWatermark(ctx, canvas, logo){
     ctx.drawImage(logo, x, y, targetWidth, targetHeight);
     ctx.restore();
 
-    appContext.drawWebsiteWatermark(ctx, canvas, {logo});
+    appContext.drawWebsiteWatermark(ctx, canvas);
 
   }
 
@@ -622,8 +462,7 @@ async function renderCardImage(img, maxDim = 1800, quality = 0.94, applyWatermar
       }
 
       if(applyWatermark==="website"){
-        const logo = await appContext.loadWatermarkLogo();
-        appContext.drawWebsiteWatermark(ctx, canvas, {logo});
+        appContext.drawWebsiteWatermark(ctx, canvas);
       }else{
         const logo = await appContext.loadWatermarkLogo();
         appContext.drawWatermark(ctx, canvas, logo);
@@ -810,13 +649,7 @@ async function applyWatermarkToCardImageSource(source, maxDim = 1800, quality = 
       return appContext.renderCardImage(img,maxDim,quality,true);
     }
 
-    try{
-      const {img}=await appContext.loadImageElementFromSource(source);
-      return appContext.renderCardImage(img,maxDim,quality,true);
-    }catch(error){
-      console.warn("Could not load clean image source for logo watermark:",error);
-      return appContext.processCardImageUrl(source,maxDim,quality,true);
-    }
+    return appContext.processCardImageUrl(source,maxDim,quality,true);
   }
 
 async function applyWebsiteWatermarkToCardImageSource(source, maxDim = 1800, quality = 0.94){
@@ -827,13 +660,7 @@ async function applyWebsiteWatermarkToCardImageSource(source, maxDim = 1800, qua
       return appContext.renderCardImage(img,maxDim,quality,"website");
     }
 
-    try{
-      const {img}=await appContext.loadImageElementFromSource(source);
-      return appContext.renderCardImage(img,maxDim,quality,"website");
-    }catch(error){
-      console.warn("Could not load clean image source for website watermark:",error);
-      return appContext.processCardImageUrl(source,maxDim,quality,"website");
-    }
+    return appContext.processCardImageUrl(source,maxDim,quality,"website");
   }
 
 async function watermarkImageUrl(url, maxDim = 1800, quality = 0.94){
