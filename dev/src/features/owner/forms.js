@@ -127,6 +127,11 @@ function notesWithPriceNegotiability(notes,term){
 
 function fieldsTemplate(p){
     return `
+      <div class="owner-editor-tabs" role="tablist" aria-label="Card editor sections">
+        <button type="button" class="owner-editor-tab is-active" id="${p}PhotosTab" data-owner-editor-tab="photos" role="tab" aria-selected="true" aria-controls="${p}PhotosPanel">Photos</button>
+        <button type="button" class="owner-editor-tab" id="${p}DetailsTab" data-owner-editor-tab="details" role="tab" aria-selected="false" aria-controls="${p}DetailsPanel">Card Details</button>
+      </div>
+      <section class="owner-editor-panel is-active" id="${p}PhotosPanel" data-owner-editor-panel="photos" role="tabpanel" aria-labelledby="${p}PhotosTab">
       <div class="image-field">
         <div class="image-gallery-preview" id="${p}ImageGalleryPreview"></div>
         <div class="image-controls">
@@ -169,6 +174,9 @@ function fieldsTemplate(p){
           </div>
         </div>
       </div>
+      </section>
+      <section class="owner-editor-panel" id="${p}DetailsPanel" data-owner-editor-panel="details" role="tabpanel" aria-labelledby="${p}DetailsTab" hidden>
+      <div class="owner-editor-section-heading"><span>Basic information</span><small>Identity, game, language and collection details</small></div>
       <div class="field">
         <label for="${p}Name">Card name</label>
         <input type="text" id="${p}Name" required placeholder="e.g. Charizard ex">
@@ -220,6 +228,7 @@ function fieldsTemplate(p){
           </select>
         </div>
       </div>
+      <div class="owner-editor-section-heading"><span>Listing</span><small>Visibility, availability and condition</small></div>
       <div class="field-row">
         <div class="field owner-lifecycle-field">
           <label for="${p}LifecycleStatus">Listing visibility</label>
@@ -262,6 +271,7 @@ function fieldsTemplate(p){
           <div class="hint">Automatically set to Sealed when Format is Sealed, or Not Applicable when grading information is present.</div>
         </div>
       </div>
+      <div class="owner-editor-section-heading"><span>Pricing</span><small>Primary MYR price and automatic display currencies</small></div>
       <div class="field-row">
         <div class="field">
           <label for="${p}PriceMYR">Price (MYR) <span class="field-required-note">required*</span></label>
@@ -288,6 +298,7 @@ function fieldsTemplate(p){
         <div class="hint">Choose whether the listed price is negotiable or non-negotiable. This is public listing information.</div>
       </div>
 
+      <div class="owner-editor-section-heading"><span>Grading</span><small>Condition and certification details</small></div>
       <div class="grading-section">
         <div class="grading-head">
           <h3>Grading / Condition</h3>
@@ -296,6 +307,7 @@ function fieldsTemplate(p){
         <div class="hint" style="margin-bottom:10px;">Use Raw condition for ungraded cards, or add one or more grading entries for PSA, BGS, TAG, ACE, ARS, etc.</div>
         <div id="${p}GradingRows"></div>
       </div>
+      <div class="owner-editor-section-heading"><span>Notes & owner information</span><small>Public notes and private owner-only metadata</small></div>
       <div class="field">
         <label for="${p}Notes">Public listing notes</label>
         <textarea id="${p}Notes" placeholder="Details that buyers may see. Do not put private buyer or internal information here."></textarea>
@@ -318,11 +330,42 @@ function fieldsTemplate(p){
           <textarea id="${p}OwnerNotes" maxlength="2000" placeholder="Internal notes only"></textarea>
         </div>
       </div>
+      </section>
     `;
+  }
+
+function setOwnerEditorTab(p,tabName){
+    const root=(appContext.$(p+"ImageGalleryPreview") || appContext.$(p+"Name"))?.closest("form");
+    if(!root) return;
+    const target=tabName==="details" ? "details" : "photos";
+    root.querySelectorAll("[data-owner-editor-tab]").forEach(btn=>{
+      const active=btn.dataset.ownerEditorTab===target;
+      btn.classList.toggle("is-active",active);
+      btn.setAttribute("aria-selected",active ? "true" : "false");
+      btn.tabIndex=active ? 0 : -1;
+    });
+    root.querySelectorAll("[data-owner-editor-panel]").forEach(panel=>{
+      const active=panel.dataset.ownerEditorPanel===target;
+      panel.classList.toggle("is-active",active);
+      panel.hidden=!active;
+    });
+  }
+
+function wireOwnerEditorTabs(p){
+    const photosTab=appContext.$(p+"PhotosTab");
+    const detailsTab=appContext.$(p+"DetailsTab");
+    if(!photosTab || !detailsTab || photosTab.dataset.ownerEditorTabsWired==="1") return;
+    photosTab.dataset.ownerEditorTabsWired="1";
+    detailsTab.dataset.ownerEditorTabsWired="1";
+    [photosTab,detailsTab].forEach(btn=>{
+      btn.addEventListener("click",()=>appContext.setOwnerEditorTab(p,btn.dataset.ownerEditorTab));
+    });
+    appContext.setOwnerEditorTab(p,"photos");
   }
 
 function wireImageControls(p, formState){
     if(!appContext.requireOwner("manage card images")) return;
+    appContext.wireOwnerEditorTabs(p);
 
     const fileInput = appContext.$(p + "ImageFile");
     const urlInput = appContext.$(p + "ImageUrl");
@@ -1473,6 +1516,11 @@ function reportFirstInvalidField(form){
     const invalid=Array.from(form.querySelectorAll("input,select,textarea"))
       .find(el=>!el.disabled && !el.checkValidity());
     if(!invalid) return "";
+    const panel=invalid.closest("[data-owner-editor-panel]");
+    const prefix=String(invalid.id||"").startsWith("edit") ? "edit" : (String(invalid.id||"").startsWith("add") ? "add" : "");
+    if(panel?.dataset.ownerEditorPanel && prefix){
+      appContext.setOwnerEditorTab(prefix,panel.dataset.ownerEditorPanel);
+    }
     invalid.reportValidity();
     try{ invalid.scrollIntoView({behavior:"smooth",block:"center"}); }catch{}
     return appContext.invalidFieldLabel(form,invalid);
@@ -1589,7 +1637,7 @@ function collectFields(p, id, formState){
     };
   }
 
-  Object.assign(appContext,{wireGameCombobox,normalizeYearValue,isValidYearValue,normalizePriceNegotiability,priceNegotiabilityFromNotes,stripPriceNegotiabilityMarker,notesWithPriceNegotiability,fieldsTemplate,wireImageControls,gradingRowHTML,wireGradingControls,validMyrFxRates,readCachedMyrFxRates,saveCachedMyrFxRates,fetchCurrentMyrFxRates,fxRateDateLabel,roundConvertedCardPrice,convertedPriceValue,applyMyrConversionToFields,updateFxRateStatus,wireAutoCurrencyConversion,ensureMyrConversionBeforeSave,wireAvailabilityPriceState,invalidFieldLabel,reportFirstInvalidField,wireSoldDateField,wireAutoCapitalization,populateFields,collectFields});
+  Object.assign(appContext,{wireGameCombobox,normalizeYearValue,isValidYearValue,normalizePriceNegotiability,priceNegotiabilityFromNotes,stripPriceNegotiabilityMarker,notesWithPriceNegotiability,fieldsTemplate,setOwnerEditorTab,wireOwnerEditorTabs,wireImageControls,gradingRowHTML,wireGradingControls,validMyrFxRates,readCachedMyrFxRates,saveCachedMyrFxRates,fetchCurrentMyrFxRates,fxRateDateLabel,roundConvertedCardPrice,convertedPriceValue,applyMyrConversionToFields,updateFxRateStatus,wireAutoCurrencyConversion,ensureMyrConversionBeforeSave,wireAvailabilityPriceState,invalidFieldLabel,reportFirstInvalidField,wireSoldDateField,wireAutoCapitalization,populateFields,collectFields});
 }
 
 /** State and event initialization; called in preserved startup order. */
