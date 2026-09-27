@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v14`
+Latest Development: `2026-09-27-v15`
 
-Previous Development: `2026-09-27-v13`
+Previous Development: `2026-09-27-v14`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,25 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v15`
+
+Previous Development: `2026-09-27-v14`
+
+Purpose: use the approved inventory banner artwork as the exact watermark source so the left-side branding block is no longer recreated in code.
+
+Changes:
+- Adds `dev/assets/watermark-inventory-banner-template.png` and uses it as the source artwork for the CTA + QR watermark banner.
+- Removes the code-drawn recreation of the left-side branding block for the website watermark.
+- Website watermark now renders from the approved template asset directly, with no reinterpretation of the left-side branding design.
+- Retains the Owner Add/Edit footer layout fix from v12-v14 so controls remain below the photo.
+- No Supabase/RLS, public buyer navigation, inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
+
+Validation: in progress through the Development workflow.
+
+Expected packages:
+- `Collect-TCG-Dev-2026-09-27-v15-full.zip`
+- `Collect-TCG-Dev-2026-09-27-v14-to-2026-09-27-v15-patch.zip`
 
 ### Development `2026-09-27-v14`
 

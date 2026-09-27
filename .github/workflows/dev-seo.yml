@@ -486,8 +486,13 @@ jobs:
           grep -Fq 'QRCode.CorrectLevel.M' dev/src/features/media/images.js
           grep -Fq 'Logo + CTA + QR' dev/index.html
           grep -Fq 'CTA + QR only' dev/index.html
+          test -s dev/assets/watermark-inventory-banner-template.png
+          grep -Fq 'CARD_WATERMARK_BANNER_TEMPLATE = "./assets/watermark-inventory-banner-template.png"' dev/src/app/routing.js
+          grep -Fq 'loadWatermarkBannerTemplate' dev/src/features/media/images.js
+          grep -Fq 'drawWebsiteWatermark(ctx, canvas, {template})' dev/src/features/media/images.js
+          grep -Fq 'ctx.drawImage(template,bannerX,bannerY,bannerWidth,bannerHeight)' dev/src/features/media/images.js
           grep -Fq 'COLLECT. TRADE. CONNECT.' dev/src/features/media/images.js
-          grep -Fq 'drawWebsiteWatermark(ctx, canvas, {logo})' dev/src/features/media/images.js
+
           grep -Fq 'grid-template-rows:minmax(0,1fr) auto' dev/src/styles/01-foundation.css
           grep -Fq 'position:static' dev/src/styles/01-foundation.css
           grep -Fq 'function drawGlobe' dev/src/features/media/images.js
@@ -498,13 +503,13 @@ jobs:
           grep -Fq 'Barlow Condensed' dev/src/features/media/images.js
           grep -Fq 'X(873),Y(16),W(196),H(205)' dev/src/features/media/images.js
 
-      # Package the validated Development v14 release.
+      # Package the validated Development v15 release.
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v14
-          PREVIOUS_VERSION: 2026-09-27-v13
-          PREVIOUS_COMMIT: f98d266af58eb6d943bd383315346523467a8148
+          RELEASE_VERSION: 2026-09-27-v15
+          PREVIOUS_VERSION: 2026-09-27-v14
+          PREVIOUS_COMMIT: b7f1cbc073d5f6c602a277bbde67f3605f6d2746
         run: |
           set -euo pipefail
           mkdir -p release
@@ -532,10 +537,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v14-packages
+          name: Collect-TCG-Dev-2026-09-27-v15-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v14-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v13-to-2026-09-27-v14-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v15-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v14-to-2026-09-27-v15-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -544,18 +549,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v14.txt"
+          MANIFEST="release-manifests/2026-09-27-v15.txt"
           {
-            echo "Version: 2026-09-27-v14"
-            echo "Previous version: 2026-09-27-v13"
+            echo "Version: 2026-09-27-v15"
+            echo "Previous version: 2026-09-27-v14"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v14-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v13-to-2026-09-27-v14-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v15-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v14-to-2026-09-27-v15-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v14: record package validation"
+          git commit -m "Development 2026-09-27-v15: record package validation"
           git push
 
   deploy:
