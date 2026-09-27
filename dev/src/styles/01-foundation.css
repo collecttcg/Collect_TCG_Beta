@@ -18574,3 +18574,47 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
 
 /* Owner QR generator: reusable links without storing a separate QR record. */
 .qr-generator-panel{max-width:760px;display:grid;gap:14px;}.qr-generator-panel label{display:grid;gap:4px;}.qr-generator-panel label span{color:var(--muted);font-size:12px;}.qr-generator-entry{display:flex;gap:8px;}.qr-generator-entry input{min-width:0;flex:1;}.qr-generator-result{display:grid;justify-items:center;gap:14px;padding:20px;border:1px solid var(--border);border-radius:12px;background:var(--surface-soft,rgba(255,255,255,.025));}.qr-generator-code{display:grid;place-items:center;padding:12px;border-radius:10px;background:#fff;line-height:0;}.qr-generator-code canvas,.qr-generator-code img{display:block;max-width:min(100%,360px);height:auto;}.qr-generator-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;}@media(max-width:600px){.qr-generator-entry{flex-direction:column;}.qr-generator-entry button{width:100%;}.qr-generator-code canvas,.qr-generator-code img{max-width:260px;}}
+
+
+/* =========================================================
+   ADD / EDIT PHOTO PREVIEW — KEEP IMAGE FULLY VISIBLE
+   Controls are a footer, never an overlay on the photo.
+   ========================================================= */
+.image-gallery-preview .image-preview-box[data-image-index]{
+  aspect-ratio:auto !important;
+  min-height:0 !important;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+}
+
+.image-gallery-preview .image-preview-box[data-image-index] > img{
+  width:100% !important;
+  height:auto !important;
+  max-height:none !important;
+  flex:0 0 auto;
+  object-fit:contain !important;
+  object-position:center !important;
+}
+
+.image-gallery-preview .image-preview-box[data-image-index] .image-preview-watermark-actions{
+  position:static;
+  left:auto;
+  right:auto;
+  bottom:auto;
+  z-index:auto;
+  flex:0 0 auto;
+  width:auto;
+  margin:0;
+  border-radius:0 0 10px 10px;
+  background:var(--surface-2);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+
+.image-gallery-preview .image-preview-box[data-image-index] .image-number{
+  top:7px !important;
+  bottom:auto !important;
+  left:40px !important;
+}
