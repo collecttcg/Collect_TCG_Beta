@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v23`
+Latest Development: `2026-09-27-v24`
 
-Previous Development: `2026-09-27-v22`
+Previous Development: `2026-09-27-v23`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,27 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v24`
+
+Previous Development: `2026-09-27-v23`
+
+Purpose: make the Add/Edit owner workspace easier to read and navigate responsively without changing card or image behavior.
+
+Changes:
+- Adds responsive `Photos` and `Card Details` editor tabs shared by Add and Edit.
+- Keeps the photo workspace wide and uses 3 columns on large desktop, 2 on tablet/smaller desktop, and 1 on mobile.
+- Moves the card fields into clearly labelled Basic information, Listing, Pricing, Grading, and Notes & owner information sections.
+- Increases field labels, input/select text, hints, watermark status and photo-control typography for readability.
+- Keeps bulk photo controls at the top of the Photos workspace.
+- Adds a sticky Cancel / Save action bar.
+- If validation fails while Photos is selected, the editor switches to Card Details before reporting/focusing the invalid field.
+- Preserves v23 full-image previews, controls-below-image behavior, watermark generation, PSA privacy controls, image ordering/storage, Supabase/RLS, Owner Mode and public inventory behavior.
+- Production is unchanged.
+
+SQL required: No.
+
+Validation status: in progress. Automated validation, package integrity, Development deployment, and desktop/mobile responsive visual confirmation are required before acceptance.
 
 ### Development `2026-09-27-v23`
 
