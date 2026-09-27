@@ -524,10 +524,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v10-packages
+          name: Collect-TCG-Dev-2026-09-27-v17-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v10-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v17-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v10-to-2026-09-27-v17-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -536,18 +536,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v10.txt"
+          MANIFEST="release-manifests/2026-09-27-v17.txt"
           {
             echo "Version: 2026-09-27-v10"
             echo "Previous version: 2026-09-27-v09"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v10-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v09-to-2026-09-27-v10-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v17-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v10-to-2026-09-27-v17-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v10: record package validation"
+          git commit -m "Development 2026-09-27-v17: record package validation"
           git push
 
   deploy:
