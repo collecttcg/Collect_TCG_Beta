@@ -1,6 +1,6 @@
 import { register as register0 } from '../features/core/utilities.js?v=2026-09-24-v03';
 import { register as register1 } from '../features/cards/favorites.js';
-import { register as register2 } from '../features/inventory/ordering.js?v=2026-09-26-v18';
+import { register as register2 } from '../features/inventory/ordering.js?v=2026-09-27-v02';
 import { register as register3 } from '../services/auth.js?v=2026-09-26-v02';
 import { register as register4 } from '../features/media/collage.js?v=2026-09-26-v05';
 import { register as register5 } from '../features/cards/repository.js?v=2026-09-26-v12';
@@ -22,7 +22,7 @@ import { register as register19 } from '../features/inventory/filtering.js?v=202
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
 import { register as register21 } from '../features/cards/compare.js?v=2026-09-26-v07';
 import { register as register22 } from '../features/cards/tiles.js?v=2026-09-26-v02';
-import { register as register23 } from '../features/inventory/page.js?v=2026-09-26-v18';
+import { register as register23 } from '../features/inventory/page.js?v=2026-09-27-v02';
 import { register as register24 } from '../features/content/giveaways.js';
 import { register as register25 } from '../features/content/showcase.js';
 import { register as register26 } from '../features/content/giveaway-pages.js';

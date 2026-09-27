@@ -28,9 +28,9 @@ Use the actual build date. Beta and Production have independent counters and res
 
 ## Current Versions
 
-Latest Beta: `2026-09-27-v01`
+Latest Beta: `2026-09-27-v02`
 
-Previous Beta: `2026-09-26-v20`
+Previous Beta: `2026-09-27-v01`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -172,6 +172,7 @@ The following newer behavior is part of the current baseline and must not be acc
 - Inventory pagination with 10 cards per page in the current paginated flow
 - Pagination positioned with inventory sort controls
 - Custom Order remains the default Inventory ordering
+- Filtered rearranging is supported for Inventory/Collection cards: visible cards can be reordered while hidden/non-matching cards keep their existing global order slots; game-category order is not rewritten from a filtered view
 - New Inventory cards are inserted into the existing custom order by slab/raw-condition/sealed grouping without reordering existing cards
 - Direct card URL startup support
 - Card Back/Forward browser-history behavior

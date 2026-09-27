@@ -2,6 +2,13 @@
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.
 
+## 2026-09-27-v02 Beta
+
+- Allows Inventory/Collection card rearranging while filters/search/category filters are active.
+- Filtered saves merge visible reordered cards back into the full Custom Order so hidden/non-matching cards keep their existing slots and relative order.
+- Game-category reordering remains disabled for filtered views so partial results cannot rewrite the global game order.
+- Preserves unfiltered rearranging and v18 new-card-only automatic insertion behavior.
+
 ## 2026-09-27-v01 Beta
 
 - Synchronizes `COLLECT_TCG_BASELINE.md` after Production `2026-09-27-v01` repository cleanup.

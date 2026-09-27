@@ -575,3 +575,32 @@ test('Beta cleanup keeps migrations centralized and retained owner tools wired',
  assert.match(tools,/\["qr","QR Generator"\]/);
  assert.match(index,/qrcodejs\/1\.0\.0\/qrcode\.min\.js/);
 });
+
+
+test('filtered custom reorder preserves hidden card slots',()=>{
+ const a=app();
+ const ids=[
+  '00000000-0000-4000-8000-000000000001',
+  '00000000-0000-4000-8000-000000000002',
+  '00000000-0000-4000-8000-000000000003',
+  '00000000-0000-4000-8000-000000000004',
+  '00000000-0000-4000-8000-000000000005',
+  '00000000-0000-4000-8000-000000000006'
+ ];
+ assert.deepEqual(
+  a.mergeFilteredCustomOrder(ids,[ids[4],ids[2],ids[0]]),
+  [ids[4],ids[1],ids[2],ids[3],ids[0],ids[5]]
+ );
+ assert.deepEqual(
+  a.mergeFilteredCustomOrder(ids,[ids[3],ids[1]]),
+  [ids[0],ids[3],ids[2],ids[1],ids[4],ids[5]]
+ );
+});
+
+test('filtered rearrange stays enabled while game-order dragging is protected',()=>{
+ const source=fs.readFileSync(new URL('../beta/src/features/inventory/page.js',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/Clear Collection filters before rearranging/);
+ assert.match(source,/mergeFilteredCustomOrder\(collectionFullCustomCardIds\(\),visibleIds\)/);
+ assert.match(source,/filteredRearrange\s*\?\s*Promise\.resolve\(true\)/);
+ assert.match(source,/function collectionCanRearrangeGameGroups\(\)/);
+});

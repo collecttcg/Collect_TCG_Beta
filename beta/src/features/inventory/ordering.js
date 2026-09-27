@@ -235,6 +235,34 @@ function inventoryCustomOrderValue(card){
     return Number.isFinite(value) ? value : Number.MAX_SAFE_INTEGER;
   }
 
+function mergeFilteredCustomOrder(fullOrderIds,visibleOrderIds){
+    const full=[];
+    const seenFull=new Set();
+    (fullOrderIds||[]).forEach(value=>{
+      const id=appContext.safeCardId(value);
+      if(!id || seenFull.has(id)) return;
+      seenFull.add(id);
+      full.push(id);
+    });
+
+    const visible=[];
+    const seenVisible=new Set();
+    (visibleOrderIds||[]).forEach(value=>{
+      const id=appContext.safeCardId(value);
+      if(!id || seenVisible.has(id) || !seenFull.has(id)) return;
+      seenVisible.add(id);
+      visible.push(id);
+    });
+
+    if(!visible.length) return full;
+    const visibleSet=new Set(visible);
+    const slots=[];
+    full.forEach((id,index)=>{ if(visibleSet.has(id)) slots.push(index); });
+    const merged=full.slice();
+    slots.forEach((index,slotIndex)=>{ merged[index]=visible[slotIndex]; });
+    return merged;
+  }
+
 async function saveInventoryCardOrder(cardIds){
     if(!appContext.requireCollectionOrderOwner("save Inventory card order")) return false;
     const ids=(cardIds||[]).map(id=>appContext.safeCardId(id)).filter(Boolean);
@@ -301,7 +329,7 @@ function runWhenIdle(callback,timeout=1200){
     return setTimeout(callback,80);
   }
 
-  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,saveInventoryCardOrder,inventoryNewCardBucketRank,inventoryCustomOrderWithNewCard,insertNewInventoryCardIntoCustomOrder,runWhenIdle});
+  Object.assign(appContext,{orderRpcUnavailable,normalizeOrderGroups,loadCollectionGameOrder,collectionCustomGameOrderValue,saveCollectionGameOrder,loadCollectionCardOrder,collectionCustomOrderValue,saveCollectionCardOrder,loadInventoryGameOrder,inventoryCustomGameOrderValue,saveInventoryGameOrder,loadInventoryCardOrder,inventoryCustomOrderValue,mergeFilteredCustomOrder,saveInventoryCardOrder,inventoryNewCardBucketRank,inventoryCustomOrderWithNewCard,insertNewInventoryCardIntoCustomOrder,runWhenIdle});
 }
 
 /** State and event initialization; called in preserved startup order. */

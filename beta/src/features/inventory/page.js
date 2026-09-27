@@ -1252,13 +1252,13 @@ function renderInventoryPage(scope = "inventory"){
 
         return `
           <button type="button"
-                  class="collection-game-group-header ${collapsed ? "collapsed" : ""} ${collectionRearrangeMode ? "rearranging collection-game-draggable" : ""}"
+                  class="collection-game-group-header ${collapsed ? "collapsed" : ""} ${collectionCanRearrangeGameGroups() ? "rearranging collection-game-draggable" : ""}"
                   data-collection-game-toggle="${appContext.escapeHtml(group.key)}"
                   data-collection-game-label="${appContext.escapeHtml(group.label)}"
                   aria-expanded="${collapsed ? "false" : "true"}"
-                  ${collectionRearrangeMode ? 'draggable="true"' : ""}>
+                  ${collectionCanRearrangeGameGroups() ? 'draggable="true"' : ""}>
             <span class="collection-game-group-main">
-              ${collectionRearrangeMode ? `<span class="collection-game-drag-handle" aria-hidden="true">☰</span>` : ""}
+              ${collectionCanRearrangeGameGroups() ? `<span class="collection-game-drag-handle" aria-hidden="true">☰</span>` : ""}
               <span class="collection-game-chevron" aria-hidden="true">⌄</span>
               <strong>${appContext.escapeHtml(group.label)}</strong>
               <span class="collection-game-count">${group.cards.length.toLocaleString()} ${group.cards.length===1 ? "card" : "cards"}</span>
@@ -1311,13 +1311,13 @@ function renderInventoryPage(scope = "inventory"){
 
         return `
           <button type="button"
-                  class="collection-game-group-header ${collapsed ? "collapsed" : ""} ${collectionRearrangeMode ? "rearranging collection-game-draggable" : ""}"
+                  class="collection-game-group-header ${collapsed ? "collapsed" : ""} ${collectionCanRearrangeGameGroups() ? "rearranging collection-game-draggable" : ""}"
                   data-collection-game-toggle="${appContext.escapeHtml(group.key)}"
                   data-collection-game-label="${appContext.escapeHtml(group.label)}"
                   aria-expanded="${collapsed ? "false" : "true"}"
-                  ${collectionRearrangeMode ? 'draggable="true"' : ""}>
+                  ${collectionCanRearrangeGameGroups() ? 'draggable="true"' : ""}>
             <span class="collection-game-group-main">
-              ${collectionRearrangeMode ? `<span class="collection-game-drag-handle" aria-hidden="true">☰</span>` : ""}
+              ${collectionCanRearrangeGameGroups() ? `<span class="collection-game-drag-handle" aria-hidden="true">☰</span>` : ""}
               <span class="collection-game-chevron" aria-hidden="true">⌄</span>
               <strong>${appContext.escapeHtml(group.label)}</strong>
               <span class="collection-game-count">${group.cards.length.toLocaleString()} ${group.cards.length===1 ? "card" : "cards"}</span>
@@ -1461,9 +1461,31 @@ function renderInventoryPage(scope = "inventory"){
     function collectionHasActiveFiltersForRearrange(){
       if(String(appContext.$("search")?.value||"").trim()) return true;
       if(appContext.activeQuickFilter && appContext.activeQuickFilter!=="all") return true;
-      if(["filterGame","filterGrade","filterLanguage","filterEra","filterSeries"]
+      if(["filterGame","filterGrade","filterLanguage","filterEra","filterAvailability","filterSeries","filterPriceMin","filterPriceMax"]
         .some(id=>String(appContext.$(id)?.value||"").trim())) return true;
       return Object.values(appContext.pillFilterState).some(set=>set?.size);
+    }
+
+    function collectionFullCustomCardIds(){
+      const scope=appContext.listingAvailabilityScope;
+      const orderValue=scope==="inventory"
+        ? appContext.inventoryCustomOrderValue
+        : appContext.collectionCustomOrderValue;
+
+      return appContext.cards
+        .map((card,index)=>({card,index}))
+        .filter(({card})=>appContext.cardMatchesListingScope(card,scope))
+        .sort((a,b)=>{
+          const ao=orderValue(a.card);
+          const bo=orderValue(b.card);
+          return ao-bo || a.index-b.index;
+        })
+        .map(({card})=>appContext.safeCardId(card.id))
+        .filter(Boolean);
+    }
+
+    function collectionCanRearrangeGameGroups(){
+      return collectionRearrangeMode && !collectionHasActiveFiltersForRearrange();
     }
 
     function syncCollectionRearrangeButton(){
@@ -1505,10 +1527,7 @@ function renderInventoryPage(scope = "inventory"){
         return;
       }
 
-      if(collectionHasActiveFiltersForRearrange()){
-        appContext.showToast("Clear Collection filters before rearranging");
-        return;
-      }
+      const filteredRearrange=collectionHasActiveFiltersForRearrange();
 
       if(appContext.$("sortBy")?.value!=="custom"){
         appContext.$("sortBy").value="custom";
@@ -1522,7 +1541,9 @@ function renderInventoryPage(scope = "inventory"){
       draw();
       syncCollectionRearrangeButton();
       document.body.classList.add("collection-rearrange-mode");
-      appContext.showToast(`Drag ${appContext.listingAvailabilityScope==="inventory" ? "Inventory" : "Collection"} game headers and cards, then Save Order`);
+      appContext.showToast(filteredRearrange
+        ? `Drag the filtered ${appContext.listingAvailabilityScope==="inventory" ? "Inventory" : "Collection"} cards, then Save Order`
+        : `Drag ${appContext.listingAvailabilityScope==="inventory" ? "Inventory" : "Collection"} game headers and cards, then Save Order`);
     }
 
     async function finishCollectionRearrangeMode(save){
@@ -1538,7 +1559,11 @@ function renderInventoryPage(scope = "inventory"){
         return;
       }
 
-      const ids=collectionRearrangeCardIdsFromDom();
+      const visibleIds=collectionRearrangeCardIdsFromDom();
+      const filteredRearrange=collectionHasActiveFiltersForRearrange();
+      const ids=filteredRearrange
+        ? appContext.mergeFilteredCustomOrder(collectionFullCustomCardIds(),visibleIds)
+        : visibleIds;
       const groups=collectionRearrangeGamesFromDom();
       const isInventoryOrder=appContext.listingAvailabilityScope==="inventory";
       const buttons=[
@@ -1549,7 +1574,9 @@ function renderInventoryPage(scope = "inventory"){
 
       const [cardsOk,gamesOk]=await Promise.all([
         isInventoryOrder ? appContext.saveInventoryCardOrder(ids) : appContext.saveCollectionCardOrder(ids),
-        isInventoryOrder ? appContext.saveInventoryGameOrder(groups) : appContext.saveCollectionGameOrder(groups)
+        filteredRearrange
+          ? Promise.resolve(true)
+          : (isInventoryOrder ? appContext.saveInventoryGameOrder(groups) : appContext.saveCollectionGameOrder(groups))
       ]);
 
       buttons.forEach(button=>{ button.disabled=false; });
@@ -1637,7 +1664,7 @@ function renderInventoryPage(scope = "inventory"){
     }
 
     appContext.$("invGrid")?.addEventListener("dragstart",event=>{
-      if(!collectionRearrangeMode || !["collection","inventory"].includes(appContext.listingAvailabilityScope)) return;
+      if(!collectionCanRearrangeGameGroups() || !["collection","inventory"].includes(appContext.listingAvailabilityScope)) return;
 
       const header=event.target.closest(".collection-game-group-header[data-collection-game-toggle]");
       if(!header) return;
@@ -1755,6 +1782,7 @@ function renderInventoryPage(scope = "inventory"){
 
       const gameHandle=event.target.closest(".collection-game-drag-handle");
       const cardHandle=event.target.closest(".collection-drag-handle");
+      if(gameHandle && !collectionCanRearrangeGameGroups()) return;
       if(!gameHandle && !cardHandle) return;
 
       const element=gameHandle
