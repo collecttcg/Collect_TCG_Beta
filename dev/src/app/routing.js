@@ -765,8 +765,6 @@ window.addEventListener("hashchange", appContext.router);
 window.addEventListener("popstate", appContext.router);
 
   appContext.CARD_WATERMARK_LOGO = "./assets/watermark-logo.png";
-  appContext.CARD_WATERMARK_BANNER_TEMPLATE = "./assets/watermark-inventory-banner-template.png";
-  appContext.CARD_WATERMARK_CTA_ART = "./assets/watermark-inventory-cta.webp";
 
   appContext.CARD_WATERMARK_URL = "https://collecttcg.github.io/Collect_TCG/#/inventory";
 

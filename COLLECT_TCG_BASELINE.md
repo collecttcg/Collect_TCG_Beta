@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v18`
+Latest Development: `2026-09-27-v17`
 
-Previous Development: `2026-09-27-v17`
+Previous Development: `2026-09-27-v10`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,42 +75,6 @@ Important promotion state:
 ---
 
 ## Current Release State
-
-### Development `2026-09-27-v18`
-
-Previous Development: `2026-09-27-v17`
-
-Purpose: replace the v17 browser-font approximation with the exact user-approved watermark artwork shown in the supplied reference.
-
-Changes:
-- Restores the approved banner artwork source for the Collect TCG wordmark, frame, URL treatment and QR surround.
-- Adds an exact CTA artwork crop from the approved reference for `CHECK PRICE • AVAILABILITY`; the CTA is no longer recreated with browser font fallbacks.
-- Keeps a dynamically generated QR over the approved QR frame so the inventory destination remains functional.
-- Keeps the existing v10/v17 image workflow and optional top-right logo behavior.
-- No Supabase/RLS, public navigation, Inventory ordering/filtering, Contact to Buy, giveaway or analytics behavior is intentionally changed.
-
-SQL required: No.
-
-Validation:
-- feature regression suite passed: 43/43
-- changed JavaScript syntax checks passed
-- repository/import/cache-reference checks passed
-- exact watermark artwork asset/wiring checks passed
-- dynamic QR wiring check passed
-- Owner/privacy/Inventory/generator/SEO regression checks passed
-- full/patch ZIP integrity and SHA-256 checks passed
-- GitHub Pages Development deployment passed
-- user supplied the visual reference used for the exact logo/CTA artwork; a newly regenerated v18 card image still requires user-side visual confirmation
-
-Packages:
-- `Collect-TCG-Dev-2026-09-27-v18-full.zip`
-  - SHA-256: `aa54c8a44e9b4fe7fc62c14aa0e8d8137b1c6a6d82e04027edb72799046c9e3c`
-- `Collect-TCG-Dev-2026-09-27-v17-to-2026-09-27-v18-patch.zip`
-  - SHA-256: `355658219b7a36102e3b1e11419ec383b0b63298cee2ed6772e95fae25e0abb8`
-
-Development v18 packaged source commit: `d9341e8e6071f901020188317d39b55ab6f6cbff`
-
-Development v18 package-validation HEAD: `d08c98c8ff869839accc69148f299ad66a9012fc`
 
 ### Development `2026-09-27-v17`
 
