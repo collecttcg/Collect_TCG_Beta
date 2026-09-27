@@ -481,7 +481,10 @@ jobs:
           set -euo pipefail
           node --check dev/src/features/media/images.js
           node --check dev/src/features/owner/forms.js
-          grep -Fq 'SEE MORE CARDS • BROWSE INVENTORY' dev/src/features/media/images.js
+          grep -Fq 'CHECK PRICE • AVAILABILITY' dev/src/features/media/images.js
+          grep -Fq 'bannerWidth/4.67' dev/src/features/media/images.js
+          grep -Fq 'const qrZoneW=bannerWidth*0.205' dev/src/features/media/images.js
+          grep -Fq 'const displayGold="Collect_TCG"' dev/src/features/media/images.js
           grep -Fq 'createWebsiteWatermarkQrCanvas' dev/src/features/media/images.js
           grep -Fq 'QRCode.CorrectLevel.M' dev/src/features/media/images.js
           grep -Fq 'Logo + CTA + QR' dev/index.html
@@ -491,9 +494,9 @@ jobs:
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v10
-          PREVIOUS_VERSION: 2026-09-27-v09
-          PREVIOUS_COMMIT: bfe224e9daaa99c59ff046f57dca3f32842dd7a4
+          RELEASE_VERSION: 2026-09-27-v17
+          PREVIOUS_VERSION: 2026-09-27-v10
+          PREVIOUS_COMMIT: fdd982ff504bd498c671bf56a8f56d50b41cc61b
         run: |
           set -euo pipefail
           mkdir -p release
