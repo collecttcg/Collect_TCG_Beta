@@ -19001,3 +19001,123 @@ body.light-mode .inventory-game-tile{background:#fffdf8;}
     justify-content:center;
   }
 }
+
+
+/* =========================================================
+   ADD / EDIT OWNER WORKSPACE V25 — COMPACT CONTINUOUS EDITOR
+   Photos and details share one scroll flow; v24 tabs are retired.
+   ========================================================= */
+@media(min-width:1001px){
+  #editForm.modal{
+    width:min(92vw,1100px) !important;
+    max-width:1100px !important;
+    padding:22px 24px !important;
+  }
+
+  #addForm.form-card{
+    width:min(100%,1100px) !important;
+    max-width:1100px !important;
+    padding:22px 24px !important;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:14px !important;
+  }
+
+  #editForm .image-gallery-preview .image-preview-box[data-image-index] > img,
+  #addForm .image-gallery-preview .image-preview-box[data-image-index] > img{
+    height:350px !important;
+    flex-basis:350px !important;
+  }
+}
+
+@media(min-width:701px) and (max-width:1000px){
+  #editForm.modal{
+    width:min(94vw,860px) !important;
+    max-width:860px !important;
+    padding:22px !important;
+  }
+
+  #addForm.form-card{
+    width:min(100%,860px) !important;
+    max-width:860px !important;
+    padding:22px !important;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+}
+
+#editForm .owner-editor-section-heading,
+#addForm .owner-editor-section-heading{
+  margin:20px 0 10px;
+  padding-bottom:7px;
+}
+
+#editForm .owner-editor-section-heading span,
+#addForm .owner-editor-section-heading span{
+  font-size:15.5px;
+}
+
+#editForm .owner-editor-section-heading small,
+#addForm .owner-editor-section-heading small{
+  font-size:12px;
+}
+
+#editForm .field > label,
+#addForm .field > label{
+  font-size:13px;
+}
+
+#editForm input,
+#editForm select,
+#editForm textarea,
+#addForm input,
+#addForm select,
+#addForm textarea{
+  font-size:15.5px;
+}
+
+#editForm .hint,
+#addForm .hint,
+#editForm .image-gallery-note,
+#addForm .image-gallery-note{
+  font-size:12.5px;
+}
+
+#editForm > .modal-actions,
+#addForm > .modal-actions{
+  margin-top:18px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+#editForm > .modal-actions button,
+#addForm > .modal-actions button,
+#addForm > .modal-actions a{
+  min-height:40px;
+  font-size:13.5px;
+  padding:8px 16px;
+}
+
+@media(max-width:700px){
+  #editForm.modal,
+  #addForm.form-card{
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  #editForm .owner-editor-section-heading,
+  #addForm .owner-editor-section-heading{
+    margin-top:18px;
+  }
+
+  #editForm .image-gallery-preview,
+  #addForm .image-gallery-preview{
+    grid-template-columns:1fr !important;
+  }
+}
