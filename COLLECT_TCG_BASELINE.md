@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v25`
+Latest Development: `2026-09-27-v26`
 
-Previous Development: `2026-09-27-v24`
+Previous Development: `2026-09-27-v25`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v07`
+Latest Production: `2026-09-27-v08`
 
-Previous Production: `2026-09-27-v06`
+Previous Production: `2026-09-27-v07`
 
-Production functional baseline last promoted from Development: `2026-09-27-v09`
+Production functional baseline last promoted from Development: `2026-09-27-v25`
 
-Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
+Production package-validation HEAD: `7e4fdb224d901e747c4d5639d9bfc7952d852d33`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -75,6 +75,27 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v26`
+
+Previous Development: `2026-09-27-v25`
+
+Purpose: add an owner-only Bulk Edit image workflow for applying one reversible image style across every inventory photo without opening cards individually.
+
+Changes:
+- Adds `Inventory Tools → Bulk Edit → Bulk Images`.
+- Adds global actions for `Logo + CTA + QR · All Photos`, `CTA + QR only · All Photos`, and `Use Originals · All Photos`.
+- CTA + QR only is regenerated from each saved clean original; it never renders on top of an already-watermarked public image.
+- Full and website-only bulk watermark changes regenerate the requested style from the clean original so switching styles cannot accidentally reuse the wrong previous watermark.
+- Superseded owned watermark files are removed only after reversible metadata and public card image URLs save successfully.
+- Clean originals remain preserved and reversible.
+- Existing per-card Add/Edit all-photo controls remain unchanged.
+- Owner Mode is required; public users receive no bulk image controls.
+- Production is unchanged.
+
+SQL required: No.
+
+Validation status: in progress. Automated syntax/import/asset checks, owner/privacy regression checks, v26 bulk-image checks, package integrity and Development Pages deployment are required before acceptance.
 
 ### Development `2026-09-27-v25`
 
