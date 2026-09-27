@@ -138,40 +138,34 @@ function drawWebsiteWatermark(ctx, canvas){
     const watermarkUrl=appContext.CARD_WATERMARK_URL;
     if(!watermarkUrl) return;
 
+    // Reference layout: near edge-to-edge 4.67:1 black/gold inventory banner.
     const shortSide=Math.min(canvas.width,canvas.height);
-    const bannerMargin=Math.max(18,Math.round(shortSide*0.024));
-    const bannerHeight=Math.max(88,Math.min(150,Math.round(shortSide*0.16)));
-    const bannerRadius=Math.max(18,Math.round(bannerHeight*0.22));
-    const borderWidth=Math.max(2,Math.round(shortSide*0.0032));
-    const bannerWidth=Math.min(
-      canvas.width-bannerMargin*2,
-      Math.max(320,Math.round(canvas.width*0.92))
-    );
+    const margin=Math.max(8,Math.round(shortSide*0.012));
+    const bannerWidth=Math.max(320,canvas.width-margin*2);
+    const bannerHeight=Math.max(92,Math.round(bannerWidth/4.67));
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
-    const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
-    const pad=Math.max(14,Math.round(bannerHeight*0.12));
-    const qrOuter=Math.max(64,bannerHeight-pad*2);
-    const qrX=bannerX+bannerWidth-pad-qrOuter;
-    const qrY=bannerY+pad;
-    const leftX=bannerX+pad;
-    const leftWidth=Math.max(140,qrX-leftX-Math.max(14,Math.round(bannerHeight*0.12)));
-    const cta="SEE MORE CARDS • BROWSE INVENTORY";
-    const displayUrl="collecttcg.github.io/Collect_TCG";
+    const bannerY=Math.max(margin,Math.round(canvas.height-margin-bannerHeight));
+    const radius=Math.max(16,Math.round(bannerHeight*0.15));
+    const border=Math.max(3,Math.round(bannerHeight*0.024));
+    const gold="#f5b82e";
+    const paleGold="#ffd86a";
+    const black="#090908";
 
     function roundedRect(x,y,w,h,r){
+      const rr=Math.max(0,Math.min(r,w/2,h/2));
       ctx.beginPath();
       if(typeof ctx.roundRect==="function"){
-        ctx.roundRect(x,y,w,h,r);
+        ctx.roundRect(x,y,w,h,rr);
       }else{
-        ctx.moveTo(x+r,y);
-        ctx.lineTo(x+w-r,y);
-        ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-        ctx.lineTo(x+w,y+h-r);
-        ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-        ctx.lineTo(x+r,y+h);
-        ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-        ctx.lineTo(x,y+r);
-        ctx.quadraticCurveTo(x,y,x+r,y);
+        ctx.moveTo(x+rr,y);
+        ctx.lineTo(x+w-rr,y);
+        ctx.quadraticCurveTo(x+w,y,x+w,y+rr);
+        ctx.lineTo(x+w,y+h-rr);
+        ctx.quadraticCurveTo(x+w,y+h,x+w-rr,y+h);
+        ctx.lineTo(x+rr,y+h);
+        ctx.quadraticCurveTo(x,y+h,x,y+h-rr);
+        ctx.lineTo(x,y+rr);
+        ctx.quadraticCurveTo(x,y,x+rr,y);
         ctx.closePath();
       }
     }
@@ -180,92 +174,198 @@ function drawWebsiteWatermark(ctx, canvas){
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    ctx.shadowColor="rgba(255,191,47,0.44)";
-    ctx.shadowBlur=Math.max(12,Math.round(shortSide*0.024));
-    roundedRect(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius);
-    ctx.fillStyle="rgba(11,10,8,0.91)";
+    // Gold glow and double frame.
+    ctx.shadowColor="rgba(255,177,32,0.72)";
+    ctx.shadowBlur=Math.max(10,Math.round(bannerHeight*0.075));
+    roundedRect(bannerX,bannerY,bannerWidth,bannerHeight,radius);
+    ctx.fillStyle=black;
     ctx.fill();
-
     ctx.shadowColor="transparent";
-    ctx.lineWidth=borderWidth;
-    ctx.strokeStyle="rgba(255,198,56,0.96)";
+
+    ctx.lineWidth=border;
+    ctx.strokeStyle=gold;
     ctx.stroke();
 
     roundedRect(
-      bannerX+borderWidth*1.5,
-      bannerY+borderWidth*1.5,
-      bannerWidth-borderWidth*3,
-      bannerHeight-borderWidth*3,
-      Math.max(12,bannerRadius-borderWidth*2)
+      bannerX+border*1.55,
+      bannerY+border*1.55,
+      bannerWidth-border*3.1,
+      bannerHeight-border*3.1,
+      Math.max(10,radius-border*1.7)
     );
-    ctx.lineWidth=Math.max(1,borderWidth*0.7);
-    ctx.strokeStyle="rgba(255,226,150,0.26)";
+    ctx.lineWidth=Math.max(1,border*0.48);
+    ctx.strokeStyle="rgba(255,225,139,0.42)";
     ctx.stroke();
 
-    const iconSize=Math.max(24,Math.round(bannerHeight*0.25));
-    const iconCx=leftX+iconSize/2;
-    const iconCy=bannerY+bannerHeight/2;
-    const iconR=iconSize/2;
-    ctx.strokeStyle="rgba(255,208,92,0.98)";
-    ctx.lineWidth=Math.max(1.4,iconR*0.14);
+    // Subtle honeycomb/dot texture on the left, like the approved reference.
+    const textureRight=bannerX+bannerWidth*0.34;
+    const dotStep=Math.max(8,Math.round(bannerHeight*0.055));
+    const dotR=Math.max(0.7,dotStep*0.09);
+    ctx.fillStyle="rgba(255,205,83,0.10)";
+    for(let y=bannerY+border*3;y<bannerY+bannerHeight-border*3;y+=dotStep){
+      for(let x=bannerX+border*3;x<textureRight;x+=dotStep){
+        const stagger=((Math.round((y-bannerY)/dotStep)&1) ? dotStep*0.5 : 0);
+        ctx.beginPath();
+        ctx.arc(x+stagger,y,dotR,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    const leftW=bannerWidth*0.335;
+    const qrZoneW=bannerWidth*0.205;
+    const centerX=bannerX+leftW;
+    const centerW=bannerWidth-leftW-qrZoneW;
+    const dividerX=centerX;
+    const innerTop=bannerY+bannerHeight*0.16;
+    const innerBottom=bannerY+bannerHeight*0.84;
+
+    // Left branding divider.
+    ctx.strokeStyle="rgba(255,202,62,0.90)";
+    ctx.lineWidth=Math.max(2,border*0.58);
     ctx.beginPath();
-    ctx.arc(iconCx,iconCy,iconR,0,Math.PI*2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(iconCx-iconR*0.92,iconCy);
-    ctx.lineTo(iconCx+iconR*0.92,iconCy);
-    ctx.moveTo(iconCx,iconCy-iconR*0.92);
-    ctx.lineTo(iconCx,iconCy+iconR*0.92);
-    ctx.moveTo(iconCx-iconR*0.55,iconCy-iconR*0.78);
-    ctx.quadraticCurveTo(iconCx-iconR*0.08,iconCy,iconCx-iconR*0.55,iconCy+iconR*0.78);
-    ctx.moveTo(iconCx+iconR*0.55,iconCy-iconR*0.78);
-    ctx.quadraticCurveTo(iconCx+iconR*0.08,iconCy,iconCx+iconR*0.55,iconCy+iconR*0.78);
+    ctx.moveTo(dividerX,innerTop);
+    ctx.lineTo(dividerX,innerBottom);
     ctx.stroke();
 
-    const textX=leftX+iconSize+Math.max(12,Math.round(bannerHeight*0.11));
-    const textMaxWidth=Math.max(100,leftWidth-(textX-leftX));
-    let titleSize=Math.max(17,Math.min(34,Math.round(shortSide*0.032)));
+    // Globe icon.
+    const globeR=bannerHeight*0.115;
+    const globeCx=bannerX+bannerWidth*0.058;
+    const globeCy=bannerY+bannerHeight*0.50;
+    ctx.strokeStyle=paleGold;
+    ctx.lineWidth=Math.max(2,globeR*0.12);
+    ctx.beginPath();
+    ctx.arc(globeCx,globeCy,globeR,0,Math.PI*2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(globeCx-globeR*0.92,globeCy);
+    ctx.lineTo(globeCx+globeR*0.92,globeCy);
+    ctx.moveTo(globeCx,globeCy-globeR*0.92);
+    ctx.lineTo(globeCx,globeCy+globeR*0.92);
+    ctx.moveTo(globeCx-globeR*0.55,globeCy-globeR*0.78);
+    ctx.quadraticCurveTo(globeCx-globeR*0.10,globeCy,globeCx-globeR*0.55,globeCy+globeR*0.78);
+    ctx.moveTo(globeCx+globeR*0.55,globeCy-globeR*0.78);
+    ctx.quadraticCurveTo(globeCx+globeR*0.10,globeCy,globeCx+globeR*0.55,globeCy+globeR*0.78);
+    ctx.stroke();
+
+    // Collect TCG wordmark treatment.
+    const brandX=bannerX+bannerWidth*0.105;
+    const brandMax=leftW-bannerWidth*0.12;
     ctx.textAlign="left";
     ctx.textBaseline="middle";
+    ctx.save();
+    ctx.transform(1,-0.10,0,1,0,0);
+    let collectSize=Math.max(18,Math.round(bannerHeight*0.205));
+    ctx.font=`900 italic ${collectSize}px "Arial Black", Impact, sans-serif`;
+    ctx.fillStyle="#fff8df";
+    ctx.fillText("Collect",brandX,bannerY+bannerHeight*0.48,brandMax);
+    ctx.restore();
 
-    const applyTitleFont=()=>{ctx.font=`800 ${titleSize}px Inter, Arial, sans-serif`;};
-    applyTitleFont();
-    while(titleSize>13 && ctx.measureText(cta).width>textMaxWidth){
+    let tcgSize=Math.max(20,Math.round(bannerHeight*0.225));
+    ctx.font=`900 italic ${tcgSize}px "Arial Black", Impact, sans-serif`;
+    ctx.fillStyle=gold;
+    ctx.fillText("TCG",brandX+brandMax*0.42,bannerY+bannerHeight*0.61,brandMax*0.58);
+
+    ctx.font=`700 ${Math.max(9,Math.round(bannerHeight*0.054))}px Inter, Arial, sans-serif`;
+    ctx.letterSpacing=`${Math.max(1,Math.round(bannerHeight*0.008))}px`;
+    ctx.fillStyle=gold;
+    ctx.fillText("COLLECT. TRADE. CONNECT.",bannerX+bannerWidth*0.048,bannerY+bannerHeight*0.80,leftW*0.82);
+    ctx.letterSpacing="0px";
+
+    // Center CTA.
+    const centerPad=centerW*0.055;
+    const ctaX=centerX+centerPad;
+    const ctaMax=centerW-centerPad*2;
+    const cta="CHECK PRICE • AVAILABILITY";
+    let titleSize=Math.max(16,Math.round(bannerHeight*0.145));
+    const setTitleFont=()=>{ctx.font=`900 ${titleSize}px "Arial Narrow", "Barlow Condensed", Impact, sans-serif`;};
+    setTitleFont();
+    while(titleSize>12 && ctx.measureText(cta).width>ctaMax){
       titleSize-=1;
-      applyTitleFont();
+      setTitleFont();
     }
+    ctx.fillStyle=gold;
+    ctx.fillText(cta,ctaX,bannerY+bannerHeight*0.36,ctaMax);
 
-    const titleY=bannerY+bannerHeight*0.39;
-    ctx.fillStyle="rgba(255,202,70,0.99)";
-    ctx.fillText(cta,textX,titleY,textMaxWidth);
-
-    let urlSize=Math.max(13,Math.min(24,Math.round(titleSize*0.72)));
-    const applyUrlFont=()=>{ctx.font=`650 ${urlSize}px Inter, Arial, sans-serif`;};
-    applyUrlFont();
-    while(urlSize>11 && ctx.measureText(displayUrl).width>textMaxWidth){
-      urlSize-=1;
-      applyUrlFont();
-    }
-    ctx.fillStyle="rgba(255,255,255,0.96)";
-    ctx.fillText(displayUrl,textX,bannerY+bannerHeight*0.67,textMaxWidth);
-
-    roundedRect(qrX,qrY,qrOuter,qrOuter,Math.max(8,Math.round(qrOuter*0.09)));
-    ctx.fillStyle="#ffffff";
+    // URL pill.
+    const pillX=ctaX;
+    const pillY=bannerY+bannerHeight*0.54;
+    const pillW=ctaMax;
+    const pillH=bannerHeight*0.25;
+    roundedRect(pillX,pillY,pillW,pillH,pillH/2);
+    ctx.fillStyle="rgba(13,12,10,0.96)";
     ctx.fill();
-    ctx.lineWidth=Math.max(2,Math.round(qrOuter*0.025));
-    ctx.strokeStyle="rgba(255,205,73,0.98)";
+    ctx.lineWidth=Math.max(2,border*0.70);
+    ctx.strokeStyle=gold;
     ctx.stroke();
 
-    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,320);
+    const arrowD=pillH*0.70;
+    const arrowCx=pillX+pillW-arrowD*0.68;
+    const arrowCy=pillY+pillH/2;
+    ctx.beginPath();
+    ctx.arc(arrowCx,arrowCy,arrowD*0.42,0,Math.PI*2);
+    ctx.fillStyle=gold;
+    ctx.fill();
+    ctx.strokeStyle="#11100d";
+    ctx.lineWidth=Math.max(2,arrowD*0.075);
+    ctx.beginPath();
+    ctx.moveTo(arrowCx-arrowD*0.10,arrowCy-arrowD*0.16);
+    ctx.lineTo(arrowCx+arrowD*0.07,arrowCy);
+    ctx.lineTo(arrowCx-arrowD*0.10,arrowCy+arrowD*0.16);
+    ctx.stroke();
+
+    const displayWhite="collecttcg.github.io/";
+    const displayGold="Collect_TCG";
+    let urlSize=Math.max(12,Math.round(bannerHeight*0.095));
+    const urlMax=pillW-arrowD*1.45-centerPad*0.55;
+    const setUrlFont=()=>{ctx.font=`700 ${urlSize}px Inter, Arial, sans-serif`;};
+    setUrlFont();
+    while(urlSize>10 && ctx.measureText(displayWhite+displayGold).width>urlMax){
+      urlSize-=1;
+      setUrlFont();
+    }
+    const urlX=pillX+centerPad*0.55;
+    const urlY=pillY+pillH/2;
+    ctx.fillStyle="#ffffff";
+    ctx.fillText(displayWhite,urlX,urlY,urlMax);
+    const whiteW=ctx.measureText(displayWhite).width;
+    ctx.fillStyle=gold;
+    ctx.fillText(displayGold,urlX+whiteW,urlY,Math.max(10,urlMax-whiteW));
+
+    // QR card on the right.
+    const qrOuter=Math.min(bannerHeight*0.80,qrZoneW*0.79);
+    const qrX=bannerX+bannerWidth-qrZoneW+(qrZoneW-qrOuter)*0.34;
+    const qrY=bannerY+(bannerHeight-qrOuter)/2;
+    roundedRect(qrX,qrY,qrOuter,qrOuter,Math.max(8,qrOuter*0.065));
+    ctx.fillStyle="#ffffff";
+    ctx.fill();
+    ctx.lineWidth=Math.max(3,border*0.82);
+    ctx.strokeStyle=gold;
+    ctx.stroke();
+
+    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,360);
     if(qrCanvas){
-      const quiet=Math.max(7,Math.round(qrOuter*0.075));
+      const quiet=Math.max(6,Math.round(qrOuter*0.055));
       ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
     }else{
       ctx.textAlign="center";
       ctx.textBaseline="middle";
       ctx.fillStyle="#111111";
-      ctx.font=`800 ${Math.max(11,Math.round(qrOuter*0.13))}px Inter, Arial, sans-serif`;
+      ctx.font=`900 ${Math.max(11,Math.round(qrOuter*0.13))}px Inter, Arial, sans-serif`;
       ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
+      ctx.textAlign="left";
+    }
+
+    // Decorative gold slashes at the far right.
+    const slashX=bannerX+bannerWidth-bannerWidth*0.025;
+    ctx.strokeStyle=gold;
+    ctx.lineWidth=Math.max(2,border*0.68);
+    ctx.lineCap="round";
+    for(const yRatio of [0.35,0.50,0.65]){
+      const cy=bannerY+bannerHeight*yRatio;
+      ctx.beginPath();
+      ctx.moveTo(slashX-bannerHeight*0.025,cy+bannerHeight*0.025);
+      ctx.lineTo(slashX+bannerHeight*0.025,cy-bannerHeight*0.025);
+      ctx.stroke();
     }
 
     ctx.restore();
