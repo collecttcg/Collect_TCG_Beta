@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v13`
+Latest Development: `2026-09-27-v14`
 
-Previous Development: `2026-09-27-v12`
+Previous Development: `2026-09-27-v13`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,27 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v14`
+
+Previous Development: `2026-09-27-v13`
+
+Purpose: implement the approved QR watermark mockup as a measured design specification with no reinterpretation.
+
+Changes:
+- Removes the v13 fixed 230px banner-height cap that prevented the watermark from matching the approved mockup at normal 1800px image output.
+- Uses the approved mockup's measured 1113 × 242 banner geometry as the scaling source of truth.
+- Locks outer frame, left branding block, logo/globe placement, divider, CTA, URL pill, QR housing and right-side rails to measured mockup coordinates.
+- Uses Barlow Condensed for the CTA to match the approved visual treatment more closely.
+- Keeps `SEE MORE CARDS • BROWSE INVENTORY`, the real Collect TCG URL and generated Inventory QR.
+- Preserves the v12/v13 Owner Add/Edit image-control footer fix.
+- No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
+
+Validation: in progress through the Development workflow.
+
+Expected packages:
+- `Collect-TCG-Dev-2026-09-27-v14-full.zip`
+- `Collect-TCG-Dev-2026-09-27-v13-to-2026-09-27-v14-patch.zip`
 
 ### Development `2026-09-27-v13`
 

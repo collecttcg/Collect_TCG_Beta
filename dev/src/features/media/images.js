@@ -139,30 +139,29 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     if(!watermarkUrl) return;
 
     const {logo=null}=options||{};
-    const shortSide=Math.min(canvas.width,canvas.height);
-    const bannerMargin=Math.max(12,Math.round(shortSide*0.014));
-    const bannerHeight=Math.max(112,Math.min(230,Math.round(shortSide*0.205)));
-    const bannerWidth=Math.min(
-      canvas.width-bannerMargin*2,
-      Math.max(420,Math.round(canvas.width*0.965))
-    );
-    const bannerX=Math.round((canvas.width-bannerWidth)/2);
-    const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
-    const borderWidth=Math.max(2,Math.round(shortSide*0.003));
-    const pad=Math.max(10,Math.round(bannerHeight*0.075));
-    const gap=Math.max(10,Math.round(bannerHeight*0.065));
-    const leftSectionWidth=Math.max(145,Math.round(bannerWidth*0.315));
-    const qrOuter=Math.max(90,Math.round(bannerHeight*0.77));
-    const qrRailWidth=Math.max(12,Math.round(bannerHeight*0.075));
-    const qrSectionWidth=qrOuter+pad*1.35+qrRailWidth;
-    const contentWidth=Math.max(165,bannerWidth-pad*2-leftSectionWidth-gap*2-qrSectionWidth);
-    const leftX=bannerX+pad;
-    const centerX=leftX+leftSectionWidth+gap;
-    const qrX=bannerX+bannerWidth-pad-qrRailWidth-qrOuter;
-    const qrY=bannerY+Math.round((bannerHeight-qrOuter)/2);
     const cta="SEE MORE CARDS • BROWSE INVENTORY";
     const displayUrl="collecttcg.github.io/Collect_TCG";
     const brandTagline="COLLECT. TRADE. CONNECT.";
+
+    // Approved mockup geometry. Do not reinterpret these proportions.
+    const MOCKUP_W=1113;
+    const MOCKUP_H=242;
+    const bannerWidth=Math.min(
+      canvas.width-Math.max(8,Math.round(canvas.width*0.008))*2,
+      Math.round(canvas.width*0.992)
+    );
+    const bannerHeight=Math.round(bannerWidth*(MOCKUP_H/MOCKUP_W));
+    const bottomMargin=Math.max(10,Math.round(canvas.width*(28/1122)));
+    const bannerX=Math.round((canvas.width-bannerWidth)/2);
+    const bannerY=Math.max(8,Math.round(canvas.height-bottomMargin-bannerHeight));
+    const sx=bannerWidth/MOCKUP_W;
+    const sy=bannerHeight/MOCKUP_H;
+    const borderWidth=Math.max(2,Math.round(4*sx));
+
+    const X=v=>bannerX+v*sx;
+    const Y=v=>bannerY+v*sy;
+    const W=v=>v*sx;
+    const H=v=>v*sy;
 
     function roundedRect(x,y,w,h,r){
       ctx.beginPath();
@@ -182,43 +181,11 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       }
     }
 
-    function shellPath(x,y,w,h,inset=0){
-      const xx=x+inset;
-      const yy=y+inset;
-      const ww=w-inset*2;
-      const hh=h-inset*2;
-      const bevel=Math.max(18,Math.round(hh*0.17));
-      const corner=Math.max(10,Math.round(hh*0.09));
-      ctx.beginPath();
-      ctx.moveTo(xx+bevel,yy);
-      ctx.lineTo(xx+ww-bevel,yy);
-      ctx.quadraticCurveTo(xx+ww-corner,yy,xx+ww-corner*0.45,yy+corner*0.6);
-      ctx.lineTo(xx+ww,yy+bevel);
-      ctx.lineTo(xx+ww,yy+hh-bevel);
-      ctx.lineTo(xx+ww-corner*0.55,yy+hh-corner*0.6);
-      ctx.quadraticCurveTo(xx+ww-corner,yy+hh,xx+ww-bevel,yy+hh);
-      ctx.lineTo(xx+bevel,yy+hh);
-      ctx.lineTo(xx,yy+hh-bevel);
-      ctx.lineTo(xx,yy+bevel);
-      ctx.closePath();
-    }
-
-    function fillRoundedPanel(x,y,w,h,r,fillStyle,strokeStyle,lineWidth=borderWidth*0.75){
-      roundedRect(x,y,w,h,r);
-      ctx.fillStyle=fillStyle;
-      ctx.fill();
-      if(strokeStyle){
-        ctx.lineWidth=Math.max(1,lineWidth);
-        ctx.strokeStyle=strokeStyle;
-        ctx.stroke();
-      }
-    }
-
-    function fitFont(textToFit,maxSize,minSize,maxWidth,weight="800"){
+    function fitFont(text,maxSize,minSize,maxWidth,weight="800",family="Inter"){
       let size=maxSize;
       while(size>minSize){
-        ctx.font=weight+" "+size+"px Inter, Arial, sans-serif";
-        if(ctx.measureText(textToFit).width<=maxWidth) return size;
+        ctx.font=weight+" "+size+"px '"+family+"', Arial, sans-serif";
+        if(ctx.measureText(text).width<=maxWidth) return size;
         size-=1;
       }
       return minSize;
@@ -226,20 +193,20 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
 
     function drawGlobe(cx,cy,r){
       ctx.save();
-      ctx.strokeStyle="rgba(255,204,80,0.96)";
-      ctx.lineWidth=Math.max(1.5,r*0.10);
+      ctx.strokeStyle="#f7bd35";
+      ctx.lineWidth=Math.max(1.5,r*0.11);
       ctx.beginPath();
       ctx.arc(cx,cy,r,0,Math.PI*2);
       ctx.stroke();
       ctx.beginPath();
       ctx.moveTo(cx-r*0.88,cy);
       ctx.lineTo(cx+r*0.88,cy);
-      ctx.moveTo(cx,cy-r*0.9);
-      ctx.lineTo(cx,cy+r*0.9);
-      ctx.moveTo(cx-r*0.50,cy-r*0.76);
-      ctx.quadraticCurveTo(cx-r*0.06,cy,cx-r*0.50,cy+r*0.76);
-      ctx.moveTo(cx+r*0.50,cy-r*0.76);
-      ctx.quadraticCurveTo(cx+r*0.06,cy,cx+r*0.50,cy+r*0.76);
+      ctx.moveTo(cx,cy-r*0.90);
+      ctx.lineTo(cx,cy+r*0.90);
+      ctx.moveTo(cx-r*0.48,cy-r*0.78);
+      ctx.quadraticCurveTo(cx-r*0.07,cy,cx-r*0.48,cy+r*0.78);
+      ctx.moveTo(cx+r*0.48,cy-r*0.78);
+      ctx.quadraticCurveTo(cx+r*0.07,cy,cx+r*0.48,cy+r*0.78);
       ctx.stroke();
       ctx.restore();
     }
@@ -248,219 +215,254 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    ctx.shadowColor="rgba(245,178,38,0.22)";
-    ctx.shadowBlur=Math.max(8,Math.round(shortSide*0.014));
-    shellPath(bannerX,bannerY,bannerWidth,bannerHeight);
-    const shellGradient=ctx.createLinearGradient(bannerX,bannerY,bannerX,bannerY+bannerHeight);
-    shellGradient.addColorStop(0,"rgba(31,25,15,0.98)");
-    shellGradient.addColorStop(0.48,"rgba(11,10,9,0.98)");
-    shellGradient.addColorStop(1,"rgba(8,8,8,0.99)");
+    // Main body: measured from the approved mockup.
+    ctx.shadowColor="rgba(246,176,35,0.26)";
+    ctx.shadowBlur=Math.max(7,Math.round(W(10)));
+    ctx.beginPath();
+    ctx.moveTo(X(42),Y(31));
+    ctx.lineTo(X(865),Y(31));
+    ctx.lineTo(X(885),Y(15));
+    ctx.lineTo(X(1052),Y(15));
+    ctx.lineTo(X(1073),Y(29));
+    ctx.lineTo(X(1103),Y(59));
+    ctx.lineTo(X(1108),Y(181));
+    ctx.lineTo(X(1083),Y(210));
+    ctx.lineTo(X(1053),Y(228));
+    ctx.lineTo(X(45),Y(228));
+    ctx.lineTo(X(18),Y(210));
+    ctx.lineTo(X(4),Y(188));
+    ctx.lineTo(X(4),Y(69));
+    ctx.lineTo(X(19),Y(49));
+    ctx.closePath();
+    const shellGradient=ctx.createLinearGradient(X(0),Y(20),X(0),Y(230));
+    shellGradient.addColorStop(0,"rgba(25,21,14,0.985)");
+    shellGradient.addColorStop(0.42,"rgba(10,10,9,0.99)");
+    shellGradient.addColorStop(1,"rgba(5,5,5,0.995)");
     ctx.fillStyle=shellGradient;
     ctx.fill();
-    ctx.lineWidth=Math.max(2,borderWidth*1.25);
-    ctx.strokeStyle="rgba(250,190,55,0.93)";
+    ctx.lineWidth=Math.max(2,borderWidth*1.15);
+    ctx.strokeStyle="#f4b92e";
     ctx.stroke();
 
     ctx.shadowColor="transparent";
-    shellPath(bannerX,bannerY,bannerWidth,bannerHeight,borderWidth*2.1);
-    ctx.lineWidth=Math.max(1,borderWidth*0.65);
-    ctx.strokeStyle="rgba(255,226,151,0.22)";
-    ctx.stroke();
-
-    const topLine=ctx.createLinearGradient(bannerX,bannerY,bannerX+bannerWidth,bannerY);
-    topLine.addColorStop(0,"rgba(255,181,34,0)");
-    topLine.addColorStop(0.22,"rgba(255,204,88,0.38)");
-    topLine.addColorStop(0.72,"rgba(255,204,88,0.28)");
-    topLine.addColorStop(1,"rgba(255,181,34,0)");
-    ctx.strokeStyle=topLine;
-    ctx.lineWidth=Math.max(1,borderWidth*0.6);
+    ctx.lineWidth=Math.max(1,borderWidth*0.52);
+    ctx.strokeStyle="rgba(255,225,147,0.48)";
     ctx.beginPath();
-    ctx.moveTo(bannerX+bannerWidth*0.08,bannerY+borderWidth*2.2);
-    ctx.lineTo(bannerX+bannerWidth*0.88,bannerY+borderWidth*2.2);
+    ctx.moveTo(X(48),Y(38));
+    ctx.lineTo(X(856),Y(38));
+    ctx.lineTo(X(875),Y(22));
+    ctx.lineTo(X(1046),Y(22));
+    ctx.lineTo(X(1066),Y(36));
+    ctx.lineTo(X(1095),Y(64));
+    ctx.lineTo(X(1099),Y(176));
+    ctx.lineTo(X(1076),Y(202));
+    ctx.lineTo(X(1048),Y(220));
+    ctx.lineTo(X(50),Y(220));
+    ctx.lineTo(X(25),Y(203));
+    ctx.lineTo(X(12),Y(184));
+    ctx.lineTo(X(12),Y(73));
+    ctx.lineTo(X(26),Y(55));
+    ctx.closePath();
     ctx.stroke();
 
-    const leftPanelY=bannerY+pad;
-    const leftPanelH=bannerHeight-pad*2;
-    const leftPanelRadius=Math.max(12,Math.round(leftPanelH*0.10));
-    const leftGradient=ctx.createLinearGradient(leftX,leftPanelY,leftX+leftSectionWidth,leftPanelY+leftPanelH);
-    leftGradient.addColorStop(0,"rgba(14,13,11,0.99)");
-    leftGradient.addColorStop(1,"rgba(7,7,7,0.99)");
-    fillRoundedPanel(
-      leftX,leftPanelY,leftSectionWidth,leftPanelH,leftPanelRadius,
-      leftGradient,"rgba(244,183,53,0.28)",borderWidth*0.65
-    );
-
+    // Very subtle approved honeycomb texture.
     ctx.save();
-    roundedRect(leftX,leftPanelY,leftSectionWidth,leftPanelH,leftPanelRadius);
-    ctx.clip();
-    ctx.strokeStyle="rgba(239,180,60,0.035)";
-    ctx.lineWidth=Math.max(4,Math.round(leftPanelH*0.035));
-    const stripeGap=Math.max(16,Math.round(leftSectionWidth*0.09));
-    for(let i=-leftPanelH;i<leftSectionWidth+leftPanelH;i+=stripeGap){
-      ctx.beginPath();
-      ctx.moveTo(leftX+i,leftPanelY);
-      ctx.lineTo(leftX+i-leftPanelH*0.46,leftPanelY+leftPanelH);
-      ctx.stroke();
+    ctx.globalAlpha=0.10;
+    ctx.strokeStyle="#d89d22";
+    ctx.lineWidth=Math.max(0.7,W(0.7));
+    const hexR=Math.max(4,W(7));
+    const rowH=hexR*1.5;
+    const colW=Math.sqrt(3)*hexR;
+    for(let row=0,y=Y(43);y<Y(213);row++,y+=rowH){
+      const offset=(row%2)*colW/2;
+      for(let x=X(25)+offset;x<X(850);x+=colW){
+        ctx.beginPath();
+        for(let i=0;i<6;i++){
+          const angle=Math.PI/3*i-Math.PI/6;
+          const px=x+Math.cos(angle)*hexR;
+          const py=y+Math.sin(angle)*hexR;
+          if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      }
     }
     ctx.restore();
 
-    const globeR=Math.max(18,Math.min(34,Math.round(leftPanelH*0.22)));
-    const globeCx=leftX+pad+globeR;
-    const globeCy=leftPanelY+leftPanelH*0.47;
-    drawGlobe(globeCx,globeCy,globeR);
+    // Top-left angular gold accent from the approved mockup.
+    const cornerGradient=ctx.createLinearGradient(X(15),Y(35),X(135),Y(90));
+    cornerGradient.addColorStop(0,"rgba(255,213,94,0.98)");
+    cornerGradient.addColorStop(0.45,"rgba(206,136,20,0.92)");
+    cornerGradient.addColorStop(1,"rgba(72,48,16,0.25)");
+    ctx.fillStyle=cornerGradient;
+    ctx.beginPath();
+    ctx.moveTo(X(30),Y(45));
+    ctx.lineTo(X(133),Y(45));
+    ctx.lineTo(X(88),Y(88));
+    ctx.lineTo(X(18),Y(95));
+    ctx.lineTo(X(18),Y(70));
+    ctx.closePath();
+    ctx.fill();
 
-    const logoX=globeCx+globeR+Math.max(8,Math.round(leftPanelH*0.065));
-    const logoW=Math.max(70,leftX+leftSectionWidth-pad-logoX);
-    const taglineSize=Math.max(9,Math.min(16,Math.round(bannerHeight*0.075)));
-    const taglineY=leftPanelY+leftPanelH-Math.max(8,Math.round(leftPanelH*0.09));
-    const logoY=leftPanelY+Math.max(4,Math.round(leftPanelH*0.03));
-    const logoH=Math.max(40,taglineY-logoY-taglineSize*1.45);
+    // Branding block exact measured placement.
+    const globeCx=X(70);
+    const globeCy=Y(128);
+    const globeR=H(30);
+    drawGlobe(globeCx,globeCy,globeR);
 
     if(logo){
       const sourceW=logo.naturalWidth||logo.width||1;
       const sourceH=logo.naturalHeight||logo.height||1;
-      const scale=Math.min(logoW/sourceW,logoH/sourceH);
-      const drawW=Math.max(1,Math.round(sourceW*scale));
-      const drawH=Math.max(1,Math.round(sourceH*scale));
-      const drawX=logoX+Math.round((logoW-drawW)/2);
-      const drawY=logoY+Math.round((logoH-drawH)/2);
+      const maxW=W(226);
+      const maxH=H(128);
+      const scale=Math.min(maxW/sourceW,maxH/sourceH);
+      const dw=sourceW*scale;
+      const dh=sourceH*scale;
+      const dx=X(112)+(maxW-dw)/2;
+      const dy=Y(53)+(maxH-dh)/2;
       ctx.save();
-      ctx.globalAlpha=0.98;
-      ctx.shadowColor="rgba(0,0,0,0.18)";
-      ctx.shadowBlur=Math.max(3,Math.round(bannerHeight*0.022));
-      ctx.drawImage(logo,drawX,drawY,drawW,drawH);
+      ctx.globalAlpha=1;
+      ctx.drawImage(logo,dx,dy,dw,dh);
       ctx.restore();
     }else{
-      const fallback=fitFont("COLLECT TCG",Math.round(bannerHeight*0.16),12,logoW,"900");
-      ctx.font="900 "+fallback+"px Inter, Arial, sans-serif";
+      ctx.fillStyle="#fff4df";
+      ctx.font="900 "+Math.round(H(38))+"px 'Barlow Condensed', Arial, sans-serif";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
-      ctx.fillStyle="rgba(255,245,225,0.97)";
-      ctx.fillText("COLLECT TCG",logoX+logoW/2,logoY+logoH/2,logoW);
+      ctx.fillText("COLLECT TCG",X(221),Y(112),W(218));
     }
 
-    ctx.font="700 "+taglineSize+"px Inter, Arial, sans-serif";
+    ctx.font="700 "+Math.round(H(15))+"px Inter, Arial, sans-serif";
     ctx.textAlign="center";
-    ctx.textBaseline="alphabetic";
-    ctx.fillStyle="rgba(244,190,76,0.96)";
-    ctx.fillText(
-      brandTagline,
-      leftX+leftSectionWidth/2,
-      taglineY,
-      leftSectionWidth-pad*1.35
-    );
-
-    const dividerX=leftX+leftSectionWidth+gap*0.48;
-    ctx.strokeStyle="rgba(247,194,71,0.62)";
-    ctx.lineWidth=Math.max(1,borderWidth*0.8);
-    ctx.beginPath();
-    ctx.moveTo(dividerX,bannerY+pad*1.15);
-    ctx.lineTo(dividerX,bannerY+bannerHeight-pad*1.15);
-    ctx.stroke();
-
-    const centerPad=Math.max(2,Math.round(gap*0.12));
-    const titleX=centerX+centerPad;
-    const titleMaxWidth=Math.max(130,contentWidth-centerPad);
-    const titleSize=fitFont(
-      cta,
-      Math.max(22,Math.min(40,Math.round(shortSide*0.035))),
-      14,
-      titleMaxWidth,
-      "800"
-    );
-    ctx.textAlign="left";
     ctx.textBaseline="middle";
-    ctx.font="800 "+titleSize+"px Inter, Arial, sans-serif";
-    ctx.fillStyle="rgba(255,200,67,0.99)";
-    const titleY=bannerY+bannerHeight*0.40;
-    ctx.fillText(cta,titleX,titleY,titleMaxWidth);
+    ctx.fillStyle="#f6bd39";
+    ctx.fillText(brandTagline,X(188),Y(201),W(295));
 
-    const separatorY=bannerY+bannerHeight*0.535;
-    const sepGradient=ctx.createLinearGradient(titleX,separatorY,titleX+titleMaxWidth,separatorY);
-    sepGradient.addColorStop(0,"rgba(255,196,57,0.62)");
-    sepGradient.addColorStop(0.80,"rgba(255,196,57,0.40)");
-    sepGradient.addColorStop(1,"rgba(255,196,57,0)");
-    ctx.strokeStyle=sepGradient;
+    ctx.strokeStyle="#f0b42f";
     ctx.lineWidth=Math.max(1,borderWidth*0.75);
     ctx.beginPath();
-    ctx.moveTo(titleX,separatorY);
-    ctx.lineTo(titleX+titleMaxWidth,separatorY);
+    ctx.moveTo(X(365),Y(55));
+    ctx.lineTo(X(365),Y(201));
     ctx.stroke();
 
-    const pillX=titleX;
-    const pillY=bannerY+bannerHeight*0.62;
-    const pillH=Math.max(34,Math.round(bannerHeight*0.245));
-    const pillWidth=titleMaxWidth;
-    const pillRadius=Math.round(pillH/2);
-    const pillGradient=ctx.createLinearGradient(pillX,pillY,pillX,pillY+pillH);
-    pillGradient.addColorStop(0,"rgba(21,20,18,0.98)");
-    pillGradient.addColorStop(1,"rgba(9,9,9,0.99)");
-    fillRoundedPanel(
-      pillX,pillY,pillWidth,pillH,pillRadius,
-      pillGradient,"rgba(248,190,57,0.88)",borderWidth*0.8
+    // CTA area exact measured mockup geometry.
+    const titleX=X(392);
+    const titleY=Y(104);
+    const titleMaxW=W(469);
+    const titleSize=fitFont(
+      cta,
+      Math.round(H(48)),
+      Math.round(H(25)),
+      titleMaxW,
+      "800",
+      "Barlow Condensed"
     );
+    ctx.font="800 "+titleSize+"px 'Barlow Condensed', Arial, sans-serif";
+    ctx.textAlign="left";
+    ctx.textBaseline="middle";
+    ctx.fillStyle="#f8c64e";
+    ctx.fillText(cta,titleX,titleY,titleMaxW);
 
-    const arrowDiameter=Math.max(26,Math.round(pillH*0.78));
-    const arrowX=pillX+pillWidth-arrowDiameter-Math.max(6,Math.round(pillH*0.12));
-    const arrowY=pillY+(pillH-arrowDiameter)/2;
-    const urlPad=Math.max(15,Math.round(pillH*0.38));
-    const urlMaxWidth=Math.max(80,arrowX-pillX-urlPad*1.5);
+    ctx.strokeStyle="rgba(247,188,49,0.82)";
+    ctx.lineWidth=Math.max(1,borderWidth*0.62);
+    ctx.beginPath();
+    ctx.moveTo(X(389),Y(139));
+    ctx.lineTo(X(854),Y(139));
+    ctx.stroke();
+
+    // URL pill exact mockup geometry.
+    roundedRect(X(386),Y(151),W(470),H(61),H(30));
+    const pillGradient=ctx.createLinearGradient(X(386),Y(151),X(386),Y(212));
+    pillGradient.addColorStop(0,"rgba(25,23,19,0.995)");
+    pillGradient.addColorStop(1,"rgba(7,7,7,0.995)");
+    ctx.fillStyle=pillGradient;
+    ctx.fill();
+    ctx.lineWidth=Math.max(2,borderWidth*0.85);
+    ctx.strokeStyle="#f1b52e";
+    ctx.stroke();
+
+    const arrowD=H(43);
+    const arrowX=X(797);
+    const arrowY=Y(160);
+    roundedRect(arrowX,arrowY,arrowD,arrowD,arrowD/2);
+    const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowD);
+    arrowGradient.addColorStop(0,"#ffd45d");
+    arrowGradient.addColorStop(1,"#e99b17");
+    ctx.fillStyle=arrowGradient;
+    ctx.fill();
+
     const urlSize=fitFont(
       displayUrl,
-      Math.max(14,Math.min(24,Math.round(titleSize*0.68))),
-      10,
-      urlMaxWidth,
-      "700"
+      Math.round(H(28)),
+      Math.round(H(16)),
+      W(355),
+      "700",
+      "Inter"
     );
     ctx.font="700 "+urlSize+"px Inter, Arial, sans-serif";
     ctx.textAlign="left";
-    ctx.fillStyle="rgba(255,255,255,0.98)";
-    ctx.fillText(displayUrl,pillX+urlPad,pillY+pillH/2,urlMaxWidth);
+    ctx.textBaseline="middle";
+    ctx.fillStyle="#ffffff";
+    ctx.fillText(displayUrl,X(411),Y(181),W(355));
 
-    const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowDiameter);
-    arrowGradient.addColorStop(0,"rgba(255,211,87,1)");
-    arrowGradient.addColorStop(1,"rgba(242,166,30,1)");
-    fillRoundedPanel(
-      arrowX,arrowY,arrowDiameter,arrowDiameter,Math.round(arrowDiameter/2),
-      arrowGradient,null
-    );
-    ctx.strokeStyle="rgba(15,15,15,0.84)";
-    ctx.lineWidth=Math.max(2,Math.round(arrowDiameter*0.075));
+    ctx.strokeStyle="#15120a";
+    ctx.lineWidth=Math.max(2,H(3));
     ctx.beginPath();
-    ctx.moveTo(arrowX+arrowDiameter*0.40,arrowY+arrowDiameter*0.30);
-    ctx.lineTo(arrowX+arrowDiameter*0.62,arrowY+arrowDiameter*0.50);
-    ctx.lineTo(arrowX+arrowDiameter*0.40,arrowY+arrowDiameter*0.70);
+    ctx.moveTo(arrowX+arrowD*0.38,arrowY+arrowD*0.30);
+    ctx.lineTo(arrowX+arrowD*0.62,arrowY+arrowD*0.50);
+    ctx.lineTo(arrowX+arrowD*0.38,arrowY+arrowD*0.70);
     ctx.stroke();
 
-    const qrRadius=Math.max(10,Math.round(qrOuter*0.10));
-    fillRoundedPanel(
-      qrX,qrY,qrOuter,qrOuter,qrRadius,
-      "#ffffff","rgba(246,190,56,0.96)",borderWidth*1.0
-    );
-    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,360);
+    // QR housing exact measured mockup geometry.
+    roundedRect(X(873),Y(16),W(196),H(205),H(16));
+    ctx.fillStyle="#11100d";
+    ctx.fill();
+    ctx.lineWidth=Math.max(2,borderWidth*0.9);
+    ctx.strokeStyle="#f0b42f";
+    ctx.stroke();
+
+    roundedRect(X(884),Y(29),W(172),H(179),H(9));
+    ctx.fillStyle="#ffffff";
+    ctx.fill();
+    ctx.lineWidth=Math.max(1,borderWidth*0.48);
+    ctx.strokeStyle="rgba(255,215,105,0.92)";
+    ctx.stroke();
+
+    const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,512);
     if(qrCanvas){
-      const quiet=Math.max(6,Math.round(qrOuter*0.066));
-      ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
+      ctx.drawImage(qrCanvas,X(896),Y(41),W(148),H(155));
     }else{
+      ctx.fillStyle="#111";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
-      ctx.fillStyle="#111111";
-      ctx.font="800 "+Math.max(11,Math.round(qrOuter*0.13))+"px Inter, Arial, sans-serif";
-      ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
+      ctx.font="800 "+Math.round(H(18))+"px Inter, Arial, sans-serif";
+      ctx.fillText("SCAN",X(970),Y(119),W(120));
     }
 
-    const railX=qrX+qrOuter+Math.max(7,Math.round(qrRailWidth*0.40));
-    const railTop=qrY+qrOuter*0.18;
-    const railBottom=qrY+qrOuter*0.82;
-    ctx.strokeStyle="rgba(244,182,44,0.86)";
-    ctx.lineWidth=Math.max(3,Math.round(borderWidth*1.25));
-    for(let i=0;i<3;i++){
-      const x=railX+i*Math.max(6,Math.round(qrRailWidth*0.33));
+    // Approved right-side three accent rails.
+    ctx.strokeStyle="#f2b62f";
+    ctx.lineCap="round";
+    ctx.lineWidth=Math.max(3,W(5));
+    const railYs=[82,119,158];
+    for(const ry of railYs){
       ctx.beginPath();
-      ctx.moveTo(x,railTop+i*2);
-      ctx.lineTo(x,railBottom-i*2);
+      ctx.moveTo(X(1080),Y(ry));
+      ctx.lineTo(X(1095),Y(ry));
       ctx.stroke();
     }
+    ctx.lineCap="butt";
+
+    // Small restrained bottom highlight only; no reinterpretive flare effects.
+    const bottomGlow=ctx.createLinearGradient(X(330),Y(226),X(790),Y(226));
+    bottomGlow.addColorStop(0,"rgba(255,190,49,0)");
+    bottomGlow.addColorStop(0.78,"rgba(255,202,64,0.34)");
+    bottomGlow.addColorStop(1,"rgba(255,190,49,0)");
+    ctx.strokeStyle=bottomGlow;
+    ctx.lineWidth=Math.max(1,borderWidth*0.45);
+    ctx.beginPath();
+    ctx.moveTo(X(300),Y(226));
+    ctx.lineTo(X(820),Y(226));
+    ctx.stroke();
 
     ctx.restore();
   }
