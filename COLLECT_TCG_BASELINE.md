@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v26`
+Latest Development: `2026-09-27-v27`
 
-Previous Development: `2026-09-27-v25`
+Previous Development: `2026-09-27-v26`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v27`
+
+Previous Development: `2026-09-27-v26`
+
+Purpose: make the Bulk Edit image workflow explicitly global across the complete inventory.
+
+Changes:
+- `Inventory Tools → Bulk Edit → Bulk Images` is now labeled `Bulk Images — All Listings`.
+- The page states that one action applies to every photo in every inventory listing and no listing selection is required.
+- Removes the older per-listing checkbox/Select All reprocess UI from the Bulk Edit image page to avoid implying that listings must be selected.
+- The selective high-quality reprocess tool remains available under `Inventory Tools → Quality`.
+- Global Original / Logo + CTA + QR / CTA + QR-only behavior remains owner-only and continues to iterate every loaded listing with images.
+- Production is unchanged.
+
+SQL required: No.
+
+Validation status: in progress.
 
 ### Development `2026-09-27-v26`
 
