@@ -2,6 +2,12 @@
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.
 
+## 2026-09-27-v06 Development
+
+- Synchronizes the canonical Development baseline after Production `2026-09-27-v06` reconciled active terminology with `collecttcg/Collect_TCG_Dev`.
+- Records Production final HEAD / last-known-good `190a17f03b4b962fee8c15783f75e824c44babfd`.
+- Documentation/version metadata only; no Development runtime, SQL, RLS, analytics, Owner Mode or UI behavior changes.
+
 ## 2026-09-27-v05 Development
 
 - Prepares the environment rename from Beta to Development/Dev and repository rename to `collecttcg/Collect_TCG_Dev`.

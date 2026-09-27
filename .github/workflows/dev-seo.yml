@@ -451,9 +451,9 @@ jobs:
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v05
-          PREVIOUS_VERSION: 2026-09-27-v04
-          PREVIOUS_COMMIT: 679bfd3f52dbc0a9456d848f914d769016baeefa
+          RELEASE_VERSION: 2026-09-27-v06
+          PREVIOUS_VERSION: 2026-09-27-v05
+          PREVIOUS_COMMIT: a1fa7cb57321bc5333ea5db6612771dd6e23d9c4
         run: |
           set -euo pipefail
           mkdir -p release
@@ -481,10 +481,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v05-packages
+          name: Collect-TCG-Dev-2026-09-27-v06-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v05-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v04-to-2026-09-27-v05-patch.zip
+            release/Collect-TCG-Dev-2026-09-27-v06-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v05-to-2026-09-27-v06-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -493,16 +493,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v05.txt"
+          MANIFEST="release-manifests/2026-09-27-v06.txt"
           {
-            echo "Version: 2026-09-27-v05"
-            echo "Previous version: 2026-09-27-v04"
+            echo "Version: 2026-09-27-v06"
+            echo "Previous version: 2026-09-27-v05"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v05-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v04-to-2026-09-27-v05-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v06-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v05-to-2026-09-27-v06-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v05: record package validation"
+          git commit -m "Development 2026-09-27-v06: record package validation"
           git push
