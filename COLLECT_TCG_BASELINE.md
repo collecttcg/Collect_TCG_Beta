@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v22`
+Latest Development: `2026-09-27-v23`
 
-Previous Development: `2026-09-27-v21`
+Previous Development: `2026-09-27-v22`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v23`
+
+Previous Development: `2026-09-27-v22`
+
+Purpose: turn Add/Edit into a wider owner workspace so large multi-photo listings are easier to inspect and manage.
+
+Changes:
+- Expands the desktop Edit modal to a maximum 1180px workspace and the Add form to the same maximum width.
+- Uses three photo columns on large desktop, two on medium screens, and retains the existing narrow/mobile behavior.
+- Keeps each photo fully visible with controls below the preview.
+- Keeps non-photo form content centered at a readable maximum width instead of stretching every field across the workspace.
+- Does not change Add/Edit data handling, image ordering/storage, watermark generation, PSA masking, Supabase/RLS, public inventory behavior or Production.
+
+SQL required: No.
+
+Validation status: in progress. Desktop browser/screenshot confirmation of the wider Add/Edit workspace is required before acceptance.
 
 ### Development `2026-09-27-v22`
 
