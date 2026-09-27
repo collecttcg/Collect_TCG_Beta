@@ -1,3 +1,0 @@
-User-agent: *
-Disallow: /
-Sitemap: https://collecttcg.github.io/Collect_TCG_Dev/beta/sitemap.xml

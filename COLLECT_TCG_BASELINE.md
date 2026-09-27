@@ -31,15 +31,15 @@ Use the actual build date. Development and Production have independent counters 
 - Active environment terminology changes from **Beta** to **Development/Dev** starting with `2026-09-27-v05`.
 - Repository target name: `collecttcg/Collect_TCG_Dev`.
 - Historical Beta release names, manifests, package names and references remain unchanged.
-- The internal `beta/` directory is intentionally retained in this migration to minimize regression risk.
+- The legacy internal `beta/` directory was retained through v07 for migration safety and is renamed to canonical `dev/` in Development `2026-09-27-v08`.
 - Future Development packages use `Collect-TCG-Dev-...`.
 - Production `2026-09-27-v05` removed the final runtime dependency on the old Beta repository by localizing the Zatch Bell logo.
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v07`
+Latest Development: `2026-09-27-v08`
 
-Previous Development: `2026-09-27-v06`
+Previous Development: `2026-09-27-v07`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -54,7 +54,7 @@ Production functional baseline last promoted from Development (then named Beta):
 Production package-validation HEAD: `942a0f1f2c919ec049fdabf7f1651dd61613a931`
 
 GitHub Pages status at reconciliation:
-- Development `2026-09-27-v07` adds a root redirect into the retained `/beta/` Development application path; deployment success must be confirmed before the release is called completed.
+- Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
 - Production remains unchanged and protected.
 
 Important promotion state:
@@ -76,11 +76,11 @@ Important promotion state:
 
 ## Current Release State
 
-### Development `2026-09-27-v07`
+### Development `2026-09-27-v08`
 
-Purpose: restore Development access after the Beta → Development repository rename. GitHub Pages continues serving the repository with the application under `/beta/`, and a root `index.html` now redirects `https://collecttcg.github.io/Collect_TCG_Dev/` to the existing Development application path. No application runtime behavior changes.
+Purpose: complete the Beta → Development environment migration. The active application directory is renamed from `beta/` to canonical `dev/`; active build, serve, validation, tests, SEO generation and workflow references use `dev/`; GitHub Pages publishes the contents of `dev/` as the site root at `https://collecttcg.github.io/Collect_TCG_Dev/`. No application feature behavior or Production code is intentionally changed.
 
-The functional Beta baseline carried forward unchanged from v20 includes:
+The validated functional baseline carried forward from the former Beta environment includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.
 - v18 Inventory behavior: default remains **Custom Order**; only newly added Inventory cards are inserted automatically into the current custom order using the slab/raw-condition/sealed grouping rule without reordering existing cards.
 - v19 repository cleanup and structure normalization.
@@ -147,10 +147,10 @@ Production 2026-09-27-v01 still does **not** contain Beta v18 new-card custom-or
 
 The active Development structure is:
 
-- `beta/` — deployable Development website; the directory name is intentionally retained during the repository rename
-- `beta/src/` — active application modules/styles
-- `beta/assets/` — active local runtime image assets
-- `beta/cards/` — generated SEO card pages
+- `dev/` — canonical deployable Development website
+- `dev/src/` — active application modules/styles
+- `dev/assets/` — active local runtime image assets
+- `dev/cards/` — generated SEO card pages
 - `migrations/2026/` — date-versioned Supabase SQL migration history
 - `migrations/legacy/` — retained legacy `V###` SQL migration history
 - `tests/` — regression tests
@@ -160,7 +160,7 @@ The active Development structure is:
 - `release-manifests/` — release package/checksum records
 - `COLLECT_TCG_BASELINE.md` — current project baseline/source of truth
 
-Generated SEO files such as `beta/cards/**/index.html`, `beta/seo-slugs.json`, `beta/sitemap.xml`, and `beta/robots.txt` are intentional and must not be treated as repository clutter.
+Generated SEO files such as `dev/cards/**/index.html`, `dev/seo-slugs.json`, `dev/sitemap.xml`, and `dev/robots.txt` are intentional and must not be treated as repository clutter.
 
 ---
 
@@ -295,11 +295,11 @@ Do not reintroduce abandoned/experimental work simply because it appears in old 
 
 These files were removed because they were confirmed stale/dead and should not silently return:
 
-- `beta/src/app/beta-config.js`
-- `beta/src/features/content/retention.js`
-- `beta/src/styles/beta.css`
-- `beta/assets/one-piece-card-game-logo.png` — unused local asset; active One Piece game-browser source is elsewhere
-- `beta/README.md` — redundant with the current root README
+- `dev/src/app/beta-config.js`
+- `dev/src/features/content/retention.js`
+- `dev/src/styles/beta.css`
+- `dev/assets/one-piece-card-game-logo.png` — unused local asset; active One Piece game-browser source is elsewhere
+- `dev/README.md` — redundant with the current root README
 - `docs/SANDBOX.md` — obsolete V93 isolation/sandbox instructions
 - `docs/package-checksums.json` — obsolete V93 package snapshot
 
@@ -312,9 +312,9 @@ The validation tool checks for these retired files so accidental restoration is 
 Do not delete files solely because their filenames contain older version numbers.
 
 Examples:
-- compatibility and UI stylesheet layers under `beta/src/styles/01-29`
+- compatibility and UI stylesheet layers under `dev/src/styles/01-29`
 - `docs/function-map.json` — used by regression tests as the original modularization fixture
-- `beta/src/styles/27-insights-dashboard.css` — dynamically loaded by Owner Insights
+- `dev/src/styles/27-insights-dashboard.css` — dynamically loaded by Owner Insights
 - generated SEO card pages
 - release manifests
 - historical SQL migrations

@@ -1,3 +1,11 @@
+## 2026-09-27-v08 Development
+
+- Completes the Beta → Development environment migration.
+- Renames the active application directory from `beta/` to canonical `dev/`.
+- Updates active tests, build/local-server tooling, validation, SEO generation and GitHub Actions paths to `dev/`.
+- Publishes the contents of `dev/` as the GitHub Pages root so Development URLs are `https://collecttcg.github.io/Collect_TCG_Dev/` with no `/beta/` or `/dev/` segment.
+- Preserves historical Beta release names/manifests and does not change Production.
+
 # Changelog
 
 Release manifests under `release-manifests/` are the authoritative package/commit history.

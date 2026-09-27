@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {registerFeatures} from '../beta/src/app/register-features.js';
+import {registerFeatures} from '../dev/src/app/register-features.js';
 const golden=JSON.parse(fs.readFileSync(new URL('./v92-golden.json',import.meta.url),'utf8'));
 const constants=JSON.parse(fs.readFileSync(new URL('./constants.json',import.meta.url),'utf8'));
 function app(){
@@ -49,14 +49,14 @@ test('critical retained features remain registered and their public intents rema
  const names=new Set(map.map(row=>row.name));
  for(const name of ['isOwnerMode','requireOwner','applyOwnerMode','renderContactPage','publicContactSellerMessage','loadGiveaways','saveGiveaway','renderCarousellPostGeneratorPage','isAnalyticsExcludedDevice','createAnalyticsExclusionPairingCode'])assert.ok(names.has(name),name);
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const details=source('../beta/src/features/cards/details.js');
+ const details=source('../dev/src/features/cards/details.js');
  for(const intent of ['Availability','Make an offer','More photos / video','COD / meetup'])assert.ok(details.includes(intent),intent);
- const giveaway=source('../beta/src/features/content/giveaways-data.js');
+ const giveaway=source('../dev/src/features/content/giveaways-data.js');
  assert.match(giveaway,/bonus/i);
- const posts=source('../beta/src/features/social/posts.js');
+ const posts=source('../dev/src/features/social/posts.js');
  assert.match(posts,/Facebook Group/i);
  assert.match(posts,/Carousell/i);
- const analytics=source('../beta/src/services/analytics.js');
+ const analytics=source('../dev/src/services/analytics.js');
  assert.match(analytics,/analyticsExclusionPairingUrl/);
 });
 
@@ -107,7 +107,7 @@ test('every post generator shares an English-default template language selector'
  assert.match(chinese,/卡牌上新/);
  assert.match(chinese,/更多卡牌可供选择/);
  assert.match(chinese,/Mixed \/ Multiple languages: KR × 1 · CN × 1/);
- const source=fs.readFileSync(new URL('../beta/src/features/social/posts.js',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
  for(const id of ['fbPostLanguage','winnerPostLanguage','fbGiveawayLanguage','carousellPostLanguage','fbCardListLanguage']) assert.match(source,new RegExp(id));
  for(const language of ['English','Bahasa Melayu','中文（简体）','日本語','한국어']) assert.match(source,new RegExp(language));
 });
@@ -170,8 +170,8 @@ test('card edits do not depend on a full REST row being returned after save',asy
 
 test('owner save flows distinguish an unsaved card from non-critical post-save work',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const add=source('../beta/src/features/owner/add.js');
- const editor=source('../beta/src/features/owner/editor.js');
+ const add=source('../dev/src/features/owner/add.js');
+ const editor=source('../dev/src/features/owner/editor.js');
  assert.match(add,/Card was not saved\. Please refresh and try again\./);
  assert.match(add,/Card added · \$\{postSaveStep/);
  assert.doesNotMatch(add,/Card saved; a follow-up step failed/);
@@ -183,8 +183,8 @@ test('owner save flows distinguish an unsaved card from non-critical post-save w
 
 test('the owner can download the standalone Inventory QR from the Inventory page',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const details=source('../beta/src/features/cards/details.js');
- const inventory=source('../beta/src/features/inventory/page.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const inventory=source('../dev/src/features/inventory/page.js');
  assert.match(details,/async function downloadInventoryQrImage\(\)/);
  assert.match(details,/Collect-TCG-Inventory-QR\.png/);
  assert.match(inventory,/id="inventoryQrDownloadBtn"/);
@@ -193,9 +193,9 @@ test('the owner can download the standalone Inventory QR from the Inventory page
 
 test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const details=source('../beta/src/features/cards/details.js');
- const html=source('../beta/index.html');
- const mobile=source('../beta/src/ui/enhancement-2.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const html=source('../dev/index.html');
+ const mobile=source('../dev/src/ui/enhancement-2.js');
  assert.match(details,/Worldwide Shipping/);
  assert.match(details,/Shipping \/ delivery/);
  assert.match(details,/Is international shipping available to my location\?/);
@@ -208,7 +208,7 @@ test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD'
 
 test('home titles use a consistent uppercase display style and trust copy stays readable',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const css=source('../beta/src/styles/26-compatibility.css');
+ const css=source('../dev/src/styles/26-compatibility.css');
  assert.match(css,/\.home-premium-hero-copy h2,[\s\S]*\.home-premium-trust-points strong\{[\s\S]*text-transform:uppercase/);
  assert.match(css,/\.home-premium-trust-copy h3\{\s*font-size:clamp\(23px,1\.55vw,30px\)/);
  assert.match(css,/\.home-premium-trust-points small\{\s*font-size:clamp\(10\.5px,\.68vw,13px\)/);
@@ -217,14 +217,14 @@ test('home titles use a consistent uppercase display style and trust copy stays 
 
 
 test('the Home currency label is readable without changing other currency controls',()=>{
- const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
  assert.match(css,/\.home-premium-currency > span:not\(\.sr-only\)\{\s*font-size:12px !important;/);
  assert.match(css,/\.home-premium-currency select\{\s*font-size:11px !important;/);
 });
 
 
 test('trust descriptions stay on one line and Collection accordion uses the gold accent',()=>{
- const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
  assert.match(css,/\.home-premium-trust-points small\{[\s\S]*white-space:nowrap/);
  assert.match(css,/\.collection-game-group-header\{[\s\S]*border-color:rgba\(227,179,65,\.28\)/);
  assert.match(css,/\.collection-game-chevron\{[\s\S]*color:#efc45d/);
@@ -232,7 +232,7 @@ test('trust descriptions stay on one line and Collection accordion uses the gold
 
 
 test('Collection NFS cards use the same gold accent rather than a purple stripe',()=>{
- const css=fs.readFileSync(new URL('../beta/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
  assert.match(css,/\.card\.nfs-collection-card\{[\s\S]*--stripe:#e3b341 !important/);
  assert.match(css,/inset 3px 0 0 rgba\(227,179,65,\.70\)/);
 });
@@ -240,8 +240,8 @@ test('Collection NFS cards use the same gold accent rather than a purple stripe'
 
 test('Inventory and Sold cards use gold stripes without changing their status badges',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const inventory=source('../beta/src/features/inventory/page.js');
- const css=source('../beta/src/styles/26-compatibility.css');
+ const inventory=source('../dev/src/features/inventory/page.js');
+ const css=source('../dev/src/styles/26-compatibility.css');
  assert.match(inventory,/\["inventory","sold"\]\.includes\(appContext\.listingAvailabilityScope\)/);
  assert.match(inventory,/grid\.classList\.add\("gold-card-stripes"\)/);
  assert.match(css,/#invGrid\.gold-card-stripes \.card\{\s*--stripe:#e3b341 !important;/);
@@ -260,10 +260,10 @@ test('balanced card drop mix prioritizes different games before repeating one',(
 
 test('SEO phase 1 preserves legacy card routes and activates clean URLs only after generation',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const utilities=source('../beta/src/features/core/utilities.js');
- const routing=source('../beta/src/app/routing.js');
- const details=source('../beta/src/features/cards/details.js');
- const html=source('../beta/index.html');
+ const utilities=source('../dev/src/features/core/utilities.js');
+ const routing=source('../dev/src/app/routing.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const html=source('../dev/index.html');
  const generator=source('../tools/generate-seo.mjs');
 
  assert.match(utilities,/function seoCardSlug\(card\)/);
@@ -289,10 +289,10 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
 
 test('Phase 2A discovery surfaces keep clean-card routing and source context',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const routing=source('../beta/src/app/routing.js');
- const home=source('../beta/src/features/content/home.js');
- const tiles=source('../beta/src/features/cards/tiles.js');
- const details=source('../beta/src/features/cards/details.js');
+ const routing=source('../dev/src/app/routing.js');
+ const home=source('../dev/src/features/content/home.js');
+ const tiles=source('../dev/src/features/cards/tiles.js');
+ const details=source('../dev/src/features/cards/details.js');
 
  assert.match(routing,/function rememberCardDiscoverySource\(cardId,source\)/);
  assert.match(routing,/function currentCardDiscoverySource\(\)/);
@@ -310,7 +310,7 @@ test('Phase 2A discovery surfaces keep clean-card routing and source context',()
 
 test('Phase 2B1 records discovery attribution only after qualified views',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const analytics=source('../beta/src/services/analytics.js');
+ const analytics=source('../dev/src/services/analytics.js');
  const sql=source('../migrations/2026/2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql');
 
  assert.match(analytics,/async function recordQualifiedViewDiscoveryAttribution\(cardId,visitorId\)/);
@@ -334,7 +334,7 @@ test('Phase 2 Trending ranks unique collectors ahead of repeat-heavy views',()=>
  const single={id:'single'};
  assert.ok(a.trendingCardScore(broader)>a.trendingCardScore(repeat));
  assert.ok(a.trendingCardScore(repeat)>a.trendingCardScore(single));
- const source=fs.readFileSync(new URL('../beta/src/features/content/home.js',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../dev/src/features/content/home.js',import.meta.url),'utf8');
  assert.match(source,/trendingCardScore\(b\)-appContext\.trendingCardScore\(a\)/);
  assert.match(source,/unique qualified collector interest/);
 });
@@ -342,8 +342,8 @@ test('Phase 2 Trending ranks unique collectors ahead of repeat-heavy views',()=>
 test('Phase 2 discovery summary is owner-only and intentionally lightweight',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const sql=source('../migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql');
- const analytics=source('../beta/src/services/analytics.js');
- const dashboard=source('../beta/src/features/owner/insights-dashboard.js');
+ const analytics=source('../dev/src/services/analytics.js');
+ const dashboard=source('../dev/src/features/owner/insights-dashboard.js');
  assert.match(sql,/create or replace function public\.get_card_discovery_summary/);
  assert.match(sql,/public\.is_app_owner\(\)/);
  assert.match(sql,/revoke all on function public\.get_card_discovery_summary[\s\S]*from anon/);
@@ -355,8 +355,8 @@ test('Phase 2 discovery summary is owner-only and intentionally lightweight',()=
 
 test('clean card URLs use SPA history internally while direct static pages remain supported',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const routing=source('../beta/src/app/routing.js');
- const details=source('../beta/src/features/cards/details.js');
+ const routing=source('../dev/src/app/routing.js');
+ const details=source('../dev/src/features/cards/details.js');
 
  assert.match(routing,/state\.collectTcgSpaCardId=id/);
  assert.match(routing,/state\.collectTcgSpaCard=true/);
@@ -375,13 +375,13 @@ test('clean card URLs use SPA history internally while direct static pages remai
 });
 
 test('Collector Spotlight click stops before the shared card delegate',()=>{
- const source=fs.readFileSync(new URL('../beta/src/features/content/home.js',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../dev/src/features/content/home.js',import.meta.url),'utf8');
  assert.match(source,/data-spotlight-card-id/);
  assert.match(source,/event\.preventDefault\(\);[\s\S]*event\.stopPropagation\(\);[\s\S]*openCardRoute\(id,"spotlight"\)/);
 });
 
 test('internal card opens never reload the static SEO page',()=>{
- const routing=fs.readFileSync(new URL('../beta/src/app/routing.js',import.meta.url),'utf8');
+ const routing=fs.readFileSync(new URL('../dev/src/app/routing.js',import.meta.url),'utf8');
  const openStart=routing.indexOf('async function openCardRoute');
  const openEnd=routing.indexOf('\nfunction getCollectionStats',openStart);
  const openBlock=routing.slice(openStart,openEnd);
@@ -396,7 +396,7 @@ test('internal card opens never reload the static SEO page',()=>{
 
 test('Phase 3 buyer inquiries carry full card context and record explicit copies',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const details=source('../beta/src/features/cards/details.js');
+ const details=source('../dev/src/features/cards/details.js');
  assert.match(details,/function contactCardReferenceLines\(card\)/);
  assert.match(details,/Grade \/ Condition:/);
  assert.match(details,/Language:/);
@@ -408,8 +408,8 @@ test('Phase 3 buyer inquiries carry full card context and record explicit copies
 
 test('Phase 3 owner card details reuse existing analytics for a private conversion summary',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const analytics=source('../beta/src/services/analytics.js');
- const details=source('../beta/src/features/cards/details.js');
+ const analytics=source('../dev/src/services/analytics.js');
+ const details=source('../dev/src/features/cards/details.js');
  assert.match(analytics,/async function fetchOwnerCardConversionSummary\(cardId/);
  assert.match(analytics,/appContext\.fetchInsights\(start,end,\{silent:true\}\)/);
  assert.match(analytics,/appContext\.fetchCardEngagementInsights\(start,end\)/);
@@ -424,8 +424,8 @@ test('Phase 3 owner card details reuse existing analytics for a private conversi
 
 test('Phase 3 card-detail media preloading deduplicates image requests',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const catalogue=source('../beta/src/services/catalogue.js');
- const tiles=source('../beta/src/features/cards/tiles.js');
+ const catalogue=source('../dev/src/services/catalogue.js');
+ const tiles=source('../dev/src/features/cards/tiles.js');
  assert.match(catalogue,/cardImageLoadPromises\.get\(id\)/);
  assert.match(catalogue,/cardImageLoadPromises\.set\(id,request\)/);
  assert.match(catalogue,/async function preloadCardDetailsMedia\(card\)/);
@@ -435,14 +435,14 @@ test('Phase 3 card-detail media preloading deduplicates image requests',()=>{
 });
 
 test('Phase 3 direct card entry renders before unrelated content finishes loading',()=>{
- const startup=fs.readFileSync(new URL('../beta/src/app/startup.js',import.meta.url),'utf8');
+ const startup=fs.readFileSync(new URL('../dev/src/app/startup.js',import.meta.url),'utf8');
  assert.match(startup,/const directCardEntry=String\(initialRoute\|\|""\)\.startsWith\("card\/"\)/);
  assert.match(startup,/if\(directCardEntry\)\{\s*cardsLoaded=await appContext\.loadCards\(\)/);
  assert.match(startup,/appContext\.router\(\);[\s\S]*if\(directCardEntry\)\{[\s\S]*Promise\.allSettled/);
 });
 
 test('Phase 3 Owner Insights surfaces saved cards that have not produced buyer intent',()=>{
- const dashboard=fs.readFileSync(new URL('../beta/src/features/owner/insights-dashboard.js',import.meta.url),'utf8');
+ const dashboard=fs.readFileSync(new URL('../dev/src/features/owner/insights-dashboard.js',import.meta.url),'utf8');
  assert.match(dashboard,/const savedWithoutIntent=safe/);
  assert.match(dashboard,/favorite_adds\|\|0\)>=1 && contactIntent\(row\)===0/);
  assert.match(dashboard,/Saved without contact/);
@@ -453,11 +453,11 @@ test('Phase 3 Owner Insights surfaces saved cards that have not produced buyer i
 
 test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard behavior together',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const inventory=source('../beta/src/features/inventory/page.js');
- const filtering=source('../beta/src/features/inventory/filtering.js');
- const details=source('../beta/src/features/cards/details.js');
- const home=source('../beta/src/features/content/home.js');
- const compare=source('../beta/src/features/cards/compare.js');
+ const inventory=source('../dev/src/features/inventory/page.js');
+ const filtering=source('../dev/src/features/inventory/filtering.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const home=source('../dev/src/features/content/home.js');
+ const compare=source('../dev/src/features/cards/compare.js');
 
  assert.match(inventory,/id="pillFilterSummary"/);
  assert.match(inventory,/id="inventoryResultCount"/);
@@ -478,10 +478,10 @@ test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard 
 
 test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const page=source('../beta/src/features/inventory/page.js');
- const pagination=source('../beta/src/features/inventory/pagination.js');
- const details=source('../beta/src/features/cards/details.js');
- const keyboard=source('../beta/src/features/cards/modal-keyboard.js');
+ const page=source('../dev/src/features/inventory/page.js');
+ const pagination=source('../dev/src/features/inventory/pagination.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const keyboard=source('../dev/src/features/cards/modal-keyboard.js');
  assert.match(page,/createInventoryPagination/);
  assert.match(page,/inventoryPagination\.render/);
  assert.match(pagination,/function pageItems\(current,total\)/);
@@ -498,8 +498,8 @@ test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',
 
 test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZIP download',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const details=source('../beta/src/features/cards/details.js');
- const posts=source('../beta/src/features/social/posts.js');
+ const details=source('../dev/src/features/cards/details.js');
+ const posts=source('../dev/src/features/social/posts.js');
  assert.doesNotMatch(details,/class="details-desktop-contact-socials"/);
  assert.match(details,/class="detail-buy-cta"/);
  assert.match(details,/detailsContactSocialLinksHtml\("details-buy-social-links"\)/);
@@ -511,7 +511,7 @@ test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZI
 
 
 test('2026-09-25-v09 keeps inventory pagination filter signature defined before initialization',()=>{
- const source=fs.readFileSync(new URL('../beta/src/features/inventory/page.js',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
  const definition=source.indexOf('function currentPaginationFilterSignature()');
  const use=source.indexOf('getFilterSignature:currentPaginationFilterSignature');
  assert.ok(definition>=0,'pagination filter signature must be defined');
@@ -544,11 +544,11 @@ test('new Inventory cards slot into custom order without rearranging existing ca
 test('Beta cleanup keeps migrations centralized and retained owner tools wired',()=>{
  const exists=path=>fs.existsSync(new URL(path,import.meta.url));
  for(const path of [
-  '../beta/src/app/beta-config.js',
-  '../beta/src/features/content/retention.js',
-  '../beta/src/styles/beta.css',
-  '../beta/assets/one-piece-card-game-logo.png',
-  '../beta/README.md',
+  '../dev/src/app/beta-config.js',
+  '../dev/src/features/content/retention.js',
+  '../dev/src/styles/beta.css',
+  '../dev/assets/one-piece-card-game-logo.png',
+  '../dev/README.md',
   '../docs/SANDBOX.md',
   '../docs/package-checksums.json'
  ]) assert.equal(exists(path),false,path);
@@ -565,10 +565,10 @@ test('Beta cleanup keeps migrations centralized and retained owner tools wired',
  ]) assert.equal(exists(path),true,path);
 
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const dashboard=source('../beta/src/features/owner/insights-dashboard.js');
- const bulkStatus=source('../beta/src/features/owner/bulk-status.js');
- const tools=source('../beta/src/features/owner/tools.js');
- const index=source('../beta/index.html');
+ const dashboard=source('../dev/src/features/owner/insights-dashboard.js');
+ const bulkStatus=source('../dev/src/features/owner/bulk-status.js');
+ const tools=source('../dev/src/features/owner/tools.js');
+ const index=source('../dev/index.html');
  assert.match(dashboard,/27-insights-dashboard\.css/);
  assert.match(bulkStatus,/function renderQrGeneratorPage\(\)/);
  assert.match(bulkStatus,/submode==="qr"/);
@@ -598,7 +598,7 @@ test('filtered custom reorder preserves hidden card slots',()=>{
 });
 
 test('filtered rearrange stays enabled while game-order dragging is protected',()=>{
- const source=fs.readFileSync(new URL('../beta/src/features/inventory/page.js',import.meta.url),'utf8');
+ const source=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
  assert.doesNotMatch(source,/Clear Collection filters before rearranging/);
  assert.match(source,/mergeFilteredCustomOrder\(collectionFullCustomCardIds\(\),visibleIds\)/);
  assert.match(source,/filteredRearrange\s*\?\s*Promise\.resolve\(true\)/);

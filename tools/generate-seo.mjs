@@ -3,7 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 
 const args=new Set(process.argv.slice(2));
-const mode=args.has('--production')?'production':'beta';
+const mode=args.has('--production')?'production':'dev';
 const selfTest=args.has('--self-test');
 const root=process.cwd();
 
@@ -18,13 +18,13 @@ const config=mode==='production'
       robotsTxt:'User-agent: *\nAllow: /\nSitemap: https://collecttcg.github.io/Collect_TCG/sitemap.xml\n'
     }
   : {
-      outputDir:path.join(root,'beta'),
-      sourceIndex:path.join(root,'beta/index.html'),
-      runtimeFile:path.join(root,'beta/src/app/production-runtime.js'),
-      publicBase:'https://collecttcg.github.io/Collect_TCG_Dev/beta/',
-      sitePath:'/Collect_TCG_Dev/beta/',
+      outputDir:path.join(root,'dev'),
+      sourceIndex:path.join(root,'dev/index.html'),
+      runtimeFile:path.join(root,'dev/src/app/production-runtime.js'),
+      publicBase:'https://collecttcg.github.io/Collect_TCG_Dev/',
+      sitePath:'/Collect_TCG_Dev/',
       robotsMeta:'noindex,nofollow,noarchive',
-      robotsTxt:'User-agent: *\nDisallow: /\nSitemap: https://collecttcg.github.io/Collect_TCG_Dev/beta/sitemap.xml\n'
+      robotsTxt:'User-agent: *\nDisallow: /\nSitemap: https://collecttcg.github.io/Collect_TCG_Dev/sitemap.xml\n'
     };
 
 const SEO_START='<!-- SEO_PHASE1_META_START -->';
