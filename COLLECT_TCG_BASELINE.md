@@ -28,17 +28,17 @@ Use the actual build date. Beta and Production have independent counters and res
 
 ## Current Versions
 
-Latest Beta: `2026-09-27-v03`
+Latest Beta: `2026-09-27-v04`
 
-Previous Beta: `2026-09-27-v02`
+Previous Beta: `2026-09-27-v03`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v02`
+Latest Production: `2026-09-27-v04`
 
-Previous Production: `2026-09-27-v01`
+Previous Production: `2026-09-27-v03`
 
 Production functional baseline last promoted from Beta: `2026-09-27-v02`
 
@@ -49,6 +49,10 @@ GitHub Pages status at reconciliation:
 - Production 2026-09-27-v01 final HEAD deployment: successful
 
 Important promotion state:
+- Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
+- `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
+- Current validated/deployed Production last-known-good commit: `0128dac9cd0de2d729b43fe38f88ad755b48ae7b`.
+- Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
 - Production 2026-09-27-v01 retains the validated Beta v16 functional baseline and adds Production-only repository cleanup plus QR Generator registration repair.
@@ -63,7 +67,7 @@ Important promotion state:
 
 ### Beta `2026-09-27-v01`
 
-Purpose: synchronize the canonical baseline after Production `2026-09-27-v02` promoted filtered rearranging. No Beta runtime behavior changes.
+Purpose: synchronize the canonical baseline after Production `2026-09-27-v04` completed last-known-good recovery automation. No Beta runtime behavior changes.
 
 The functional Beta baseline carried forward unchanged from v20 includes:
 - v16 clone flow fix: clone drafts remain available while the Add clone route rerenders, and are cleared on cancel/success/normal Add as appropriate.
