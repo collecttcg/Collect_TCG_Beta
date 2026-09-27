@@ -103,7 +103,7 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     if(!watermarkUrl) return;
 
     const {logo=null}=options||{};
-    const cta="SEE MORE CARDS • BROWSE INVENTORY";
+    const cta="CHECK PRICE • AVAILABILITY";
     const displayUrl="collecttcg.github.io/Collect_TCG";
     const brandTagline="COLLECT. TRADE. CONNECT.";
 
