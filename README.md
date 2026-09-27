@@ -4,7 +4,7 @@ Development repository for the Collect TCG MY & SG website.
 
 - Production: `collecttcg/Collect_TCG`
 - Development: `collecttcg/Collect_TCG_Dev`
-- Current Development release: `2026-09-27-v26`
+- Current Development release: `2026-09-27-v27`
 - Production is protected and is not changed by Development releases.
 
 ## Repository layout
