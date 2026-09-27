@@ -140,21 +140,21 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
 
     const {logo=null}=options||{};
     const shortSide=Math.min(canvas.width,canvas.height);
-    const bannerMargin=Math.max(18,Math.round(shortSide*0.024));
-    const bannerHeight=Math.max(104,Math.min(188,Math.round(shortSide*0.195)));
-    const bannerRadius=Math.max(20,Math.round(bannerHeight*0.20));
-    const borderWidth=Math.max(2,Math.round(shortSide*0.0032));
+    const bannerMargin=Math.max(16,Math.round(shortSide*0.022));
+    const bannerHeight=Math.max(84,Math.min(154,Math.round(shortSide*0.158)));
+    const bannerRadius=Math.max(16,Math.round(bannerHeight*0.17));
+    const borderWidth=Math.max(2,Math.round(shortSide*0.0026));
     const bannerWidth=Math.min(
       canvas.width-bannerMargin*2,
-      Math.max(360,Math.round(canvas.width*0.94))
+      Math.max(340,Math.round(canvas.width*0.92))
     );
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
     const bannerY=Math.round(canvas.height-bannerMargin-bannerHeight);
-    const pad=Math.max(12,Math.round(bannerHeight*0.10));
-    const innerGap=Math.max(10,Math.round(bannerHeight*0.08));
-    const leftSectionWidth=Math.max(116,Math.min(Math.round(bannerWidth*0.27),Math.round(bannerHeight*1.75)));
-    const qrOuter=Math.max(82,Math.round(bannerHeight*0.76));
-    const qrSectionWidth=qrOuter+pad*2+Math.max(12,Math.round(bannerHeight*0.08));
+    const pad=Math.max(10,Math.round(bannerHeight*0.10));
+    const innerGap=Math.max(8,Math.round(bannerHeight*0.07));
+    const leftSectionWidth=Math.max(104,Math.min(Math.round(bannerWidth*0.245),Math.round(bannerHeight*1.95)));
+    const qrOuter=Math.max(68,Math.round(bannerHeight*0.70));
+    const qrSectionWidth=qrOuter+pad*2+Math.max(8,Math.round(bannerHeight*0.05));
     const contentWidth=bannerWidth-pad*2-leftSectionWidth-innerGap-qrSectionWidth-innerGap;
     const leftX=bannerX+pad;
     const centerX=leftX+leftSectionWidth+innerGap;
@@ -183,12 +183,12 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       }
     }
 
-    function fillRoundedPanel(x,y,w,h,r,fillStyle,strokeStyle){
+    function fillRoundedPanel(x,y,w,h,r,fillStyle,strokeStyle,lineWidth=borderWidth*0.75){
       roundedRect(x,y,w,h,r);
       ctx.fillStyle=fillStyle;
       ctx.fill();
       if(strokeStyle){
-        ctx.lineWidth=Math.max(1,borderWidth*0.8);
+        ctx.lineWidth=Math.max(1,lineWidth);
         ctx.strokeStyle=strokeStyle;
         ctx.stroke();
       }
@@ -208,70 +208,70 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     ctx.imageSmoothingEnabled=true;
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
-    const outerGlow=Math.max(12,Math.round(shortSide*0.024));
-    ctx.shadowColor="rgba(255,191,47,0.46)";
+    const outerGlow=Math.max(8,Math.round(shortSide*0.012));
+    ctx.shadowColor="rgba(255,186,51,0.26)";
     ctx.shadowBlur=outerGlow;
     const shellGradient=ctx.createLinearGradient(bannerX,bannerY,bannerX,bannerY+bannerHeight);
-    shellGradient.addColorStop(0,"rgba(28,22,12,0.98)");
-    shellGradient.addColorStop(0.52,"rgba(10,9,8,0.97)");
-    shellGradient.addColorStop(1,"rgba(8,8,7,0.98)");
-    fillRoundedPanel(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius,shellGradient,"rgba(255,196,54,0.96)");
+    shellGradient.addColorStop(0,"rgba(27,24,19,0.97)");
+    shellGradient.addColorStop(0.55,"rgba(13,12,12,0.97)");
+    shellGradient.addColorStop(1,"rgba(9,9,9,0.98)");
+    fillRoundedPanel(bannerX,bannerY,bannerWidth,bannerHeight,bannerRadius,shellGradient,"rgba(247,190,62,0.88)");
 
     ctx.shadowColor="transparent";
     roundedRect(
-      bannerX+borderWidth*1.5,
-      bannerY+borderWidth*1.5,
-      bannerWidth-borderWidth*3,
-      bannerHeight-borderWidth*3,
-      Math.max(14,bannerRadius-borderWidth*2)
+      bannerX+borderWidth*1.2,
+      bannerY+borderWidth*1.2,
+      bannerWidth-borderWidth*2.4,
+      bannerHeight-borderWidth*2.4,
+      Math.max(12,bannerRadius-borderWidth*1.6)
     );
-    ctx.lineWidth=Math.max(1,borderWidth*0.7);
-    ctx.strokeStyle="rgba(255,226,150,0.32)";
+    ctx.lineWidth=Math.max(1,borderWidth*0.55);
+    ctx.strokeStyle="rgba(255,223,149,0.18)";
     ctx.stroke();
 
     const leftPanelHeight=bannerHeight-pad*2;
     const leftPanelY=bannerY+pad;
+    const leftPanelRadius=Math.max(10,Math.round(leftPanelHeight*0.17));
     const leftPanelGradient=ctx.createLinearGradient(leftX,leftPanelY,leftX+leftSectionWidth,leftPanelY+leftPanelHeight);
-    leftPanelGradient.addColorStop(0,"rgba(12,12,11,0.98)");
-    leftPanelGradient.addColorStop(0.5,"rgba(19,18,15,0.96)");
+    leftPanelGradient.addColorStop(0,"rgba(13,13,12,0.98)");
     leftPanelGradient.addColorStop(1,"rgba(8,8,8,0.98)");
-    fillRoundedPanel(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,Math.max(12,Math.round(leftPanelHeight*0.16)),leftPanelGradient,"rgba(255,195,66,0.24)");
+    fillRoundedPanel(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,leftPanelRadius,leftPanelGradient,"rgba(255,195,66,0.22)",borderWidth*0.55);
 
     ctx.save();
-    roundedRect(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,Math.max(12,Math.round(leftPanelHeight*0.16)));
+    roundedRect(leftX,leftPanelY,leftSectionWidth,leftPanelHeight,leftPanelRadius);
     ctx.clip();
-    const stripeWidth=Math.max(12,Math.round(leftSectionWidth*0.09));
-    ctx.strokeStyle="rgba(255,194,82,0.055)";
-    ctx.lineWidth=Math.max(6,Math.round(leftPanelHeight*0.055));
+    const stripeWidth=Math.max(10,Math.round(leftSectionWidth*0.085));
+    ctx.strokeStyle="rgba(255,194,82,0.035)";
+    ctx.lineWidth=Math.max(4,Math.round(leftPanelHeight*0.045));
     for(let i=-leftPanelHeight;i<leftSectionWidth+leftPanelHeight;i+=stripeWidth){
       ctx.beginPath();
       ctx.moveTo(leftX+i,leftPanelY);
-      ctx.lineTo(leftX+i-leftPanelHeight*0.55,leftPanelY+leftPanelHeight);
+      ctx.lineTo(leftX+i-leftPanelHeight*0.50,leftPanelY+leftPanelHeight);
       ctx.stroke();
     }
     ctx.restore();
 
-    const dividerX=leftX+leftSectionWidth+Math.round(innerGap*0.5);
-    ctx.strokeStyle="rgba(255,206,92,0.62)";
-    ctx.lineWidth=Math.max(1,borderWidth*0.85);
+    const dividerX=leftX+leftSectionWidth+Math.round(innerGap*0.55);
+    ctx.strokeStyle="rgba(255,206,92,0.44)";
+    ctx.lineWidth=Math.max(1,borderWidth*0.65);
     ctx.beginPath();
-    ctx.moveTo(dividerX,bannerY+pad*1.1);
-    ctx.lineTo(dividerX,bannerY+bannerHeight-pad*1.1);
+    ctx.moveTo(dividerX,bannerY+pad*1.2);
+    ctx.lineTo(dividerX,bannerY+bannerHeight-pad*1.2);
     ctx.stroke();
 
-    const qrDividerX=qrFrameX-Math.round(innerGap*0.48);
-    ctx.strokeStyle="rgba(255,206,92,0.30)";
+    const qrDividerX=qrFrameX-Math.round(innerGap*0.45);
+    ctx.strokeStyle="rgba(255,206,92,0.22)";
     ctx.beginPath();
     ctx.moveTo(qrDividerX,bannerY+pad*1.25);
     ctx.lineTo(qrDividerX,bannerY+bannerHeight-pad*1.25);
     ctx.stroke();
 
     const logoAreaX=leftX+Math.max(10,Math.round(leftSectionWidth*0.06));
-    const logoAreaY=leftPanelY+Math.max(4,Math.round(leftPanelHeight*0.02));
-    const logoAreaW=leftSectionWidth-Math.max(20,Math.round(leftSectionWidth*0.12));
-    const taglineSize=Math.max(9,Math.min(16,Math.round(bannerHeight*0.12)));
-    const taglineReserved=Math.max(18,Math.round(taglineSize*2.2));
-    const logoAreaH=leftPanelHeight-taglineReserved-Math.max(8,Math.round(leftPanelHeight*0.06));
+    const logoAreaY=leftPanelY+Math.max(3,Math.round(leftPanelHeight*0.02));
+    const logoAreaW=leftSectionWidth-Math.max(18,Math.round(leftSectionWidth*0.11));
+    const taglineSize=Math.max(8,Math.min(13,Math.round(bannerHeight*0.105)));
+    const taglineReserved=Math.max(16,Math.round(taglineSize*2.1));
+    const logoAreaH=leftPanelHeight-taglineReserved-Math.max(6,Math.round(leftPanelHeight*0.05));
 
     if(logo){
       const sourceW=logo.naturalWidth||logo.width||1;
@@ -282,50 +282,50 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
       const drawX=logoAreaX+Math.round((logoAreaW-drawW)/2);
       const drawY=logoAreaY+Math.max(0,Math.round((logoAreaH-drawH)/2)-Math.round(leftPanelHeight*0.01));
       ctx.save();
-      ctx.shadowColor="rgba(0,0,0,0.35)";
-      ctx.shadowBlur=Math.max(8,Math.round(bannerHeight*0.07));
-      ctx.globalAlpha=0.97;
+      ctx.shadowColor="rgba(0,0,0,0.20)";
+      ctx.shadowBlur=Math.max(5,Math.round(bannerHeight*0.035));
+      ctx.globalAlpha=0.96;
       ctx.drawImage(logo,drawX,drawY,drawW,drawH);
       ctx.restore();
     }else{
-      const fallbackSize=Math.max(14,Math.round(bannerHeight*0.20));
-      ctx.fillStyle="rgba(255,242,214,0.98)";
+      const fallbackSize=Math.max(12,Math.round(bannerHeight*0.17));
+      ctx.fillStyle="rgba(255,242,214,0.96)";
       ctx.font="900 "+fallbackSize+"px Inter, Arial, sans-serif";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
       ctx.fillText("COLLECT",leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight*0.40,leftSectionWidth*0.82);
-      ctx.fillStyle="rgba(255,194,68,0.98)";
-      ctx.fillText("TCG",leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight*0.57,leftSectionWidth*0.60);
+      ctx.fillStyle="rgba(255,194,68,0.96)";
+      ctx.fillText("TCG",leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight*0.58,leftSectionWidth*0.58);
     }
 
-    ctx.fillStyle="rgba(255,200,79,0.95)";
+    ctx.fillStyle="rgba(255,202,92,0.94)";
     ctx.font="700 "+taglineSize+"px Inter, Arial, sans-serif";
     ctx.textAlign="center";
     ctx.textBaseline="alphabetic";
-    ctx.fillText(brandTagline,leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight-Math.max(8,Math.round(leftPanelHeight*0.10)),leftSectionWidth*0.90);
+    ctx.fillText(brandTagline,leftX+leftSectionWidth/2,leftPanelY+leftPanelHeight-Math.max(7,Math.round(leftPanelHeight*0.10)),leftSectionWidth*0.90);
 
-    const titleX=centerX+Math.max(2,Math.round(innerGap*0.15));
-    const titleMaxWidth=Math.max(120,contentWidth-Math.max(12,Math.round(innerGap*0.15)));
+    const titleX=centerX+Math.max(1,Math.round(innerGap*0.10));
+    const titleMaxWidth=Math.max(120,contentWidth-Math.max(8,Math.round(innerGap*0.10)));
     ctx.textAlign="left";
     ctx.textBaseline="middle";
-    const titleSize=fitFont(cta,Math.max(18,Math.min(36,Math.round(shortSide*0.034))),13,titleMaxWidth,"800");
+    const titleSize=fitFont(cta,Math.max(16,Math.min(28,Math.round(shortSide*0.027))),12,titleMaxWidth,"800");
     ctx.font="800 "+titleSize+"px Inter, Arial, sans-serif";
-    ctx.fillStyle="rgba(255,196,54,0.99)";
-    ctx.fillText(cta,titleX,bannerY+bannerHeight*0.43,titleMaxWidth);
+    ctx.fillStyle="rgba(255,198,68,0.98)";
+    ctx.fillText(cta,titleX,bannerY+bannerHeight*0.39,titleMaxWidth);
 
     const pillX=titleX;
-    const pillY=bannerY+bannerHeight*0.60;
-    const pillH=Math.max(28,Math.round(bannerHeight*0.26));
-    const arrowDiameter=Math.max(22,Math.round(pillH*0.82));
-    const pillPadX=Math.max(14,Math.round(pillH*0.45));
-    const pillWidth=Math.min(titleMaxWidth,Math.max(160,Math.round(contentWidth*0.98)));
+    const pillY=bannerY+bannerHeight*0.57;
+    const pillH=Math.max(24,Math.round(bannerHeight*0.24));
+    const arrowDiameter=Math.max(18,Math.round(pillH*0.78));
+    const pillPadX=Math.max(11,Math.round(pillH*0.42));
+    const pillWidth=Math.min(titleMaxWidth,Math.max(150,Math.round(contentWidth*0.985)));
     const pillGradient=ctx.createLinearGradient(pillX,pillY,pillX,pillY+pillH);
-    pillGradient.addColorStop(0,"rgba(18,18,18,0.96)");
-    pillGradient.addColorStop(1,"rgba(9,9,9,0.98)");
-    fillRoundedPanel(pillX,pillY,pillWidth,pillH,Math.round(pillH/2),pillGradient,"rgba(255,196,54,0.74)");
+    pillGradient.addColorStop(0,"rgba(19,19,19,0.96)");
+    pillGradient.addColorStop(1,"rgba(11,11,11,0.98)");
+    fillRoundedPanel(pillX,pillY,pillWidth,pillH,Math.round(pillH/2),pillGradient,"rgba(255,196,54,0.60)",borderWidth*0.55);
 
-    const urlMaxWidth=pillWidth-pillPadX*2-arrowDiameter-Math.max(16,Math.round(pillH*0.75));
-    const urlSize=fitFont(displayUrl,Math.max(12,Math.min(23,Math.round(titleSize*0.72))),10,urlMaxWidth,"700");
+    const urlMaxWidth=pillWidth-pillPadX*2-arrowDiameter-Math.max(12,Math.round(pillH*0.55));
+    const urlSize=fitFont(displayUrl,Math.max(11,Math.min(18,Math.round(titleSize*0.68))),9,urlMaxWidth,"700");
     ctx.font="700 "+urlSize+"px Inter, Arial, sans-serif";
     ctx.fillStyle="rgba(255,255,255,0.97)";
     ctx.textAlign="left";
@@ -334,52 +334,43 @@ function drawWebsiteWatermark(ctx, canvas, options = {}){
     const arrowX=pillX+pillWidth-pillPadX-arrowDiameter;
     const arrowY=pillY+(pillH-arrowDiameter)/2;
     const arrowGradient=ctx.createLinearGradient(arrowX,arrowY,arrowX,arrowY+arrowDiameter);
-    arrowGradient.addColorStop(0,"rgba(255,211,91,1)");
-    arrowGradient.addColorStop(1,"rgba(255,170,20,1)");
+    arrowGradient.addColorStop(0,"rgba(255,208,86,1)");
+    arrowGradient.addColorStop(1,"rgba(245,167,28,1)");
     fillRoundedPanel(arrowX,arrowY,arrowDiameter,arrowDiameter,Math.round(arrowDiameter/2),arrowGradient,null);
-    ctx.strokeStyle="rgba(18,18,18,0.78)";
+    ctx.strokeStyle="rgba(18,18,18,0.82)";
     ctx.lineWidth=Math.max(2,Math.round(arrowDiameter*0.08));
     ctx.beginPath();
-    ctx.moveTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.30);
+    ctx.moveTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.31);
     ctx.lineTo(arrowX+arrowDiameter*0.62,arrowY+arrowDiameter*0.50);
-    ctx.lineTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.70);
+    ctx.lineTo(arrowX+arrowDiameter*0.38,arrowY+arrowDiameter*0.69);
     ctx.stroke();
 
-    const qrPanelRadius=Math.max(10,Math.round(qrOuter*0.14));
-    fillRoundedPanel(qrX,qrY,qrOuter,qrOuter,qrPanelRadius,"#ffffff","rgba(255,205,73,0.98)");
+    const qrPanelRadius=Math.max(9,Math.round(qrOuter*0.12));
+    fillRoundedPanel(qrX,qrY,qrOuter,qrOuter,qrPanelRadius,"#ffffff","rgba(255,205,73,0.86)",borderWidth*0.65);
     const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,320);
     if(qrCanvas){
-      const quiet=Math.max(6,Math.round(qrOuter*0.075));
+      const quiet=Math.max(5,Math.round(qrOuter*0.072));
       ctx.drawImage(qrCanvas,qrX+quiet,qrY+quiet,qrOuter-quiet*2,qrOuter-quiet*2);
     }else{
       ctx.textAlign="center";
       ctx.textBaseline="middle";
       ctx.fillStyle="#111111";
-      ctx.font="800 "+Math.max(11,Math.round(qrOuter*0.13))+"px Inter, Arial, sans-serif";
+      ctx.font="800 "+Math.max(10,Math.round(qrOuter*0.13))+"px Inter, Arial, sans-serif";
       ctx.fillText("SCAN",qrX+qrOuter/2,qrY+qrOuter/2,qrOuter*0.72);
     }
 
-    const accentX=qrX+qrOuter+Math.max(6,Math.round(pad*0.35));
-    const accentWidth=Math.max(5,Math.round(borderWidth*1.6));
-    const accentGap=Math.max(6,Math.round(qrOuter*0.075));
-    const accentTop=qrY+qrOuter*0.18;
-    const accentBottom=qrY+qrOuter*0.82;
-    ctx.strokeStyle="rgba(255,190,40,0.95)";
+    const accentX=qrX+qrOuter+Math.max(5,Math.round(pad*0.28));
+    const accentWidth=Math.max(3,Math.round(borderWidth*1.05));
+    const accentGap=Math.max(4,Math.round(qrOuter*0.055));
+    const accentTop=qrY+qrOuter*0.20;
+    const accentBottom=qrY+qrOuter*0.80;
+    ctx.strokeStyle="rgba(255,190,40,0.82)";
     ctx.lineWidth=accentWidth;
     for(const offset of [0,accentGap,accentGap*2]){
       ctx.beginPath();
-      ctx.moveTo(accentX+offset,accentTop+offset*0.15);
-      ctx.lineTo(accentX+offset,accentBottom-offset*0.15);
+      ctx.moveTo(accentX+offset,accentTop+offset*0.12);
+      ctx.lineTo(accentX+offset,accentBottom-offset*0.12);
       ctx.stroke();
-    }
-
-    for(const flareX of [bannerX+bannerWidth*0.08,bannerX+bannerWidth*0.77,bannerX+bannerWidth*0.93]){
-      const flareY=bannerY+bannerHeight-Math.max(3,borderWidth*0.5);
-      const flareR=Math.max(2,Math.round(borderWidth*1.25));
-      ctx.fillStyle="rgba(255,212,94,0.94)";
-      ctx.beginPath();
-      ctx.arc(flareX,flareY,flareR,0,Math.PI*2);
-      ctx.fill();
     }
 
     ctx.restore();

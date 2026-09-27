@@ -9026,41 +9026,41 @@
   }
 
   .image-preview-watermark-actions{
-    position:absolute;
-    left:5px;
-    right:5px;
-    bottom:5px;
+    position:static;
     z-index:6;
     display:flex;
     flex-wrap:wrap;
     align-items:center;
     gap:4px;
-    padding:5px;
-    border-radius:8px;
-    background:rgba(10,11,14,.86);
-    backdrop-filter:blur(7px);
-    -webkit-backdrop-filter:blur(7px);
+    width:100%;
+    margin-top:auto;
+    padding:6px;
+    box-sizing:border-box;
+    border-top:1px solid rgba(255,196,54,.18);
+    background:linear-gradient(180deg,rgba(12,13,16,.94),rgba(10,10,12,.98));
   }
   .image-watermark-state{
     flex:1 1 100%;
     color:var(--text-muted);
-    font-size:6.5px;
+    font-size:6.2px;
     font-weight:800;
     text-transform:uppercase;
-    letter-spacing:.35px;
+    letter-spacing:.32px;
+    text-align:center;
   }
   .image-watermark-state.with-mark{color:var(--accent-gold);}
   .image-watermark-state.without-mark{color:var(--accent-teal);}
   .image-preview-watermark-btn{
-    flex:1 1 auto;
-    min-height:25px;
-    padding:4px 5px;
+    flex:1 1 calc(33.333% - 4px);
+    min-height:24px;
+    padding:4px;
     border:1px solid rgba(255,255,255,.14);
     border-radius:6px;
-    background:rgba(18,20,25,.9);
+    background:rgba(18,20,25,.92);
     color:#f1f2f4;
-    font-size:6.5px;
+    font-size:6.2px;
     font-weight:700;
+    line-height:1.15;
     cursor:pointer;
   }
   .image-preview-watermark-btn:disabled{
@@ -9082,9 +9082,8 @@
       font-size:8.5px;
     }
     .image-preview-watermark-actions{
-      position:static;
-      margin:5px;
-      background:var(--surface-2);
+      margin-top:auto;
+      background:linear-gradient(180deg,rgba(12,13,16,.94),rgba(10,10,12,.98));
     }
   }
 
@@ -9432,14 +9431,20 @@
   }
 
   .image-preview-box{
-    min-height:240px !important;
-    aspect-ratio:3 / 4 !important;
+    min-height:280px !important;
+    aspect-ratio:auto !important;
     border-radius:12px !important;
+    display:grid !important;
+    grid-template-rows:minmax(0,1fr) auto;
+    align-items:stretch !important;
+    justify-items:stretch !important;
   }
 
   .image-preview-box img{
+    grid-row:1;
     width:100% !important;
     height:100% !important;
+    min-height:210px;
     object-fit:contain !important;
     object-position:center !important;
     background:var(--bg);
@@ -9473,7 +9478,7 @@
     }
 
     .image-preview-box{
-      min-height:230px !important;
+      min-height:260px !important;
     }
   }
 
@@ -9483,8 +9488,8 @@
     }
 
     .image-preview-box{
-      min-height:390px !important;
-      max-height:520px;
+      min-height:340px !important;
+      max-height:none;
     }
   }
 
@@ -12669,25 +12674,19 @@ body.light-mode .sticky-mobile-results-action small{
 /* =========================================================
    ADD / EDIT LISTING — IMAGE ROTATION CONTROLS
    ========================================================= */
-.image-preview-action-divider{
-  width:1px;
-  height:22px;
-  flex:0 0 1px;
-  background:var(--border);
-  margin:0 2px;
-}
+.image-preview-action-divider{display:none}
 .image-preview-rotate-btn{
-  min-width:32px;
-  height:30px;
-  padding:0 9px;
+  min-width:30px;
+  height:24px;
+  padding:0 7px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  border:1px solid var(--border);
+  border:1px solid rgba(255,255,255,.14);
   border-radius:7px;
-  background:var(--surface-2);
-  color:var(--text);
-  font-size:18px;
+  background:rgba(18,20,25,.92);
+  color:#f1f2f4;
+  font-size:15px;
   font-weight:800;
   line-height:1;
   cursor:pointer;
@@ -12705,8 +12704,8 @@ body.light-mode .sticky-mobile-results-action small{
     flex-wrap:wrap;
   }
   .image-preview-rotate-btn{
-    min-width:36px;
-    min-height:36px;
+    min-width:34px;
+    min-height:28px;
   }
 }
 
@@ -17255,13 +17254,16 @@ body.showcase-dragging-body{
   line-height:1.35;
 }
 .image-preview-privacy-btn{
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(0,0,0,.66);
+  flex:1 1 calc(50% - 4px);
+  min-height:24px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.58);
   color:#fff;
   border-radius:7px;
-  padding:4px 6px;
-  font-size:7px;
+  padding:4px 5px;
+  font-size:6.2px;
   font-weight:800;
+  line-height:1.15;
   cursor:pointer;
 }
 .image-preview-privacy-btn:hover:not(:disabled){

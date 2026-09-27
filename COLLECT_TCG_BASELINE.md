@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v11`
+Latest Development: `2026-09-27-v12`
 
-Previous Development: `2026-09-27-v10`
+Previous Development: `2026-09-27-v11`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,25 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-27-v12`
+
+Previous Development: `2026-09-27-v11`
+
+Purpose: refine the QR inventory watermark to match the approved compact premium mockup more closely, and stop per-photo Owner watermark controls from covering the image preview.
+
+Changes:
+- Tightened the CTA + QR watermark into a slimmer, more compact bottom banner.
+- Reduced the glow/shiny treatment while retaining the logo, CTA, URL pill, arrow and QR readability.
+- Moved per-photo watermark/privacy/rotation controls into a footer area below the photo instead of overlaying the image.
+- Increased preview-card height and tuned Owner control sizing so the photo remains visible while editing.
+- No Supabase/RLS, buyer navigation, Inventory filtering/order, Contact to Buy, giveaways, analytics, or SEO behavior is intentionally changed.
+
+Validation: in progress through the Development workflow.
+
+Expected packages:
+- `Collect-TCG-Dev-2026-09-27-v12-full.zip`
+- `Collect-TCG-Dev-2026-09-27-v11-to-2026-09-27-v12-patch.zip`
 
 ### Development `2026-09-27-v11`
 
