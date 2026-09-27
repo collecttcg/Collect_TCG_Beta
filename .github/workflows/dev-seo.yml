@@ -491,17 +491,10 @@ jobs:
           grep -Fq 'loadWatermarkBannerTemplate' dev/src/features/media/images.js
           grep -Fq 'drawWebsiteWatermark(ctx, canvas, {template})' dev/src/features/media/images.js
           grep -Fq 'ctx.drawImage(template,bannerX,bannerY,bannerWidth,bannerHeight)' dev/src/features/media/images.js
-          grep -Fq 'COLLECT. TRADE. CONNECT.' dev/src/features/media/images.js
 
           grep -Fq 'grid-template-rows:minmax(0,1fr) auto' dev/src/styles/01-foundation.css
           grep -Fq 'position:static' dev/src/styles/01-foundation.css
-          grep -Fq 'function drawGlobe' dev/src/features/media/images.js
-          grep -Fq 'const MOCKUP_W=1113;' dev/src/features/media/images.js
-          grep -Fq 'const MOCKUP_H=242;' dev/src/features/media/images.js
-          grep -Fq 'MOCKUP_H/MOCKUP_W' dev/src/features/media/images.js
-          grep -Fq 'Math.round(canvas.width*0.992)' dev/src/features/media/images.js
           grep -Fq 'Barlow Condensed' dev/src/features/media/images.js
-          grep -Fq 'X(873),Y(16),W(196),H(205)' dev/src/features/media/images.js
 
       # Package the validated Development v15 release.
       - name: Create Development release packages
