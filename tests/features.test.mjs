@@ -753,8 +753,8 @@ test('public catalogue hydrates Sold rank through the privacy-safe RPC',async()=
 
 
 test('Development v05 exposes Newly Added beside Trending using the existing seven-day new filter',()=>{
-  const page=source('../dev/src/features/inventory/page.js');
-  const filtering=source('../dev/src/features/inventory/filtering.js');
+  const page=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
+  const filtering=fs.readFileSync(new URL('../dev/src/features/inventory/filtering.js',import.meta.url),'utf8');
   assert.match(page,/\["trending","🔥 Trending","Trending"\],\s*\["new","Newly Added","Newly Added"\]/);
   assert.match(page,/new:"Newly Added"/);
   assert.match(page,/\["all","new","graded","raw","sealed","championship","vintage","trending"\]\.includes\(requestedQuick\)/);
