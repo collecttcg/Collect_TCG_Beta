@@ -1,6 +1,6 @@
 # Collect TCG Current Baseline
 
-Last reconciled against GitHub: 2026-09-27
+Last reconciled against GitHub: 2026-09-28
 
 ## Repositories
 
@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-27-v28`
+Latest Development: `2026-09-28-v01`
 
-Previous Development: `2026-09-27-v27`
+Previous Development: `2026-09-27-v28`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-27-v09`
+Latest Production: `2026-09-28-v01`
 
-Previous Production: `2026-09-27-v08`
+Previous Production: `2026-09-27-v09`
 
-Production functional baseline last promoted from Development: `2026-09-27-v27`
+Production functional baseline last promoted from Development: `2026-09-27-v28`
 
-Production package-validation HEAD: `840ba48e1f39481229790da0871cccd396b2ac46`
+Production package-validation HEAD: `debec515c5d01bda15d4987f5c8e2a9ef331bfca`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `0128dac9cd0de2d729b43fe38f88ad755b48ae7b`.
+- Current validated/deployed Production last-known-good commit: `debec515c5d01bda15d4987f5c8e2a9ef331bfca`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v01`
+
+Previous Development: `2026-09-27-v28`
+
+Purpose: restore the Owner Mode `...` quick-action menu to the expected top-right corner on desktop Sold/Reserved card previews.
+
+Changes:
+- Desktop Owner Mode Sold/Reserved cards keep the shared quick-action menu at the standard top-right position.
+- The grade/condition overlay moves below the owner menu only for authenticated desktop Owner Mode, preventing overlap.
+- Public Sold/Reserved card presentation remains unchanged.
+- Mobile Owner Mode remains disabled by the existing security guard.
+- No card data, Supabase schema, analytics, Contact to Buy, generators or giveaway behavior changes.
+
+SQL required: No.
+
+Validation status: in progress.
 
 ### Development `2026-09-27-v28`
 
