@@ -45,13 +45,13 @@ Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-28-v03`
+Latest Production: `2026-09-28-v04`
 
-Previous Production: `2026-09-28-v02`
+Previous Production: `2026-09-28-v03`
 
-Production functional baseline last promoted from Development: `2026-09-28-v03`
+Production functional baseline last promoted from Development: `2026-09-28-v04`
 
-Production package-validation HEAD: `56a4ee2fcae7e72a73f16a36994ac005f719bd97`
+Production package-validation HEAD: `c4c3b1373d4643a961e5b7d1cd7116a36eba28dc`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `56a4ee2fcae7e72a73f16a36994ac005f719bd97`.
+- Current validated/deployed Production last-known-good commit: `c4c3b1373d4643a961e5b7d1cd7116a36eba28dc`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -90,7 +90,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; Development validation/package workflow pending.
+Validation status: completed successfully. Feature regression tests passed 48/48; changed JavaScript syntax, repository references, imports/assets, inventory/filter behavior, retained Hidden/private-route SEO protections, dedicated Newly Added pill/order/URL behavior, release package integrity and Development GitHub Pages deployment all passed.
+
+Release records:
+- Source/generated commit: `c8ea81cb27c16c314818233f8f8755b4aafc2c8c`
+- Package-validation commit: `18dfcb9d7e0d9b390a85a16e06e79cf9bbcf48fa`
+- Workflow run: `36393985396`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v05-full.zip`
+  - SHA-256: `10078da62e2d576718a89b25c0144e24deb7626d52cf12eb328a063482d99951`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v04-to-2026-09-28-v05-patch.zip`
+  - SHA-256: `a4b09a8963d4088e20c965caba4bc560ae3188e89cbfdec7e6cd719138217992`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed.
 
 ### Development `2026-09-28-v04`
 
