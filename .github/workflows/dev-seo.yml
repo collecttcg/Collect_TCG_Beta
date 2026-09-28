@@ -135,7 +135,7 @@ jobs:
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
           test "$(grep -o 'appContext.isLiveLifecycle(card)' dev/src/features/social/posts.js | wc -l | tr -d ' ')" -ge "2"
           grep -Fq 'appContext.isLiveLifecycle(card) && appContext.cardMatchesListingScope' dev/src/features/media/collage.js
-          grep -q '01-foundation.css?v=2026-09-27-v25' dev/index.html
+          grep -q '01-foundation.css?v=2026-09-28-v01' dev/index.html
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/initialize.js
           grep -q 'event.stopPropagation()' dev/src/features/content/home.js
           grep -q 'appContext.openDetailsModal(card)' dev/src/app/routing.js
@@ -444,7 +444,7 @@ jobs:
           grep -Fq 'isGiveaway ? "" : `<small class="fb-post-card-price">Price · ' dev/src/features/social/posts.js
           grep -Fq '.fb-post-card-copy .fb-post-card-price' dev/src/styles/01-foundation.css
           grep -q 'posts.js?v=2026-09-26-v15' dev/src/app/register-features.js
-          grep -q '01-foundation.css?v=2026-09-27-v25' dev/index.html
+          grep -q '01-foundation.css?v=2026-09-28-v01' dev/index.html
           grep -q 'register-features.js?v=2026-09-27-v28' dev/src/main.js
           grep -q 'src/main.js?v=2026-09-27-v28' dev/index.html
 
