@@ -91,7 +91,17 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress.
+Validation status: completed successfully after aligning two stale stylesheet-cache assertions in the workflow. Feature regression tests passed 43/43, JavaScript/repository/import checks passed, the Sold/Reserved Owner Mode menu placement guard passed, retained v27/v28 behavior passed, SEO generation passed, release ZIP integrity passed, and Development GitHub Pages deployment succeeded.
+
+Release records:
+- Source commit: `dc9b16f6ad199bdc3aaa90795bafcf87dfec0061`
+- Package-validation commit: `7917d3ebb8ea299cc9841b24904758eafb9f340f`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v01-full.zip`
+  - SHA-256: `b5c58ee131468d05f52d62152d95ebab2ec99647c6bc3dbaa36c8dd0eeafe990`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-27-v28-to-2026-09-28-v01-patch.zip`
+  - SHA-256: `0887e2c98a176d41ecd76eb875dea2caa9447595117fa32647680461a7da32ea`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not available; the visual placement was statically verified and deployed to Development but not manually exercised in a browser.
 
 ### Development `2026-09-27-v28`
 
