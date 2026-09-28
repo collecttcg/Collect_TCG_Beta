@@ -576,7 +576,8 @@ test('Beta cleanup keeps migrations centralized and retained owner tools wired',
   '../migrations/2026/2026-09-24-v01-SEO-PUBLIC-CATALOG.sql',
   '../migrations/2026/2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql',
   '../migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql',
-  '../migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql'
+  '../migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql',
+  '../migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql'
  ]) assert.equal(exists(path),true,path);
 
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
@@ -632,4 +633,62 @@ test('Development ChatGPT/GitHub test URLs are excluded from buyer analytics wit
   assert.match(analytics,/isDevelopmentAnalyticsTestSession\(\)/);
   assert.match(analytics,/new Set\(\["chatgpt","github","openai","automation"\]\)/);
   assert.match(startup,/!appContext\.isDevelopmentAnalyticsTestSession\(\)/);
+});
+
+
+test('Sold ordering is identical for public rank data and Owner sold_at data',()=>{
+  const controls=()=>Object.fromEntries([
+    'search','filterGame','filterGrade','filterLanguage','filterEra','filterAvailability',
+    'filterSeries','filterPriceMin','filterPriceMax'
+  ].map(id=>[id,{value:''}]).concat([['sortBy',{value:'recent-sold'}]]));
+
+  const publicApp=app();
+  Object.assign(publicApp,{
+    controls:controls(),
+    listingAvailabilityScope:'sold',
+    currency:'USD',
+    activeQuickFilter:'all',
+    owner:false,
+    cards:[
+      {id:'older',name:'OLDER SALE',availability:'Sold',lifecycle_status:'live',sold_order:2,updated_at:'2026-09-28T12:00:00Z',created_at:'2026-09-28T12:00:00Z',grading:[]},
+      {id:'newer',name:'NEWER SALE',availability:'Sold',lifecycle_status:'live',sold_order:1,updated_at:'2026-09-01T12:00:00Z',created_at:'2026-09-01T12:00:00Z',grading:[]}
+    ]
+  });
+  assert.deepEqual(publicApp.getFiltered().map(card=>card.id),['newer','older']);
+
+  const ownerApp=app();
+  Object.assign(ownerApp,{
+    controls:controls(),
+    listingAvailabilityScope:'sold',
+    currency:'USD',
+    activeQuickFilter:'all',
+    owner:true,
+    cards:[
+      {id:'older',name:'OLDER SALE',availability:'Sold',lifecycle_status:'live',sold_at:'2026-09-01T12:00:00Z',grading:[]},
+      {id:'newer',name:'NEWER SALE',availability:'Sold',lifecycle_status:'live',sold_at:'2026-09-28T12:00:00Z',grading:[]}
+    ]
+  });
+  assert.deepEqual(ownerApp.getFiltered().map(card=>card.id),['newer','older']);
+});
+
+test('public catalogue hydrates Sold rank through the privacy-safe RPC',async()=>{
+  const a=app();
+  a.publicSoldOrderSupported=null;
+  a.supabaseClient={
+    rpc:async name=>{
+      assert.equal(name,'get_public_sold_order');
+      return {data:[{id:'newer',sold_order:1},{id:'older',sold_order:2}],error:null};
+    }
+  };
+  const order=await a.fetchPublicSoldOrder();
+  assert.equal(a.publicSoldOrderSupported,true);
+  assert.equal(order.get('newer'),1);
+  assert.equal(order.get('older'),2);
+
+  const sql=fs.readFileSync(new URL('../migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql',import.meta.url),'utf8');
+  assert.match(sql,/security definer/i);
+  assert.match(sql,/lifecycle_status::text,'live'/);
+  assert.match(sql,/availability::text,''\)\) = 'sold'/);
+  assert.match(sql,/grant execute on function public\.get_public_sold_order\(\) to anon/);
+  assert.doesNotMatch(sql,/returns table\s*\([^)]*sold_at/is);
 });
