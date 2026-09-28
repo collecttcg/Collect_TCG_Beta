@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v03`
+Latest Development: `2026-09-28-v04`
 
-Previous Development: `2026-09-28-v02`
+Previous Development: `2026-09-28-v03`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-28-v02`
+Latest Production: `2026-09-28-v03`
 
-Previous Production: `2026-09-28-v01`
+Previous Production: `2026-09-28-v02`
 
-Production functional baseline last promoted from Development: `2026-09-28-v02`
+Production functional baseline last promoted from Development: `2026-09-28-v03`
 
-Production package-validation HEAD: `782edb135e31d867fe0abe73bbe4a7a3a582089b`
+Production package-validation HEAD: `56a4ee2fcae7e72a73f16a36994ac005f719bd97`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `782edb135e31d867fe0abe73bbe4a7a3a582089b`.
+- Current validated/deployed Production last-known-good commit: `56a4ee2fcae7e72a73f16a36994ac005f719bd97`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,26 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v04`
+
+Previous Development: `2026-09-28-v03`
+
+Purpose: generate clean name-based card routes for owner-only Hidden/Draft and Archived listings without turning those listings into public SEO content.
+
+Changes:
+- Public/live listings keep the existing full SEO page generation, public `seo-slugs.json` map and sitemap behavior.
+- Added a minimal `get_private_card_routes()` Supabase RPC that returns only card ID + clean route slug for Draft/Archived or legacy Hidden/Archived listings. It does not return card details, prices, images, notes or grading JSON.
+- The generator creates a generic static route shell for each private listing so an authenticated owner can refresh/open its clean `/cards/<slug>/` URL.
+- Private route shells contain only the card ID needed for Owner Mode routing, use `noindex,nofollow,noarchive`, contain no card metadata/JSON-LD/Open Graph card data, and are excluded from the sitemap.
+- Private slugs are stored separately in `owner-card-routes.json`; normal visitors continue loading only the public SEO slug map.
+- Owner Mode lazily loads the private route map when opening a non-live card. Buyer Preview/public users do not gain Hidden/Archived card access; existing RLS and router guards remain authoritative.
+
+SQL required: Yes — `migrations/2026/2026-09-28-v04-PRIVATE-CARD-ROUTES.sql`. Rerunnable. Not yet confirmed applied.
+
+Validation status: implementation complete; validation pending SQL application because the Development SEO generator intentionally fails closed until `get_private_card_routes()` is available.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-28-v03`
 
