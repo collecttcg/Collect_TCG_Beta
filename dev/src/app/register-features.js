@@ -16,7 +16,7 @@ import { register as register13 } from '../features/owner/psa.js';
 import { register as register14 } from '../app/routing.js?v=2026-09-27-v19';
 import { register as register15 } from '../features/media/images.js?v=2026-09-27-v20';
 import { register as register16 } from '../features/cards/presentation.js';
-import { register as register17 } from '../features/owner/forms.js?v=2026-09-27-v25';
+import { register as register17 } from '../features/owner/forms.js?v=2026-09-28-v03';
 import { register as register18 } from '../features/content/home.js?v=2026-09-26-v07';
 import { register as register19 } from '../features/inventory/filtering.js?v=2026-09-28-v02';
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
