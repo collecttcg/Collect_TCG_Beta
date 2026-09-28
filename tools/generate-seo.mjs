@@ -190,6 +190,30 @@ function renderCardPage(indexHtml,card,slug){
   return {html,url};
 }
 
+function privateRouteMetadataBlock(cardId){
+  const title='Private Card | Collect TCG MY & SG';
+  const tags=[
+    SEO_START,
+    `<meta name="collect-tcg-site-base" content="${escapeHtml(config.publicBase)}">`,
+    `<meta name="collect-tcg-card-id" content="${escapeHtml(cardId)}">`,
+    '<meta name="robots" content="noindex,nofollow,noarchive">',
+    '<meta name="description" content="This Collect TCG listing is not publicly available.">',
+    SEO_END
+  ];
+  return {title,html:tags.join('\n')};
+}
+
+function renderPrivateCardRoutePage(indexHtml,cardId,slug){
+  const url=new URL(`cards/${slug}/`,config.publicBase).toString();
+  const meta=privateRouteMetadataBlock(cardId);
+  let html=replaceSeoMeta(indexHtml,meta.html,meta.title);
+  html=html.replace(
+    /<body([^>]*)>/i,
+    match=>`${match}\n<noscript><main><p>This listing is not publicly available.</p></main></noscript>`
+  );
+  return {html,url};
+}
+
 function xmlEscape(value){
   return String(value??'')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
@@ -272,6 +296,34 @@ async function fetchCards(){
   return data;
 }
 
+async function fetchPrivateCardRoutes(){
+  const runtime=await runtimeConfig();
+  const endpoint=new URL('/rest/v1/rpc/get_private_card_routes',runtime.url);
+  const response=await fetch(endpoint,{
+    method:'POST',
+    headers:{
+      apikey:runtime.key,
+      Authorization:`Bearer ${runtime.key}`,
+      'Content-Type':'application/json'
+    },
+    body:'{}'
+  });
+  if(!response.ok){
+    const body=await response.text();
+    throw new Error(
+      `Private card route RPC unavailable (${response.status}). Run 2026-09-28-v04-PRIVATE-CARD-ROUTES.sql in Supabase before generating clean Hidden/Archived routes. ${body.slice(0,350)}`
+    );
+  }
+  const data=await response.json();
+  if(!Array.isArray(data)) throw new Error('Private card route RPC response was not an array');
+  return data
+    .map(row=>({
+      id:String(row?.id||'').trim(),
+      route_slug:slugPart(row?.route_slug||'')
+    }))
+    .filter(row=>row.id && row.route_slug);
+}
+
 async function readSlugState(){
   const file=path.join(config.outputDir,'seo-slugs.json');
   try{
@@ -285,9 +337,10 @@ async function readSlugState(){
 }
 
 async function generate(){
-  const [indexHtml,cards,state]=await Promise.all([
+  const [indexHtml,cards,privateRoutes,state]=await Promise.all([
     fs.readFile(config.sourceIndex,'utf8'),
     fetchCards(),
+    fetchPrivateCardRoutes(),
     readSlugState()
   ]);
 
@@ -331,11 +384,24 @@ async function generate(){
     urls.push(rendered.url);
   }
 
+  const ownerRoutes={version:1,cards:{}};
+  for(const route of privateRoutes){
+    if(nextState.cards[route.id]) continue;
+    const previous=state.cards?.[route.id]?.slug;
+    const slug=allocateSlug(previous||route.route_slug);
+    ownerRoutes.cards[route.id]={slug};
+    const rendered=renderPrivateCardRoutePage(indexHtml,route.id,slug);
+    const dir=path.join(cardsDir,slug);
+    await fs.mkdir(dir,{recursive:true});
+    await fs.writeFile(path.join(dir,'index.html'),rendered.html,'utf8');
+  }
+
   await fs.writeFile(path.join(config.outputDir,'seo-slugs.json'),JSON.stringify(nextState,null,2)+'\n','utf8');
+  await fs.writeFile(path.join(config.outputDir,'owner-card-routes.json'),JSON.stringify(ownerRoutes,null,2)+'\n','utf8');
   await fs.writeFile(path.join(config.outputDir,'sitemap.xml'),sitemapXml(urls),'utf8');
   await fs.writeFile(path.join(config.outputDir,'robots.txt'),config.robotsTxt,'utf8');
 
-  process.stdout.write(`Generated ${liveCards.length} SEO card pages for ${mode}.\n`);
+  process.stdout.write(`Generated ${liveCards.length} public SEO card pages and ${privateRoutes.length} owner-only clean routes for ${mode}.\n`);
 }
 
 function runSelfTest(){
@@ -355,6 +421,16 @@ function runSelfTest(){
     if(!rendered.html.includes(needle)) throw new Error(`Render self-test missing ${needle}`);
   }
   if(rendered.url.includes(card.id)||!rendered.url.endsWith(`/${slug}/`)) throw new Error('SEO URL self-test failed');
+
+  const privateRendered=renderPrivateCardRoutePage(
+    '<!doctype html><html><head><title>X</title></head><body><div id="app"></div></body></html>',
+    card.id,slug
+  );
+  for(const forbidden of ['application/ld+json','og:image',card.name,card.card_code]){
+    if(privateRendered.html.includes(forbidden)) throw new Error(`Private route leaked card metadata: ${forbidden}`);
+  }
+  if(!privateRendered.html.includes('noindex,nofollow,noarchive')) throw new Error('Private route noindex guard missing');
+  if(!privateRendered.html.includes(`content="${card.id}"`)) throw new Error('Private route card ID missing');
   process.stdout.write('SEO generator self-test passed.\n');
 }
 
