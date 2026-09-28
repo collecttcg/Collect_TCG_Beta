@@ -1314,8 +1314,11 @@ function wireAutoCurrencyConversion(p){
 
     let currentRates=null;
     let myrTouched=false;
-    let manualUsd=false;
-    let manualSgd=false;
+    // Existing saved USD/SGD values are deliberate listing prices. Treat
+    // them as manual on open so loading today's FX rate cannot overwrite
+    // them before the owner changes MYR or explicitly refreshes the rate.
+    let manualUsd=usd.value.trim()!=="";
+    let manualSgd=sgd.value.trim()!=="";
 
     const applyCurrentRates=()=>{
       if(!currentRates || myr.value.trim()==="") return false;
