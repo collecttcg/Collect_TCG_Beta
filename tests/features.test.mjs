@@ -794,3 +794,17 @@ test('Development v07 eBay descriptions include buyer-friendly condition disclos
   assert.doesNotMatch(sealed,/Raw card condition is a subjective assessment/);
   assert.doesNotMatch(sealed,/holder\/slab/i);
 });
+
+
+test('Development 2026-09-29-v01 card quick menu opens FB, Carousell and eBay generators for the selected card',()=>{
+  const tiles=fs.readFileSync(new URL('../dev/src/features/cards/tiles.js',import.meta.url),'utf8');
+  const posts=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
+  assert.match(tiles,/data-action="fb-post"[^>]*>Generate FB Post<\/button>/);
+  assert.match(tiles,/data-action="carousell-post"[^>]*>Generate Carousell Post<\/button>/);
+  assert.match(tiles,/data-action="ebay-post"[^>]*>Generate eBay Post<\/button>/);
+  assert.match(tiles,/#\/fb-tools\?mode=single&card=\$\{encodeURIComponent\(card\.id\)\}/);
+  assert.match(tiles,/#\/fb-tools\?mode=carousell&card=\$\{encodeURIComponent\(card\.id\)\}/);
+  assert.match(tiles,/#\/fb-tools\?mode=ebay&card=\$\{encodeURIComponent\(card\.id\)\}/);
+  assert.match(posts,/function renderEbayListingGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?select\.value=requestedCardId/);
+  assert.match(posts,/function renderCarousellPostGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?setSelection\(requestedValue\)/);
+});

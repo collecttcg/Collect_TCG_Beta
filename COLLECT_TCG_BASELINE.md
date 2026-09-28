@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v07`
+Latest Development: `2026-09-29-v01`
 
-Previous Development: `2026-09-28-v06`
+Previous Development: `2026-09-28-v07`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-28-v05`
+Latest Production: `2026-09-29-v01`
 
-Previous Production: `2026-09-28-v04`
+Previous Production: `2026-09-28-v05`
 
-Production functional baseline last promoted from Development: `2026-09-28-v05`
+Production functional baseline last promoted from Development: `2026-09-28-v07`
 
-Production package-validation HEAD: `bb1929c9db47f1b687131607edb7ce5e76e0cb62`
+Production package-validation HEAD: `e77adad3e4ca43e3a2af4b543c996f056e45a855`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `bb1929c9db47f1b687131607edb7ce5e76e0cb62`.
+- Current validated/deployed Production last-known-good commit: `e77adad3e4ca43e3a2af4b543c996f056e45a855`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v01`
+
+Previous Development: `2026-09-28-v07`
+
+Purpose: add direct Carousell and eBay generator shortcuts beside the existing Facebook shortcut in each owner card quick-action menu.
+
+Changes:
+- Adds `Generate Carousell Post` and `Generate eBay Post` to the card-preview owner `⋯` menu beside `Generate FB Post`.
+- Each shortcut carries the selected card ID into the existing Post Generator Tools route.
+- Carousell and eBay generators now preselect the requested card when that card is valid for the generator's existing listing scope.
+- Existing generator eligibility is preserved: Carousell continues excluding archived cards and eBay continues using live listings only.
+- Browser Back retains the existing listing return/scroll behavior.
+- Public users gain no generator or owner-menu access.
+
+SQL required: No.
+
+Validation status: implementation candidate committed; validation and packaging pending.
 
 ### Development `2026-09-28-v07`
 

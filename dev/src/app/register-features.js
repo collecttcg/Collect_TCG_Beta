@@ -21,7 +21,7 @@ import { register as register18 } from '../features/content/home.js?v=2026-09-26
 import { register as register19 } from '../features/inventory/filtering.js?v=2026-09-28-v02';
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
 import { register as register21 } from '../features/cards/compare.js?v=2026-09-26-v07';
-import { register as register22 } from '../features/cards/tiles.js?v=2026-09-26-v02';
+import { register as register22 } from '../features/cards/tiles.js?v=2026-09-29-v01';
 import { register as register23 } from '../features/inventory/page.js?v=2026-09-28-v05';
 import { register as register24 } from '../features/content/giveaways.js';
 import { register as register25 } from '../features/content/showcase.js';
@@ -31,7 +31,7 @@ import { register as registerInsightsIntentRates } from '../features/owner/insig
 import { register as registerInsightsDashboard } from '../features/owner/insights-dashboard.js?v=2026-09-26-v19';
 import { register as register28 } from '../features/content/reviews.js';
 import { register as register29 } from '../features/content/information.js?v=2026-09-26-v04';
-import { register as register30 } from '../features/social/posts.js?v=2026-09-28-v07';
+import { register as register30 } from '../features/social/posts.js?v=2026-09-29-v01';
 import { register as register31 } from '../features/owner/quality.js';
 import { register as register32 } from '../features/owner/tools.js?v=2026-09-27-v26';
 import { register as register33 } from '../features/owner/bulk-status.js?v=2026-09-27-v26';

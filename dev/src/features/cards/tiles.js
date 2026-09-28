@@ -56,6 +56,8 @@ function cardTileHTML(c, renderIndex=999){
               <button type="button" data-action="edit" data-id="${appContext.escapeHtml(c.id)}">Edit</button>
               <button type="button" data-action="clone" data-id="${appContext.escapeHtml(c.id)}">Clone</button>
               <button type="button" data-action="fb-post" data-id="${appContext.escapeHtml(c.id)}">Generate FB Post</button>
+              ${appContext.cardLifecycle(c)!=="archived" ? `<button type="button" data-action="carousell-post" data-id="${appContext.escapeHtml(c.id)}">Generate Carousell Post</button>` : ""}
+              ${appContext.isLiveLifecycle(c) ? `<button type="button" data-action="ebay-post" data-id="${appContext.escapeHtml(c.id)}">Generate eBay Post</button>` : ""}
               <div class="quick-card-menu-separator"></div>
               ${appContext.normalizeFilterValue(c.availability)!=="available" ? `<button type="button" data-action="availability" data-status="Available" data-id="${appContext.escapeHtml(c.id)}">Mark Available</button>` : ""}
               ${appContext.normalizeFilterValue(c.availability)!=="reserved" ? `<button type="button" data-action="availability" data-status="Reserved" data-id="${appContext.escapeHtml(c.id)}">Mark Reserved</button>` : ""}
@@ -399,6 +401,18 @@ function wireCardActions(container){
 
           location.hash=
             `#/fb-tools?mode=single&card=${encodeURIComponent(card.id)}`;
+        }else if(action==="carousell-post"){
+          if(!appContext.requireOwner("generate Carousell post")) return;
+          const returnHash=location.hash||"#/inventory";
+          appContext.rememberReturnScroll(returnHash);
+          location.hash=
+            `#/fb-tools?mode=carousell&card=${encodeURIComponent(card.id)}`;
+        }else if(action==="ebay-post"){
+          if(!appContext.requireOwner("generate eBay post")) return;
+          const returnHash=location.hash||"#/inventory";
+          appContext.rememberReturnScroll(returnHash);
+          location.hash=
+            `#/fb-tools?mode=ebay&card=${encodeURIComponent(card.id)}`;
         }else if(action==="availability"){
           if(!appContext.requireOwner("change card availability")) return;
           const status=String(btn.dataset.status||"");

@@ -2164,7 +2164,14 @@ function renderEbayListingGeneratorPage(){
         downloadImages.disabled=!selected || appContext.getImages(selected).length===0;
       }
     });
-    open.addEventListener("click",()=>{if(selected)appContext.openDetailsModal(selected);});renderOptions();update();
+    open.addEventListener("click",()=>{if(selected)appContext.openDetailsModal(selected);});
+    renderOptions();
+    const requestedCardId=appContext.safeCardId(appContext.currentHashParams().get("card"));
+    if(requestedCardId && cards.some(card=>String(card.id)===requestedCardId)){
+      select.value=requestedCardId;
+      selected=cards.find(card=>String(card.id)===requestedCardId)||null;
+    }
+    update();
   }
 
 function renderCarousellPostGeneratorPage(){
@@ -2489,6 +2496,12 @@ function renderCarousellPostGeneratorPage(){
     });
 
     renderCarousellCardOptions();
+    const requestedCardId=appContext.safeCardId(appContext.currentHashParams().get("card"));
+    if(requestedCardId && selectableCards.some(card=>String(card.id)===requestedCardId)){
+      const requestedValue=`card:${requestedCardId}`;
+      select.value=requestedValue;
+      setSelection(requestedValue);
+    }
 
     openCardBtn.addEventListener("click",()=>{
       if(openCardBtn.disabled) return;
