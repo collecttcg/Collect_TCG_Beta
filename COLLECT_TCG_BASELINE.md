@@ -92,7 +92,19 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation candidate committed; validation and packaging pending.
+Validation status: completed successfully after reconciling one retained v01 test assertion that still required the intentionally removed same-tab navigation. Changed JavaScript syntax, imports/cache references, full feature regression tests, retained v01 generator behavior, dedicated v02 new-tab/card-selection/secure-handoff checks, Owner/Hidden/privacy protections, generated SEO, release packaging/integrity and Development GitHub Pages deployment all passed.
+
+Release records:
+- Source/generated commit: `9e3de3f298621a21c07f57e6ff7fe5b8fd76018c`
+- Package-validation commit: `372c7721441aa4f4bb90b681aaf66d0f944feaae`
+- Workflow run: `36443499810`
+- Final GitHub Pages deployment run: `36443563314`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v02-full.zip`
+  - SHA-256: `a4b8daa53cda95af7abdd9756dfa799b1d757ebb9a0b8714f60579f9781f3c00`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v01-to-2026-09-29-v02-patch.zip`
+  - SHA-256: `ac25c5f3160d568dd6a7cd7e9a64440cd8cee6abb563f388d9eb23a37eab54ef`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; new-tab behavior, selected-card routing and secure owner handoff were exercised by repository tests/static validation rather than a real browser session.
 
 ### Development `2026-09-29-v01`
 
