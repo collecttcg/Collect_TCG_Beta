@@ -1,4 +1,4 @@
-import { register as register0 } from '../features/core/utilities.js?v=2026-09-24-v03';
+import { register as register0 } from '../features/core/utilities.js?v=2026-09-28-v04';
 import { register as register1 } from '../features/cards/favorites.js';
 import { register as register2 } from '../features/inventory/ordering.js?v=2026-09-27-v28';
 import { register as register3 } from '../services/auth.js?v=2026-09-26-v02';
@@ -13,7 +13,7 @@ import { register as register11 } from '../features/content/showcase-data.js';
 import { register as register12 } from '../services/analytics.js?v=2026-09-27-v09';
 import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
-import { register as register14 } from '../app/routing.js?v=2026-09-27-v19';
+import { register as register14 } from '../app/routing.js?v=2026-09-28-v04';
 import { register as register15 } from '../features/media/images.js?v=2026-09-27-v20';
 import { register as register16 } from '../features/cards/presentation.js';
 import { register as register17 } from '../features/owner/forms.js?v=2026-09-28-v03';
