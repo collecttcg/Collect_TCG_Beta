@@ -524,6 +524,14 @@ function getFiltered(){
           return a.name.localeCompare(b.name);
         }
         case "recent-sold": {
+          const ao=Number(a.sold_order)||0;
+          const bo=Number(b.sold_order)||0;
+          if(ao || bo){
+            const ar=ao>0 ? ao : Number.MAX_SAFE_INTEGER;
+            const br=bo>0 ? bo : Number.MAX_SAFE_INTEGER;
+            if(ar!==br) return ar-br;
+          }
+
           const at = Date.parse(a.sold_at || a.updated_at || a.created_at || "") || 0;
           const bt = Date.parse(b.sold_at || b.updated_at || b.created_at || "") || 0;
           return bt - at || a.name.localeCompare(b.name);
