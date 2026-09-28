@@ -91,7 +91,19 @@ Changes:
 
 SQL required: Yes — `migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql`. Rerunnable. Not applied by ChatGPT.
 
-Validation status: in progress.
+Validation status: completed successfully. Feature regression tests passed 45/45, including buyer Sold-rank ordering and Owner `sold_at` ordering. Changed JavaScript syntax, imports/cache references, privacy-safe RPC contract, retained v27/v28/v01 behavior, buyer/privacy/hidden-card guards, SEO generation, release ZIP integrity and Development GitHub Pages deployment all passed.
+
+Release records:
+- Source commit: `247463b6020d83c3f2f9569c74a0886b915578ee`
+- Package-validation commit: `f9ca62225daedd72b9e9a08e348c524fe37218cd`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v02-full.zip`
+  - SHA-256: `bd3de7bf1c66f892cb6b8dc78dc302df8c36bf4cf218e6d75c37db89fefab36a`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v01-to-2026-09-28-v02-patch.zip`
+  - SHA-256: `804bb6d5a1bb2de7954a95489bce203fe15a3c4c07f285ffc1b8bdd2261489f0`
+
+Validation limitations:
+- The new SQL migration was statically validated but was not applied to Supabase, so the live Development buyer view cannot use the new public Sold rank until that migration is applied.
+- Interactive desktop/mobile/Safari browser testing was not available.
 
 ### Development `2026-09-28-v01`
 
