@@ -63,7 +63,7 @@ async function startApp(){
     // If the cross-tab handoff could not run, fall back to the normal Supabase
     // persisted-session lookup while preserving the fb-tools hash.
     if(!ownerPostHandoffSucceeded){
-      await appContext.refreshOwnerSession();
+      await appContext.refreshOwnerSession({deferOwnerRouteGuard:ownerPostHandoffRequested});
     }
 
     // Restore/check persistent personal-device exclusion before any analytics

@@ -32,7 +32,7 @@ import { initialize as initialize29 } from '../features/owner/add.js';
 import { initialize as initialize30 } from '../features/cards/details.js?v=2026-09-26-v02';
 import { initialize as initialize31 } from '../features/owner/editor.js';
 import { initialize as initialize32 } from '../app/theme.js';
-import { initialize as initialize33 } from '../app/startup.js?v=2026-09-27-v09';
+import { initialize as initialize33 } from '../app/startup.js?v=2026-09-29-v03';
 
 export function initializeApp(appContext,runtime){
   initialize0(appContext,runtime);

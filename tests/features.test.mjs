@@ -825,3 +825,15 @@ test('Development 2026-09-29-v02 opens card post generators in a separate tab an
   assert.match(tiles,/openOwnerPostGenerator\("ebay",card\.id\)/);
   assert.doesNotMatch(tiles,/#\/fb-tools\?mode=(?:single|carousell|ebay)&card=\$\{encodeURIComponent\(card\.id\)\}/);
 });
+
+
+test('Development 2026-09-29-v03 defers the owner-only redirect until new-tab generator authentication finishes',()=>{
+  const auth=fs.readFileSync(new URL('../dev/src/services/auth.js',import.meta.url),'utf8');
+  const startup=fs.readFileSync(new URL('../dev/src/app/startup.js',import.meta.url),'utf8');
+  assert.match(auth,/function applyOwnerMode\(\{deferOwnerRouteGuard=false\}=\{\}\)/);
+  assert.match(auth,/if\(!owner && !deferOwnerRouteGuard && typeof appContext\.currentRoute==="function"\)/);
+  assert.match(auth,/async function refreshOwnerSession\(\{deferOwnerRouteGuard=false\}=\{\}\)/);
+  assert.match(auth,/applyOwnerMode\(\{deferOwnerRouteGuard:true\}\);[\s\S]*?removeOwnerPostHandoffParam\(\)/);
+  assert.match(startup,/refreshOwnerSession\(\{deferOwnerRouteGuard:ownerPostHandoffRequested\}\)/);
+  assert.match(startup,/appContext\.router\(\)/);
+});

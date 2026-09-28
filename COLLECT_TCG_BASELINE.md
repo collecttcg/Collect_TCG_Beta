@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v02`
+Latest Development: `2026-09-29-v03`
 
-Previous Development: `2026-09-29-v01`
+Previous Development: `2026-09-29-v02`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v03`
+
+Previous Development: `2026-09-29-v02`
+
+Purpose: fix the browser startup race where a newly opened owner Post Generator tab could briefly show `fb-tools` and then be redirected to Inventory before Owner authentication finished resolving.
+
+Changes:
+- Owner UI application can temporarily defer only the owner-route redirect while a requested Post Generator handoff is being resolved.
+- The fallback persisted-session lookup receives the same temporary defer flag when the new-tab handoff was requested.
+- Successful handoff applies Owner state without prematurely redirecting, removes the handoff nonce, and then startup reaches the existing central router gate.
+- The central router remains fail-closed: after authentication resolution, non-owner/public sessions are still redirected away from `fb-tools`.
+- FB, Carousell and eBay new-tab behavior and selected-card preselection from v02 are retained.
+- No public Owner controls or data are exposed by the defer window; owner-only content is not rendered until startup reaches the final router.
+
+SQL required: No.
+
+Validation status: local implementation validation passed 53/53 feature tests plus changed-JavaScript syntax checks; GitHub workflow, deployment and package validation pending.
 
 ### Development `2026-09-29-v02`
 

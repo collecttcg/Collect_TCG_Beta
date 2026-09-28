@@ -104,7 +104,7 @@ function clearOwnerOnlyClientState(){
     }
   }
 
-function applyOwnerMode(){
+function applyOwnerMode({deferOwnerRouteGuard=false}={}){
     const owner=appContext.isOwnerMode();
     const authenticatedOwner=appContext.isOwnerAuthenticated();
     const buyerPreview=appContext.isOwnerBuyerPreview();
@@ -164,7 +164,7 @@ function applyOwnerMode(){
 
     // If owner state disappears while an owner-only route is open, immediately
     // leave that route instead of leaving stale owner UI on screen.
-    if(!owner && typeof appContext.currentRoute==="function"){
+    if(!owner && !deferOwnerRouteGuard && typeof appContext.currentRoute==="function"){
       const route=appContext.currentRoute();
       if(appContext.isOwnerOnlyRoute(route)){
         appContext.goToRoute("inventory");
@@ -184,7 +184,7 @@ function confirmOwnerAction(message){
     return window.confirm(String(message||""));
   }
 
-async function refreshOwnerSession(){
+async function refreshOwnerSession({deferOwnerRouteGuard=false}={}){
     const {data,error}=await appContext.supabaseClient.auth.getSession();
     if(error) console.error("Auth session error:",error);
 
@@ -197,7 +197,7 @@ async function refreshOwnerSession(){
       if(appContext.ownerSession && !appContext.ownerVerified){
         console.warn("Authenticated mobile session is not authorized for Collection ordering.");
       }
-      appContext.applyOwnerMode();
+      appContext.applyOwnerMode({deferOwnerRouteGuard});
       return;
     }
 
@@ -207,7 +207,7 @@ async function refreshOwnerSession(){
     if(appContext.ownerSession && !appContext.ownerVerified){
       console.warn("Authenticated session is not authorized as an app owner.");
     }
-    appContext.applyOwnerMode();
+    appContext.applyOwnerMode({deferOwnerRouteGuard});
   }
 
 function ownerPostHandoffNonce(){
@@ -285,7 +285,7 @@ async function receiveOwnerPostGeneratorHandoff(){
             return;
           }
 
-          appContext.applyOwnerMode();
+          appContext.applyOwnerMode({deferOwnerRouteGuard:true});
           appContext.removeOwnerPostHandoffParam();
 
           try{
