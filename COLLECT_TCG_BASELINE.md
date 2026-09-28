@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v06`
+Latest Development: `2026-09-28-v07`
 
-Previous Development: `2026-09-28-v05`
+Previous Development: `2026-09-28-v06`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,26 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v07`
+
+Previous Development: `2026-09-28-v06`
+
+Purpose: strengthen eBay Listing Generator descriptions with clear, buyer-friendly condition disclosures to reduce ambiguity and future condition disputes.
+
+Changes:
+- Adds a universal statement that only the cards/items shown and described are included.
+- States that listing photos form part of the item description/condition assessment and that minor imperfections may not be fully captured because of lighting, reflections, camera angle or display differences.
+- Raw listings state that condition is subjective and does not guarantee a PSA/BGS/CGC/other grading result.
+- Graded listings state that the shown grade is assigned by the stated grading company and that the holder/slab may have minor handling marks that do not affect the assigned grade.
+- Sealed listings state that outer packaging may have minor wear, dents, scratches, loose wrapping or other imperfections.
+- Invites buyers to request additional information/close-up photos before purchase when condition is important.
+- Adds a reminder to verify the delivery address before purchase.
+- Retains the v06 14-row Description editor and all existing eBay title, item-specific, copy, image ZIP, card selection and Owner Mode behavior.
+
+SQL required: No.
+
+Validation status: implementation committed; Development validation/package workflow pending.
 
 ### Development `2026-09-28-v06`
 

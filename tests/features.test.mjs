@@ -768,3 +768,29 @@ test('Development v06 gives the eBay description editor a larger initial height 
   assert.match(posts,/<textarea id="ebaySpecificsOutput" rows="8" readonly><\/textarea>/);
   assert.match(posts,/<textarea id="ebayDescriptionOutput" class="fb-post-output" rows="14" readonly><\/textarea>/);
 });
+
+
+test('Development v07 eBay descriptions include buyer-friendly condition disclosures by item format',()=>{
+  const a=app();
+  const base={id:'ebay-test',name:'TEST CARD',card_code:'T-001',game:'One Piece Card Game',series:'Championship',year:'2023',language:'ENG',availability:'Available'};
+  const raw=a.ebayListingDescription({...base,format:'Raw',condition:'NM',grading:[]});
+  assert.match(raw,/Only the cards\/items shown and described in this listing are included\./);
+  assert.match(raw,/photos form part of the item description and condition assessment/);
+  assert.match(raw,/may not be fully visible in photos due to lighting, reflections, camera angle, or display differences/);
+  assert.match(raw,/Raw card condition is a subjective assessment and does not guarantee any specific grade from PSA, BGS, CGC, or any other grading company\./);
+  assert.match(raw,/request additional photos or information before purchasing/);
+  assert.match(raw,/Please ensure your delivery address is correct before completing your purchase\./);
+  assert.doesNotMatch(raw,/holder\/slab/i);
+  assert.doesNotMatch(raw,/Factory-sealed products/i);
+
+  const graded=a.ebayListingDescription({...base,format:'Graded',condition:'NM',grading:[{company:'PSA',grade:'10'}]});
+  assert.match(graded,/grade shown is the grade assigned by the stated grading company/);
+  assert.match(graded,/holder\/slab may have minor surface marks, scratches, or other signs of handling/i);
+  assert.doesNotMatch(graded,/Raw card condition is a subjective assessment/);
+  assert.doesNotMatch(graded,/Factory-sealed products/i);
+
+  const sealed=a.ebayListingDescription({...base,format:'Sealed',condition:'SEALED',grading:[]});
+  assert.match(sealed,/Factory-sealed products may have minor wear, dents, scratches, loose wrapping, or other imperfections to the outer packaging\./);
+  assert.doesNotMatch(sealed,/Raw card condition is a subjective assessment/);
+  assert.doesNotMatch(sealed,/holder\/slab/i);
+});

@@ -2107,7 +2107,33 @@ function ebayItemSpecifics(card){
 
 function ebayListingDescription(card){
     if(!card) return "";
-    return appContext.compactGeneratedPostSpacing([String(card.name||"").toUpperCase()+(card.card_code ? " · "+String(card.card_code).toUpperCase() : ""),"",appContext.ebayItemSpecifics(card),"","[ITEM DETAILS]","You will receive the exact card/item shown in the photos.","Please review all photos carefully before purchasing.","Additional photos can be provided on request.","","[SHIPPING]","The item will be packed securely for shipment.","Tracking will be provided after dispatch.","","[COLLECT TCG MY & SG]","More trading cards, vintage cards and tournament cards are available in our inventory."].join("\n"));
+    const type=appContext.cardListFormat(card);
+    const conditionNotice=type==="graded"
+      ? ["The card grade shown is the grade assigned by the stated grading company.","The holder/slab may have minor surface marks, scratches, or other signs of handling that do not affect the card's assigned grade."]
+      : type==="sealed"
+        ? ["Factory-sealed products may have minor wear, dents, scratches, loose wrapping, or other imperfections to the outer packaging."]
+        : ["Raw card condition is a subjective assessment and does not guarantee any specific grade from PSA, BGS, CGC, or any other grading company."];
+    return appContext.compactGeneratedPostSpacing([
+      String(card.name||"").toUpperCase()+(card.card_code ? " · "+String(card.card_code).toUpperCase() : ""),
+      "",
+      appContext.ebayItemSpecifics(card),
+      "",
+      "[ITEM DETAILS]",
+      "You will receive the exact card/item shown in the photos.",
+      "Only the cards/items shown and described in this listing are included.",
+      "Please review all photos carefully before purchasing, as the photos form part of the item description and condition assessment.",
+      "Minor imperfections such as surface marks, edge/corner wear, print lines, factory defects, or other small flaws may not be fully visible in photos due to lighting, reflections, camera angle, or display differences.",
+      ...conditionNotice,
+      "If condition is important to your purchase, please request additional photos or information before purchasing. We are happy to provide close-up photos where possible.",
+      "",
+      "[SHIPPING]",
+      "The item will be packed securely for shipment.",
+      "Tracking will be provided after dispatch.",
+      "Please ensure your delivery address is correct before completing your purchase.",
+      "",
+      "[COLLECT TCG MY & SG]",
+      "More trading cards, vintage cards and tournament cards are available in our inventory."
+    ].join("\n"));
   }
 
 function renderEbayListingGeneratorPage(){
