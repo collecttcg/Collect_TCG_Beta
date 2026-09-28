@@ -76,15 +76,34 @@ function requireCollectionOrderOwner(action="rearrange Collection"){
     return false;
   }
 
-async function verifyOwnerSession(session){
-    if(!session?.user?.id) return false;
+async function verifyOwnerSessionResult(session){
+    if(!session?.user?.id) return {verified:false,error:null};
 
     const {data,error}=await appContext.supabaseClient.rpc("is_app_owner");
-    if(error){
-      console.error("Owner verification error:",error);
-      return false;
+    if(error) return {verified:false,error};
+    return {verified:data === true,error:null};
+  }
+
+async function verifyOwnerSession(session,{retryTransient=true}={}){
+    let result=await appContext.verifyOwnerSessionResult(session);
+    if(!result.error) return result.verified;
+
+    console.warn("Owner verification failed; retrying once:",result.error);
+    if(retryTransient){
+      // Confirm/refresh the browser auth session before retrying the owner RPC.
+      // getUser performs a server request and avoids treating a temporary
+      // local-session restoration issue as a definitive non-owner result.
+      const {data:userData,error:userError}=await appContext.supabaseClient.auth.getUser();
+      if(!userError && userData?.user?.id){
+        const {data:sessionData}=await appContext.supabaseClient.auth.getSession();
+        if(sessionData?.session) appContext.ownerSession=sessionData.session;
+        result=await appContext.verifyOwnerSessionResult(appContext.ownerSession || session);
+        if(!result.error) return result.verified;
+      }
     }
-    return data === true;
+
+    console.error("Owner verification error:",result.error);
+    return false;
   }
 
 function clearOwnerOnlyClientState(){
@@ -104,7 +123,7 @@ function clearOwnerOnlyClientState(){
     }
   }
 
-function applyOwnerMode({deferOwnerRouteGuard=false}={}){
+function applyOwnerMode(){
     const owner=appContext.isOwnerMode();
     const authenticatedOwner=appContext.isOwnerAuthenticated();
     const buyerPreview=appContext.isOwnerBuyerPreview();
@@ -162,14 +181,6 @@ function applyOwnerMode({deferOwnerRouteGuard=false}={}){
       detailsDeleteBtn.style.display = owner ? "inline-flex" : "none";
     }
 
-    // If owner state disappears while an owner-only route is open, immediately
-    // leave that route instead of leaving stale owner UI on screen.
-    if(!owner && !deferOwnerRouteGuard && typeof appContext.currentRoute==="function"){
-      const route=appContext.currentRoute();
-      if(appContext.isOwnerOnlyRoute(route)){
-        appContext.goToRoute("inventory");
-      }
-    }
   }
 
 function requireOwner(action = "perform this action"){
@@ -184,7 +195,7 @@ function confirmOwnerAction(message){
     return window.confirm(String(message||""));
   }
 
-async function refreshOwnerSession({deferOwnerRouteGuard=false}={}){
+async function refreshOwnerSession(){
     const {data,error}=await appContext.supabaseClient.auth.getSession();
     if(error) console.error("Auth session error:",error);
 
@@ -197,7 +208,7 @@ async function refreshOwnerSession({deferOwnerRouteGuard=false}={}){
       if(appContext.ownerSession && !appContext.ownerVerified){
         console.warn("Authenticated mobile session is not authorized for Collection ordering.");
       }
-      appContext.applyOwnerMode({deferOwnerRouteGuard});
+      appContext.applyOwnerMode();
       return;
     }
 
@@ -207,7 +218,7 @@ async function refreshOwnerSession({deferOwnerRouteGuard=false}={}){
     if(appContext.ownerSession && !appContext.ownerVerified){
       console.warn("Authenticated session is not authorized as an app owner.");
     }
-    appContext.applyOwnerMode({deferOwnerRouteGuard});
+    appContext.applyOwnerMode();
   }
 
 function ownerPostHandoffNonce(){
@@ -285,7 +296,7 @@ async function receiveOwnerPostGeneratorHandoff(){
             return;
           }
 
-          appContext.applyOwnerMode({deferOwnerRouteGuard:true});
+          appContext.applyOwnerMode();
           appContext.removeOwnerPostHandoffParam();
 
           try{
@@ -549,5 +560,5 @@ async function openOwnerAccess(){
     appContext.showToast("Owner login successful");
   }
 
-  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerAuthenticated,isOwnerBuyerPreview,isOwnerMode,canManageCollectionOrder,readOwnerBuyerPreviewPreference,writeOwnerBuyerPreviewPreference,ensureOwnerBuyerPreviewToggle,syncOwnerBuyerPreviewToggle,setOwnerBuyerPreview,toggleOwnerBuyerPreview,requireCollectionOrderOwner,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerPostGenerator,openOwnerAccess});
+  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerAuthenticated,isOwnerBuyerPreview,isOwnerMode,canManageCollectionOrder,readOwnerBuyerPreviewPreference,writeOwnerBuyerPreviewPreference,ensureOwnerBuyerPreviewToggle,syncOwnerBuyerPreviewToggle,setOwnerBuyerPreview,toggleOwnerBuyerPreview,requireCollectionOrderOwner,verifyOwnerSessionResult,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerPostGenerator,openOwnerAccess});
 }

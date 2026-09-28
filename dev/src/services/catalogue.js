@@ -326,7 +326,19 @@ async function loadCards(){
     if(appContext.isOwnerMode()){
       await appContext.probeOwnerCardCapabilities();
 
-      const ownerResult=await appContext.supabaseClient.rpc("get_owner_cards");
+      let ownerResult=await appContext.supabaseClient.rpc("get_owner_cards");
+
+      // A just-restored browser session can occasionally hit an authenticated
+      // owner RPC before the auth client has fully settled. Re-resolve the
+      // persisted session once and retry before dropping to public mode.
+      if(ownerResult.error){
+        console.warn("Secure owner card read failed; retrying once:",ownerResult.error);
+        await appContext.refreshOwnerSession();
+        if(appContext.isOwnerMode()){
+          ownerResult=await appContext.supabaseClient.rpc("get_owner_cards");
+        }
+      }
+
       if(!ownerResult.error){
         data=ownerResult.data;
 

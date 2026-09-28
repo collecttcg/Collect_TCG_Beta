@@ -54,16 +54,18 @@ async function startApp(){
     const ownerPostHandoffRequested=
       appContext.currentRoute()==="fb-tools" && !!appContext.currentOwnerPostHandoffNonce();
 
-    let ownerPostHandoffSucceeded=false;
-    if(ownerPostHandoffRequested){
-      ownerPostHandoffSucceeded=await appContext.receiveOwnerPostGeneratorHandoff();
-    }
+    // Restore the browser-persisted Supabase session first. This is the normal
+    // path for both refreshes of owner-only pages and same-origin new tabs.
+    // Do not mutate the requested hash while authentication is resolving; the
+    // central router below is the single fail-closed owner-route gate.
+    await appContext.refreshOwnerSession();
 
-    // Successful handoff already populated ownerSession/ownerVerified.
-    // If the cross-tab handoff could not run, fall back to the normal Supabase
-    // persisted-session lookup while preserving the fb-tools hash.
-    if(!ownerPostHandoffSucceeded){
-      await appContext.refreshOwnerSession({deferOwnerRouteGuard:ownerPostHandoffRequested});
+    // The explicit same-origin handoff is only a fallback when the new tab did
+    // not restore the persisted owner session. Avoid calling setSession with a
+    // duplicate refresh token when normal browser session restoration worked.
+    let ownerPostHandoffSucceeded=false;
+    if(ownerPostHandoffRequested && !appContext.isOwnerMode()){
+      ownerPostHandoffSucceeded=await appContext.receiveOwnerPostGeneratorHandoff();
     }
 
     // Restore/check persistent personal-device exclusion before any analytics

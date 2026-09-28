@@ -22,7 +22,14 @@ export function createProductionRuntime(host=window){
     createClient(){
       // Keep Supabase's normal production auth storage key/session behavior so
       // existing owner sessions continue to work across deployment upgrades.
-      return host.supabase.createClient(PRODUCTION_URL,PRODUCTION_KEY);
+      return host.supabase.createClient(PRODUCTION_URL,PRODUCTION_KEY,{
+        auth:{
+          storage:host.localStorage,
+          persistSession:true,
+          autoRefreshToken:true,
+          detectSessionInUrl:true
+        }
+      });
     }
   };
 }

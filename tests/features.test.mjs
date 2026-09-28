@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {registerFeatures} from '../dev/src/app/register-features.js';
+import {register as registerAuth} from '../dev/src/services/auth.js';
 const golden=JSON.parse(fs.readFileSync(new URL('./v92-golden.json',import.meta.url),'utf8'));
 const constants=JSON.parse(fs.readFileSync(new URL('./constants.json',import.meta.url),'utf8'));
 function app(){
@@ -827,13 +828,83 @@ test('Development 2026-09-29-v02 opens card post generators in a separate tab an
 });
 
 
-test('Development 2026-09-29-v03 defers the owner-only redirect until new-tab generator authentication finishes',()=>{
+test('Development 2026-09-29-v04 preserves owner-only routes until persisted authentication is conclusively resolved',()=>{
   const auth=fs.readFileSync(new URL('../dev/src/services/auth.js',import.meta.url),'utf8');
   const startup=fs.readFileSync(new URL('../dev/src/app/startup.js',import.meta.url),'utf8');
-  assert.match(auth,/function applyOwnerMode\(\{deferOwnerRouteGuard=false\}=\{\}\)/);
-  assert.match(auth,/if\(!owner && !deferOwnerRouteGuard && typeof appContext\.currentRoute==="function"\)/);
-  assert.match(auth,/async function refreshOwnerSession\(\{deferOwnerRouteGuard=false\}=\{\}\)/);
-  assert.match(auth,/applyOwnerMode\(\{deferOwnerRouteGuard:true\}\);[\s\S]*?removeOwnerPostHandoffParam\(\)/);
-  assert.match(startup,/refreshOwnerSession\(\{deferOwnerRouteGuard:ownerPostHandoffRequested\}\)/);
-  assert.match(startup,/appContext\.router\(\)/);
+  const catalogue=fs.readFileSync(new URL('../dev/src/services/catalogue.js',import.meta.url),'utf8');
+  const runtime=fs.readFileSync(new URL('../dev/src/app/production-runtime.js',import.meta.url),'utf8');
+  const routing=fs.readFileSync(new URL('../dev/src/app/routing.js',import.meta.url),'utf8');
+
+  assert.match(auth,/function applyOwnerMode\(\)/);
+  const applyOwnerModeBody=auth.slice(auth.indexOf('function applyOwnerMode()'),auth.indexOf('function requireOwner('));
+  assert.doesNotMatch(applyOwnerModeBody,/goToRoute\("inventory"\)/);
+  assert.match(routing,/if\(appContext\.isOwnerOnlyRoute\(route\) && !appContext\.isOwnerMode\(\)\)/);
+  assert.match(startup,/await appContext\.refreshOwnerSession\(\);[\s\S]*?if\(ownerPostHandoffRequested && !appContext\.isOwnerMode\(\)\)/);
+  assert.match(auth,/async function verifyOwnerSessionResult\(session\)/);
+  assert.match(auth,/Owner verification failed; retrying once/);
+  assert.match(auth,/supabaseClient\.auth\.getUser\(\)/);
+  assert.match(catalogue,/Secure owner card read failed; retrying once/);
+  assert.match(catalogue,/await appContext\.refreshOwnerSession\(\);/);
+  assert.match(catalogue,/ownerResult=await appContext\.supabaseClient\.rpc\("get_owner_cards"\)/);
+  assert.match(runtime,/storage:host\.localStorage/);
+  assert.match(runtime,/persistSession:true/);
+  assert.match(runtime,/autoRefreshToken:true/);
+});
+
+test('Development 2026-09-29-v04 retries a transient owner verification error without losing Owner Mode',async()=>{
+  const session={user:{id:'owner-test'},access_token:'access',refresh_token:'refresh'};
+  let ownerRpcCalls=0;
+  let getUserCalls=0;
+  const a={
+    sessionStorage:{getItem:()=>null,setItem:()=>{},removeItem:()=>{}},
+    supabaseClient:{
+      auth:{
+        getSession:async()=>({data:{session},error:null}),
+        getUser:async()=>{getUserCalls++;return {data:{user:session.user},error:null};}
+      },
+      rpc:async name=>{
+        assert.equal(name,'is_app_owner');
+        ownerRpcCalls++;
+        if(ownerRpcCalls===1) return {data:null,error:{message:'temporary auth timing failure'}};
+        return {data:true,error:null};
+      }
+    }
+  };
+  registerAuth(a);
+  a.isMobileOwnerBlocked=()=>false;
+  a.applyOwnerMode=()=>{};
+  a.readOwnerBuyerPreviewPreference=()=>false;
+
+  await a.refreshOwnerSession();
+
+  assert.equal(a.ownerSession,session);
+  assert.equal(a.ownerVerified,true);
+  assert.equal(a.ownerBuyerPreview,false);
+  assert.equal(ownerRpcCalls,2);
+  assert.equal(getUserCalls,1);
+});
+
+test('Development 2026-09-29-v04 still fails closed for a conclusive non-owner result',async()=>{
+  const session={user:{id:'public-test'}};
+  let getUserCalls=0;
+  const a={
+    sessionStorage:{getItem:()=>null,setItem:()=>{},removeItem:()=>{}},
+    supabaseClient:{
+      auth:{
+        getSession:async()=>({data:{session},error:null}),
+        getUser:async()=>{getUserCalls++;return {data:{user:session.user},error:null};}
+      },
+      rpc:async name=>{assert.equal(name,'is_app_owner');return {data:false,error:null};}
+    }
+  };
+  registerAuth(a);
+  a.isMobileOwnerBlocked=()=>false;
+  a.applyOwnerMode=()=>{};
+  a.readOwnerBuyerPreviewPreference=()=>false;
+
+  await a.refreshOwnerSession();
+
+  assert.equal(a.ownerVerified,false);
+  assert.equal(a.isOwnerMode(),false);
+  assert.equal(getUserCalls,0);
 });

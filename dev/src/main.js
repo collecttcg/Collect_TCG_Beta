@@ -1,6 +1,6 @@
-import { createProductionRuntime } from './app/production-runtime.js';
-import { registerFeatures } from './app/register-features.js?v=2026-09-29-v03';
-import { initializeApp } from './app/initialize.js?v=2026-09-29-v03';
+import { createProductionRuntime } from './app/production-runtime.js?v=2026-09-29-v04';
+import { registerFeatures } from './app/register-features.js?v=2026-09-29-v04';
+import { initializeApp } from './app/initialize.js?v=2026-09-29-v04';
 import { setup as setup1 } from './ui/enhancement-1.js';
 import { setup as setup2 } from './ui/enhancement-2.js';
 import { setup as setup3 } from './ui/enhancement-3.js';

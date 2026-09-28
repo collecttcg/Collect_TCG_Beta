@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v03`
+Latest Development: `2026-09-29-v04`
 
-Previous Development: `2026-09-29-v02`
+Previous Development: `2026-09-29-v03`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,27 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v04`
+
+Previous Development: `2026-09-29-v03`
+
+Purpose: fix owner-only route restoration comprehensively after browser refresh/new-tab startup, covering Post Generator Tools, Insights and the other owner-only routes.
+
+Changes:
+- `applyOwnerMode()` no longer changes routes; the central router is now the single fail-closed authority for owner-only route access.
+- Startup restores the normal persisted Supabase browser session before attempting the optional Post Generator cross-tab handoff.
+- Owner verification distinguishes a conclusive non-owner result from a transient RPC/auth error and retries a transient verification once after a server-confirmed `getUser()`/session refresh path.
+- Owner card loading retries once after re-resolving the authenticated session before falling back to the existing public catalogue safety path.
+- Browser auth persistence/auto-refresh/localStorage use is now explicit in the Supabase client configuration rather than relying only on SDK defaults.
+- The existing final router still redirects unauthenticated/non-owner users away from Insights, Post Generator Tools and every other owner-only route.
+- Existing FB/Carousell/eBay separate-tab behavior and selected-card preselection are retained.
+
+SQL required: No.
+
+Validation status: local implementation validation passed 52/52 feature tests plus syntax checks for all changed JavaScript files. GitHub workflow, package and Pages validation pending.
+
+Validation limitation: interactive authenticated desktop/mobile/Safari browser testing is not available from the engineering environment; user confirmation in Development remains required for the reported browser-only refresh/new-tab behavior.
 
 ### Development `2026-09-29-v03`
 
