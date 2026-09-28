@@ -168,6 +168,33 @@ test('card edits do not depend on a full REST row being returned after save',asy
  assert.equal(saved.name,'MIXED-LANGUAGE LOT');
 });
 
+test('Edit preserves saved manual USD/SGD until MYR is changed or rate refresh is requested',async()=>{
+ const a=app();
+ const control=value=>({
+  value:String(value),
+  dataset:{},
+  listeners:{},
+  addEventListener(type,handler){this.listeners[type]=handler;}
+ });
+ const myr=control(1000);
+ const usd=control(333);
+ const sgd=control(444);
+ a.controls={editPriceMYR:myr,editPriceUSD:usd,editPriceSGD:sgd};
+ a.fetchCurrentMyrFxRates=async()=>({usdPerMyr:0.25,sgdPerMyr:0.30,fetchedAt:Date.now(),source:'test'});
+ a.updateFxRateStatus=()=>{};
+
+ a.wireAutoCurrencyConversion('edit');
+ await new Promise(resolve=>setImmediate(resolve));
+
+ assert.equal(usd.value,'333');
+ assert.equal(sgd.value,'444');
+
+ myr.value='2000';
+ myr.listeners.input();
+ assert.equal(usd.value,'500');
+ assert.equal(sgd.value,'600');
+});
+
 test('owner save flows distinguish an unsaved card from non-critical post-save work',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const add=source('../dev/src/features/owner/add.js');
