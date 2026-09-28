@@ -161,7 +161,7 @@ jobs:
           grep -q 'const directCardEntry=' dev/src/app/startup.js
           grep -q 'Promise.allSettled' dev/src/app/startup.js
           grep -q 'analytics.js?v=2026-09-27-v09' dev/src/app/register-features.js
-          grep -q 'catalogue.js?v=2026-09-28-v02' dev/src/app/register-features.js
+          grep -q 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
           grep -q 'tiles.js?v=2026-09-29-v02' dev/src/app/register-features.js
           grep -q 'insights-dashboard.js?v=2026-09-26-v19' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/register-features.js
@@ -391,7 +391,7 @@ jobs:
           grep -Fq "endpoint.searchParams.set('lifecycle_status','eq.live');" tools/generate-seo.mjs
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
-          grep -q 'catalogue.js?v=2026-09-28-v02' dev/src/app/register-features.js
+          grep -q 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-29-v04' dev/src/main.js
           grep -q 'src/main.js?v=2026-09-29-v04' dev/index.html
 
@@ -408,7 +408,7 @@ jobs:
           grep -Fq "Object.prototype.hasOwnProperty.call(card,'lifecycle_status')" tools/generate-seo.mjs
           grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
-          grep -q 'catalogue.js?v=2026-09-28-v02' dev/src/app/register-features.js
+          grep -q 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
           grep -q 'register-features.js?v=2026-09-29-v04' dev/src/main.js
           grep -q 'src/main.js?v=2026-09-29-v04' dev/index.html
 
@@ -642,8 +642,8 @@ jobs:
           grep -Fq "lower(coalesce(c.availability::text,'')) = 'sold'" migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql
           grep -Fq 'grant execute on function public.get_public_sold_order() to anon' migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql
           ! grep -Eq 'returns table[^(]*\([^)]*sold_at' migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql
-          grep -Fq 'catalogue.js?v=2026-09-28-v02' dev/src/app/register-features.js
-          grep -Fq 'catalogue.js?v=2026-09-28-v02' dev/src/app/initialize.js
+          grep -Fq 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
+          grep -Fq 'catalogue.js?v=2026-09-29-v04' dev/src/app/initialize.js
           grep -Fq 'filtering.js?v=2026-09-28-v02' dev/src/app/register-features.js
           grep -Fq 'filtering.js?v=2026-09-28-v02' dev/src/app/initialize.js
           grep -Fq 'register-features.js?v=2026-09-29-v04' dev/src/main.js
