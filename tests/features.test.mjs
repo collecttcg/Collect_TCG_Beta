@@ -180,6 +180,8 @@ test('Edit preserves saved manual USD/SGD until MYR is changed or rate refresh i
  const usd=control(333);
  const sgd=control(444);
  a.controls={editPriceMYR:myr,editPriceUSD:usd,editPriceSGD:sgd};
+ a.FX_PRICE_ROUND_STEP=50;
+ a.FX_CLEAN_HUNDRED_TOLERANCE=20;
  a.fetchCurrentMyrFxRates=async()=>({usdPerMyr:0.25,sgdPerMyr:0.30,fetchedAt:Date.now(),source:'test'});
  a.updateFxRateStatus=()=>{};
 
