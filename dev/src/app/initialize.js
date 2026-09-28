@@ -6,7 +6,7 @@ import { initialize as initialize3 } from '../features/media/collage.js';
 import { initialize as initialize4 } from '../features/cards/repository.js?v=2026-09-26-v12';
 import { initialize as initialize5 } from '../app/navigation.js?v=2026-09-26-v12';
 import { initialize as initialize6 } from '../features/cards/pricing.js';
-import { initialize as initialize7 } from '../services/catalogue.js?v=2026-09-28-v02';
+import { initialize as initialize7 } from '../services/catalogue.js?v=2026-09-29-v04';
 import { initialize as initialize8 } from '../features/content/giveaways-data.js';
 import { initialize as initialize9 } from '../features/content/showcase-data.js';
 import { initialize as initialize10 } from '../services/analytics.js?v=2026-09-27-v09';
