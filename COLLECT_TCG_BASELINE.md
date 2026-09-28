@@ -90,7 +90,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; Development validation/package workflow pending.
+Validation status: completed successfully. Feature tests, changed JavaScript syntax, repository/import/asset references, existing post-generator behavior, the dedicated eBay textarea-height check, Owner/Hidden/privacy protections, generated SEO, retained v01-v05 regressions, release package creation/integrity and Development GitHub Pages deployment all passed.
+
+Release records:
+- Source/generated commit: `ba7d68c5b948fa940e6b9a54b31f53609b6cc565`
+- Package-validation commit: `c3fda96507f7ce374ab138ee5bde766f6653aca4`
+- Workflow run: `36439205021`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v06-full.zip`
+  - SHA-256: `1a0f800305c7535962f5688a7945a9818a43ebf9148c977cf38b33fd03dacdb0`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v05-to-2026-09-28-v06-patch.zip`
+  - SHA-256: `9684f7205f8728fb1d84423e60826324508bd9a0df6a2e7f37b65db2407929cf`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; layout behavior was statically verified and exercised by repository tests.
 
 ### Development `2026-09-28-v05`
 
