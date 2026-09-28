@@ -553,7 +553,7 @@ jobs:
           ! grep -Fq 'analytics_test' dev/src/features/owner/image-maintenance.js
           git diff --check
 
-      # Package the validated Development v27 release.
+      # Package the validated Development 2026-09-28-v01 release.
       - name: Validate Development v28 game-aware new-card ordering
         shell: bash
         run: |
@@ -576,12 +576,30 @@ jobs:
           grep -Fq 'src/main.js?v=2026-09-27-v28' dev/index.html
           git diff --check
 
+      - name: Validate Development 2026-09-28-v01 Sold owner menu placement
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'DESKTOP OWNER MENU — KEEP TOP-RIGHT ON SOLD/RESERVED' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .card:has(.status-corner-sold) .quick-card-actions' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .card:has(.status-corner-reserved) .quick-card-actions' dev/src/styles/01-foundation.css
+          grep -Fq 'top:8px !important;' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .card:has(.status-corner-sold) .overview-grade-overlay-right' dev/src/styles/01-foundation.css
+          grep -Fq 'top:52px !important;' dev/src/styles/01-foundation.css
+          grep -Fq '01-foundation.css?v=2026-09-28-v01' dev/index.html
+          grep -Fq 'body:not(.owner-mode) .card-actions.owner-only' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .card-actions.owner-only' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .owner-only' dev/src/styles/08-owner-public-visibility-v19.css
+          grep -Fq '@media(max-width:800px)' dev/src/styles/01-foundation.css
+          grep -Fq 'body.owner-mode .card-actions.owner-only{' dev/src/styles/01-foundation.css
+          git diff --check
+
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-27-v28
-          PREVIOUS_VERSION: 2026-09-27-v27
-          PREVIOUS_COMMIT: 6399b565e18458c2d7e1b64084593039f153ca53
+          RELEASE_VERSION: 2026-09-28-v01
+          PREVIOUS_VERSION: 2026-09-27-v28
+          PREVIOUS_COMMIT: 702cf1775228f0d5b259a1798b957aa427fd3d15
         run: |
           set -euo pipefail
           mkdir -p release
@@ -609,10 +627,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-27-v28-packages
+          name: Collect-TCG-Dev-2026-09-28-v01-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-27-v28-full.zip
-            release/Collect-TCG-Dev-2026-09-27-v27-to-2026-09-27-v28-patch.zip
+            release/Collect-TCG-Dev-2026-09-28-v01-full.zip
+            release/Collect-TCG-Dev-2026-09-27-v28-to-2026-09-28-v01-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -621,18 +639,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-27-v28.txt"
+          MANIFEST="release-manifests/2026-09-28-v01.txt"
           {
-            echo "Version: 2026-09-27-v28"
-            echo "Previous version: 2026-09-27-v27"
+            echo "Version: 2026-09-28-v01"
+            echo "Previous version: 2026-09-27-v28"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-27-v28-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v27-to-2026-09-27-v28-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-28-v01-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-27-v28-to-2026-09-28-v01-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-27-v28: record package validation"
+          git commit -m "Development 2026-09-28-v01: record package validation"
           git push
 
   deploy:
