@@ -89,7 +89,7 @@ Changes:
 - Buyer/public ordering therefore follows the same sold chronology as Owner Mode after the migration is applied.
 - No Inventory/Collection custom ordering, Owner Mode controls, analytics, Contact to Buy, generators or giveaway behavior changes.
 
-SQL required: Yes — `migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql`. Rerunnable. Not applied by ChatGPT.
+SQL required: Yes — `migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql`. Rerunnable. User confirmed it was applied to Supabase on 2026-09-28.
 
 Validation status: completed successfully. Feature regression tests passed 45/45, including buyer Sold-rank ordering and Owner `sold_at` ordering. Changed JavaScript syntax, imports/cache references, privacy-safe RPC contract, retained v27/v28/v01 behavior, buyer/privacy/hidden-card guards, SEO generation, release ZIP integrity and Development GitHub Pages deployment all passed.
 
@@ -102,7 +102,7 @@ Release records:
   - SHA-256: `804bb6d5a1bb2de7954a95489bce203fe15a3c4c07f285ffc1b8bdd2261489f0`
 
 Validation limitations:
-- The new SQL migration was statically validated but was not applied to Supabase, so the live Development buyer view cannot use the new public Sold rank until that migration is applied.
+- SQL application is user-confirmed; the live public RPC response and rendered Buyer Preview ordering have not yet been independently exercised after application.
 - Interactive desktop/mobile/Safari browser testing was not available.
 
 ### Development `2026-09-28-v01`
