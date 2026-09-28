@@ -92,13 +92,41 @@ async function loadSeoCardSlugMap(){
     }
   }
 
+async function loadOwnerCardRouteSlugMap(){
+    if(!appContext.isOwnerMode()) return false;
+    try{
+      const response=await appContext.fetch(new URL("owner-card-routes.json",appContext.siteRootUrl()),{
+        method:"GET",
+        cache:"no-store",
+        credentials:"omit"
+      });
+      if(!response.ok) return false;
+      const payload=await response.json();
+      const entries=payload && typeof payload.cards==="object" ? Object.entries(payload.cards) : [];
+      const map=new Map();
+      entries.forEach(([id,value])=>{
+        const safeId=appContext.safeCardId(id);
+        const slug=appContext.seoSlugPart(value?.slug||"");
+        if(safeId && slug) map.set(safeId,slug);
+      });
+      appContext.ownerCardRouteSlugMap=map;
+      return true;
+    }catch{
+      return false;
+    }
+  }
+
 function publishedSeoCardUrl(card){
     const id=appContext.safeCardId(card?.id);
-    const slug=id ? appContext.seoCardSlugMap?.get(id) : "";
+    if(!id) return "";
+    let slug=appContext.seoCardSlugMap?.get(id) || "";
+    if(!slug && appContext.isOwnerMode() && !appContext.isLiveLifecycle(card)){
+      slug=appContext.ownerCardRouteSlugMap?.get(id) || "";
+    }
     return slug ? appContext.seoCardUrl(card,slug) : "";
   }
 
-  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId,seoSlugPart,seoCardSlug,siteRootUrl,seoCardUrl,loadSeoCardSlugMap,publishedSeoCardUrl});
+  Object.assign(appContext,{rawConditionShortLabel,rawConditionFilterLabel,safeCardId,seoSlugPart,seoCardSlug,siteRootUrl,seoCardUrl,loadSeoCardSlugMap,loadOwnerCardRouteSlugMap,publishedSeoCardUrl});
 }
 
 /** State and event initialization; called in preserved startup order. */
@@ -146,5 +174,6 @@ export function initialize(appContext,runtime){
   appContext.RECENTLY_VIEWED_LIMIT = 12;
 
   appContext.seoCardSlugMap = new Map();
+  appContext.ownerCardRouteSlugMap = new Map();
   appContext.loadSeoCardSlugMap().catch(()=>{});
 }
