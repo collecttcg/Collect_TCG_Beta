@@ -67,6 +67,7 @@ function dbToCard(row){
       })(),
       view_count: Number(row.view_count || 0),
       sold_at: row.sold_at || null,
+      sold_order: Number.isFinite(Number(row.sold_order)) && Number(row.sold_order)>0 ? Number(row.sold_order) : null,
       lifecycle_status: legacyArchived
         ? "archived"
         : (legacyHidden
@@ -140,6 +141,28 @@ function optionalColumnUnavailable(error,column){
     );
   }
 
+async function fetchPublicSoldOrder(){
+    if(appContext.publicSoldOrderSupported===false) return new Map();
+
+    try{
+      const {data,error}=await appContext.supabaseClient.rpc("get_public_sold_order");
+      if(error){
+        appContext.publicSoldOrderSupported=false;
+        console.warn("Public sold-order RPC unavailable; falling back to public card timestamps:",error);
+        return new Map();
+      }
+
+      appContext.publicSoldOrderSupported=true;
+      return new Map((Array.isArray(data)?data:[])
+        .map(row=>[String(row?.id||""),Number(row?.sold_order)||0])
+        .filter(([id,order])=>id && order>0));
+    }catch(error){
+      appContext.publicSoldOrderSupported=false;
+      console.warn("Public sold-order RPC failed; falling back to public card timestamps:",error);
+      return new Map();
+    }
+  }
+
 async function fetchPublicCards(){
     // Language details is a newer optional column. Retry without it (and the
     // other established optional columns) so an unapplied migration never
@@ -189,6 +212,25 @@ async function fetchPublicCards(){
       appContext.soldAtSupported=includeSoldAt;
       appContext.languageDetailsSupported=includeLanguageDetails;
       if(includeLifecycle) appContext.lifecycleSupported=true;
+
+      // Public/Buyer Preview must use the same chronological Sold ordering as
+      // Owner Mode without exposing the private sold_at timestamp. The RPC
+      // returns only live Sold card IDs plus their rank.
+      const hasSold=(Array.isArray(result.data)?result.data:[]).some(row=>
+        appContext.normalizeFilterValue(row?.availability||"")==="sold"
+      );
+      if(hasSold){
+        const soldOrder=await appContext.fetchPublicSoldOrder();
+        if(soldOrder.size){
+          result={
+            ...result,
+            data:(result.data||[]).map(row=>{
+              const order=soldOrder.get(String(row?.id||""));
+              return order ? {...row,sold_order:order} : row;
+            })
+          };
+        }
+      }
     }
     return result;
   }
@@ -866,13 +908,14 @@ async function updateCardStorage(card){
     }
   }
 
-  Object.assign(appContext,{cardMutationReturnColumns,cardPublicColumns,mergeOwnerOnlyCardFields,dbToCard,cardToDb,optionalColumnUnavailable,fetchPublicCards,ensureCardImagesLoaded,preloadCardDetailsMedia,probeOwnerCardCapabilities,loadCards,sanitizeOwnerTags,sanitizeOwnerPrivateNotes,fetchOwnerPrivateMeta,newCardImageVariantKey,fetchOwnerCardImageVariants,saveOwnerCardImageVariants,saveOwnerPrivateMeta,setCardLifecycle,deleteListingPermanently,errorText,cardWriteErrorText,optionalCardWriteColumnUnavailable,createCardStorage,updateCardStorage});
+  Object.assign(appContext,{cardMutationReturnColumns,cardPublicColumns,mergeOwnerOnlyCardFields,dbToCard,cardToDb,optionalColumnUnavailable,fetchPublicSoldOrder,fetchPublicCards,ensureCardImagesLoaded,preloadCardDetailsMedia,probeOwnerCardCapabilities,loadCards,sanitizeOwnerTags,sanitizeOwnerPrivateNotes,fetchOwnerPrivateMeta,newCardImageVariantKey,fetchOwnerCardImageVariants,saveOwnerCardImageVariants,saveOwnerPrivateMeta,setCardLifecycle,deleteListingPermanently,errorText,cardWriteErrorText,optionalCardWriteColumnUnavailable,createCardStorage,updateCardStorage});
 }
 
 /** State and event initialization; called in preserved startup order. */
 export function initialize(appContext,runtime){
   appContext.cardImageLoadPromises = new Map();
   appContext.cardDetailMediaPreloaded = new Set();
+  appContext.publicSoldOrderSupported = null;
 
   appContext.EMPTY_ICON = `<svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="12" y="8" width="30" height="42" rx="5" transform="rotate(-8 12 8)" stroke="#2E3038" stroke-width="2"/>
