@@ -91,7 +91,17 @@ Changes:
 
 SQL required: No.
 
-Validation status: in progress.
+Validation status: completed successfully after correcting two validation-harness issues: the new FX regression test initially omitted the app's rounding constants, and the repository checker retained the pre-promotion Production baseline marker. The application preservation fix itself did not fail. Final feature regression tests passed 46/46, including saved manual USD/SGD preservation and MYR-change reconversion. JavaScript syntax, imports/references, retained routing/analytics/privacy/Hidden Listings/generator behavior, v27/v28/v01/v02 checks, SEO generation, package integrity and Development Pages deployment all passed.
+
+Release records:
+- Source commit: `0998e59ead9036c6f5db4377a8564ea6f8201d56`
+- Package-validation HEAD: `87a2de0eb11089337e856ce65007b21a21d59453`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v03-full.zip`
+  - SHA-256: `63fc919407bf99b799472944ed445aada0af7c586e7745e9a1841406b9bcc90c`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v02-to-2026-09-28-v03-patch.zip`
+  - SHA-256: `f692b011580d2477d5a521beb2cdcd0c5237c9b76ddd29185a208cce5660ae38`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; the behavior was exercised through the executable feature regression test and repository validation.
 
 ### Development `2026-09-28-v02`
 
