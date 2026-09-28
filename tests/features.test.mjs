@@ -316,6 +316,34 @@ test('SEO phase 1 preserves legacy card routes and activates clean URLs only aft
  assert.doesNotMatch(generator,/slug\}--\$\{encodeURIComponent\(card\.id\)\}/);
 });
 
+test('Hidden and Archived cards get owner clean routes without public SEO exposure',()=>{
+ const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
+ const utilities=source('../dev/src/features/core/utilities.js');
+ const routing=source('../dev/src/app/routing.js');
+ const generator=source('../tools/generate-seo.mjs');
+ const sql=source('../migrations/2026/2026-09-28-v04-PRIVATE-CARD-ROUTES.sql');
+
+ assert.match(utilities,/function loadOwnerCardRouteSlugMap\(\)/);
+ assert.match(utilities,/owner-card-routes\.json/);
+ assert.match(utilities,/appContext\.isOwnerMode\(\) && !appContext\.isLiveLifecycle\(card\)/);
+ assert.match(routing,/loadOwnerCardRouteSlugMap\(\)/);
+ assert.match(generator,/function fetchPrivateCardRoutes\(\)/);
+ assert.match(generator,/get_private_card_routes/);
+ assert.match(generator,/function renderPrivateCardRoutePage\(/);
+ assert.match(generator,/noindex,nofollow,noarchive/);
+ assert.match(generator,/owner-card-routes\.json/);
+ assert.match(generator,/urls\.push\(rendered\.url\)/);
+ assert.doesNotMatch(generator,/urls\.push\(.*private/i);
+
+ assert.match(sql,/returns table\s*\(\s*id text,\s*route_slug text\s*\)/i);
+ assert.match(sql,/security definer/i);
+ assert.match(sql,/lifecycle_status[\s\S]*draft[\s\S]*archived/i);
+ assert.match(sql,/availability[\s\S]*hidden[\s\S]*archived/i);
+ assert.match(sql,/grant execute on function public\.get_private_card_routes\(\) to anon/i);
+ const returnsBlock=sql.match(/returns table\s*\(([\s\S]*?)\)\s*language sql/i)?.[1]||'';
+ assert.doesNotMatch(returnsBlock,/name|price|image|grading|lifecycle|availability/i);
+});
+
 test('Phase 2A discovery surfaces keep clean-card routing and source context',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const routing=source('../dev/src/app/routing.js');
@@ -606,7 +634,8 @@ test('Beta cleanup keeps migrations centralized and retained owner tools wired',
   '../migrations/2026/2026-09-24-v07-DISCOVERY-ATTRIBUTION.sql',
   '../migrations/2026/2026-09-24-v08-DISCOVERY-SUMMARY.sql',
   '../migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql',
-  '../migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql'
+  '../migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql',
+  '../migrations/2026/2026-09-28-v04-PRIVATE-CARD-ROUTES.sql'
  ]) assert.equal(exists(path),true,path);
 
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
