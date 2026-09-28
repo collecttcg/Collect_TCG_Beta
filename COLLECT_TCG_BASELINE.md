@@ -90,11 +90,20 @@ Changes:
 - Private slugs are stored separately in `owner-card-routes.json`; normal visitors continue loading only the public SEO slug map.
 - Owner Mode lazily loads the private route map when opening a non-live card. Buyer Preview/public users do not gain Hidden/Archived card access; existing RLS and router guards remain authoritative.
 
-SQL required: Yes — `migrations/2026/2026-09-28-v04-PRIVATE-CARD-ROUTES.sql`. Rerunnable. Not yet confirmed applied.
+SQL required: Yes — `migrations/2026/2026-09-28-v04-PRIVATE-CARD-ROUTES.sql`. Rerunnable. User confirmed it was applied to Supabase on 2026-09-28.
 
-Validation status: implementation complete; validation pending SQL application because the Development SEO generator intentionally fails closed until `get_private_card_routes()` is available.
+Validation status: completed successfully after the SQL application was confirmed and the previously failed SEO workflow was rerun. Feature regression tests, SEO generator syntax/self-test, JavaScript/repository references, buyer/privacy/Hidden Listings guards, the dedicated Development v04 Hidden/Archived clean-route checks, generated SEO files, retained v27/v28/v01/v02/v03 behavior, QR inventory CTA watermark, global Bulk Images, game-aware new-card ordering, package creation/integrity and Development GitHub Pages deployment all passed. An actual generated private route was also inspected: it contains the owner-routing card ID and `noindex,nofollow,noarchive`, contains no JSON-LD/Open Graph card metadata, and its slug is absent from both `sitemap.xml` and public `seo-slugs.json`.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
+Release records:
+- SEO/generated source commit: `e0000c967204d388a84a8a3dd6228fbcbf7b45eb`
+- Package-validation commit: `3e7944fae3f5735b5827ecb1ed801404aedbbd3b`
+- Workflow run: `36385388983` (attempt 2)
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v04-full.zip`
+  - SHA-256: `9dd802b921f206d50a484fa86ae730872f288d0b3bd3599a70a5036cd5ff00fd`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v03-to-2026-09-28-v04-patch.zip`
+  - SHA-256: `467a7d6e4e4669d4f6961ea20f5b635079fd94a5946c0df0fee73d86562caf95`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; route/privacy behavior was exercised through the workflow tests and generated-file inspection.
 
 ### Development `2026-09-28-v03`
 
