@@ -87,15 +87,26 @@ Changes:
 - Startup restores the normal persisted Supabase browser session before attempting the optional Post Generator cross-tab handoff.
 - Owner verification distinguishes a conclusive non-owner result from a transient RPC/auth error and retries a transient verification once after a server-confirmed `getUser()`/session refresh path.
 - Owner card loading retries once after re-resolving the authenticated session before falling back to the existing public catalogue safety path.
-- Browser auth persistence/auto-refresh/localStorage use is now explicit in the Supabase client configuration rather than relying only on SDK defaults.
+- Browser auth persistence/auto-refresh/localStorage use is explicit in the Supabase client configuration rather than relying only on SDK defaults.
+- Both catalogue registration and catalogue initialization cache references advance to v04, preventing a stale initializer module during refresh.
 - The existing final router still redirects unauthenticated/non-owner users away from Insights, Post Generator Tools and every other owner-only route.
 - Existing FB/Carousell/eBay separate-tab behavior and selected-card preselection are retained.
 
 SQL required: No.
 
-Validation status: local implementation validation passed 52/52 feature tests plus syntax checks for all changed JavaScript files. GitHub workflow, package and Pages validation pending.
+Validation status: completed successfully. Local validation passed 52/52 feature tests, including executable transient-owner-retry and conclusive-non-owner fail-closed tests, plus syntax checks for every changed JavaScript file and the repository/import/asset checker. The first two GitHub attempts correctly stopped on stale cache assertions; those validation regressions were fixed. Final workflow run `36446412109` passed the full retained regression chain, the dedicated v04 owner-route restoration check, generated SEO, release packaging and Development Pages deployment. Package-validation Pages run `36446473511` completed successfully. Both release ZIPs were downloaded, independently integrity-tested with `unzip -t`, and their SHA-256 hashes matched the manifest.
 
-Validation limitation: interactive authenticated desktop/mobile/Safari browser testing is not available from the engineering environment; user confirmation in Development remains required for the reported browser-only refresh/new-tab behavior.
+Release records:
+- Source commit: `3101c2d56a8728568cecc1dea2d6ac0ba0d7f8bf`
+- Package-validation commit: `7ae040710d6bdd75e634f728b096541de5d03b7e`
+- Final workflow run: `36446412109`
+- Package-validation Pages run: `36446473511`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v04-full.zip`
+  - SHA-256: `8673c5a4c6c97e4f99c6d3d302224b2705069e2a30f5f58e846bb6bb744aa99d`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v03-to-2026-09-29-v04-patch.zip`
+  - SHA-256: `940683c1c0d6501dbcfaea1a8a47429acf95fa5c2f2d30ea3e2d8cfa10b2bb4f`
+
+Validation limitation: interactive authenticated desktop/mobile/Safari browser testing was not available. The reported browser symptom is addressed by the corrected startup/auth/cache path and executable auth tests, but user confirmation in Development is still required for the actual browser refresh/new-tab behavior.
 
 ### Development `2026-09-29-v03`
 
