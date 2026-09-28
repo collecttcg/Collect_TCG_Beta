@@ -391,28 +391,13 @@ function wireCardActions(container){
           appContext.openCloneOptions(card);
         }else if(action==="fb-post"){
           if(!appContext.requireOwner("generate Facebook post")) return;
-
-          // Stay in the same tab. Save the exact current listing URL + scroll
-          // position first, then navigate to the Single Card Post Generator.
-          // Browser Back will return to this exact listing state and restore
-          // the previous scroll position.
-          const returnHash=location.hash||"#/inventory";
-          appContext.rememberReturnScroll(returnHash);
-
-          location.hash=
-            `#/fb-tools?mode=single&card=${encodeURIComponent(card.id)}`;
+          appContext.openOwnerPostGenerator("single",card.id);
         }else if(action==="carousell-post"){
           if(!appContext.requireOwner("generate Carousell post")) return;
-          const returnHash=location.hash||"#/inventory";
-          appContext.rememberReturnScroll(returnHash);
-          location.hash=
-            `#/fb-tools?mode=carousell&card=${encodeURIComponent(card.id)}`;
+          appContext.openOwnerPostGenerator("carousell",card.id);
         }else if(action==="ebay-post"){
           if(!appContext.requireOwner("generate eBay post")) return;
-          const returnHash=location.hash||"#/inventory";
-          appContext.rememberReturnScroll(returnHash);
-          location.hash=
-            `#/fb-tools?mode=ebay&card=${encodeURIComponent(card.id)}`;
+          appContext.openOwnerPostGenerator("ebay",card.id);
         }else if(action==="availability"){
           if(!appContext.requireOwner("change card availability")) return;
           const status=String(btn.dataset.status||"");

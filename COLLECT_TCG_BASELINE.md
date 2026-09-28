@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v01`
+Latest Development: `2026-09-29-v02`
 
-Previous Development: `2026-09-28-v07`
+Previous Development: `2026-09-29-v01`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v02`
+
+Previous Development: `2026-09-29-v01`
+
+Purpose: preserve the exact inventory/list position while generating owner posts by opening card post generators in a separate tab/window.
+
+Changes:
+- Generate FB Post, Generate Carousell Post and Generate eBay Post now open their existing generator route in a new browser tab/window instead of replacing the inventory tab.
+- The original inventory page is left untouched, preserving its exact filters, list state and scroll position.
+- The selected card ID is still passed to each generator and preselection behavior from v01 is retained.
+- Restores the intended secure same-origin Owner Mode handoff already supported by startup/auth: only a random nonce is placed in the URL; the authenticated Supabase session is handed to the new tab through same-origin postMessage/BroadcastChannel, with normal persisted-session lookup as fallback.
+- If the browser blocks the new tab/window, the owner receives an allow-pop-ups message instead of losing the current inventory position.
+- Public users gain no owner generator access.
+
+SQL required: No.
+
+Validation status: implementation candidate committed; validation and packaging pending.
 
 ### Development `2026-09-29-v01`
 

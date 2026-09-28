@@ -808,3 +808,20 @@ test('Development 2026-09-29-v01 card quick menu opens FB, Carousell and eBay ge
   assert.match(posts,/function renderEbayListingGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?select\.value=requestedCardId/);
   assert.match(posts,/function renderCarousellPostGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?setSelection\(requestedValue\)/);
 });
+
+
+test('Development 2026-09-29-v02 opens card post generators in a separate tab and preserves the inventory tab',()=>{
+  const auth=fs.readFileSync(new URL('../dev/src/services/auth.js',import.meta.url),'utf8');
+  const tiles=fs.readFileSync(new URL('../dev/src/features/cards/tiles.js',import.meta.url),'utf8');
+  assert.match(auth,/function openOwnerPostGenerator\(mode,cardId\)/);
+  assert.match(auth,/new URLSearchParams\(\{mode:safeMode,card:safeId,handoff:nonce\}\)/);
+  assert.match(auth,/window\.open\(url\.toString\(\),"_blank"\)/);
+  assert.match(auth,/access_token:accessToken/);
+  assert.match(auth,/refresh_token:refreshToken/);
+  assert.match(auth,/new BroadcastChannel\(channelName\)/);
+  assert.match(auth,/opened\.postMessage\(payload,location\.origin\)/);
+  assert.match(tiles,/openOwnerPostGenerator\("single",card\.id\)/);
+  assert.match(tiles,/openOwnerPostGenerator\("carousell",card\.id\)/);
+  assert.match(tiles,/openOwnerPostGenerator\("ebay",card\.id\)/);
+  assert.doesNotMatch(tiles,/#\/fb-tools\?mode=(?:single|carousell|ebay)&card=\$\{encodeURIComponent\(card\.id\)\}/);
+});

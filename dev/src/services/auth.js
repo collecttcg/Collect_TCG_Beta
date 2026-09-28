@@ -360,6 +360,94 @@ async function receiveOwnerPostGeneratorHandoff(){
     });
   }
 
+function openOwnerPostGenerator(mode,cardId){
+    if(!appContext.isOwnerMode()) return false;
+
+    const safeMode=["single","carousell","ebay"].includes(String(mode||"")) ? String(mode) : "single";
+    const safeId=appContext.safeCardId(cardId);
+    if(!safeId) return false;
+
+    const session=appContext.ownerSession;
+    const accessToken=String(session?.access_token||"");
+    const refreshToken=String(session?.refresh_token||"");
+    const nonce=appContext.ownerPostHandoffNonce();
+    const params=new URLSearchParams({mode:safeMode,card:safeId,handoff:nonce});
+    const url=new URL(location.href);
+    url.hash=`/fb-tools?${params.toString()}`;
+
+    // Open synchronously from the card-menu click so popup blockers treat this
+    // as a user-requested tab/window. The original inventory tab is untouched.
+    const opened=window.open(url.toString(),"_blank");
+    if(!opened){
+      appContext.showToast("Allow pop-ups to open the Post Generator");
+      return false;
+    }
+
+    // Supabase normally restores the persisted owner session in the new tab.
+    // This same-origin handoff is the fast/robust path already supported by
+    // startApp/receiveOwnerPostGeneratorHandoff, without placing tokens in URL.
+    if(!accessToken || !refreshToken) return true;
+
+    const channelName=`collect-tcg-owner-post-${nonce}`;
+    let channel=null;
+    let timer=null;
+    let settled=false;
+
+    const payload={
+      type:appContext.OWNER_POST_HANDOFF_MESSAGE,
+      nonce,
+      action:"session",
+      access_token:accessToken,
+      refresh_token:refreshToken
+    };
+
+    const cleanup=()=>{
+      if(settled) return;
+      settled=true;
+      if(timer) clearTimeout(timer);
+      window.removeEventListener("message",onWindowMessage);
+      try{ channel?.close(); }catch{}
+    };
+
+    const sendSession=()=>{
+      if(settled) return;
+      try{ opened.postMessage(payload,location.origin); }catch{}
+      try{ channel?.postMessage(payload); }catch{}
+    };
+
+    const onWindowMessage=event=>{
+      if(event.origin!==location.origin) return;
+      const data=event.data;
+      if(!data || data.type!==appContext.OWNER_POST_HANDOFF_MESSAGE || data.nonce!==nonce) return;
+      if(data.action==="request") sendSession();
+      else if(data.action==="ack") cleanup();
+    };
+
+    window.addEventListener("message",onWindowMessage);
+
+    if("BroadcastChannel" in window){
+      try{
+        channel=new BroadcastChannel(channelName);
+        channel.addEventListener("message",event=>{
+          const data=event.data;
+          if(!data || data.type!==appContext.OWNER_POST_HANDOFF_MESSAGE || data.nonce!==nonce) return;
+          if(data.action==="request") sendSession();
+          else if(data.action==="ack") cleanup();
+        });
+      }catch(error){
+        console.warn("BroadcastChannel owner handoff unavailable:",error);
+      }
+    }
+
+    // Proactive retries cover the short interval while the new tab loads its
+    // modules; the receiver also requests the session when it is ready.
+    setTimeout(sendSession,80);
+    setTimeout(sendSession,250);
+    setTimeout(sendSession,650);
+    timer=setTimeout(cleanup,7000);
+    return true;
+  }
+
 async function openOwnerAccess(){
     const mobileCollectionAccess=appContext.isMobileOwnerBlocked();
 
@@ -461,5 +549,5 @@ async function openOwnerAccess(){
     appContext.showToast("Owner login successful");
   }
 
-  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerAuthenticated,isOwnerBuyerPreview,isOwnerMode,canManageCollectionOrder,readOwnerBuyerPreviewPreference,writeOwnerBuyerPreviewPreference,ensureOwnerBuyerPreviewToggle,syncOwnerBuyerPreviewToggle,setOwnerBuyerPreview,toggleOwnerBuyerPreview,requireCollectionOrderOwner,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerAccess});
+  Object.assign(appContext,{isMobileOwnerBlocked,isOwnerAuthenticated,isOwnerBuyerPreview,isOwnerMode,canManageCollectionOrder,readOwnerBuyerPreviewPreference,writeOwnerBuyerPreviewPreference,ensureOwnerBuyerPreviewToggle,syncOwnerBuyerPreviewToggle,setOwnerBuyerPreview,toggleOwnerBuyerPreview,requireCollectionOrderOwner,verifyOwnerSession,clearOwnerOnlyClientState,applyOwnerMode,requireOwner,confirmOwnerAction,refreshOwnerSession,ownerPostHandoffNonce,currentOwnerPostHandoffNonce,removeOwnerPostHandoffParam,receiveOwnerPostGeneratorHandoff,openOwnerPostGenerator,openOwnerAccess});
 }
