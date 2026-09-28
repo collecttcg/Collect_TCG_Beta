@@ -802,9 +802,9 @@ test('Development 2026-09-29-v01 card quick menu opens FB, Carousell and eBay ge
   assert.match(tiles,/data-action="fb-post"[^>]*>Generate FB Post<\/button>/);
   assert.match(tiles,/data-action="carousell-post"[^>]*>Generate Carousell Post<\/button>/);
   assert.match(tiles,/data-action="ebay-post"[^>]*>Generate eBay Post<\/button>/);
-  assert.match(tiles,/#\/fb-tools\?mode=single&card=\$\{encodeURIComponent\(card\.id\)\}/);
-  assert.match(tiles,/#\/fb-tools\?mode=carousell&card=\$\{encodeURIComponent\(card\.id\)\}/);
-  assert.match(tiles,/#\/fb-tools\?mode=ebay&card=\$\{encodeURIComponent\(card\.id\)\}/);
+  assert.match(tiles,/openOwnerPostGenerator\("single",card\.id\)/);
+  assert.match(tiles,/openOwnerPostGenerator\("carousell",card\.id\)/);
+  assert.match(tiles,/openOwnerPostGenerator\("ebay",card\.id\)/);
   assert.match(posts,/function renderEbayListingGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?select\.value=requestedCardId/);
   assert.match(posts,/function renderCarousellPostGeneratorPage\(\)[\s\S]*?currentHashParams\(\)\.get\("card"\)[\s\S]*?setSelection\(requestedValue\)/);
 });

@@ -735,8 +735,8 @@ jobs:
           grep -Fq 'Generate Carousell Post' dev/src/features/cards/tiles.js
           grep -Fq 'data-action="ebay-post"' dev/src/features/cards/tiles.js
           grep -Fq 'Generate eBay Post' dev/src/features/cards/tiles.js
-          grep -Fq '#/fb-tools?mode=carousell&card=' dev/src/features/cards/tiles.js
-          grep -Fq '#/fb-tools?mode=ebay&card=' dev/src/features/cards/tiles.js
+          grep -Fq 'openOwnerPostGenerator("carousell",card.id)' dev/src/features/cards/tiles.js
+          grep -Fq 'openOwnerPostGenerator("ebay",card.id)' dev/src/features/cards/tiles.js
           grep -Fq 'tiles.js?v=2026-09-29-v02' dev/src/app/register-features.js
           grep -Fq 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
           grep -Fq 'register-features.js?v=2026-09-29-v02' dev/src/main.js
