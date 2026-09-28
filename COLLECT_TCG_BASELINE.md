@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v04`
+Latest Development: `2026-09-28-v05`
 
-Previous Development: `2026-09-28-v03`
+Previous Development: `2026-09-28-v04`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v05`
+
+Previous Development: `2026-09-28-v04`
+
+Purpose: expose the existing seven-day `new` inventory quick filter as a visible **Newly Added** pill immediately beside Trending.
+
+Changes:
+- Added a `Newly Added` quick-filter pill directly after `Trending`.
+- Reuses the existing `quick=new` route/filter behavior and existing `isNewCard(card, 7)` definition.
+- Newly Added therefore shows live listings created within the last 7 days and composes with the existing inventory filters/search behavior.
+- No database fields, SQL, styling system or unrelated inventory behavior changed.
+
+SQL required: No.
+
+Validation status: implementation committed; Development validation/package workflow pending.
 
 ### Development `2026-09-28-v04`
 

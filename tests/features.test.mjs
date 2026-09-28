@@ -750,3 +750,14 @@ test('public catalogue hydrates Sold rank through the privacy-safe RPC',async()=
   assert.match(sql,/grant execute on function public\.get_public_sold_order\(\) to anon/);
   assert.doesNotMatch(sql,/returns table\s*\([^)]*sold_at/is);
 });
+
+
+test('Development v05 exposes Newly Added beside Trending using the existing seven-day new filter',()=>{
+  const page=source('../dev/src/features/inventory/page.js');
+  const filtering=source('../dev/src/features/inventory/filtering.js');
+  assert.match(page,/\["trending","🔥 Trending","Trending"\],\s*\["new","Newly Added","Newly Added"\]/);
+  assert.match(page,/new:"Newly Added"/);
+  assert.match(page,/\["all","new","graded","raw","sealed","championship","vintage","trending"\]\.includes\(requestedQuick\)/);
+  assert.match(filtering,/function isNewCard\(card, days = 7\)/);
+  assert.match(filtering,/activeQuickFilter === "new" && !appContext\.isNewCard\(c\)/);
+});

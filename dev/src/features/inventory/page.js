@@ -17,7 +17,8 @@ function syncQuickFilterUI(){
         sealed:"Sealed",
         championship:"Championship",
         vintage:"Vintage",
-        trending:"Trending"
+        trending:"Trending",
+        new:"Newly Added"
       };
       activeLabel.textContent=labels[appContext.activeQuickFilter] || "All";
     }
@@ -31,7 +32,8 @@ function inventoryQuickFiltersHTML(){
       ["sealed","Sealed","Sealed"],
       ["championship","Championship","Champ"],
       ["vintage","Vintage","Vintage"],
-      ["trending","🔥 Trending","Trending"]
+      ["trending","🔥 Trending","Trending"],
+      ["new","Newly Added","Newly Added"]
     ].map(([value,desktopLabel,mobileLabel])=>
       `<button type="button" class="quick-filter" data-quick="${value}"><span class="quick-filter-label-desktop">${desktopLabel}</span><span class="quick-filter-label-mobile">${mobileLabel}</span></button>`
     ).join("");
