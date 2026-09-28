@@ -7,7 +7,7 @@ import { register as register5 } from '../features/cards/repository.js?v=2026-09
 import { register as register6 } from '../app/navigation.js?v=2026-09-26-v12';
 import { register as register7 } from '../ui/notifications.js?v=2026-09-26-v03';
 import { register as register8 } from '../features/cards/pricing.js';
-import { register as register9 } from '../services/catalogue.js?v=2026-09-26-v10';
+import { register as register9 } from '../services/catalogue.js?v=2026-09-28-v02';
 import { register as register10 } from '../features/content/giveaways-data.js';
 import { register as register11 } from '../features/content/showcase-data.js';
 import { register as register12 } from '../services/analytics.js?v=2026-09-27-v09';
@@ -18,7 +18,7 @@ import { register as register15 } from '../features/media/images.js?v=2026-09-27
 import { register as register16 } from '../features/cards/presentation.js';
 import { register as register17 } from '../features/owner/forms.js?v=2026-09-27-v25';
 import { register as register18 } from '../features/content/home.js?v=2026-09-26-v07';
-import { register as register19 } from '../features/inventory/filtering.js?v=2026-09-26-v18';
+import { register as register19 } from '../features/inventory/filtering.js?v=2026-09-28-v02';
 import { register as register20 } from '../features/cards/related.js?v=2026-09-24-v08';
 import { register as register21 } from '../features/cards/compare.js?v=2026-09-26-v07';
 import { register as register22 } from '../features/cards/tiles.js?v=2026-09-26-v02';
