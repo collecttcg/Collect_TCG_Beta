@@ -12551,16 +12551,24 @@ body.light-mode .sticky-mobile-results-action small{
 
 
 /* =========================================================
-   DESKTOP OWNER MENU — BELOW TOP-RIGHT BADGE ON SOLD/RESERVED
-   Mobile behavior is intentionally unchanged.
+   DESKTOP OWNER MENU — KEEP TOP-RIGHT ON SOLD/RESERVED
+   Owner actions stay in the standard card corner. The grade /
+   condition badge moves below them only in Owner Mode so public
+   Sold/Reserved presentation is unchanged. Mobile Owner Mode
+   remains disabled by the existing security UX guard below.
    ========================================================= */
 @media(min-width:801px){
-  .card:has(.status-corner-sold) .quick-card-actions,
-  .card:has(.status-corner-reserved) .quick-card-actions{
-    top:62px !important;
+  body.owner-mode .card:has(.status-corner-sold) .quick-card-actions,
+  body.owner-mode .card:has(.status-corner-reserved) .quick-card-actions{
+    top:8px !important;
     right:8px !important;
     left:auto !important;
-    z-index:9 !important;
+    z-index:18 !important;
+  }
+
+  body.owner-mode .card:has(.status-corner-sold) .overview-grade-overlay-right,
+  body.owner-mode .card:has(.status-corner-reserved) .overview-grade-overlay-right{
+    top:52px !important;
   }
 }
 
