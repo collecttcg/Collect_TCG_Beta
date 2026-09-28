@@ -92,7 +92,19 @@ Changes:
 
 SQL required: No.
 
-Validation status: local implementation validation passed 53/53 feature tests plus changed-JavaScript syntax checks; GitHub workflow, deployment and package validation pending.
+Validation status: completed successfully. Local validation passed 53/53 feature tests plus syntax checks for every changed JavaScript file. GitHub workflow run `36444662308` passed the full retained regression suite, dedicated v01/v02/v03 generator checks, Owner/privacy/Hidden protections, generated SEO, release packaging and Development Pages deployment. Package-validation commit Pages run `36444727257` also completed successfully. Both release ZIPs were downloaded, independently integrity-tested with `unzip -t`, and their SHA-256 hashes matched the manifest.
+
+Release records:
+- Source/generated commit: `2023a2dae3bfb7c4617fa64fcee83b081d9f6d23`
+- Package-validation commit: `be2e82d27e814693823e208984ae981e5fe5042f`
+- Workflow run: `36444662308`
+- Package-validation Pages run: `36444727257`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v03-full.zip`
+  - SHA-256: `ff89bca7b0a73e6602c693da51bcf27849342ccc33e35f1fca74c1bc186a6068`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v02-to-2026-09-29-v03-patch.zip`
+  - SHA-256: `12419349d07c6de1b49002d28c87671b732d815a9273c39cce78e58020bbf2a3`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not available. The reported browser symptom identified the race, but the v03 fix itself is validated by repository tests/static startup-path inspection rather than a real browser session; user confirmation in Development is still required for that interactive behavior.
 
 ### Development `2026-09-29-v02`
 
