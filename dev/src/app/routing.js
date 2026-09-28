@@ -301,6 +301,10 @@ async function openCardRoute(cardId,discoverySource=""){
         await appContext.loadSeoCardSlugMap();
         clean=appContext.publishedSeoCardUrl(card);
       }
+      if(!clean && appContext.isOwnerMode() && !appContext.isLiveLifecycle(card)){
+        await appContext.loadOwnerCardRouteSlugMap();
+        clean=appContext.publishedSeoCardUrl(card);
+      }
       if(clean){
         try{
           appContext.sessionStorage.setItem(
