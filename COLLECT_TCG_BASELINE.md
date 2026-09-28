@@ -92,7 +92,19 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation candidate committed; validation and packaging pending.
+Validation status: completed successfully. Changed JavaScript syntax, imports/assets/cache references, dedicated FB/Carousell/eBay quick-action routing and card-ID preselection checks, existing post-generator behavior, Owner/Hidden/privacy protections, generated SEO, retained Development regressions, package creation/integrity and Development GitHub Pages deployment all passed.
+
+Release records:
+- Source/generated commit: `be35c777b6526f01fac664c5a918769897ecff73`
+- Package-validation commit: `6b1ddc328e0453b32a303d13c0b8ce35f7119e51`
+- Workflow run: `36442280917`
+- GitHub Pages deployment run: `36442362761`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v01-full.zip`
+  - SHA-256: `fc70291e40c6b08c974e869de6ee19763ba99d1ffda5f458f3bce477495f5159`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v07-to-2026-09-29-v01-patch.zip`
+  - SHA-256: `02183c786855c9bafb8a607db60fb59a5f3ec3a7bc703813a52bed7f72daeaf6`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; menu behavior and routing were exercised by repository tests and static/runtime validation.
 
 ### Development `2026-09-28-v07`
 
