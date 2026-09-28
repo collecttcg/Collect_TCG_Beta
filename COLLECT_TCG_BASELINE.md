@@ -94,7 +94,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; Development validation/package workflow pending.
+Validation status: completed successfully. Feature tests exercised raw, PSA-graded and sealed generated descriptions and verified format-specific disclosures; changed JavaScript syntax, repository/import/asset references, retained post-generator behavior, v05/v06 regressions, Owner/Hidden/privacy protections, generated SEO, package creation/integrity and Development GitHub Pages build/deployment all passed.
+
+Release records:
+- Source/generated commit: `f80f417691817ac77fe5dbdb7dfb3d2e98576028`
+- Package-validation commit: `1bb110330d0f18cd5f5e74cd206cf56ce68d0444`
+- Workflow run: `36440234222`
+- Full ZIP: `Collect-TCG-Dev-2026-09-28-v07-full.zip`
+  - SHA-256: `5aa3fb05d9b09d229efbc0152d84da9b5c39c0ea2394034b4b6bae7eb884da30`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-28-v06-to-2026-09-28-v07-patch.zip`
+  - SHA-256: `39002ba5c72faad487819e808d12b2f56feb317d4b996563835efa4683a24c31`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed.
 
 ### Development `2026-09-28-v06`
 
