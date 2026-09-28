@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v01`
+Latest Development: `2026-09-28-v02`
 
-Previous Development: `2026-09-27-v28`
+Previous Development: `2026-09-28-v01`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v02`
+
+Previous Development: `2026-09-28-v01`
+
+Purpose: make the public Sold page and Buyer Preview use the same true sold-date ordering as Owner Mode.
+
+Changes:
+- Added a privacy-safe public Sold-order RPC that exposes only live Sold listing IDs and their chronological rank, not the private `sold_at` timestamp.
+- Public catalogue loading hydrates that Sold rank when Sold listings are present.
+- `Recently Sold` prefers the public Sold rank for buyers and retains `sold_at` sorting for Owner Mode, with existing timestamp fallbacks preserved.
+- Buyer/public ordering therefore follows the same sold chronology as Owner Mode after the migration is applied.
+- No Inventory/Collection custom ordering, Owner Mode controls, analytics, Contact to Buy, generators or giveaway behavior changes.
+
+SQL required: Yes — `migrations/2026/2026-09-28-v02-PUBLIC-SOLD-ORDER.sql`. Rerunnable. Not applied by ChatGPT.
+
+Validation status: in progress.
 
 ### Development `2026-09-28-v01`
 
