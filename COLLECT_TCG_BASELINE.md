@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-28-v05`
+Latest Development: `2026-09-28-v06`
 
-Previous Development: `2026-09-28-v04`
+Previous Development: `2026-09-28-v05`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-28-v04`
+Latest Production: `2026-09-28-v05`
 
-Previous Production: `2026-09-28-v03`
+Previous Production: `2026-09-28-v04`
 
-Production functional baseline last promoted from Development: `2026-09-28-v04`
+Production functional baseline last promoted from Development: `2026-09-28-v05`
 
-Production package-validation HEAD: `c4c3b1373d4643a961e5b7d1cd7116a36eba28dc`
+Production package-validation HEAD: `bb1929c9db47f1b687131607edb7ce5e76e0cb62`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `c4c3b1373d4643a961e5b7d1cd7116a36eba28dc`.
+- Current validated/deployed Production last-known-good commit: `bb1929c9db47f1b687131607edb7ce5e76e0cb62`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-28-v06`
+
+Previous Development: `2026-09-28-v05`
+
+Purpose: enlarge the eBay Listing Generator Description editor so the generated description is easier to review and copy.
+
+Changes:
+- The eBay Description textarea now opens at 14 text rows instead of the browser's small default height.
+- Item Specifics remains at 8 rows.
+- The existing vertical textarea resize behavior is preserved.
+- No eBay title, item-specific, description-generation, copy, image ZIP, card selection, Owner Mode or database behavior changed.
+
+SQL required: No.
+
+Validation status: implementation committed; Development validation/package workflow pending.
 
 ### Development `2026-09-28-v05`
 

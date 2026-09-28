@@ -761,3 +761,10 @@ test('Development v05 exposes Newly Added beside Trending using the existing sev
   assert.match(filtering,/function isNewCard\(card, days = 7\)/);
   assert.match(filtering,/activeQuickFilter === "new" && !appContext\.isNewCard\(c\)/);
 });
+
+
+test('Development v06 gives the eBay description editor a larger initial height without changing item specifics',()=>{
+  const posts=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
+  assert.match(posts,/<textarea id="ebaySpecificsOutput" rows="8" readonly><\/textarea>/);
+  assert.match(posts,/<textarea id="ebayDescriptionOutput" class="fb-post-output" rows="14" readonly><\/textarea>/);
+});
