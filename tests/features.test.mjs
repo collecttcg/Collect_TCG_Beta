@@ -958,7 +958,7 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
  a.collectSocialPostLines=()=>[];
  const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",language:"English",format:"Graded",availability:"Available",grading:[{company:"PSA",grade:"10",pop_count:12}]};
- assert.match(a.defaultFbPostTitle(card),/^ONE PIECE WTS【GRADED】/);
+ assert.match(a.defaultFbPostTitle(card),/^ONE PIECE WTS【PSA 10】/);
  assert.match(a.singleCardCopyTitle(card),/^ONE PIECE · /);
  assert.match(a.ebayListingTitle(card),/^ONE PIECE /);
  assert.match(a.defaultCarousellProductDetails(card),/^ONE PIECE 【PSA 10】/);
