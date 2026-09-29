@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v05`
+Latest Development: `2026-09-29-v06`
 
-Previous Development: `2026-09-29-v04`
+Previous Development: `2026-09-29-v05`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v06`
+
+Previous Development: `2026-09-29-v05`
+
+Purpose: correct the remaining oversized website QR/CTA watermark on ordinary 4:3 landscape photos while preserving the v05 wide-landscape fix and portrait sizing.
+
+Changes:
+- True landscape photos (`width > height`) now use a 62% image-width target in addition to the existing 24% image-height cap.
+- The supplied 1080×810 4:3 photo now computes at about 670×146 px instead of about 886×193 px.
+- The earlier 1080×607 wide-landscape case remains about 670×146 px.
+- Square and portrait images retain the existing 82% width behavior (1080-wide representative cases remain about 886×193 px).
+- The approved banner artwork, QR replacement coordinates, bottom placement and source photo remain unchanged.
+
+SQL required: No.
+
+Validation status: implementation committed; workflow/package validation pending.
 
 ### Development `2026-09-29-v05`
 

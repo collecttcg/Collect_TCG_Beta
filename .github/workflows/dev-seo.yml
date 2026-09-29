@@ -183,8 +183,8 @@ jobs:
           grep -q 'data-insights-v14-open-card' dev/src/features/owner/insights-dashboard.js
           grep -q 'insights-v20-table-wrap' dev/src/styles/27-insights-dashboard.css
           grep -q 'insights-dashboard.js?v=2026-09-26-v19' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate Phase 5 sales action queue
         shell: bash
@@ -277,8 +277,8 @@ jobs:
           grep -q '<option value="detailed" selected>Detailed listing</option>' dev/src/features/social/posts.js
           grep -q 'templateModeInput?.value||"detailed"' dev/src/features/social/posts.js
           grep -q 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate Development analytics test exclusion
         shell: bash
@@ -316,8 +316,8 @@ jobs:
           grep -q 'tiles.js?v=2026-09-29-v02' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/register-features.js
           grep -q 'details.js?v=2026-09-26-v02' dev/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate hidden-card visibility guards
         shell: bash
@@ -336,8 +336,8 @@ jobs:
           grep -q 'filtering.js?v=2026-09-28-v02' dev/src/app/register-features.js
           grep -q 'page.js?v=2026-09-28-v05' dev/src/app/register-features.js
           grep -q 'compare.js?v=2026-09-26-v07' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate owner-only Hidden Listings page
         shell: bash
@@ -373,9 +373,9 @@ jobs:
           grep -q 'navigation.js?v=2026-09-26-v12' dev/src/app/initialize.js
           grep -q 'routing.js?v=2026-09-28-v04' dev/src/app/initialize.js
           grep -q 'filtering.js?v=2026-09-28-v02' dev/src/app/initialize.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -q 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate public hidden-card source guards
         shell: bash
@@ -392,8 +392,8 @@ jobs:
           grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
           grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
           grep -q 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate Beta v10 hidden-listing persistence contract
         shell: bash
@@ -409,8 +409,8 @@ jobs:
           grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
           grep -q 'catalogue.js?v=2026-09-29-v04' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate inventory filter/game-browser resync
         shell: bash
@@ -426,8 +426,8 @@ jobs:
           grep -Fq 'bucket.clear();' dev/src/features/inventory/page.js
           grep -Fq 'bucket.add(value);' dev/src/features/inventory/page.js
           grep -q 'page.js?v=2026-09-28-v05' dev/src/app/register-features.js
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate post generator preview prices
         shell: bash
@@ -445,8 +445,8 @@ jobs:
           grep -Fq '.fb-post-card-copy .fb-post-card-price' dev/src/styles/01-foundation.css
           grep -q 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
           grep -q '01-foundation.css?v=2026-09-28-v01' dev/index.html
-          grep -q 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -q 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -q 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -q 'src/main.js?v=2026-09-29-v06' dev/index.html
 
       - name: Validate Development v04 Hidden and Archived clean routes
         shell: bash
@@ -516,7 +516,7 @@ jobs:
           node --check dev/src/features/owner/add.js
           grep -Fq "owner/forms.js?v=2026-09-28-v03" dev/src/app/register-features.js
           grep -Fq "owner/add.js?v=2026-09-27-v25" dev/src/app/register-features.js
-          grep -Fq "register-features.js?v=2026-09-29-v05" dev/src/main.js
+          grep -Fq "register-features.js?v=2026-09-29-v06" dev/src/main.js
           ! grep -Fq 'owner-editor-tabs' dev/src/features/owner/forms.js
           ! grep -Fq 'function setOwnerEditorTab' dev/src/features/owner/forms.js
           ! grep -Fq 'data-owner-editor-panel="details"' dev/src/features/owner/forms.js
@@ -575,9 +575,9 @@ jobs:
           grep -Fq 'applyWebsiteWatermarkToCardImageSource(original,1800,0.94)' dev/src/features/owner/image-maintenance.js
           grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/register-features.js
           grep -Fq 'owner/image-maintenance.js?v=2026-09-27-v27' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -Fq 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           ! grep -Fq 'analytics_test' dev/src/features/owner/image-maintenance.js
           git diff --check
 
@@ -599,9 +599,9 @@ jobs:
           grep -Fq 'const rawRank={M:0,NM:1,LP:2,MP:3,HP:4,DMG:5,NA:6};' dev/src/features/inventory/ordering.js
           grep -Fq 'ordering.js?v=2026-09-27-v28' dev/src/app/register-features.js
           grep -Fq 'ordering.js?v=2026-09-27-v28' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -Fq 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           git diff --check
 
       - name: Validate Development 2026-09-28-v01 Sold owner menu placement
@@ -646,9 +646,9 @@ jobs:
           grep -Fq 'catalogue.js?v=2026-09-29-v04' dev/src/app/initialize.js
           grep -Fq 'filtering.js?v=2026-09-28-v02' dev/src/app/register-features.js
           grep -Fq 'filtering.js?v=2026-09-28-v02' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -Fq 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           git diff --check
 
       - name: Validate Development 2026-09-28-v03 saved manual currency preservation
@@ -665,9 +665,9 @@ jobs:
           grep -Fq 'manualSgd=false;' dev/src/features/owner/forms.js
           grep -Fq 'owner/forms.js?v=2026-09-28-v03' dev/src/app/register-features.js
           grep -Fq 'owner/forms.js?v=2026-09-28-v03' dev/src/app/initialize.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -Fq 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -686,8 +686,8 @@ jobs:
           grep -Fq 'function isNewCard(card, days = 7)' dev/src/features/inventory/filtering.js
           grep -Fq 'activeQuickFilter === "new" && !appContext.isNewCard(c)' dev/src/features/inventory/filtering.js
           grep -Fq 'page.js?v=2026-09-28-v05' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -701,8 +701,8 @@ jobs:
           grep -Fq '<textarea id="ebaySpecificsOutput" rows="8" readonly></textarea>' dev/src/features/social/posts.js
           grep -Fq '<textarea id="ebayDescriptionOutput" class="fb-post-output" rows="14" readonly></textarea>' dev/src/features/social/posts.js
           grep -Fq 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -718,8 +718,8 @@ jobs:
           grep -Fq 'The holder/slab may have minor surface marks, scratches, or other signs of handling that do not affect the card' dev/src/features/social/posts.js
           grep -Fq 'Factory-sealed products may have minor wear, dents, scratches, loose wrapping, or other imperfections to the outer packaging.' dev/src/features/social/posts.js
           grep -Fq 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -739,8 +739,8 @@ jobs:
           grep -Fq 'openOwnerPostGenerator("ebay",card.id)' dev/src/features/cards/tiles.js
           grep -Fq 'tiles.js?v=2026-09-29-v02' dev/src/app/register-features.js
           grep -Fq 'posts.js?v=2026-09-29-v01' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -760,8 +760,8 @@ jobs:
           grep -Fq 'openOwnerPostGenerator("ebay",card.id)' dev/src/features/cards/tiles.js
           grep -Fq 'auth.js?v=2026-09-29-v04' dev/src/app/register-features.js
           grep -Fq 'tiles.js?v=2026-09-29-v02' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -801,9 +801,9 @@ jobs:
           grep -Fq 'startup.js?v=2026-09-29-v04' dev/src/app/register-features.js
           grep -Fq 'startup.js?v=2026-09-29-v04' dev/src/app/initialize.js
           grep -Fq 'production-runtime.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
           grep -Fq 'initialize.js?v=2026-09-29-v04' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node --test tests/features.test.mjs
           git diff --check
 
@@ -816,18 +816,20 @@ jobs:
           node --check dev/src/main.js
           grep -Fq 'const widthTarget=Math.round(canvas.width*0.82);' dev/src/features/media/images.js
           grep -Fq 'const heightCappedWidth=Math.round(canvas.height*0.24*sourceW/sourceH);' dev/src/features/media/images.js
-          grep -Fq 'Math.max(280,Math.min(widthTarget,heightCappedWidth))' dev/src/features/media/images.js
-          grep -Fq 'images.js?v=2026-09-29-v05' dev/src/app/register-features.js
-          grep -Fq 'register-features.js?v=2026-09-29-v05' dev/src/main.js
-          grep -Fq 'src/main.js?v=2026-09-29-v05' dev/index.html
+          grep -Fq 'const landscapeWidthTarget=canvas.width>canvas.height' dev/src/features/media/images.js
+          grep -Fq 'Math.max(280,Math.min(widthTarget,landscapeWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
+          grep -Fq 'images.js?v=2026-09-29-v06' dev/src/app/register-features.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
           node - <<'NODE'
           const sourceW=1113, sourceH=242;
           const banner=(w,h)=>{
             const shortSide=Math.min(w,h);
             const margin=Math.max(8,Math.round(shortSide*0.012));
             const widthTarget=Math.round(w*0.82);
+            const landscapeWidthTarget=w>h ? Math.round(w*0.62) : widthTarget;
             const heightCappedWidth=Math.round(h*0.24*sourceW/sourceH);
-            const bw=Math.min(w-margin*2,Math.max(280,Math.min(widthTarget,heightCappedWidth)));
+            const bw=Math.min(w-margin*2,Math.max(280,Math.min(widthTarget,landscapeWidthTarget,heightCappedWidth)));
             return {w:bw,h:Math.round(bw*sourceH/sourceW)};
           };
           const landscape=banner(1080,607);
@@ -841,12 +843,49 @@ jobs:
           node tools/check.mjs
           git diff --check
 
+      - name: Validate Development 2026-09-29-v06 landscape watermark sizing
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check dev/src/features/media/images.js
+          node --check dev/src/app/register-features.js
+          node --check dev/src/main.js
+          grep -Fq 'const landscapeWidthTarget=canvas.width>canvas.height' dev/src/features/media/images.js
+          grep -Fq 'Math.round(canvas.width*0.62)' dev/src/features/media/images.js
+          grep -Fq 'Math.max(280,Math.min(widthTarget,landscapeWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
+          grep -Fq 'images.js?v=2026-09-29-v06' dev/src/app/register-features.js
+          grep -Fq 'register-features.js?v=2026-09-29-v06' dev/src/main.js
+          grep -Fq 'src/main.js?v=2026-09-29-v06' dev/index.html
+          node - <<'NODE'
+          const sourceW=1113, sourceH=242;
+          const banner=(w,h)=>{
+            const shortSide=Math.min(w,h);
+            const margin=Math.max(8,Math.round(shortSide*0.012));
+            const widthTarget=Math.round(w*0.82);
+            const landscapeWidthTarget=w>h ? Math.round(w*0.62) : widthTarget;
+            const heightCappedWidth=Math.round(h*0.24*sourceW/sourceH);
+            const bw=Math.min(w-margin*2,Math.max(280,Math.min(widthTarget,landscapeWidthTarget,heightCappedWidth)));
+            return {w:bw,h:Math.round(bw*sourceH/sourceW)};
+          };
+          const landscape43=banner(1080,810);
+          const landscapeWide=banner(1080,607);
+          const square=banner(1080,1080);
+          const portrait=banner(1080,1512);
+          if(landscape43.w!==670 || landscape43.h!==146) throw new Error('4:3 landscape sizing regression: '+JSON.stringify(landscape43));
+          if(landscapeWide.w!==670 || landscapeWide.h!==146) throw new Error('Wide landscape sizing regression: '+JSON.stringify(landscapeWide));
+          if(square.w!==886 || square.h!==193) throw new Error('Square sizing changed: '+JSON.stringify(square));
+          if(portrait.w!==886 || portrait.h!==193) throw new Error('Portrait sizing changed: '+JSON.stringify(portrait));
+          console.log(JSON.stringify({landscape43,landscapeWide,square,portrait}));
+          NODE
+          node tools/check.mjs
+          git diff --check
+
       - name: Create Development release packages
         shell: bash
         env:
-          RELEASE_VERSION: 2026-09-29-v05
-          PREVIOUS_VERSION: 2026-09-29-v04
-          PREVIOUS_COMMIT: 7ae040710d6bdd75e634f728b096541de5d03b7e
+          RELEASE_VERSION: 2026-09-29-v06
+          PREVIOUS_VERSION: 2026-09-29-v05
+          PREVIOUS_COMMIT: 295f922ccda135a5834029c4934d7c00215a5686
         run: |
           set -euo pipefail
           mkdir -p release
@@ -874,10 +913,10 @@ jobs:
       - name: Upload Development release packages
         uses: actions/upload-artifact@v4
         with:
-          name: Collect-TCG-Dev-2026-09-29-v05-packages
+          name: Collect-TCG-Dev-2026-09-29-v06-packages
           path: |
-            release/Collect-TCG-Dev-2026-09-29-v05-full.zip
-            release/Collect-TCG-Dev-2026-09-29-v04-to-2026-09-29-v05-patch.zip
+            release/Collect-TCG-Dev-2026-09-29-v06-full.zip
+            release/Collect-TCG-Dev-2026-09-29-v05-to-2026-09-29-v06-patch.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -886,18 +925,18 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-manifests
-          MANIFEST="release-manifests/2026-09-29-v05.txt"
+          MANIFEST="release-manifests/2026-09-29-v06.txt"
           {
-            echo "Version: 2026-09-29-v05"
-            echo "Previous version: 2026-09-29-v04"
+            echo "Version: 2026-09-29-v06"
+            echo "Previous version: 2026-09-29-v05"
             echo "Source commit: $(git rev-parse HEAD)"
-            echo "Full ZIP: Collect-TCG-Dev-2026-09-29-v05-full.zip"
-            echo "Patch ZIP: Collect-TCG-Dev-2026-09-29-v04-to-2026-09-29-v05-patch.zip"
+            echo "Full ZIP: Collect-TCG-Dev-2026-09-29-v06-full.zip"
+            echo "Patch ZIP: Collect-TCG-Dev-2026-09-29-v05-to-2026-09-29-v06-patch.zip"
             echo
             sha256sum release/*.zip
           } > "$MANIFEST"
           git add "$MANIFEST"
-          git commit -m "Development 2026-09-29-v05: record package validation"
+          git commit -m "Development 2026-09-29-v06: record package validation"
           git push
 
   deploy:

@@ -14,7 +14,7 @@ import { register as register12 } from '../services/analytics.js?v=2026-09-27-v0
 import { register as registerContactIntentPolicy } from '../services/contact-intent-policy.js?v=2026-09-17-v12';
 import { register as register13 } from '../features/owner/psa.js';
 import { register as register14 } from '../app/routing.js?v=2026-09-28-v04';
-import { register as register15 } from '../features/media/images.js?v=2026-09-29-v05';
+import { register as register15 } from '../features/media/images.js?v=2026-09-29-v06';
 import { register as register16 } from '../features/cards/presentation.js';
 import { register as register17 } from '../features/owner/forms.js?v=2026-09-28-v03';
 import { register as register18 } from '../features/content/home.js?v=2026-09-26-v07';
