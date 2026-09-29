@@ -91,7 +91,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implemented; validation pending.
+Validation status: completed successfully. The Development workflow ran repository-wide JavaScript syntax/import/asset checks, retained regression checks, and a dedicated lowercase hashtag test covering the legacy default plus mixed-case custom inputs. Full and patch ZIPs were created and integrity-checked, the package manifest was committed, and the final Development GitHub Pages deployment completed successfully.
+
+Release records:
+- Source/generated commit: `f3ba4651845e0b908ea4f6a87118a0c60bc8378e`
+- Package-validation commit: `f24102e7cd25bb74a096ee43be755975dc596eb6`
+- Workflow run: `36531558460`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v08-full.zip`
+  - SHA-256: `c953c0fc3d9776970762abe32e2b0f38aa30e969666552d4257ce9c689b1532a`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v07-to-2026-09-29-v08-patch.zip`
+  - SHA-256: `bdfd7d488934ea07222541da0f36d50a3fc9b7b74cbb9f4ec2cadd355d318907`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; validation used repository tests and executable generator-normalization cases.
 
 ### Development `2026-09-29-v07`
 
