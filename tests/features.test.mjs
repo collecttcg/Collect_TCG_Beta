@@ -1035,6 +1035,7 @@ test('Development v14 eBay generator has one-step Prepare eBay Listing workflow'
   assert.ok(posts.includes('Could not fully prepare eBay listing'));
 });
 test('Development 2026-09-30-v01 places Prepare eBay Listing above the listing fields',()=>{
+  const posts=postGeneratorSource();
   const prepareIndex=posts.indexOf('id="ebayPrepareListing"');
   const titleIndex=posts.indexOf('id="ebayTitleOutput"');
   assert.ok(prepareIndex>=0,'Prepare eBay Listing button should exist');
