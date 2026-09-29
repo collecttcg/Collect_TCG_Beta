@@ -45,13 +45,13 @@ Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v01`
+Latest Production: `2026-09-29-v02`
 
-Previous Production: `2026-09-28-v05`
+Previous Production: `2026-09-29-v01`
 
-Production functional baseline last promoted from Development: `2026-09-28-v07`
+Production functional baseline last promoted from Development: `2026-09-29-v04`
 
-Production package-validation HEAD: `e77adad3e4ca43e3a2af4b543c996f056e45a855`
+Production package-validation HEAD: `826165b8457c15f837aab3a496792d60fee11436`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `e77adad3e4ca43e3a2af4b543c996f056e45a855`.
+- Current validated/deployed Production last-known-good commit: `826165b8457c15f837aab3a496792d60fee11436`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,14 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Production promotion `2026-09-29-v02`
+
+Previous Production: `2026-09-29-v01`
+
+Development promoted from: `2026-09-29-v04`
+
+Promotion status: completed successfully. Production independently validated the Development 2026-09-29-v01 through v04 owner generator/session-restoration delta while retaining Production-only QR Generator, SEO/canonical, analytics and rollback behavior. SQL required: No. Production package-validation / last-known-good commit: `826165b8457c15f837aab3a496792d60fee11436`. Workflow run: `36503031004`.
 
 ### Development `2026-09-29-v04`
 
