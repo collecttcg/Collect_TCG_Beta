@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v04`
+Latest Development: `2026-09-29-v05`
 
-Previous Development: `2026-09-29-v03`
+Previous Development: `2026-09-29-v04`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,22 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v05`
+
+Previous Development: `2026-09-29-v04`
+
+Purpose: keep the approved Collect TCG website QR/CTA watermark from appearing disproportionately large on horizontal/landscape photos.
+
+Changes:
+- The website watermark keeps the existing 82% width target for portrait/card images.
+- Banner width is now additionally capped so the banner height is at most 24% of the source image height before normal margins.
+- Landscape photos therefore receive a smaller banner while the approved banner artwork, QR replacement coordinates, placement and portrait behavior remain unchanged.
+- No uploaded source image is cropped or resized differently by this change.
+
+SQL required: No.
+
+Validation status: implementation committed; workflow/package validation pending.
 
 ### Production promotion `2026-09-29-v02`
 

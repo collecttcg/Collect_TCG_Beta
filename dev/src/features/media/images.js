@@ -161,7 +161,16 @@ function drawWebsiteWatermark(ctx, canvas, banner){
     const sourceH=242;
     const shortSide=Math.min(canvas.width,canvas.height);
     const margin=Math.max(8,Math.round(shortSide*0.012));
-    const bannerWidth=Math.min(canvas.width-margin*2,Math.max(280,Math.round(canvas.width*0.82)));
+    // Keep the approved banner prominent on portrait/card photos, but prevent
+    // it from dominating landscape images. The 24% height cap only becomes
+    // restrictive for sufficiently wide images; portrait behavior stays at
+    // the existing 82% width target.
+    const widthTarget=Math.round(canvas.width*0.82);
+    const heightCappedWidth=Math.round(canvas.height*0.24*sourceW/sourceH);
+    const bannerWidth=Math.min(
+      canvas.width-margin*2,
+      Math.max(280,Math.min(widthTarget,heightCappedWidth))
+    );
     const bannerHeight=Math.round(bannerWidth*sourceH/sourceW);
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
     const bannerY=Math.max(margin,Math.round(canvas.height-margin-bannerHeight));
