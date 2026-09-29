@@ -268,9 +268,9 @@ function buildFbCardListPost(availableCards,prefs){
     ].filter(Boolean);
 
     const lines = [
-      `${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`,
+      `${cardListGameTitle(availableCards)} ${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`.trim(),
       "",
-      `${cardListGameTitle(availableCards)} WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`.trim(),
+      `WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`,
       "",
       ...sections.flatMap((s,i)=>i ? ["",s] : [s]),
       "",
@@ -298,9 +298,9 @@ function buildFbCardListPost(availableCards,prefs){
     const text=appContext.postLocale(prefs.language);
     const shown=cards.map((card,index)=>appContext.dropCardEntryLines(card,index,prefs.language).join("\n"));
     const lines=[
-      `${text.cardDrop} · ${appContext.fbCardListDateLabel()}`,
+      `${cardListGameTitle(cards)} ${text.cardDrop} · ${appContext.fbCardListDateLabel()}`.trim(),
       "",
-      `${cardListGameTitle(cards)} WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`.trim(),
+      `WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`,
       "",
       ...shown.flatMap((line,index)=>index ? ["",line] : [line]),
       "",
