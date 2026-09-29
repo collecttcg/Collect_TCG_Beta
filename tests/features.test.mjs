@@ -933,8 +933,8 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v14'/);
-  assert.equal((registry.match(/posts\.js\?v=2026-09-29-v14/g)||[]).length,1);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-30-v01'/);
+  assert.equal((registry.match(/posts\.js\?v=2026-09-30-v01/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
   assert.doesNotMatch(analytics,/function insightInterestScore\(/);
@@ -1033,4 +1033,12 @@ test('Development v14 eBay generator has one-step Prepare eBay Listing workflow'
   assert.ok(posts.includes('eBay listing ready · text copied + image ZIP downloaded'));
   assert.ok(posts.includes('eBay listing ready · text copied'));
   assert.ok(posts.includes('Could not fully prepare eBay listing'));
+});
+test('Development 2026-09-30-v01 places Prepare eBay Listing above the listing fields',()=>{
+  const prepareIndex=posts.indexOf('id="ebayPrepareListing"');
+  const titleIndex=posts.indexOf('id="ebayTitleOutput"');
+  assert.ok(prepareIndex>=0,'Prepare eBay Listing button should exist');
+  assert.ok(titleIndex>=0,'eBay title field should exist');
+  assert.ok(prepareIndex<titleIndex,'Prepare eBay Listing should appear above the eBay listing fields');
+  assert.equal((posts.match(/id="ebayPrepareListing"/g)||[]).length,1);
 });

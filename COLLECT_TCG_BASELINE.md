@@ -1,6 +1,6 @@
 # Collect TCG Current Baseline
 
-Last reconciled against GitHub: 2026-09-29
+Last reconciled against GitHub: 2026-09-30
 
 ## Repositories
 
@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v14`
+Latest Development: `2026-09-30-v01`
 
-Previous Development: `2026-09-29-v13`
+Previous Development: `2026-09-29-v14`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -76,6 +76,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-30-v01`
+
+Previous Development: `2026-09-29-v14`
+
+Purpose: move the existing primary **Prepare eBay Listing** action to the top of the eBay Listing output section for consistency and visibility.
+
+Changes:
+- Moves the existing `Prepare eBay Listing` button directly below the eBay Listing section heading and above the eBay Title field.
+- Keeps the one-step prepare behavior unchanged: copy Title + Item Specifics + Description, then create/download the existing image ZIP when images are available.
+- Retains Copy Title, Copy Item Specifics, Copy Description, Copy All, Download Images (.ZIP) and Open Card.
+- No changes to generated eBay text, card selection, Owner permissions, Facebook/Carousell generators, inventory, analytics, Contact to Buy, giveaways or Supabase/RLS.
+
+SQL required: No.
+
+Validation status: implementation committed; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-29-v14`
 
