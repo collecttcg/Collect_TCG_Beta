@@ -39,7 +39,7 @@ grep -q 'routing.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'notifications.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'information.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'collage.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -q 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
 test "$(grep -o 'appContext.isLiveLifecycle(card)' dev/src/features/social/posts*.js | wc -l | tr -d ' ')" -ge "2"
 grep -Fq 'appContext.isLiveLifecycle(card) && appContext.cardMatchesListingScope' dev/src/features/media/collage.js
 grep -q '01-foundation.css?v=2026-09-29-v09' dev/index.html
@@ -86,8 +86,8 @@ grep -q 'Needs attention' dev/src/features/owner/insights-dashboard.js
 grep -q 'data-insights-v14-open-card' dev/src/features/owner/insights-dashboard.js
 grep -q 'insights-v20-table-wrap' dev/src/styles/27-insights-dashboard.css
 grep -q 'insights-dashboard.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate Phase 5 sales action queue =="
 set -euo pipefail
@@ -102,7 +102,7 @@ grep -q 'insights-v21-action-queue' dev/src/styles/27-insights-dashboard.css
 grep -q 'requestedCardId' dev/src/features/social/posts*.js
 grep -q 'renderFbSingleCardOptions();' dev/src/features/social/posts*.js
 grep -q 'insights-dashboard.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -q 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
 
 echo "== Validate Phase 7 code safety =="
 set -euo pipefail
@@ -151,7 +151,7 @@ grep -q 'id="ebayDownloadImages"' dev/src/features/social/posts*.js
 grep -q 'downloadSingleCardImagesZip(selected' dev/src/features/social/posts*.js
 grep -q 'download eBay listing images' dev/src/features/social/posts*.js
 grep -q 'details.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -q 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
 
 echo "== Validate Facebook group-friendly post generator =="
 set -euo pipefail
@@ -167,9 +167,9 @@ grep -Fq 'Worldwide shipping available' dev/src/features/social/posts*.js
 grep -Fq 'more photos / video' dev/src/features/social/posts*.js
 grep -q '<option value="detailed" selected>Detailed listing</option>' dev/src/features/social/posts*.js
 grep -q 'templateModeInput?.value||"detailed"' dev/src/features/social/posts*.js
-grep -q 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate Development analytics test exclusion =="
 set -euo pipefail
@@ -203,8 +203,8 @@ grep -q 'home.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'tiles.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'details.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'details.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate hidden-card visibility guards =="
 set -euo pipefail
@@ -221,8 +221,8 @@ grep -q 'home.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'filtering.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'page.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'compare.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate owner-only Hidden Listings page =="
 set -euo pipefail
@@ -256,9 +256,9 @@ grep -q 'repository.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'navigation.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'routing.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -q 'filtering.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate public hidden-card source guards =="
 set -euo pipefail
@@ -273,8 +273,8 @@ grep -Fq "endpoint.searchParams.set('lifecycle_status','eq.live');" tools/genera
 grep -Fq "endpoint.searchParams.set('availability','not.in.(Hidden,Archived)');" tools/generate-seo.mjs
 grep -Fq "availability!=='hidden' && availability!=='archived'" tools/generate-seo.mjs
 grep -q 'catalogue.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate Beta v10 hidden-listing persistence contract =="
 set -euo pipefail
@@ -288,8 +288,8 @@ grep -Fq "Object.prototype.hasOwnProperty.call(card,'lifecycle_status')" tools/g
 grep -Fq '30e149ab-dcee-4d7c-8bd9-ef928ddb6358' migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
 grep -Fq "coalesce(c.lifecycle_status::text,'live') = 'live'" migrations/2026/2026-09-26-v10-PUBLIC-HIDDEN-LISTING-GUARD.sql
 grep -q 'catalogue.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate inventory filter/game-browser resync =="
 set -euo pipefail
@@ -303,8 +303,8 @@ grep -Fq 'data-inventory-game-series="${appContext.escapeHtml(value)}"' dev/src/
 grep -Fq 'bucket.clear();' dev/src/features/inventory/page*.js
 grep -Fq 'bucket.add(value);' dev/src/features/inventory/page*.js
 grep -q 'page.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate post generator preview prices =="
 set -euo pipefail
@@ -318,10 +318,10 @@ grep -Fq 'nfsMode ? "" : `<small class="fb-post-card-price">Price · ' dev/src/f
 grep -Fq "appContext.postGeneratorCardPricePreview(selected)" dev/src/features/social/posts*.js
 grep -Fq 'isGiveaway ? "" : `<small class="fb-post-card-price">Price · ' dev/src/features/social/posts*.js
 grep -Fq '.fb-post-card-copy .fb-post-card-price' dev/src/styles/01-foundation.css
-grep -q 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -q 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
 grep -q '01-foundation.css?v=2026-09-29-v09' dev/index.html
-grep -q 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -q 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -q 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -q 'src/main.js?v=2026-09-29-v10' dev/index.html
 
 echo "== Validate Development v04 Hidden and Archived clean routes =="
 set -euo pipefail
@@ -365,7 +365,7 @@ node --check dev/src/features/owner/forms.js
 node --check dev/src/features/owner/add.js
 grep -Fq "owner/forms.js?v=2026-09-29-v09" dev/src/app/register-features.js
 grep -Fq "owner/add.js?v=2026-09-29-v09" dev/src/app/register-features.js
-grep -Fq "register-features.js?v=2026-09-29-v09" dev/src/main.js
+grep -Fq "register-features.js?v=2026-09-29-v10" dev/src/main.js
 ! grep -Fq 'owner-editor-tabs' dev/src/features/owner/forms.js
 ! grep -Fq 'function setOwnerEditorTab' dev/src/features/owner/forms.js
 ! grep -Fq 'data-owner-editor-panel="details"' dev/src/features/owner/forms.js
@@ -422,9 +422,9 @@ grep -Fq 'Use Originals · All Photos' dev/src/features/owner/image-maintenance.
 grep -Fq 'applyWebsiteWatermarkToCardImageSource(original,1800,0.94)' dev/src/features/owner/image-maintenance.js
 grep -Fq 'owner/image-maintenance.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'owner/image-maintenance.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 ! grep -Fq 'analytics_test' dev/src/features/owner/image-maintenance.js
 git diff --check
 
@@ -443,9 +443,9 @@ grep -Fq 'Math.max(...grades)' dev/src/features/inventory/ordering.js
 grep -Fq 'const rawRank={M:0,NM:1,LP:2,MP:3,HP:4,DMG:5,NA:6};' dev/src/features/inventory/ordering.js
 grep -Fq 'ordering.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'ordering.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 git diff --check
 
 echo "== Validate Development 2026-09-28-v01 Sold owner menu placement =="
@@ -486,9 +486,9 @@ grep -Fq 'catalogue.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'catalogue.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'filtering.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'filtering.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 git diff --check
 
 echo "== Validate Development 2026-09-28-v03 saved manual currency preservation =="
@@ -503,9 +503,9 @@ grep -Fq 'manualUsd=false;' dev/src/features/owner/forms.js
 grep -Fq 'manualSgd=false;' dev/src/features/owner/forms.js
 grep -Fq 'owner/forms.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'owner/forms.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -521,8 +521,8 @@ grep -Fq 'new:"Newly Added"' dev/src/features/inventory/page*.js
 grep -Fq 'function isNewCard(card, days = 7)' dev/src/features/inventory/filtering.js
 grep -Fq 'activeQuickFilter === "new" && !appContext.isNewCard(c)' dev/src/features/inventory/filtering.js
 grep -Fq 'page.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -533,9 +533,9 @@ node --check dev/src/app/register-features.js
 node --check dev/src/main.js
 grep -Fq '<textarea id="ebaySpecificsOutput" rows="8" readonly></textarea>' dev/src/features/social/posts*.js
 grep -Fq '<textarea id="ebayDescriptionOutput" class="fb-post-output" rows="14" readonly></textarea>' dev/src/features/social/posts*.js
-grep -Fq 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -548,9 +548,9 @@ grep -Fq 'Only the cards/items shown and described in this listing are included.
 grep -Fq 'Raw card condition is a subjective assessment and does not guarantee any specific grade from PSA, BGS, CGC, or any other grading company.' dev/src/features/social/posts*.js
 grep -Fq 'The holder/slab may have minor surface marks, scratches, or other signs of handling that do not affect the card' dev/src/features/social/posts*.js
 grep -Fq 'Factory-sealed products may have minor wear, dents, scratches, loose wrapping, or other imperfections to the outer packaging.' dev/src/features/social/posts*.js
-grep -Fq 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -567,9 +567,9 @@ grep -Fq 'Generate eBay Post' dev/src/features/cards/tiles.js
 grep -Fq 'openOwnerPostGenerator("carousell",card.id)' dev/src/features/cards/tiles.js
 grep -Fq 'openOwnerPostGenerator("ebay",card.id)' dev/src/features/cards/tiles.js
 grep -Fq 'tiles.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -587,8 +587,8 @@ grep -Fq 'openOwnerPostGenerator("carousell",card.id)' dev/src/features/cards/ti
 grep -Fq 'openOwnerPostGenerator("ebay",card.id)' dev/src/features/cards/tiles.js
 grep -Fq 'auth.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'tiles.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -624,9 +624,9 @@ grep -Fq 'catalogue.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'startup.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'startup.js?v=2026-09-29-v09' dev/src/app/register-features.js
 grep -Fq 'production-runtime.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'initialize.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'initialize.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --test tests/features.test.mjs
 git diff --check
 
@@ -640,8 +640,8 @@ grep -Fq 'const heightCappedWidth=Math.round(canvas.height*0.24*sourceW/sourceH)
 grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
 grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node - <<'NODE'
 const sourceW=1113, sourceH=242;
 const banner=(w,h)=>{
@@ -676,8 +676,8 @@ grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));'
 grep -Fq 'const responsiveWidthRatio=0.82-(0.20*landscapeProgress);' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
 grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node - <<'NODE'
 const sourceW=1113, sourceH=242;
 const banner=(w,h)=>{
@@ -715,8 +715,8 @@ grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));'
 grep -Fq 'const responsiveWidthRatio=0.82-(0.20*landscapeProgress);' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
 grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node - <<'NODE'
 const sourceW=1113, sourceH=242;
 const banner=(w,h)=>{
@@ -766,9 +766,9 @@ grep -Fq 'function normalizePostHashtags(value)' dev/src/features/social/posts*.
 grep -Fq 'return String(value||"").trim().toLowerCase();' dev/src/features/social/posts*.js
 grep -Fq '#tcg #onepiece #onepiecetcg #onepiececardgame #tcgcollector' dev/src/features/social/posts*.js
 ! grep -Fq '#TCGCollector' dev/src/features/social/posts*.js
-grep -Fq 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js
-grep -Fq 'register-features.js?v=2026-09-29-v09' dev/src/main.js
-grep -Fq 'src/main.js?v=2026-09-29-v09' dev/index.html
+grep -Fq 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js
+grep -Fq 'register-features.js?v=2026-09-29-v10' dev/src/main.js
+grep -Fq 'src/main.js?v=2026-09-29-v10' dev/index.html
 node --input-type=module <<'NODE'
 const normalizePostHashtags=value=>String(value||"").trim().toLowerCase();
 const cases=[
@@ -796,8 +796,8 @@ node --check dev/src/features/owner/insights-extension-host.js
 node --check dev/src/features/owner/insights-intent-rates.js
 node --check dev/src/features/owner/insights-dashboard.js
 node --check dev/src/services/analytics.js
-grep -Fq "export { initializeApp } from './register-features.js?v=2026-09-29-v09';" dev/src/app/initialize.js
-test "$(grep -o 'posts.js?v=2026-09-29-v09' dev/src/app/register-features.js | wc -l | tr -d ' ')" -eq 1
+grep -Fq "export { initializeApp } from './register-features.js?v=2026-09-29-v10';" dev/src/app/initialize.js
+test "$(grep -o 'posts.js?v=2026-09-29-v10' dev/src/app/register-features.js | wc -l | tr -d ' ')" -eq 1
 test "$(grep -o 'page.js?v=2026-09-29-v09' dev/src/app/register-features.js | wc -l | tr -d ' ')" -eq 1
 ! grep -Fq 'function insightContactMetrics(values)' dev/src/services/analytics.js
 ! grep -Fq 'function insightInterestScore(values)' dev/src/services/analytics.js
