@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/history. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/history. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function ownerRecentEditTime(card){
     const updated=card?.updated_at ? new Date(card.updated_at).getTime() : 0;

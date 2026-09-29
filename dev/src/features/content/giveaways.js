@@ -1,4 +1,4 @@
-/** V93 beta: features/content/giveaways. Shared dependencies are explicit on appContext. */
+/** Module: features/content/giveaways. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function giveawayDateLabel(value){
     if(!value) return "No end date";

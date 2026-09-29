@@ -1,4 +1,4 @@
-/** V93 beta: ui/notifications. Shared dependencies are explicit on appContext. */
+/** Module: ui/notifications. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function showToast(msg,options={}){
     const prominent=!!options.prominent;

@@ -22,7 +22,7 @@ test('development tree contains the current production UI assets',()=>{
   for(const rel of [
     'src/features/cards/details.js',
     'src/ui/enhancement-2.js',
-    'src/styles/26-compatibility.css',
+    'src/styles/02-components.css',
     'assets/shop-logo.png'
   ]) assert.equal(fs.existsSync(path.join(dev,rel)),true,rel);
 });

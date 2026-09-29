@@ -1,4 +1,4 @@
-/** V93 beta: features/inventory/filtering. Shared dependencies are explicit on appContext. */
+/** Module: features/inventory/filtering. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function isNewCard(card, days = 7){
     if(!card || !card.created_at) return false;

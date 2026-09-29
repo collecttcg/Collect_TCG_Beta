@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/bulk-price. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/bulk-price. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function priceInputValue(value){
     if(value == null || value === "" || Number(value) === 0) return "";

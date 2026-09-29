@@ -1,5 +1,5 @@
 import { createModalKeyboardController } from './modal-keyboard.js?v=2026-09-25-v07';
-/** V93 beta: features/cards/details. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/details. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function syncDetailsStatusCornerToVisibleImage(){
     const stage=appContext.detailsMount?.querySelector(".detail-slider-stage");

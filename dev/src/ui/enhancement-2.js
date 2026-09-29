@@ -147,8 +147,6 @@ export function setup(appContext){
     lastInterestFocus=null;
   }
 
-  window.collectOpenContactChooser=openContactChooser;
-  window.collectCloseContactChooser=closeContactChooser;
 
   function isDetailRoute(){
     const h=location.hash || "";

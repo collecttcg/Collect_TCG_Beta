@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/insights. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/insights. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 async function resetQualifiedViewCounts(){
     if(!appContext.requireOwner("reset qualified view counts")) return false;

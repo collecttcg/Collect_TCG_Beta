@@ -1,4 +1,4 @@
-/** V93 beta: features/content/giveaways-data. Shared dependencies are explicit on appContext. */
+/** Module: features/content/giveaways-data. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function giveawayFromDb(row){
     return {

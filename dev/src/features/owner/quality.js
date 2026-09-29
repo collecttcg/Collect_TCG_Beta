@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/quality. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/quality. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function getCardDataQualityIssues(card){
     const issues=[];

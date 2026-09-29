@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/repository. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/repository. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function ensureCardLookup(){
     if(appContext.cardLookupVersion===appContext.cards.length && appContext.cardLookupMap.size===appContext.cards.length) return appContext.cardLookupMap;

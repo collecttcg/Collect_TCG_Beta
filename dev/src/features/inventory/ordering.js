@@ -1,4 +1,4 @@
-/** V93 beta: features/inventory/ordering. Shared dependencies are explicit on appContext. */
+/** Module: features/inventory/ordering. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function orderRpcUnavailable(error,rpcName){
     const message=`${error.message||""} ${error.details||""}`.toLowerCase();
@@ -417,7 +417,6 @@ export function initialize(appContext,runtime){
 
   appContext.activeShowcaseCategory = "All";
 
-  appContext.insightsCache = null;
 
   appContext.$ = (id) => document.getElementById(id);
 
@@ -425,7 +424,6 @@ export function initialize(appContext,runtime){
 
   appContext.toastEl = appContext.$("toast");
 
-  appContext.mainNavEl = appContext.$("mainnav");
 
   appContext.mobileMoreMenuEl = appContext.$("mobileMoreMenu");
 

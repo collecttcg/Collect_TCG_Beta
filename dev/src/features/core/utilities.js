@@ -1,4 +1,4 @@
-/** V93 beta: features/core/utilities. Shared dependencies are explicit on appContext. */
+/** Module: features/core/utilities. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function rawConditionShortLabel(condition){
     const value=String(condition||"").trim();
@@ -165,9 +165,7 @@ export function initialize(appContext,runtime){
 
   appContext.LIFECYCLE_OPTIONS = Object.freeze(["live","draft","archived"]);
 
-  appContext.RARITY_LIST = ["Common","Uncommon","Rare","Rare Holo","Ultra Rare","Secret Rare","Promo"];
 
-  appContext.INDEX_KEY = "card-index";
 
   appContext.RECENTLY_VIEWED_KEY = "collect_tcg_recently_viewed_v1";
 

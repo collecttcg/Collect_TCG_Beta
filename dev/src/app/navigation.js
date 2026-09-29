@@ -1,4 +1,4 @@
-/** V93 beta: app/navigation. Shared dependencies are explicit on appContext. */
+/** Module: app/navigation. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function routeBase(route){
     return String(route||"").split("?")[0].trim().toLowerCase();

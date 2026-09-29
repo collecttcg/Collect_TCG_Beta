@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/bulk-status. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/bulk-status. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function renderBulkStatusPage(){
     if(!appContext.requireOwner("open bulk status editor")) return;

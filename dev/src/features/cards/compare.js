@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/compare. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/compare. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function isCompareSelected(id){
     return appContext.compareSelectedIds.has(String(id||""));

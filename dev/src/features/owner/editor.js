@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/editor. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/editor. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function captureEditReturnScroll(){
     const shell=document.querySelector(".shell");

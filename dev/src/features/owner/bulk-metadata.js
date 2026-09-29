@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/bulk-metadata. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/bulk-metadata. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function bulkMetadataCleanString(value,maxLen=120){
     return String(value ?? "").trim().slice(0,maxLen);

@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/tiles. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/tiles. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function relatedCardHTML(c){
     const image = appContext.getImages(c)[0] || "";

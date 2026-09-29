@@ -1,4 +1,4 @@
-/** V93 beta: features/content/showcase-data. Shared dependencies are explicit on appContext. */
+/** Module: features/content/showcase-data. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function showcaseFromDb(row){
     return {

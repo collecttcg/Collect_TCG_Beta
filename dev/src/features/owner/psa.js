@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/psa. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/psa. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function normalizePsaCertInput(value){
     const raw=String(value||"").trim();

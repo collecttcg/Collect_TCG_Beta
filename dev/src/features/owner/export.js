@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/export. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/export. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function csvEscape(value){
     const s=String(value ?? "");

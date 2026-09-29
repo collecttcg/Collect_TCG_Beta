@@ -1,4 +1,4 @@
-/** V93 beta: features/content/reviews. Shared dependencies are explicit on appContext. */
+/** Module: features/content/reviews. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function reviewStars(rating){
     const value=Math.max(1,Math.min(5,Number(rating)||1));

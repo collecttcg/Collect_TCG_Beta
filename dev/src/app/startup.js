@@ -1,4 +1,4 @@
-/** V93 beta: app/startup. Shared dependencies are explicit on appContext. */
+/** Module: app/startup. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function renderAppLoadingState(force=false){
     if(!appContext.view || (!force && appContext.view.children.length)) return;

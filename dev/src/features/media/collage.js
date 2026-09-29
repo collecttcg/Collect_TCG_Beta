@@ -1,4 +1,4 @@
-/** V93 beta: features/media/collage. Shared dependencies are explicit on appContext. */
+/** Module: features/media/collage. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function setCollectionCollageExportBusy(isBusy,label="Preparing collage…"){
     [appContext.$("collectionExportCollageBtn"),appContext.$("collectionMobileCollageBtn"),appContext.$("inventoryExportCollageBtn"),appContext.$("inventoryMobileCollageBtn")].filter(Boolean).forEach(btn=>{

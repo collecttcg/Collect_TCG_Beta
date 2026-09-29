@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/pricing. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/pricing. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function hasListedPrice(value){
     if(value === null || value === undefined || value === "") return false;

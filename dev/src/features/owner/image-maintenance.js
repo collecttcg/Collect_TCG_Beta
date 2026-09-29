@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/image-maintenance. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/image-maintenance. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 async function switchCardWatermarkVariant(card,target,onProgress){
     if(!card || !appContext.requireOwner("change card watermark")) return {ok:false,error:"Owner login required"};

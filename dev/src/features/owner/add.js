@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/add. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/add. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function renderAddPage(){
     if(!appContext.requireOwner("open add card")) return;

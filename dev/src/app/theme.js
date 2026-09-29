@@ -1,4 +1,4 @@
-/** V93 beta: app/theme. Shared dependencies are explicit on appContext. */
+/** Module: app/theme. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function applyTheme(theme){
     const light = theme === "light";

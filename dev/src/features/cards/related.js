@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/related. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/related. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function relatedCardNameTokens(card){
     const tokenize=value=>String(value||"").normalize("NFKC").toLowerCase()

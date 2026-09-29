@@ -1,4 +1,4 @@
-/** V93 beta: features/content/home. Shared dependencies are explicit on appContext. */
+/** Module: features/content/home. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function renderRecentlyViewedPage(){
     const entries=appContext.getRecentlyViewedCardEntries();

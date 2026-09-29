@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/lifecycle. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/lifecycle. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function lifecycleCardRowHTML(card,status){
     const image=appContext.getImages(card)[0]||"";

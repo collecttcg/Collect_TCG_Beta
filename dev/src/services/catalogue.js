@@ -1,4 +1,4 @@
-/** V93 beta: services/catalogue. Shared dependencies are explicit on appContext. */
+/** Module: services/catalogue. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function cardMutationReturnColumns(){
     return appContext.cardPublicColumns(appContext.CARD_PUBLIC_COLUMNS_BASE)

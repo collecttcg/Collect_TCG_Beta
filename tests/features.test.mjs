@@ -5,6 +5,18 @@ import {registerFeatures} from '../dev/src/app/register-features.js';
 import {register as registerAuth} from '../dev/src/services/auth.js';
 const golden=JSON.parse(fs.readFileSync(new URL('./v92-golden.json',import.meta.url),'utf8'));
 const constants=JSON.parse(fs.readFileSync(new URL('./constants.json',import.meta.url),'utf8'));
+function readSource(path){return fs.readFileSync(new URL(path,import.meta.url),'utf8');}
+function postGeneratorSource(){return [
+ '../dev/src/features/social/posts.js',
+ '../dev/src/features/social/posts-giveaway.js',
+ '../dev/src/features/social/posts-marketplace.js',
+ '../dev/src/features/social/posts-card-list.js'
+].map(readSource).join('\n');}
+function inventoryPageSource(){return [
+ '../dev/src/features/inventory/page-shell.js',
+ '../dev/src/features/inventory/page.js'
+].map(readSource).join('\n');}
+
 function app(){
  const a={...constants};registerFeatures(a);
  Object.assign(a,{cards:structuredClone(golden.cards),pillFilterState:Object.fromEntries(['game','grade','language','era','availability','series'].map(k=>[k,new Set()])),collectionCardOrderById:new Map(),inventoryCardOrderById:new Map(),collectionGameOrderByKey:new Map(),inventoryGameOrderByKey:new Map()});
@@ -54,7 +66,7 @@ test('critical retained features remain registered and their public intents rema
  for(const intent of ['Availability','Make an offer','More photos / video','COD / meetup'])assert.ok(details.includes(intent),intent);
  const giveaway=source('../dev/src/features/content/giveaways-data.js');
  assert.match(giveaway,/bonus/i);
- const posts=source('../dev/src/features/social/posts.js');
+ const posts=postGeneratorSource();
  assert.match(posts,/Facebook Group/i);
  assert.match(posts,/Carousell/i);
  const analytics=source('../dev/src/services/analytics.js');
@@ -108,7 +120,7 @@ test('every post generator shares an English-default template language selector'
  assert.match(chinese,/卡牌上新/);
  assert.match(chinese,/更多卡牌可供选择/);
  assert.match(chinese,/Mixed \/ Multiple languages: KR × 1 · CN × 1/);
- const source=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
+ const source=postGeneratorSource();
  for(const id of ['fbPostLanguage','winnerPostLanguage','fbGiveawayLanguage','carousellPostLanguage','fbCardListLanguage']) assert.match(source,new RegExp(id));
  for(const language of ['English','Bahasa Melayu','中文（简体）','日本語','한국어']) assert.match(source,new RegExp(language));
 });
@@ -214,7 +226,7 @@ test('owner save flows distinguish an unsaved card from non-critical post-save w
 test('the owner can download the standalone Inventory QR from the Inventory page',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const details=source('../dev/src/features/cards/details.js');
- const inventory=source('../dev/src/features/inventory/page.js');
+ const inventory=inventoryPageSource();
  assert.match(details,/async function downloadInventoryQrImage\(\)/);
  assert.match(details,/Collect-TCG-Inventory-QR\.png/);
  assert.match(inventory,/id="inventoryQrDownloadBtn"/);
@@ -238,7 +250,7 @@ test('buyer contact makes worldwide shipping a clear option alongside MY/SG COD'
 
 test('home titles use a consistent uppercase display style and trust copy stays readable',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const css=source('../dev/src/styles/26-compatibility.css');
+ const css=source('../dev/src/styles/02-components.css');
  assert.match(css,/\.home-premium-hero-copy h2,[\s\S]*\.home-premium-trust-points strong\{[\s\S]*text-transform:uppercase/);
  assert.match(css,/\.home-premium-trust-copy h3\{\s*font-size:clamp\(23px,1\.55vw,30px\)/);
  assert.match(css,/\.home-premium-trust-points small\{\s*font-size:clamp\(10\.5px,\.68vw,13px\)/);
@@ -247,14 +259,14 @@ test('home titles use a consistent uppercase display style and trust copy stays 
 
 
 test('the Home currency label is readable without changing other currency controls',()=>{
- const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=readSource('../dev/src/styles/02-components.css');
  assert.match(css,/\.home-premium-currency > span:not\(\.sr-only\)\{\s*font-size:12px !important;/);
  assert.match(css,/\.home-premium-currency select\{\s*font-size:11px !important;/);
 });
 
 
 test('trust descriptions stay on one line and Collection accordion uses the gold accent',()=>{
- const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=readSource('../dev/src/styles/02-components.css');
  assert.match(css,/\.home-premium-trust-points small\{[\s\S]*white-space:nowrap/);
  assert.match(css,/\.collection-game-group-header\{[\s\S]*border-color:rgba\(227,179,65,\.28\)/);
  assert.match(css,/\.collection-game-chevron\{[\s\S]*color:#efc45d/);
@@ -262,7 +274,7 @@ test('trust descriptions stay on one line and Collection accordion uses the gold
 
 
 test('Collection NFS cards use the same gold accent rather than a purple stripe',()=>{
- const css=fs.readFileSync(new URL('../dev/src/styles/26-compatibility.css',import.meta.url),'utf8');
+ const css=readSource('../dev/src/styles/02-components.css');
  assert.match(css,/\.card\.nfs-collection-card\{[\s\S]*--stripe:#e3b341 !important/);
  assert.match(css,/inset 3px 0 0 rgba\(227,179,65,\.70\)/);
 });
@@ -270,8 +282,8 @@ test('Collection NFS cards use the same gold accent rather than a purple stripe'
 
 test('Inventory and Sold cards use gold stripes without changing their status badges',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const inventory=source('../dev/src/features/inventory/page.js');
- const css=source('../dev/src/styles/26-compatibility.css');
+ const inventory=inventoryPageSource();
+ const css=source('../dev/src/styles/02-components.css');
  assert.match(inventory,/\["inventory","sold"\]\.includes\(appContext\.listingAvailabilityScope\)/);
  assert.match(inventory,/grid\.classList\.add\("gold-card-stripes"\)/);
  assert.match(css,/#invGrid\.gold-card-stripes \.card\{\s*--stripe:#e3b341 !important;/);
@@ -511,7 +523,7 @@ test('Phase 3 Owner Insights surfaces saved cards that have not produced buyer i
 
 test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard behavior together',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const inventory=source('../dev/src/features/inventory/page.js');
+ const inventory=inventoryPageSource();
  const filtering=source('../dev/src/features/inventory/filtering.js');
  const details=source('../dev/src/features/cards/details.js');
  const home=source('../dev/src/features/content/home.js');
@@ -536,7 +548,7 @@ test('2026-09-25-v06 visitor UX keeps discovery, recovery, sharing and keyboard 
 
 test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
- const page=source('../dev/src/features/inventory/page.js');
+ const page=inventoryPageSource();
  const pagination=source('../dev/src/features/inventory/pagination.js');
  const details=source('../dev/src/features/cards/details.js');
  const keyboard=source('../dev/src/features/cards/modal-keyboard.js');
@@ -557,7 +569,7 @@ test('2026-09-25-v07 extracts high-risk pagination and modal keyboard behavior',
 test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZIP download',()=>{
  const source=path=>fs.readFileSync(new URL(path,import.meta.url),'utf8');
  const details=source('../dev/src/features/cards/details.js');
- const posts=source('../dev/src/features/social/posts.js');
+ const posts=postGeneratorSource();
  assert.doesNotMatch(details,/class="details-desktop-contact-socials"/);
  assert.match(details,/class="detail-buy-cta"/);
  assert.match(details,/detailsContactSocialLinksHtml\("details-buy-social-links"\)/);
@@ -569,7 +581,7 @@ test('2026-09-25-v08 removes duplicate desktop buy block and gives eBay image ZI
 
 
 test('2026-09-25-v09 keeps inventory pagination filter signature defined before initialization',()=>{
- const source=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
+ const source=inventoryPageSource();
  const definition=source.indexOf('function currentPaginationFilterSignature()');
  const use=source.indexOf('getFilterSignature:currentPaginationFilterSignature');
  assert.ok(definition>=0,'pagination filter signature must be defined');
@@ -673,7 +685,7 @@ test('filtered custom reorder preserves hidden card slots',()=>{
 });
 
 test('filtered rearrange stays enabled while game-order dragging is protected',()=>{
- const source=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
+ const source=inventoryPageSource();
  assert.doesNotMatch(source,/Clear Collection filters before rearranging/);
  assert.match(source,/mergeFilteredCustomOrder\(collectionFullCustomCardIds\(\),visibleIds\)/);
  assert.match(source,/filteredRearrange\s*\?\s*Promise\.resolve\(true\)/);
@@ -754,7 +766,7 @@ test('public catalogue hydrates Sold rank through the privacy-safe RPC',async()=
 
 
 test('Development v05 exposes Newly Added beside Trending using the existing seven-day new filter',()=>{
-  const page=fs.readFileSync(new URL('../dev/src/features/inventory/page.js',import.meta.url),'utf8');
+  const page=inventoryPageSource();
   const filtering=fs.readFileSync(new URL('../dev/src/features/inventory/filtering.js',import.meta.url),'utf8');
   assert.match(page,/\["trending","🔥 Trending","Trending"\],\s*\["new","Newly Added","Newly Added"\]/);
   assert.match(page,/new:"Newly Added"/);
@@ -765,7 +777,7 @@ test('Development v05 exposes Newly Added beside Trending using the existing sev
 
 
 test('Development v06 gives the eBay description editor a larger initial height without changing item specifics',()=>{
-  const posts=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
+  const posts=postGeneratorSource();
   assert.match(posts,/<textarea id="ebaySpecificsOutput" rows="8" readonly><\/textarea>/);
   assert.match(posts,/<textarea id="ebayDescriptionOutput" class="fb-post-output" rows="14" readonly><\/textarea>/);
 });
@@ -799,7 +811,7 @@ test('Development v07 eBay descriptions include buyer-friendly condition disclos
 
 test('Development 2026-09-29-v01 card quick menu opens FB, Carousell and eBay generators for the selected card',()=>{
   const tiles=fs.readFileSync(new URL('../dev/src/features/cards/tiles.js',import.meta.url),'utf8');
-  const posts=fs.readFileSync(new URL('../dev/src/features/social/posts.js',import.meta.url),'utf8');
+  const posts=postGeneratorSource();
   assert.match(tiles,/data-action="fb-post"[^>]*>Generate FB Post<\/button>/);
   assert.match(tiles,/data-action="carousell-post"[^>]*>Generate Carousell Post<\/button>/);
   assert.match(tiles,/data-action="ebay-post"[^>]*>Generate eBay Post<\/button>/);
@@ -907,4 +919,35 @@ test('Development 2026-09-29-v04 still fails closed for a conclusive non-owner r
   assert.equal(a.ownerVerified,false);
   assert.equal(a.isOwnerMode(),false);
   assert.equal(getUserCalls,0);
+});
+
+test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS contracts',()=>{
+  const registry=readSource('../dev/src/app/register-features.js');
+  const initializer=readSource('../dev/src/app/initialize.js');
+  const analytics=readSource('../dev/src/services/analytics.js');
+  const policy=readSource('../dev/src/services/contact-intent-policy.js');
+  const ordering=readSource('../dev/src/features/inventory/ordering.js');
+  const utilities=readSource('../dev/src/features/core/utilities.js');
+  const routing=readSource('../dev/src/app/routing.js');
+  const enhancement=readSource('../dev/src/ui/enhancement-2.js');
+  const index=readSource('../dev/index.html');
+  const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
+
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v09'/);
+  assert.equal((registry.match(/posts\.js\?v=2026-09-29-v09/g)||[]).length,1);
+  assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
+  assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
+  assert.doesNotMatch(analytics,/function insightInterestScore\(/);
+  assert.match(policy,/function insightContactMetrics\(/);
+  assert.match(policy,/function insightInterestScore\(/);
+  assert.doesNotMatch(ordering,/appContext\.insightsCache\s*=/);
+  assert.doesNotMatch(ordering,/appContext\.mainNavEl\s*=/);
+  assert.doesNotMatch(utilities,/appContext\.RARITY_LIST\s*=/);
+  assert.doesNotMatch(utilities,/appContext\.INDEX_KEY\s*=/);
+  assert.doesNotMatch(routing,/appContext\.CARD_IMAGE_TYPES\s*=/);
+  assert.doesNotMatch(enhancement,/window\.collect(?:Open|Close)ContactChooser/);
+  assert.match(index,/src\/styles\/01-foundation\.css\?v=2026-09-29-v09/);
+  assert.match(index,/src\/styles\/02-components\.css\?v=2026-09-29-v09/);
+  assert.equal(styleOrder.filter(row=>row.load==='global').length,2);
+  assert.ok(styleOrder.some(row=>row.file==='src/styles/27-insights-dashboard.css' && row.load==='dynamic-owner-insights'));
 });

@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/forms. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/forms. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function wireGameCombobox(p){
     const input = appContext.$(p + "Game");

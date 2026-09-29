@@ -1,4 +1,4 @@
-/** V93 beta: features/content/information. Shared dependencies are explicit on appContext. */
+/** Module: features/content/information. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function renderAboutPage(){
     appContext.view.innerHTML = `

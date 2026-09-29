@@ -1,4 +1,4 @@
-/** V93 beta: services/analytics. Shared dependencies are explicit on appContext. */
+/** Module: services/analytics. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function analyticsExclusionCookieValue(){
     try{
@@ -898,60 +898,6 @@ async function fetchSaleConversionSnapshots(){
       console.warn("Sale snapshots unavailable:",error);
       return {supported:false,rows:[]};
     }
-  }
-
-function insightContactMetrics(values){
-    const contactOpens=Math.max(0,Number(values?.contact_opens||0));
-    const contactVisitors=Math.max(0,Number(values?.contact_visitors||0));
-    const inquiryCopies=Math.max(0,Number(values?.inquiry_copies||0));
-    const platformClicks=Math.max(0,Number(values?.platform_clicks||0));
-
-    // Prefer unique visitors when the backend supplies them. For older/fallback
-    // rows, use the strongest observed funnel count instead of summing every
-    // step. This prevents one buyer from looking like three separate contacts.
-    const intentCount=Math.max(
-      contactVisitors,
-      contactVisitors>0 ? 0 : contactOpens,
-      inquiryCopies,
-      platformClicks
-    );
-
-    let strongestStage="none";
-    if(platformClicks>0) strongestStage="platform";
-    else if(inquiryCopies>0) strongestStage="copy";
-    else if(contactOpens>0 || contactVisitors>0) strongestStage="open";
-
-    // Revised funnel weighting:
-    // open = 1, explicit inquiry copy = 3, contact-platform click = 6.
-    // Contact contribution is capped at 8 points per estimated contact intent.
-    // This preserves strong intent without stacking the same funnel excessively.
-    const rawContactScore=
-      Math.min(contactOpens || contactVisitors, intentCount)*1 +
-      inquiryCopies*3 +
-      platformClicks*6;
-    const contactScore=Math.min(rawContactScore,intentCount*8);
-
-    return {
-      intent_count:intentCount,
-      strongest_stage:strongestStage,
-      contact_score:contactScore,
-      contact_opens:contactOpens,
-      contact_visitors:contactVisitors,
-      inquiry_copies:inquiryCopies,
-      platform_clicks:platformClicks
-    };
-  }
-
-function insightInterestScore(values){
-    const contact=insightContactMetrics(values);
-    return Math.round(
-      Number(values?.overview_photo_interactions||0) +
-      Number(values?.unique_views||0) +
-      Number(values?.image_expands||0) +
-      Number(values?.favorite_adds||0)*3 +
-      Number(values?.shares||0)*4 +
-      contact.contact_score
-    );
   }
 
 async function captureSaleConversionSnapshot(card){
@@ -1950,7 +1896,7 @@ function insightTrendMeta(row,previousRow){
     };
   }
 
-  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,developmentAnalyticsTestSource,isDevelopmentAnalyticsTestSession,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,fetchOwnerCardConversionSummary,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,insightContactMetrics,insightInterestScore,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
+  Object.assign(appContext,{analyticsExclusionCookieValue,analyticsUserAgent,developmentAnalyticsTestSource,isDevelopmentAnalyticsTestSession,isKnownAutomatedSocialFetcher,isFacebookInstagramAnalyticsSession,socialAnalyticsNeedsHumanInteraction,isBuyerAnalyticsBlocked,resumeDeferredSocialAnalytics,noteHumanAnalyticsInteraction,setupSocialAnalyticsHumanInteractionGate,hasAnalyticsExclusionLocalStorage,hasAnalyticsExclusionCookie,isAnalyticsExcludedDevice,setAnalyticsExcludedDevice,analyticsExclusionTokenFromUrl,removeAnalyticsExclusionTokenFromUrl,consumeAnalyticsExclusionLinkIfPresent,newAnalyticsExclusionToken,newAnalyticsExclusionPairingCode,analyticsExclusionPairingUrl,analyticsPairingCodeFromUrl,removeAnalyticsPairingCodeFromUrl,consumeAnalyticsExclusionQrIfPresent,createAnalyticsExclusionPairingCode,consumeAnalyticsExclusionPairingCode,createAnalyticsExclusionLink,getVisitorId,cancelPendingCardViewQualification,sendQualifiedCardViewEvent,recordCardViewEvent,recordQualifiedViewDiscoveryAttribution,engagementDedupeWindowMs,readEngagementDedupe,shouldSkipEngagementEvent,recordCardEngagement,readOverviewPhotoInteractionDedupe,overviewPhotoInteractionAlreadyRecorded,markOverviewPhotoInteractionRecorded,recordOverviewPhotoInteraction,fetchOverviewPhotoInsights,fetchCardEngagementInsights,fetchOwnerCardConversionSummary,freshQualifiedViewCount,freshQualifiedViewDisplay,refreshQualifiedViewTotals,saveSaleConversionSnapshot,fetchSaleConversionSnapshots,captureSaleConversionSnapshot,getAnalyticsSessionId,recordAnalyticsSession,incrementAnalyticsSessionQualifiedView,sessionDurationPayload,recordSessionActiveSeconds,beaconSessionActiveSeconds,sessionDurationHeartbeatTick,startSessionDurationTracking,formatActiveDuration,normalizedInventorySearchTerm,scheduleInventorySearchAnalytics,currentVisitorTrafficSource,currentVisitorDeviceType,recordWebsiteVisit,fetchWebsiteVisitSeries,fetchWebsiteVisitCountries,fetchCountryCardViewInsights,fetchWebsiteVisitAccessTime,fetchDiscoverySourceSummary,fetchWebsiteVisitDevices,fetchWebsiteVisitSources,fetchInventorySearchInsights,fetchReturningVisitorInsights,fetchSessionDurationInsights,fetchEngagedVisitSeries,visitorCountryName,dateRangeForPreset,fetchInsights,fetchViewSeries,fetchRecentQualifiedCardViews,insightRecentViewTimeLabel,insightRecentCardMeta,fetchFilteredQualifiedViewSeries,alignWebsiteVisitSeriesToCardSeries,insightRowKey,insightCardForRow,insightStatusLabel,previousInsightsRange,insightTrendMeta});
 }
 
 /** State and event initialization; called in preserved startup order. */

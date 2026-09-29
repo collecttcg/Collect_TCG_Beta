@@ -1,4 +1,4 @@
-/** V93 beta: features/content/showcase. Shared dependencies are explicit on appContext. */
+/** Module: features/content/showcase. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 async function uploadShowcaseThumbnail(file){
     return appContext.uploadOwnerImage(file, "showcase-thumbnails", "Thumbnail");

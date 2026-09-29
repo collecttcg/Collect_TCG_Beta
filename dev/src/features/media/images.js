@@ -1,4 +1,4 @@
-/** V93 beta: features/media/images. Shared dependencies are explicit on appContext. */
+/** Module: features/media/images. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function isNearWhiteBackgroundPixel(r, g, b, a){
     if(a <= 8) return true;

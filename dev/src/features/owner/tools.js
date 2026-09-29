@@ -1,4 +1,4 @@
-/** V93 beta: features/owner/tools. Shared dependencies are explicit on appContext. */
+/** Module: features/owner/tools. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 const SUPABASE_PRO_DATABASE_LIMIT_BYTES=8*1024*1024*1024;
 const SUPABASE_PRO_STORAGE_LIMIT_BYTES=100*1024*1024*1024;

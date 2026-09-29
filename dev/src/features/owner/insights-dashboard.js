@@ -1,13 +1,7 @@
+import { ensureInsightsExtensionHost } from './insights-extension-host.js?v=2026-09-29-v09';
 /** 2026-09-17-v18: decision-first Insights with era, price and market demand. */
 export function register(appContext){
-  const originalRenderInsightsPage=appContext.renderInsightsPage;
-  const originalFetchInsights=appContext.fetchInsights;
-  const originalFetchCardEngagementInsights=appContext.fetchCardEngagementInsights;
-  const originalFetchWebsiteVisitSeries=appContext.fetchWebsiteVisitSeries;
-  const originalFetchWebsiteVisitCountries=appContext.fetchWebsiteVisitCountries;
-  const originalFetchWebsiteVisitSources=appContext.fetchWebsiteVisitSources;
-  const originalFetchCountryCardViewInsights=appContext.fetchCountryCardViewInsights;
-  const originalFetchDiscoverySourceSummary=appContext.fetchDiscoverySourceSummary;
+  const extensionHost=ensureInsightsExtensionHost(appContext);
 
   let currentViewRows=[];
   let currentEngagementRows=[];
@@ -29,7 +23,7 @@ export function register(appContext){
     const link=document.createElement("link");
     link.id="insights-dashboard-v14-styles";
     link.rel="stylesheet";
-    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-17-v19";
+    link.href="./src/styles/27-insights-dashboard.css?v=2026-09-29-v09";
     document.head.appendChild(link);
   }
 
@@ -49,92 +43,75 @@ export function register(appContext){
     else scheduledFrame=setTimeout(run,0);
   }
 
-  if(typeof originalFetchInsights==="function"){
-    appContext.fetchInsights=async function(start,end,options){
-      const rows=await originalFetchInsights.call(appContext,start,end,options);
-      if(!options?.silent && overview()){
-        currentViewRows=Array.isArray(rows)?rows:[];
-        if(typeof originalFetchCountryCardViewInsights==="function"){
-          const request=++countryDemandRequest;
-          Promise.resolve(originalFetchCountryCardViewInsights.call(appContext,start,end))
-            .then(result=>{
-              if(request!==countryDemandRequest) return;
-              countryCardSupported=result?.supported===true;
-              countryCardRows=Array.isArray(result?.rows)?result.rows:[];
-              scheduleEnhancement();
-            })
-            .catch(()=>{
-              if(request!==countryDemandRequest) return;
-              countryCardSupported=false;
-              countryCardRows=[];
-              scheduleEnhancement();
-            });
-        }
-        if(typeof originalFetchDiscoverySourceSummary==="function"){
-          const request=++discoveryRequest;
-          Promise.resolve(originalFetchDiscoverySourceSummary.call(appContext,start,end))
-            .then(result=>{
-              if(request!==discoveryRequest) return;
-              discoverySupported=result?.supported===true;
-              discoveryRows=Array.isArray(result?.rows)?result.rows:[];
-              scheduleEnhancement();
-            })
-            .catch(()=>{
-              if(request!==discoveryRequest) return;
-              discoverySupported=false;
-              discoveryRows=[];
-              scheduleEnhancement();
-            });
-        }
-        scheduleEnhancement();
+  extensionHost.after("fetchInsights",(rows,args)=>{
+    const [start,end,options]=args||[];
+    if(!options?.silent && overview()){
+      currentViewRows=Array.isArray(rows)?rows:[];
+      const fetchCountry=appContext.fetchCountryCardViewInsights;
+      if(typeof fetchCountry==="function"){
+        const request=++countryDemandRequest;
+        Promise.resolve(fetchCountry.call(appContext,start,end))
+          .then(result=>{
+            if(request!==countryDemandRequest) return;
+            countryCardSupported=result?.supported===true;
+            countryCardRows=Array.isArray(result?.rows)?result.rows:[];
+            scheduleEnhancement();
+          })
+          .catch(()=>{
+            if(request!==countryDemandRequest) return;
+            countryCardSupported=false;
+            countryCardRows=[];
+            scheduleEnhancement();
+          });
       }
-      return rows;
-    };
-  }
+      const fetchDiscovery=appContext.fetchDiscoverySourceSummary;
+      if(typeof fetchDiscovery==="function"){
+        const request=++discoveryRequest;
+        Promise.resolve(fetchDiscovery.call(appContext,start,end))
+          .then(result=>{
+            if(request!==discoveryRequest) return;
+            discoverySupported=result?.supported===true;
+            discoveryRows=Array.isArray(result?.rows)?result.rows:[];
+            scheduleEnhancement();
+          })
+          .catch(()=>{
+            if(request!==discoveryRequest) return;
+            discoverySupported=false;
+            discoveryRows=[];
+            scheduleEnhancement();
+          });
+      }
+      scheduleEnhancement();
+    }
+  });
 
-  if(typeof originalFetchCardEngagementInsights==="function"){
-    appContext.fetchCardEngagementInsights=async function(start,end){
-      const result=await originalFetchCardEngagementInsights.call(appContext,start,end);
-      if(overview()){
-        currentEngagementRows=Array.isArray(result?.rows)?result.rows:[];
-        scheduleEnhancement();
-      }
-      return result;
-    };
-  }
+  extensionHost.after("fetchCardEngagementInsights",result=>{
+    if(overview()){
+      currentEngagementRows=Array.isArray(result?.rows)?result.rows:[];
+      scheduleEnhancement();
+    }
+  });
 
-  if(typeof originalFetchWebsiteVisitSeries==="function"){
-    appContext.fetchWebsiteVisitSeries=async function(...args){
-      const rows=await originalFetchWebsiteVisitSeries.apply(appContext,args);
-      if(overview()){
-        websiteSeries=Array.isArray(rows)?rows:[];
-        scheduleEnhancement();
-      }
-      return rows;
-    };
-  }
+  extensionHost.after("fetchWebsiteVisitSeries",rows=>{
+    if(overview()){
+      websiteSeries=Array.isArray(rows)?rows:[];
+      scheduleEnhancement();
+    }
+  });
 
-  if(typeof originalFetchWebsiteVisitCountries==="function"){
-    appContext.fetchWebsiteVisitCountries=async function(...args){
-      const result=await originalFetchWebsiteVisitCountries.apply(appContext,args);
-      if(overview()){
-        countryRows=Array.isArray(result?.rows)?result.rows:[];
-        scheduleEnhancement();
-      }
-      return result;
-    };
-  }
+  extensionHost.after("fetchWebsiteVisitCountries",result=>{
+    if(overview()){
+      countryRows=Array.isArray(result?.rows)?result.rows:[];
+      scheduleEnhancement();
+    }
+  });
 
-  if(typeof originalFetchWebsiteVisitSources==="function"){
-    appContext.fetchWebsiteVisitSources=async function(...args){
-      const result=await originalFetchWebsiteVisitSources.apply(appContext,args);
-      if(overview()){
-        sourceRows=Array.isArray(result?.rows)?result.rows:[];
-        scheduleEnhancement();
-      }
-      return result;
-    };
-  }
+  extensionHost.after("fetchWebsiteVisitSources",result=>{
+    if(overview()){
+      sourceRows=Array.isArray(result?.rows)?result.rows:[];
+      scheduleEnhancement();
+    }
+  });
 
   function rowKey(row){
     return appContext.insightRowKey?.(row) || String(row?.card_id||row?.id||"");
@@ -975,12 +952,8 @@ export function register(appContext){
     observer.observe(root,{childList:true});
   }
 
-  if(typeof originalRenderInsightsPage==="function"){
-    appContext.renderInsightsPage=async function(...args){
-      const result=await originalRenderInsightsPage.apply(appContext,args);
-      installObserver();
-      scheduleEnhancement();
-      return result;
-    };
-  }
+  extensionHost.after("renderInsightsPage",()=>{
+    installObserver();
+    scheduleEnhancement();
+  });
 }

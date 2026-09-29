@@ -1,4 +1,4 @@
-/** V93 beta: features/content/giveaway-pages. Shared dependencies are explicit on appContext. */
+/** Module: features/content/giveaway-pages. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function sortedPastGiveawayWinners(){
     return appContext.giveaways

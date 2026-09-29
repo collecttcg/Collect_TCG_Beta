@@ -1,4 +1,4 @@
-/** V93 beta: app/routing. Shared dependencies are explicit on appContext. */
+/** Module: app/routing. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function safeListingBrowseHash(value){
     const hash=String(value||"").slice(0,1500);
@@ -775,9 +775,6 @@ window.addEventListener("popstate", appContext.router);
 
   appContext.CARD_IMAGE_MAX_BYTES = 20 * 1024 * 1024;
 
-  appContext.CARD_IMAGE_TYPES = new Set([
-    "image/jpeg","image/png","image/webp","image/avif","image/heic","image/heif"
-  ]);
 
   appContext.watermarkLogoPromise = null;
 }

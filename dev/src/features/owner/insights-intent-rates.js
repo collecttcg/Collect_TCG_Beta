@@ -1,8 +1,7 @@
+import { ensureInsightsExtensionHost } from './insights-extension-host.js?v=2026-09-29-v09';
 /** 2026-09-17-v16: separate contact views from intent, surface conversion rates, and keep DOM observation bounded. */
 export function register(appContext){
-  const originalFetchInsights=appContext.fetchInsights;
-  const originalFetchCardEngagementInsights=appContext.fetchCardEngagementInsights;
-  const originalRenderInsightsPage=appContext.renderInsightsPage;
+  const extensionHost=ensureInsightsExtensionHost(appContext);
 
   let currentViewRows=[];
   let currentEngagementRows=[];
@@ -24,29 +23,20 @@ export function register(appContext){
     else scheduledFrame=setTimeout(run,0);
   }
 
-  if(typeof originalFetchInsights==="function"){
-    appContext.fetchInsights=async function(start,end,options){
-      const rows=await originalFetchInsights.call(appContext,start,end,options);
-      // The current-period Insights request is the non-silent call. The silent
-      // request is the previous period used only for trend comparison.
-      if(!options?.silent && insightsOverview()){
-        currentViewRows=Array.isArray(rows)?rows:[];
-        scheduleEnhancement();
-      }
-      return rows;
-    };
-  }
+  extensionHost.after("fetchInsights",(rows,args)=>{
+    const options=args?.[2];
+    if(!options?.silent && insightsOverview()){
+      currentViewRows=Array.isArray(rows)?rows:[];
+      scheduleEnhancement();
+    }
+  });
 
-  if(typeof originalFetchCardEngagementInsights==="function"){
-    appContext.fetchCardEngagementInsights=async function(start,end){
-      const result=await originalFetchCardEngagementInsights.call(appContext,start,end);
-      if(insightsOverview()){
-        currentEngagementRows=Array.isArray(result?.rows)?result.rows:[];
-        scheduleEnhancement();
-      }
-      return result;
-    };
-  }
+  extensionHost.after("fetchCardEngagementInsights",result=>{
+    if(insightsOverview()){
+      currentEngagementRows=Array.isArray(result?.rows)?result.rows:[];
+      scheduleEnhancement();
+    }
+  });
 
   function mergeCurrentRows(){
     const map=new Map();
@@ -270,12 +260,8 @@ export function register(appContext){
     observer.observe(root,{childList:true});
   }
 
-  if(typeof originalRenderInsightsPage==="function"){
-    appContext.renderInsightsPage=async function(...args){
-      const result=await originalRenderInsightsPage.apply(appContext,args);
-      installObserver();
-      scheduleEnhancement();
-      return result;
-    };
-  }
+  extensionHost.after("renderInsightsPage",()=>{
+    installObserver();
+    scheduleEnhancement();
+  });
 }

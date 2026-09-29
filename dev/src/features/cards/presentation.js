@@ -1,4 +1,4 @@
-/** V93 beta: features/cards/presentation. Shared dependencies are explicit on appContext. */
+/** Module: features/cards/presentation. Shared dependencies are explicit on appContext. */
 export function register(appContext){
 function getImages(c){
     if(Array.isArray(c.images) && c.images.length) return c.images.filter(Boolean);
