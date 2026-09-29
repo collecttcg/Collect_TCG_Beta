@@ -45,13 +45,13 @@ Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v08`
+Latest Production: `2026-09-29-v09`
 
-Previous Production: `2026-09-29-v07`
+Previous Production: `2026-09-29-v08`
 
-Production functional baseline last promoted from Development: `2026-09-29-v12`
+Production functional baseline last promoted from Development: `2026-09-29-v13`
 
-Production package-validation HEAD: `d12d2d106c56a91f59f1a9757f8d27c87d1eb723`
+Production package-validation HEAD: `86ce84330e9d0f6ff24febff528bd4137738388a`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -91,9 +91,22 @@ Changes:
 
 SQL required: No. The existing `sold_at` field is reused.
 
-Validation status: implementation committed; validation and packaging in progress.
+Validation status: completed successfully. The new executable regression confirmed that quick Mark Sold stamps a fresh timestamp during the click action and that moving the listing out of Sold clears the local sold-date value. The complete 60/60 feature regression suite, SEO generator syntax/self-test and generation, repository-wide JavaScript/import/reference validation, CSS and retained release contracts, package creation, ZIP integrity checks and Development Pages deployment all passed.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
+Release records:
+- Core implementation commit: `4e4154005869dff1796a51452c589f5ce6104f90`
+- Release configuration commit: `6c6474297dbf9dc49d40fd6095339e6b66de82e3`
+- Stale validation-contract correction commit: `9b1546587c1ee078997d6d0bb32b62e739af381b`
+- Validated generated/source commit: `8743bca1df7703a2562e1a02a13f65d23cc42902`
+- Package-validation commit: `0727971bb2a34906e18e6209db28e2c309c1929a`
+- Successful validation/deployment workflow: `36578934256`
+- Package artifact: `11039490516`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v13-full.zip`
+  - SHA-256: `d8df9bf65fe2dfab7b821c8443d5671bde2ab4cbc1bf67147cee5997057392f9`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v12-to-2026-09-29-v13-patch.zip`
+  - SHA-256: `11c9697324249f229f5c3251c3ea521dfa18ce10924740defc1d5783938e8b11`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed. Static/executable validation and Development Pages deployment completed successfully.
 
 ### Development `2026-09-29-v12`
 
