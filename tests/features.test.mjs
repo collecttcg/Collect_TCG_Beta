@@ -933,7 +933,7 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v09'/);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v10'/);
   assert.equal((registry.match(/posts\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
@@ -957,7 +957,7 @@ test("Development 2026-09-29-v10 Single Card Post titles start with the game cat
  const a=app();
  const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",format:"Graded",grading:[{company:"PSA",grade:"10",pop_count:12}]};
  const title=a.defaultFbPostTitle(card);
- assert.match(title,/^ONE PIECE WTS【GRADED】/);
+ assert.match(title,/^ONE PIECE WTS【PSA 10】/);
  assert.ok(title.indexOf("ONE PIECE") < title.indexOf("2024"));
  const source=readSource("../dev/src/features/social/posts.js");
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
