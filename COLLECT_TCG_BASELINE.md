@@ -97,9 +97,21 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; GitHub validation and packaging in progress.
+Validation status: completed successfully. The final GitHub validation run passed 56/56 feature/regression tests, repository-wide JavaScript syntax/import/HTML asset/migration checks, CSS syntax and obsolete-selector guards, the complete retained release-contract chain, SEO generation/self-test, package creation, ZIP integrity checks and Development GitHub Pages deployment. The first post-refactor validation run correctly failed because the superseded pre-consolidation CSS files were still present; those consolidated legacy files were removed and the full validation workflow was rerun successfully.
 
-Validation limitation: interactive desktop/mobile/Safari browser validation has not been performed.
+Release records:
+- Pre-refactor rollback branch: `rollback/pre-refactor-2026-09-29-v08` -> `99152be1fdca641d671f62b300c230a7fdc78db0`
+- Refactor implementation commit: `179a19843d2b54b5812a44e03985c50dacc94167`
+- Final source/generated commit: `231f46f52cad2f1fc96d7a2c8e85d623ae77a0bc`
+- Package-validation commit: `68fe4c4251beaed0b03821fe304171b322814972`
+- Successful workflow run: `36539291700`
+- Final package-validation Pages run: `36539366123`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v09-full.zip`
+  - SHA-256: `cbe3ea5cee69da9b114e3b2858151a8b9ce83de132effb37ab6f651e0c497538`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v08-to-2026-09-29-v09-patch.zip`
+  - SHA-256: `2d4187d0f8517b41f0db912007b52a5ba069dfdd84cdd74aae35b61021fad510`
+
+Validation limitation: interactive desktop/mobile/Safari browser validation was not performed. Static/executable validation and Development Pages deployment completed successfully.
 
 ### Development `2026-09-29-v08`
 
