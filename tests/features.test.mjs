@@ -1023,3 +1023,14 @@ test('Mark Sold quick action stamps the click time and leaving Sold clears sold_
     else globalThis.confirm=originalConfirm;
   }
 });
+
+test('Development v14 eBay generator has one-step Prepare eBay Listing workflow',()=>{
+  const posts=postGeneratorSource();
+  assert.ok(posts.includes('id="ebayPrepareListing" disabled>Prepare eBay Listing</button>'));
+  assert.ok(posts.includes('requireOwner("prepare eBay listing")'));
+  assert.ok(posts.includes('copyPlainText(fullListingText(),"eBay listing copied")'));
+  assert.ok(posts.includes('downloadSingleCardImagesZip(selected,(done,total)=>{prepareListing.textContent='));
+  assert.ok(posts.includes('eBay listing ready · text copied + image ZIP downloaded'));
+  assert.ok(posts.includes('eBay listing ready · text copied'));
+  assert.ok(posts.includes('Could not fully prepare eBay listing'));
+});
