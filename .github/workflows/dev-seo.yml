@@ -122,7 +122,7 @@ jobs:
         name: Collect-TCG-Dev-2026-09-29-v12-packages
         path: 'release/Collect-TCG-Dev-2026-09-29-v12-full.zip
 
-          release/Collect-TCG-Dev-2026-09-29-v12-to-2026-09-29-v12-patch.zip
+          release/Collect-TCG-Dev-2026-09-29-v11-to-2026-09-29-v12-patch.zip
 
           '
         if-no-files-found: error
@@ -131,7 +131,7 @@ jobs:
       shell: bash
       run: "set -euo pipefail\nmkdir -p release-manifests\nMANIFEST=\"release-manifests/2026-09-29-v12.txt\"\n{\n  echo \"\
         Version: 2026-09-29-v12\"\n  echo \"Previous version: 2026-09-29-v11\"\n  echo \"Source commit: $(git rev-parse HEAD)\"\
-        \n  echo \"Full ZIP: Collect-TCG-Dev-2026-09-29-v12-full.zip\"\n  echo \"Patch ZIP: Collect-TCG-Dev-2026-09-29-v12-to-2026-09-29-v12-patch.zip\"\
+        \n  echo \"Full ZIP: Collect-TCG-Dev-2026-09-29-v12-full.zip\"\n  echo \"Patch ZIP: Collect-TCG-Dev-2026-09-29-v11-to-2026-09-29-v12-patch.zip\"\
         \n  echo\n  sha256sum release/*.zip\n} > \"$MANIFEST\"\ngit add \"$MANIFEST\"\ngit commit -m \"Development 2026-09-29-v12:\
         \ record package validation\"\ngit push\n"
   deploy:
