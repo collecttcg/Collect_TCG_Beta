@@ -1,6 +1,6 @@
 # Collect TCG Current Baseline
 
-Last reconciled against GitHub: 2026-09-28
+Last reconciled against GitHub: 2026-09-29
 
 ## Repositories
 
@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v11`
+Latest Development: `2026-09-29-v12`
 
-Previous Development: `2026-09-29-v10`
+Previous Development: `2026-09-29-v11`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v06`
+Latest Production: `2026-09-29-v07`
 
-Previous Production: `2026-09-29-v05`
+Previous Production: `2026-09-29-v06`
 
-Production functional baseline last promoted from Development: `2026-09-29-v10`
+Production functional baseline last promoted from Development: `2026-09-29-v11`
 
-Production package-validation HEAD: `800b33c3f60d6cfa3ead907bd14b99499de529a6`
+Production package-validation HEAD: `56336f79bd1d94ef79238a70280528f15c66302b`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -59,11 +59,11 @@ GitHub Pages status at reconciliation:
 
 Important promotion state:
 - Production `2026-09-27-v06` reconciled active terminology with the renamed Development repository; no Development application behavior was promoted.
-- Production `2026-09-29-v06` promoted validated Development `2026-09-29-v10`, including the v09 repository refactor and v10 Game-first Post Generator titles.
-- Production last-known-good: `800b33c3f60d6cfa3ead907bd14b99499de529a6`.
+- Production `2026-09-29-v07` promoted validated Development `2026-09-29-v11`, including the v09 repository refactor and v10 Game-first Post Generator titles.
+- Production last-known-good: `56336f79bd1d94ef79238a70280528f15c66302b`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `800b33c3f60d6cfa3ead907bd14b99499de529a6`.
+- Current validated/deployed Production last-known-good commit: `56336f79bd1d94ef79238a70280528f15c66302b`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -76,6 +76,25 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v12`
+
+Previous Development: `2026-09-29-v11`
+
+Purpose: restore the Card List Post Generator title/header order from before the v10 Game-first expansion, without reverting Game-first behavior in Card Drop or any other generator.
+
+Changes:
+- Card List first line returns to the localized Card List heading and update date without a Game prefix.
+- Card List WTS title line again places the selected Game label immediately before `WTS【CARD LIST】`, matching the pre-v10 Card List format.
+- Card Drop remains Game-first.
+- Single Card WTS/NFS, listing title, eBay, Carousell and giveaway behavior are unchanged.
+- Refreshed only the affected Post Generator/cache and validation contracts.
+
+SQL required: No.
+
+Validation status: implementation committed; validation, packaging and Development Pages deployment in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-29-v11`
 
