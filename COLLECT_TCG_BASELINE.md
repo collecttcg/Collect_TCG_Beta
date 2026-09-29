@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v08`
+Latest Development: `2026-09-29-v09`
 
-Previous Development: `2026-09-29-v07`
+Previous Development: `2026-09-29-v08`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v04`
+Latest Production: `2026-09-29-v05`
 
-Previous Production: `2026-09-29-v03`
+Previous Production: `2026-09-29-v04`
 
-Production functional baseline last promoted from Development: `2026-09-29-v07`
+Production functional baseline last promoted from Development: `2026-09-29-v08`
 
-Production package-validation HEAD: `6263329a8949d4dcae97cb8600d49a67029adb95`
+Production package-validation HEAD: `a78291b8db368282a764e89e9f93b555f74a1fed`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -59,10 +59,11 @@ GitHub Pages status at reconciliation:
 
 Important promotion state:
 - Production `2026-09-27-v06` reconciled active terminology with the renamed Development repository; no Development application behavior was promoted.
-- Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
+- Production `2026-09-29-v05` promoted validated Development `2026-09-29-v08` lowercase Post Generator hashtag normalization.
+- Production last-known-good: `a78291b8db368282a764e89e9f93b555f74a1fed`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `6263329a8949d4dcae97cb8600d49a67029adb95`.
+- Current validated/deployed Production last-known-good commit: `a78291b8db368282a764e89e9f93b555f74a1fed`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +76,30 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v09`
+
+Previous Development: `2026-09-29-v08`
+
+Purpose: repository-wide legacy refactor with behavior preservation and explicit rollback protection.
+
+Changes:
+- Created rollback branch `rollback/pre-refactor-2026-09-29-v08` at pre-refactor HEAD `99152be1fdca641d671f62b300c230a7fdc78db0`.
+- Consolidated global CSS layers into canonical `01-foundation.css` + `02-components.css` while preserving cascade order; removed two parser-invalid inert escaped-newline legacy blocks and selector families with no active source references.
+- Split Post Generator giveaway, marketplace/eBay/Carousell, and Card List/Card Drop logic into focused modules behind the same appContext contract.
+- Split Inventory page shell/options from the interaction controller.
+- Added a shared Insights extension lifecycle so enhancements no longer replace the same appContext methods in an implicit wrapper chain.
+- Removed the superseded analytics contact-intent scoring implementation; `contact-intent-policy.js` remains the single scoring source of truth.
+- Removed confirmed unreferenced runtime state/globals.
+- Feature modules are now imported once through `register-features.js`; `initialize.js` is a compatibility facade, eliminating duplicate module evaluation caused by mismatched query URLs.
+- Consolidated historical workflow assertions into `tools/release-contracts.sh` and added `tools/check-css.mjs`.
+- Reconciled Development baseline/checker with Production `2026-09-29-v05`.
+
+SQL required: No.
+
+Validation status: implementation committed; GitHub validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser validation has not been performed.
 
 ### Development `2026-09-29-v08`
 
