@@ -172,10 +172,11 @@ async function quickSetCardAvailability(card,status){
 
     const candidate={...card,availability:status};
 
-    // Let the database trigger stamp sold_at when supported. If moving out
-    // of Sold, the existing cardToDb behavior omits sold_at and the DB trigger
-    // can clear it without exposing any new public write path.
-    if(status!=="Sold") candidate.sold_at=null;
+    // Stamp the exact Mark Sold click moment in the application so the Sold
+    // archive date is deterministic. The existing database trigger remains a
+    // backward-compatible fallback. Moving out of Sold clears the local value.
+    if(status==="Sold") candidate.sold_at=new Date().toISOString();
+    else candidate.sold_at=null;
 
     const saved=await appContext.updateCardStorage(candidate);
     if(!saved) return false;

@@ -993,3 +993,33 @@ test("Development 2026-09-29-v11 watermark CTA says CHECK FULL INVENTORY while p
   assert.match(source,/ctx\.drawImage\(banner,bannerX,bannerY,bannerWidth,bannerHeight\)/);
   assert.match(registry,/media\/images\.js\?v=2026-09-29-v11/);
 });
+
+test('Mark Sold quick action stamps the click time and leaving Sold clears sold_at',async()=>{
+  const a=app();
+  const card={id:'quick-sold-date',name:'TEST CARD',availability:'Available',sold_at:null};
+  let savedPayload=null;
+  a.requireOwner=()=>true;
+  a.captureSaleConversionSnapshot=async()=>{};
+  a.updateCardStorage=async candidate=>{savedPayload=structuredClone(candidate);return candidate;};
+  a.getCardIndexById=()=>-1;
+  a.invalidateOwnerReservedAgeCache=()=>{};
+  a.showToast=()=>{};
+  a.router=()=>{};
+  const originalConfirm=globalThis.confirm;
+  globalThis.confirm=()=>true;
+  try{
+    const before=Date.now();
+    assert.equal(await a.quickSetCardAvailability(card,'Sold'),true);
+    const after=Date.now();
+    assert.equal(savedPayload.availability,'Sold');
+    const soldMs=Date.parse(savedPayload.sold_at);
+    assert.ok(Number.isFinite(soldMs));
+    assert.ok(soldMs>=before && soldMs<=after,'sold_at must be stamped during the Mark Sold click');
+    assert.equal(await a.quickSetCardAvailability({...card,availability:'Sold',sold_at:savedPayload.sold_at},'Available'),true);
+    assert.equal(savedPayload.availability,'Available');
+    assert.equal(savedPayload.sold_at,null);
+  }finally{
+    if(originalConfirm===undefined) delete globalThis.confirm;
+    else globalThis.confirm=originalConfirm;
+  }
+});
