@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v13`
+Latest Development: `2026-09-29-v14`
 
-Previous Development: `2026-09-29-v12`
+Previous Development: `2026-09-29-v13`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -76,6 +76,26 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v14`
+
+Previous Development: `2026-09-29-v13`
+
+Purpose: add a one-step **Prepare eBay Listing** action for consistency with the Facebook and Carousell Post Generators.
+
+Changes:
+- Adds a primary `Prepare eBay Listing` button to the Owner eBay Listing Generator.
+- The action copies the same combined Title + Item Specifics + Description payload as `Copy All`.
+- When the selected card has images, the action also creates/downloads the existing eBay image ZIP and reports included/skipped image results.
+- When no images are available, preparation still succeeds as a copy-only action.
+- Existing Copy Title, Copy Item Specifics, Copy Description, Copy All, Download Images (.ZIP) and Open Card actions are retained.
+- No changes to eBay listing text generation, Facebook/Carousell output, inventory data, Owner permissions, analytics, Contact to Buy, giveaways or Supabase/RLS.
+
+SQL required: No.
+
+Validation status: implementation committed; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-29-v13`
 
