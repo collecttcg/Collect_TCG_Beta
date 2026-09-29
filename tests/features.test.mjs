@@ -951,3 +951,14 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   assert.equal(styleOrder.filter(row=>row.load==='global').length,2);
   assert.ok(styleOrder.some(row=>row.file==='src/styles/27-insights-dashboard.css' && row.load==='dynamic-owner-insights'));
 });
+
+
+test("Development 2026-09-29-v10 Single Card Post titles start with the game category",()=>{
+ const a=app();
+ const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",format:"Graded",grading:[{company:"PSA",grade:"10",pop_count:12}]};
+ const title=a.defaultFbPostTitle(card);
+ assert.match(title,/^ONE PIECE WTS【GRADED】/);
+ assert.ok(title.indexOf("ONE PIECE") < title.indexOf("2024"));
+ const source=readSource("../dev/src/features/social/posts.js");
+ assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
+});
