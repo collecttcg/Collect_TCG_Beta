@@ -91,9 +91,17 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; validation and packaging in progress.
+Validation status: completed successfully. Feature regression tests (62/62), SEO syntax/self-test/generation, repository-wide JavaScript/import/reference validation, CSS and retained release contracts, the dedicated eBay button-placement regression, package creation/integrity, artifact upload and Development GitHub Pages deployment all passed.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
+Validated source commit: `305f0bbf469ad5befeeaed104d815e925cff6e9f`
+
+Validation workflow: `36589407277`
+
+Full ZIP SHA256: `c0f49d46c9bebe5aca7ca4d956690ff39bfd9156ad4967bc0d48b131c3339d90`
+
+Patch ZIP SHA256: `5592ddd3d47c42f8f024264e902de5664ee1b52af0d509db6771b55800a11331`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed.
 
 ### Development `2026-09-29-v14`
 
