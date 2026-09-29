@@ -1,4 +1,4 @@
-/** 2026-09-29-v09: focused marketplace Post Generator module. */
+/** 2026-09-29-v10: focused marketplace Post Generator module. */
 export function registerMarketplacePosts(appContext){
 function defaultCarousellProductDetails(card,language="en"){
     if(!card) return "";
@@ -15,7 +15,7 @@ function defaultCarousellProductDetails(card,language="en"){
           : appContext.rawConditionPostLabel(card));
     const carousellName=[card.name,card.card_code].filter(Boolean).join(" ").trim();
     if(carousellName){
-      lines.push(`【${carousellFormatLabel}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${carousellName}`.replace(/\s+/g," ").trim());
+      lines.push(`${appContext.fbGameLabel(card)} 【${carousellFormatLabel}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${carousellName}`.replace(/\s+/g," ").trim());
     }
     const labels={
       en:["Year","Series","Game","Language","Price Terms"],
@@ -207,7 +207,7 @@ function ebayListingTitle(card){
     if(!card) return "";
     const type=appContext.cardListFormat(card);
     const condition=type==="graded" ? appContext.gradedPostLabel(card) : (type==="sealed" ? "Sealed" : appContext.rawConditionPostLabel(card));
-    return [card.name,card.card_code,card.series,condition,card.language,appContext.fbGameLabel(card)].map(v=>String(v||"").trim()).filter(Boolean).join(" ").replace(/\s+/g," ").trim().slice(0,80).trim();
+    return [appContext.fbGameLabel(card),card.name,card.card_code,card.series,condition,card.language].map(v=>String(v||"").trim()).filter(Boolean).join(" ").replace(/\s+/g," ").trim().slice(0,80).trim();
   }
 
 function ebayItemSpecifics(card){
