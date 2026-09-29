@@ -1,4 +1,4 @@
-/** 2026-09-29-v09: Post Generator coordinator. */
+/** 2026-09-29-v10: Post Generator coordinator. */
 import { registerGiveawayPosts } from './posts-giveaway.js?v=2026-09-29-v09';
 import { registerMarketplacePosts } from './posts-marketplace.js?v=2026-09-29-v09';
 import { registerCardListPosts } from './posts-card-list.js?v=2026-09-29-v09';
@@ -285,16 +285,17 @@ function fbGameLabel(card){
 
 function defaultFbPostTitle(card){
     if(!card) return "";
+    const game=appContext.fbGameLabel(card);
     const parts = [
       card.year || "",
-      appContext.fbGameLabel(card),
       appContext.normalizeFilterValue(card.era) === "vintage" && appContext.normalizeFilterValue(card.game).includes("one piece") ? "CARDDASS" : "",
       card.series || "",
       card.name || "",
       card.card_code || ""
     ].filter(Boolean);
+    const salesLead=`WTS【${appContext.fbFormatLabel(card)}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)}`;
 
-    return `WTS【${appContext.fbFormatLabel(card)}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)} ${parts.join(" ")}`.replace(/\s+/g," ").trim().toUpperCase();
+    return [game,salesLead,...parts].filter(Boolean).join(" ").replace(/\s+/g," ").trim().toUpperCase();
   }
 
 function singleCardCopyTitle(card){
@@ -858,7 +859,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
 
       const meta = perCardMeta[selectedCard.id] || {};
       const normalDefaultTitle=appContext.defaultFbPostTitle(selectedCard);
-      const nfsDefaultTitle=`COLLECTION SHOWCASE【NFS】${String(selectedCard.name||"").toUpperCase()}${selectedCard.card_code ? ` · ${String(selectedCard.card_code).toUpperCase()}` : ""}`;
+      const nfsDefaultTitle=`${appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】${String(selectedCard.name||"").toUpperCase()}${selectedCard.card_code ? ` · ${String(selectedCard.card_code).toUpperCase()}` : ""}`.trim();
       titleInput.value = String(
         meta.title || (nfsMode ? nfsDefaultTitle : normalDefaultTitle)
       ).slice(0,300);
