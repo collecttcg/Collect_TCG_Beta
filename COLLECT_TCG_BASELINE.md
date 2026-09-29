@@ -93,20 +93,18 @@ Changes:
 
 SQL required: No.
 
-Implementation commit: `3f3999daa36bda00e83c8af637382fd4ac6f2f1c`.
-
-Validation status: completed successfully. The final GitHub validation run passed 57/57 feature/regression tests, including the Game-first Single Card title contract, repository-wide JavaScript syntax/import/HTML asset/migration checks, CSS validation, retained release contracts, SEO generation/self-test, package creation, ZIP integrity checks and Development GitHub Pages deployment. Two earlier validation attempts failed only in newly adjusted test assertions; the implementation title output already had the requested Game-first order. The assertions were corrected and the complete workflow was rerun successfully.
+Validation status: completed successfully. Final GitHub validation passed 57/57 feature/regression tests, SEO generator syntax/self-test and generation, repository-wide JavaScript syntax/import/reference checks, CSS validation, retained release contracts, package creation and ZIP integrity checks. The final package-validation commit deployed successfully through GitHub Pages. Earlier intermediate runs failed/cancelled while the requested scope was expanded and a new test fixture was corrected; the final complete workflow passed.
 
 Release records:
-- Implementation branch tip: `3f3999daa36bda00e83c8af637382fd4ac6f2f1c`
-- Successful validation workflow: `36555230229`
-- Validated source/generated commit: `44963d6e06599d12e32180481cec86b74fdc4f75`
-- Package-validation commit: `705280d3312cb3abd3cde1aba103bef6cc477f64`
-- Package artifact: `11027830910`
+- Validated source commit: `731309070841312640101f2e6f0ef427eef1d207`
+- Package-validation commit: `2475779e1ee345765a4c6360cedc87f87e5d5ea2`
+- Successful validation workflow: `36555971040`
+- Successful package-validation Pages run: `36556037770`
+- Package artifact: `11028106912`
 - Full ZIP: `Collect-TCG-Dev-2026-09-29-v10-full.zip`
-  - SHA-256: `ebc09cf234a6a7d759e64b340be6da5b3eec187c0e0dc2d5ec960c2346c430c5`
+  - SHA-256: `a56b325a4b336ae52e1538f3de004a0ed87bb53d41d4a53341bcfb1384c5758d`
 - Patch ZIP: `Collect-TCG-Dev-2026-09-29-v09-to-2026-09-29-v10-patch.zip`
-  - SHA-256: `46bc1034d7aa155f256a4128be615067311da088af902d3716ea109742dec83d`
+  - SHA-256: `7dfc817bcaafc218edf2ee012bfbd8565b42464d3cfa7b575078e87643f0d59b`
 
 Validation limitation: interactive desktop/mobile/Safari browser validation was not performed. Static/executable validation and Development Pages deployment completed successfully.
 
