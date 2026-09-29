@@ -92,9 +92,22 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; validation, packaging and Development Pages deployment in progress.
+Validation status: completed successfully. The v12 regression test confirmed Card List restored its pre-v10 heading/title order while Card Drop remains Game-first. The complete feature regression suite, SEO generator syntax/self-test and generation, repository-wide JavaScript/import/reference validation, CSS and retained release contracts, package creation, ZIP integrity checks and Development Pages deployment all passed.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
+Release records:
+- Core implementation commit: `b73b770372981426ecfc33f4406c5e4cd17c94a7`
+- Release-contract commit: `54163e39507d7d36f6f3947adb7a9e01800f4ca4`
+- Corrected package-label commit: `c6884242fbf4c558e370d610177848e3c8049ba0`
+- Validated generated/source commit: `3f9d1ee9b46b59a63d8d2be01cafcd19a70b8a8c`
+- Package-validation commit: `203a2d6ff3a4440b0ceaadbf00fdc92c9633bbab`
+- Successful validation/deployment workflow: `36564619192`
+- Package artifact: `11031356840`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v12-full.zip`
+  - SHA-256: `1c8bbb262fb9b77f8840fe5483d8e8e478ce163cada31aaf0779db2183e28284`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v11-to-2026-09-29-v12-patch.zip`
+  - SHA-256: `cc82b7b6607b71d2876b51148c42dac6d39a5dc519c84fff673e3af3fa53ff05`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed. Static/executable validation and Development Pages deployment completed successfully.
 
 ### Development `2026-09-29-v11`
 
