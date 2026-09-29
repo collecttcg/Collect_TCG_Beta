@@ -91,7 +91,19 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; workflow/package validation pending.
+Validation status: completed successfully. The full retained Development regression chain passed, including v05 and v06 watermark guarantees. Dedicated v07 executable validation passed portrait, square, slight-landscape (~1.10:1), medium-landscape (1.20:1), 4:3 and wide-landscape cases and explicitly verified progressive sizing between intermediate aspect ratios. Changed JavaScript syntax, repository/import/asset checks, generated SEO, package creation, ZIP integrity/hash verification and Development Pages deployment all passed.
+
+Release records:
+- Source/generated commit: `4e152996426ce6d4eb52f141ba50089456519046`
+- Package-validation commit: `e8b95decf81f7bc02bfa1199222834523dfe0248`
+- Workflow run: `36529906481`
+- Package-validation Pages run: `36529951939`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v07-full.zip`
+  - SHA-256: `32c5875110a1fb7d958407d217070bb3df4a812513fbf1a6c4a110d72fd4e66c`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v06-to-2026-09-29-v07-patch.zip`
+  - SHA-256: `f219b967b4ddba12a89f9ba95bef6eddca52c3b6273c70b4cbacbc82adf31d47`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed. The responsive sizing was executable/static validated; user visual confirmation on Development remains appropriate.
 
 ### Development `2026-09-29-v06`
 
