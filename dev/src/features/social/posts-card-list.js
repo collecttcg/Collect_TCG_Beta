@@ -244,6 +244,15 @@ function buildFbCardListSection(title, cardsInSection, prefs){
     return lines.join("\n").trimEnd();
   }
 
+function cardListGameTitle(cards){
+    const labels=[];
+    for(const card of cards||[]){
+      const label=appContext.fbGameLabel(card);
+      if(label && !labels.includes(label)) labels.push(label);
+    }
+    return labels.join(" / ");
+  }
+
 function buildFbCardListPost(availableCards,prefs){
     if(prefs.postFormat !== "full") return appContext.buildFbCardDropPost(availableCards,prefs);
     const divider = "━━━━━━━━━━━━━━━━━━━━━━━━";
@@ -261,7 +270,7 @@ function buildFbCardListPost(availableCards,prefs){
     const lines = [
       `${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`,
       "",
-      `WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`,
+      `${cardListGameTitle(availableCards)} WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`.trim(),
       "",
       ...sections.flatMap((s,i)=>i ? ["",s] : [s]),
       "",
@@ -291,7 +300,7 @@ function buildFbCardListPost(availableCards,prefs){
     const lines=[
       `${text.cardDrop} · ${appContext.fbCardListDateLabel()}`,
       "",
-      `WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`,
+      `${cardListGameTitle(cards)} WTS · ${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()} · COLLECT TCG MY & SG`.trim(),
       "",
       ...shown.flatMap((line,index)=>index ? ["",line] : [line]),
       "",
