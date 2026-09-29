@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v10`
+Latest Development: `2026-09-29-v11`
 
-Previous Development: `2026-09-29-v09`
+Previous Development: `2026-09-29-v10`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v05`
+Latest Production: `2026-09-29-v06`
 
-Previous Production: `2026-09-29-v04`
+Previous Production: `2026-09-29-v05`
 
-Production functional baseline last promoted from Development: `2026-09-29-v08`
+Production functional baseline last promoted from Development: `2026-09-29-v10`
 
-Production package-validation HEAD: `a78291b8db368282a764e89e9f93b555f74a1fed`
+Production package-validation HEAD: `800b33c3f60d6cfa3ead907bd14b99499de529a6`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -59,11 +59,11 @@ GitHub Pages status at reconciliation:
 
 Important promotion state:
 - Production `2026-09-27-v06` reconciled active terminology with the renamed Development repository; no Development application behavior was promoted.
-- Production `2026-09-29-v05` promoted validated Development `2026-09-29-v08` lowercase Post Generator hashtag normalization.
-- Production last-known-good: `a78291b8db368282a764e89e9f93b555f74a1fed`.
+- Production `2026-09-29-v06` promoted validated Development `2026-09-29-v10`, including the v09 repository refactor and v10 Game-first Post Generator titles.
+- Production last-known-good: `800b33c3f60d6cfa3ead907bd14b99499de529a6`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `a78291b8db368282a764e89e9f93b555f74a1fed`.
+- Current validated/deployed Production last-known-good commit: `800b33c3f60d6cfa3ead907bd14b99499de529a6`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -76,6 +76,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v11`
+
+Previous Development: `2026-09-29-v10`
+
+Purpose: update the inventory image watermark CTA wording without changing the approved watermark layout, QR destination, logo, URL treatment or responsive sizing.
+
+Changes:
+- Rendered watermark CTA changes from the baked artwork wording “CHECK PRICE • AVAILABILITY” to “CHECK FULL INVENTORY”.
+- The approved 1113×242 banner remains the canonical artwork; only its CTA text band is replaced during canvas rendering.
+- Logo, tagline, URL treatment, QR frame/decorations, dynamically regenerated QR interior, banner dimensions and responsive placement are preserved.
+- Applies to both Logo + CTA + QR and CTA + QR-only watermark paths because both use the same website watermark renderer.
+
+SQL required: No.
+
+Validation status: implementation prepared; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser validation has not yet been performed.
 
 ### Development `2026-09-29-v10`
 

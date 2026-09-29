@@ -151,6 +151,50 @@ function createWebsiteWatermarkQrCanvas(text,size=256){
     }
   }
 
+function drawWebsiteWatermarkCta(ctx,banner,bannerX,bannerY,scale){
+    // The approved banner artwork contains the previous CTA as pixels. Replace
+    // only that text band at render time so the logo, URL treatment, QR frame,
+    // decorations, dimensions and responsive placement remain unchanged.
+    const sourceX=390;
+    const sourceY=35;
+    const sourceW=475;
+    const sourceH=28;
+    const targetY=58;
+    const targetH=60;
+    const centerX=sourceX+(sourceW/2);
+    const centerY=targetY+(targetH/2)+1;
+    const label="CHECK FULL INVENTORY";
+
+    ctx.save();
+    ctx.imageSmoothingEnabled=true;
+    if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
+
+    // Reuse the banner's own empty honeycomb texture to erase the baked CTA.
+    ctx.drawImage(
+      banner,
+      sourceX,sourceY,sourceW,sourceH,
+      bannerX+sourceX*scale,bannerY+targetY*scale,sourceW*scale,targetH*scale
+    );
+
+    const maxWidth=465*scale;
+    let fontSize=44*scale;
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font=`900 ${fontSize}px Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif`;
+    const measured=Math.max(1,ctx.measureText(label).width);
+    if(measured>maxWidth){
+      fontSize*=maxWidth/measured;
+      ctx.font=`900 ${fontSize}px Impact, "Arial Narrow", "Roboto Condensed", Arial, sans-serif`;
+    }
+    ctx.shadowColor="rgba(35,18,0,0.82)";
+    ctx.shadowBlur=Math.max(1,2*scale);
+    ctx.shadowOffsetX=Math.max(1,2*scale);
+    ctx.shadowOffsetY=Math.max(1,2*scale);
+    ctx.fillStyle="#f3b52c";
+    ctx.fillText(label,bannerX+centerX*scale,bannerY+centerY*scale,maxWidth);
+    ctx.restore();
+  }
+
 function drawWebsiteWatermark(ctx, canvas, banner){
     const watermarkUrl=appContext.CARD_WATERMARK_URL;
     if(!watermarkUrl || !banner) return;
@@ -185,6 +229,7 @@ function drawWebsiteWatermark(ctx, canvas, banner){
     if("imageSmoothingQuality" in ctx) ctx.imageSmoothingQuality="high";
 
     ctx.drawImage(banner,bannerX,bannerY,bannerWidth,bannerHeight);
+    drawWebsiteWatermarkCta(ctx,banner,bannerX,bannerY,scale);
 
     const qrCanvas=createWebsiteWatermarkQrCanvas(watermarkUrl,360);
     if(qrCanvas){
@@ -941,7 +986,7 @@ function setupCardImageRecovery(){
     },true);
   }
 
-  Object.assign(appContext,{isNearWhiteBackgroundPixel,createTransparentWatermarkLogo,loadWatermarkLogo,loadWebsiteWatermarkBanner,drawWebsiteWatermark,drawWatermark,shouldApplySoldDownloadWatermark,drawSoldDownloadWatermark,canvasToBlob,loadImageElementFromSource,renderSoldDownloadBlob,renderCardImage,renderWatermarkedImage,rotateCardImageSource,loadImageFromDataUrl,normalizedImageMime,imageExtensionMatchesMime,verifyImageDecodes,validateOwnerImageFile,resizeImageFile,processCardImageUrl,applyWatermarkToCardImageSource,applyWebsiteWatermarkToCardImageSource,watermarkImageUrl,applyPsaPrivacyMaskToCardImageSource,isPendingCardImage,dataUrlToImageBlob,cardStorageExtensionForMime,uploadPendingCardImage,removeCardStoragePaths,cardStoragePathFromUrl,prepareCardImagesForStorage,cleanupRemovedCardStorageImages,cardImageStorageErrorText,setupCardImageRecovery});
+  Object.assign(appContext,{isNearWhiteBackgroundPixel,createTransparentWatermarkLogo,loadWatermarkLogo,loadWebsiteWatermarkBanner,drawWebsiteWatermarkCta,drawWebsiteWatermark,drawWatermark,shouldApplySoldDownloadWatermark,drawSoldDownloadWatermark,canvasToBlob,loadImageElementFromSource,renderSoldDownloadBlob,renderCardImage,renderWatermarkedImage,rotateCardImageSource,loadImageFromDataUrl,normalizedImageMime,imageExtensionMatchesMime,verifyImageDecodes,validateOwnerImageFile,resizeImageFile,processCardImageUrl,applyWatermarkToCardImageSource,applyWebsiteWatermarkToCardImageSource,watermarkImageUrl,applyPsaPrivacyMaskToCardImageSource,isPendingCardImage,dataUrlToImageBlob,cardStorageExtensionForMime,uploadPendingCardImage,removeCardStoragePaths,cardStoragePathFromUrl,prepareCardImagesForStorage,cleanupRemovedCardStorageImages,cardImageStorageErrorText,setupCardImageRecovery});
 }
 
 /** State and event initialization; called in preserved startup order. */

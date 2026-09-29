@@ -933,7 +933,7 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v10'/);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v11'/);
   assert.equal((registry.match(/posts\.js\?v=2026-09-29-v10/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
@@ -967,4 +967,15 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"drop"}),/^ONE PIECE ✨ CARD DROP/);
  const source=readSource("../dev/src/features/social/posts.js");
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
+});
+
+
+test("Development 2026-09-29-v11 watermark CTA says CHECK FULL INVENTORY while preserving approved banner and QR rendering",()=>{
+  const source=readSource("../dev/src/features/media/images.js");
+  const registry=readSource("../dev/src/app/register-features.js");
+  assert.match(source,/const label="CHECK FULL INVENTORY"/);
+  assert.match(source,/drawWebsiteWatermarkCta\(ctx,banner,bannerX,bannerY,scale\)/);
+  assert.match(source,/const qrCanvas=createWebsiteWatermarkQrCanvas\(watermarkUrl,360\)/);
+  assert.match(source,/ctx\.drawImage\(banner,bannerX,bannerY,bannerWidth,bannerHeight\)/);
+  assert.match(registry,/media\/images\.js\?v=2026-09-29-v11/);
 });
