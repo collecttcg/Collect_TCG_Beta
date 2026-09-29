@@ -963,8 +963,8 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  assert.match(a.ebayListingTitle(card),/^ONE PIECE /);
  assert.match(a.defaultCarousellProductDetails(card),/^ONE PIECE 【PSA 10】/);
  const prefs={listTitle:"TEST",dropLimit:3,hashtags:"#tcg",language:"en"};
- assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"full"}),/ONE PIECE WTS【CARD LIST】TEST/);
- assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"drop"}),/ONE PIECE WTS · TEST · COLLECT TCG MY & SG/);
+ assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"full"}),/^ONE PIECE ‼️ CARD LIST ‼️/);
+ assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"drop"}),/^ONE PIECE ✨ CARD DROP/);
  const source=readSource("../dev/src/features/social/posts.js");
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
 });
