@@ -1,7 +1,7 @@
 /** 2026-09-29-v10: Post Generator coordinator. */
 import { registerGiveawayPosts } from './posts-giveaway.js?v=2026-09-29-v09';
-import { registerMarketplacePosts } from './posts-marketplace.js?v=2026-09-29-v09';
-import { registerCardListPosts } from './posts-card-list.js?v=2026-09-29-v09';
+import { registerMarketplacePosts } from './posts-marketplace.js?v=2026-09-29-v10';
+import { registerCardListPosts } from './posts-card-list.js?v=2026-09-29-v10';
 export function register(appContext){
 function compactGeneratedPostSpacing(value){
     const lines=String(value||"")
@@ -302,7 +302,7 @@ function singleCardCopyTitle(card){
     if(!card) return "";
     const type=appContext.cardListFormat(card);
     const lead=type==="graded" ? appContext.gradedPostLabel(card) : (type==="sealed" ? "Sealed" : appContext.rawConditionPostLabel(card));
-    return [lead,card.series,card.name,card.card_code].map(value=>String(value||"").trim()).filter(Boolean).join(" · ");
+    return [appContext.fbGameLabel(card),lead,card.series,card.name,card.card_code].map(value=>String(value||"").trim()).filter(Boolean).join(" · ");
   }
 
 function defaultFbHashtags(card){
