@@ -688,7 +688,7 @@ function renderFbPostGeneratorPage(nfsMode=false){
             </div>
           </div>
 
-          <div class="field"><label for="fbListingTitleOutput">Listing Title</label><input id="fbListingTitleOutput" type="text" readonly placeholder="Select a card to generate the listing title…"><div class="hint">Condition / grade / sealed · series · card name · card code. Empty fields are omitted.</div></div>
+          <div class="field"><label for="fbListingTitleOutput">Listing Title</label><input id="fbListingTitleOutput" type="text" readonly placeholder="Select a card to generate the listing title…"><div class="hint">Game · condition / grade / sealed · series · card name · card code. Empty fields are omitted.</div></div>
           <textarea id="fbPostOutput" class="fb-post-output" readonly placeholder="Select a card to generate the Facebook post…"></textarea>
 
           <div class="fb-post-bottom-actions">
