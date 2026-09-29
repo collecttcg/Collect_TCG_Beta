@@ -953,12 +953,18 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
 });
 
 
-test("Development 2026-09-29-v10 Single Card Post titles start with the game category",()=>{
+test("Development 2026-09-29-v10 Post Generator titles start with the game category when game data exists",()=>{
  const a=app();
- const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",format:"Graded",grading:[{company:"PSA",grade:"10",pop_count:12}]};
- const title=a.defaultFbPostTitle(card);
- assert.match(title,/^ONE PIECE WTS【PSA 10】/);
- assert.ok(title.indexOf("ONE PIECE") < title.indexOf("2024"));
+ a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
+ a.collectSocialPostLines=()=>[];
+ const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",language:"English",format:"Graded",availability:"Available",grading:[{company:"PSA",grade:"10",pop_count:12}]};
+ assert.match(a.defaultFbPostTitle(card),/^ONE PIECE WTS【GRADED】/);
+ assert.match(a.singleCardCopyTitle(card),/^ONE PIECE · /);
+ assert.match(a.ebayListingTitle(card),/^ONE PIECE /);
+ assert.match(a.defaultCarousellProductDetails(card),/^ONE PIECE 【PSA 10】/);
+ const prefs={listTitle:"TEST",dropLimit:3,hashtags:"#tcg",language:"en"};
+ assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"full"}),/ONE PIECE WTS【CARD LIST】TEST/);
+ assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"drop"}),/ONE PIECE WTS · TEST · COLLECT TCG MY & SG/);
  const source=readSource("../dev/src/features/social/posts.js");
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
 });
