@@ -91,9 +91,19 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation prepared; validation and packaging in progress.
+Validation status: completed successfully. Final GitHub validation passed 58/58 feature/regression tests including the watermark CTA contract, SEO generator syntax/self-test and generation, repository-wide JavaScript syntax/import/reference checks across 62 JavaScript files, CSS validation, retained release contracts, package creation and ZIP integrity checks. Development Pages deployment completed successfully. Earlier intermediate validation runs stopped on stale v10/v08 validation metadata/cache markers; those guards were reconciled and the final complete workflow passed.
 
-Validation limitation: interactive desktop/mobile/Safari browser validation has not yet been performed.
+Release records:
+- Validated source/generated commit: `7a84e42cd702dd0a6a5a83c2d6aed5ee4de457f8`
+- Package-validation commit: `2f79f6407dea76e22d457f95413dc68ec902a7df`
+- Successful validation/deployment workflow: `36559949769`
+- Package artifact: `11029373829`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v11-full.zip`
+  - SHA-256: `a3053ebabad17d6c59f6536ca985b0921a49b15db28dae5228dcae259fc7e3da`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v10-to-2026-09-29-v11-patch.zip`
+  - SHA-256: `076558ead1ba87a7b3a83d171bf13f7670cca921096b92302c20a19d54f5c796`
+
+Validation limitation: interactive desktop/mobile/Safari browser validation was not performed. Static/executable validation and Development Pages deployment completed successfully.
 
 ### Development `2026-09-29-v10`
 
