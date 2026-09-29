@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v07`
+Latest Development: `2026-09-29-v08`
 
-Previous Development: `2026-09-29-v06`
+Previous Development: `2026-09-29-v07`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v03`
+Latest Production: `2026-09-29-v04`
 
-Previous Production: `2026-09-29-v02`
+Previous Production: `2026-09-29-v03`
 
-Production functional baseline last promoted from Development: `2026-09-29-v05`
+Production functional baseline last promoted from Development: `2026-09-29-v07`
 
-Production package-validation HEAD: `9a24962ad3c330da356469e117e7921030ef1322`
+Production package-validation HEAD: `6263329a8949d4dcae97cb8600d49a67029adb95`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `9a24962ad3c330da356469e117e7921030ef1322`.
+- Current validated/deployed Production last-known-good commit: `6263329a8949d4dcae97cb8600d49a67029adb95`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v08`
+
+Previous Development: `2026-09-29-v07`
+
+Purpose: normalize Post Generator hashtags to lowercase without changing post body/title text.
+
+Changes:
+- All hashtag fields are normalized to lowercase before generated post output.
+- Existing legacy `#TCGCollector` defaults are now `#tcgcollector`.
+- Saved/custom hashtags are also lowercased, so manually entered uppercase hashtag characters cannot leak into generated posts.
+- Applies to single-card WTS/NFS posts, Giveaway posts, and Card List/Card Drop posts.
+- No post title, description, language, sales footer, Contact to Buy, inventory, Owner Mode, giveaway entry logic, analytics or Supabase behavior is otherwise changed.
+
+SQL required: No.
+
+Validation status: implemented; validation pending.
 
 ### Development `2026-09-29-v07`
 

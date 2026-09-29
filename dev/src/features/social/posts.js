@@ -166,13 +166,17 @@ function compactGeneratedPostSpacing(value){
     return [t.cod,"",short.shipping,"",short.dm,"",t.meetup,"",t.located];
   }
 
+function normalizePostHashtags(value){
+    return String(value||"").trim().toLowerCase();
+  }
+
 function getFbPostPrefs(){
     try{
       const parsed = JSON.parse(appContext.localStorage.getItem(appContext.FB_POST_PREFS_KEY) || "{}");
       return {
         carousellShopUrl: appContext.safeHttpUrl(parsed.carousellShopUrl) || appContext.FB_POST_DEFAULTS.carousellShopUrl,
         instagramUrl: appContext.safeHttpUrl(parsed.instagramUrl) || appContext.FB_POST_DEFAULTS.instagramUrl,
-        hashtags: String(parsed.hashtags || appContext.FB_POST_DEFAULTS.hashtags).trim().slice(0,500)
+        hashtags: normalizePostHashtags(parsed.hashtags || appContext.FB_POST_DEFAULTS.hashtags).slice(0,500)
       };
     }catch{
       return {...appContext.FB_POST_DEFAULTS};
@@ -184,7 +188,7 @@ function saveFbPostPrefs(prefs){
       appContext.localStorage.setItem(appContext.FB_POST_PREFS_KEY, JSON.stringify({
         carousellShopUrl:appContext.safeHttpUrl(prefs.carousellShopUrl) || appContext.FB_POST_DEFAULTS.carousellShopUrl,
         instagramUrl:appContext.safeHttpUrl(prefs.instagramUrl) || appContext.FB_POST_DEFAULTS.instagramUrl,
-        hashtags:String(prefs.hashtags || "").trim().slice(0,500)
+        hashtags:normalizePostHashtags(prefs.hashtags).slice(0,500)
       }));
     }catch{}
   }
@@ -300,15 +304,15 @@ function singleCardCopyTitle(card){
 function defaultFbHashtags(card){
     const game = appContext.normalizeFilterValue(card?.game || "");
     if(game.includes("one piece")){
-      return "#tcg #onepiece #onepiecetcg #onepiececardgame #TCGCollector";
+      return "#tcg #onepiece #onepiecetcg #onepiececardgame #tcgcollector";
     }
     if(game.includes("zatch") || game.includes("gash")){
-      return "#tcg #zatchbell #gashbell #carddass #TCGCollector";
+      return "#tcg #zatchbell #gashbell #carddass #tcgcollector";
     }
     if(game.includes("gundam")){
-      return "#tcg #gundam #gundamcardgame #carddass #TCGCollector";
+      return "#tcg #gundam #gundamcardgame #carddass #tcgcollector";
     }
-    return "#tcg #TCGCollector";
+    return "#tcg #tcgcollector";
   }
 
 function buildFbPostText(card, values){
@@ -320,7 +324,7 @@ function buildFbPostText(card, values){
     const websiteCardUrl = appContext.getCardShareUrl(card.id);
     const carousellShopUrl = appContext.safeHttpUrl(values.carousellShopUrl);
     const instagramUrl = appContext.safeHttpUrl(values.instagramUrl);
-    const hashtags = String(values.hashtags || appContext.defaultFbHashtags(card)).trim();
+    const hashtags = normalizePostHashtags(values.hashtags || appContext.defaultFbHashtags(card));
 
     const groupFriendly=values.templateMode!=="detailed";
     const groupCopy=appContext.facebookGroupSalesCopy(values.language);
@@ -356,7 +360,7 @@ function buildFbNfsPostText(card,values){
     const text=appContext.postLocale(values.language);
     const title=String(values.title||appContext.defaultFbPostTitle(card)).trim();
     const collectionUrl=`${location.origin}${location.pathname}${location.search}#/collection`;
-    const hashtags=String(values.hashtags||appContext.defaultFbHashtags(card)).trim();
+    const hashtags=normalizePostHashtags(values.hashtags||appContext.defaultFbHashtags(card));
 
     const lines=[
       title,
@@ -1029,7 +1033,7 @@ function getFbGiveawayPostPrefs(){
         postage:safe(p.postage,appContext.FB_GIVEAWAY_POST_DEFAULTS.postage,100),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.carousellMalaysiaUrl,
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl)||appContext.FB_GIVEAWAY_POST_DEFAULTS.carousellSingaporeUrl,
-        hashtags:safe(p.hashtags,appContext.FB_GIVEAWAY_POST_DEFAULTS.hashtags,500),
+        hashtags:normalizePostHashtags(safe(p.hashtags,appContext.FB_GIVEAWAY_POST_DEFAULTS.hashtags,500)),
         includeMultiGroupNotice:p.includeMultiGroupNotice!==false
       };
     }catch{
@@ -1056,7 +1060,7 @@ function saveFbGiveawayPostPrefs(p){
         postage:safe(p.postage,100),
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl),
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl),
-        hashtags:safe(p.hashtags,500),
+        hashtags:normalizePostHashtags(safe(p.hashtags,500)),
         includeMultiGroupNotice:!!p.includeMultiGroupNotice
       }));
     }catch{}
@@ -1432,7 +1436,7 @@ function buildFbGiveawayPost(values,sourceGiveaway=null){
     const giveawayEnds=String(values.giveawayEnds||"").trim();
     const cod=String(values.cod||"").trim();
     const postage=String(values.postage||"").trim();
-    const hashtags=String(values.hashtags||"").trim();
+    const hashtags=normalizePostHashtags(values.hashtags);
 
     const lines=[
       `🎁 GIVEAWAY #${number} 🎁`,
@@ -2637,7 +2641,7 @@ function getFbCardListPostPrefs(){
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl || p.carousellShopUrl) || "https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl) || "https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl) || "https://www.instagram.com/collecttcg.mysg",
-        hashtags:String(p.hashtags || "#tcg #onepiece #onepiecetcg #onepiececardgame #TCGCollector").trim().slice(0,500)
+        hashtags:normalizePostHashtags(p.hashtags || "#tcg #onepiece #onepiecetcg #onepiececardgame #tcgcollector").slice(0,500)
       };
     }catch{
       return {
@@ -2649,7 +2653,7 @@ function getFbCardListPostPrefs(){
         carousellMalaysiaUrl:"https://www.carousell.com.my/u/collect_tcg_my_sg/",
         carousellSingaporeUrl:"https://www.carousell.sg/u/collect_tcg_sg/",
         instagramUrl:"https://www.instagram.com/collecttcg.mysg",
-        hashtags:"#tcg #onepiece #onepiecetcg #onepiececardgame #TCGCollector"
+        hashtags:"#tcg #onepiece #onepiecetcg #onepiececardgame #tcgcollector"
       };
     }
   }
@@ -2665,7 +2669,7 @@ function saveFbCardListPostPrefs(p){
         carousellMalaysiaUrl:appContext.safeHttpUrl(p.carousellMalaysiaUrl),
         carousellSingaporeUrl:appContext.safeHttpUrl(p.carousellSingaporeUrl),
         instagramUrl:appContext.safeHttpUrl(p.instagramUrl),
-        hashtags:String(p.hashtags || "").trim().slice(0,500)
+        hashtags:normalizePostHashtags(p.hashtags).slice(0,500)
       }));
     }catch{}
   }
@@ -2900,7 +2904,7 @@ function buildFbCardListPost(availableCards,prefs){
       divider,
       "",
       "HASHTAG :",
-      String(prefs.hashtags || "").trim()
+      normalizePostHashtags(prefs.hashtags)
     ];
 
     return appContext.compactGeneratedPostSpacing(lines.join("\n"));
@@ -2928,7 +2932,7 @@ function buildFbCardListPost(availableCards,prefs){
       "",
       divider,
       "",
-      String(prefs.hashtags || "").trim()
+      normalizePostHashtags(prefs.hashtags)
     ];
     return appContext.compactGeneratedPostSpacing(lines.join("\n"));
   }
