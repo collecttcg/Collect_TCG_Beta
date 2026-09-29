@@ -639,7 +639,7 @@ grep -Fq 'const widthTarget=Math.round(canvas.width*0.82);' dev/src/features/med
 grep -Fq 'const heightCappedWidth=Math.round(canvas.height*0.24*sourceW/sourceH);' dev/src/features/media/images.js
 grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
-grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -Fq 'images.js?v=2026-09-29-v11' dev/src/app/register-features.js
 grep -Fq 'register-features.js?v=2026-09-29-v11' dev/src/main.js
 grep -Fq 'src/main.js?v=2026-09-29-v11' dev/index.html
 node - <<'NODE'
@@ -675,7 +675,7 @@ node --check dev/src/main.js
 grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));' dev/src/features/media/images.js
 grep -Fq 'const responsiveWidthRatio=0.82-(0.20*landscapeProgress);' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
-grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -Fq 'images.js?v=2026-09-29-v11' dev/src/app/register-features.js
 grep -Fq 'register-features.js?v=2026-09-29-v11' dev/src/main.js
 grep -Fq 'src/main.js?v=2026-09-29-v11' dev/index.html
 node - <<'NODE'
@@ -714,7 +714,7 @@ grep -Fq 'const aspectRatio=canvas.width/canvas.height;' dev/src/features/media/
 grep -Fq 'const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));' dev/src/features/media/images.js
 grep -Fq 'const responsiveWidthRatio=0.82-(0.20*landscapeProgress);' dev/src/features/media/images.js
 grep -Fq 'Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))' dev/src/features/media/images.js
-grep -Fq 'images.js?v=2026-09-29-v09' dev/src/app/register-features.js
+grep -Fq 'images.js?v=2026-09-29-v11' dev/src/app/register-features.js
 grep -Fq 'register-features.js?v=2026-09-29-v11' dev/src/main.js
 grep -Fq 'src/main.js?v=2026-09-29-v11' dev/index.html
 node - <<'NODE'
