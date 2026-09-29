@@ -45,13 +45,13 @@ Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v02`
+Latest Production: `2026-09-29-v03`
 
-Previous Production: `2026-09-29-v01`
+Previous Production: `2026-09-29-v02`
 
-Production functional baseline last promoted from Development: `2026-09-29-v04`
+Production functional baseline last promoted from Development: `2026-09-29-v05`
 
-Production package-validation HEAD: `826165b8457c15f837aab3a496792d60fee11436`
+Production package-validation HEAD: `9a24962ad3c330da356469e117e7921030ef1322`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -62,7 +62,7 @@ Important promotion state:
 - Production final HEAD / last-known-good: `190a17f03b4b962fee8c15783f75e824c44babfd`.
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
-- Current validated/deployed Production last-known-good commit: `826165b8457c15f837aab3a496792d60fee11436`.
+- Current validated/deployed Production last-known-good commit: `9a24962ad3c330da356469e117e7921030ef1322`.
 - Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
@@ -104,6 +104,14 @@ Release records:
   - SHA-256: `d7ecb2a909d17c1fc3bb9af6a573a3e24c39fdac7b89d92e3da49feebfd2ae46`
 
 Validation limitation: interactive desktop/mobile/Safari browser testing was not available. The watermark sizing was executable/static validated rather than visually exercised in a browser; user confirmation on Development is still appropriate for the preferred visual size.
+
+### Production promotion `2026-09-29-v03`
+
+Previous Production: `2026-09-29-v02`
+
+Development promoted from: `2026-09-29-v05`
+
+Promotion status: completed successfully. Production independently validated the landscape-aware website QR/CTA watermark sizing while retaining Production v02 owner/session behavior and Production-only QR Generator, SEO/canonical, analytics, privacy and rollback behavior. SQL required: No. Production source/generated commit: `488f5d47faab8e7a8dbf03f99b755d74e06f4925`. Package-validation / last-known-good commit: `9a24962ad3c330da356469e117e7921030ef1322`. Workflow run: `36526339872`. Package-validation Pages run: `36526373945`.
 
 ### Production promotion `2026-09-29-v02`
 
