@@ -933,8 +933,8 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v11'/);
-  assert.equal((registry.match(/posts\.js\?v=2026-09-29-v10/g)||[]).length,1);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-29-v12'/);
+  assert.equal((registry.match(/posts\.js\?v=2026-09-29-v12/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
   assert.doesNotMatch(analytics,/function insightInterestScore\(/);
@@ -963,12 +963,26 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  assert.match(a.ebayListingTitle(card),/^ONE PIECE /);
  assert.match(a.defaultCarousellProductDetails(card),/^ONE PIECE 【PSA 10】/);
  const prefs={listTitle:"TEST",dropLimit:3,hashtags:"#tcg",language:"en"};
- assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"full"}),/^ONE PIECE ‼️ CARD LIST ‼️/);
+ 
  assert.match(a.buildFbCardListPost([card],{...prefs,postFormat:"drop"}),/^ONE PIECE ✨ CARD DROP/);
  const source=readSource("../dev/src/features/social/posts.js");
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
 });
 
+
+test("Development 2026-09-29-v12 restores only Card List title order while Card Drop stays Game-first",()=>{
+  const a=app();
+  a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
+  a.collectSocialPostLines=()=>[];
+  const card={id:"card-list-revert",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",language:"English",format:"Graded",availability:"Available",grading:[{company:"PSA",grade:"10",pop_count:12}]};
+  const prefs={listTitle:"TEST",dropLimit:3,hashtags:"#tcg",language:"en"};
+  const full=a.buildFbCardListPost([card],{...prefs,postFormat:"full"});
+  const drop=a.buildFbCardListPost([card],{...prefs,postFormat:"drop"});
+  assert.match(full,/^‼️ CARD LIST ‼️/);
+  assert.match(full,/ONE PIECE WTS【CARD LIST】TEST/);
+  assert.doesNotMatch(full,/^ONE PIECE ‼️ CARD LIST ‼️/);
+  assert.match(drop,/^ONE PIECE ✨ CARD DROP/);
+});
 
 test("Development 2026-09-29-v11 watermark CTA says CHECK FULL INVENTORY while preserving approved banner and QR rendering",()=>{
   const source=readSource("../dev/src/features/media/images.js");

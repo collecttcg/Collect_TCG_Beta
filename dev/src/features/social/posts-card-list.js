@@ -268,9 +268,9 @@ function buildFbCardListPost(availableCards,prefs){
     ].filter(Boolean);
 
     const lines = [
-      `${cardListGameTitle(availableCards)} ${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`.trim(),
+      `${text.cardList}  [${prefs.language==="en"?"UPDATE":"更新"} : ${appContext.fbCardListDateLabel()}]`,
       "",
-      `WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`,
+      `${cardListGameTitle(availableCards)} WTS【CARD LIST】${String(prefs.listTitle || "AVAILABLE INVENTORY").toUpperCase()}`.trim(),
       "",
       ...sections.flatMap((s,i)=>i ? ["",s] : [s]),
       "",
