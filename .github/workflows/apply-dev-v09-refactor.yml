@@ -1,0 +1,33 @@
+name: Apply Development v09 refactor
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-dev-v09-refactor.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply validated refactor payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .refactor/v09/refactor.patch.gz.b64 | gzip -d > /tmp/refactor.patch
+          git apply --check /tmp/refactor.patch
+          git apply /tmp/refactor.patch
+          rm -rf .refactor/v09
+          rm -f .github/workflows/apply-dev-v09-refactor.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Development 2026-09-29-v09: repository-wide legacy refactor"
+          git push
