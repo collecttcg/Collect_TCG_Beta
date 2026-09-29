@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v06`
+Latest Development: `2026-09-29-v07`
 
-Previous Development: `2026-09-29-v05`
+Previous Development: `2026-09-29-v06`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -75,6 +75,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v07`
+
+Previous Development: `2026-09-29-v06`
+
+Purpose: make the website QR/CTA watermark sizing smoothly responsive to image aspect ratio instead of switching abruptly at the landscape boundary.
+
+Changes:
+- Square and portrait images retain the existing 82% image-width target.
+- Landscape images now shrink progressively from 82% at 1:1 to 62% at 5:4 (1.25:1).
+- Images at 5:4, 4:3, 16:9 and wider retain the 62% minimum width target, with the existing 24% image-height cap still acting as a second safeguard.
+- Representative 1080-wide results: 1:1 ≈ 886×193 px; ~1.10:1 ≈ 798×174 px; 1.20:1 ≈ 713×155 px; 4:3 ≈ 670×146 px; 16:9 ≈ 670×146 px; portrait ≈ 886×193 px.
+- The approved banner artwork, QR replacement coordinates, bottom placement and source image remain unchanged.
+
+SQL required: No.
+
+Validation status: implementation committed; workflow/package validation pending.
 
 ### Development `2026-09-29-v06`
 

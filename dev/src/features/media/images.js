@@ -161,18 +161,19 @@ function drawWebsiteWatermark(ctx, canvas, banner){
     const sourceH=242;
     const shortSide=Math.min(canvas.width,canvas.height);
     const margin=Math.max(8,Math.round(shortSide*0.012));
-    // Keep the approved banner prominent on portrait/card photos, but prevent
-    // it from dominating landscape images. Landscape photos use a 62% width
-    // target in addition to the 24% height cap; square/portrait images retain
-    // the existing 82% width target.
+    // Scale the banner smoothly with the photo aspect ratio instead of using
+    // a hard landscape breakpoint. Square/portrait photos retain the existing
+    // 82% width target; landscape photos progressively shrink to 62% by 5:4
+    // (1.25:1) and remain capped there for wider aspect ratios.
     const widthTarget=Math.round(canvas.width*0.82);
-    const landscapeWidthTarget=canvas.width>canvas.height
-      ? Math.round(canvas.width*0.62)
-      : widthTarget;
+    const aspectRatio=canvas.width/canvas.height;
+    const landscapeProgress=Math.max(0,Math.min(1,(aspectRatio-1)/0.25));
+    const responsiveWidthRatio=0.82-(0.20*landscapeProgress);
+    const responsiveWidthTarget=Math.round(canvas.width*responsiveWidthRatio);
     const heightCappedWidth=Math.round(canvas.height*0.24*sourceW/sourceH);
     const bannerWidth=Math.min(
       canvas.width-margin*2,
-      Math.max(280,Math.min(widthTarget,landscapeWidthTarget,heightCappedWidth))
+      Math.max(280,Math.min(widthTarget,responsiveWidthTarget,heightCappedWidth))
     );
     const bannerHeight=Math.round(bannerWidth*sourceH/sourceW);
     const bannerX=Math.round((canvas.width-bannerWidth)/2);
