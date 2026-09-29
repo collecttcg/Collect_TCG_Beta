@@ -79,7 +79,7 @@ const baseline=fs.readFileSync(baselinePath,'utf8');
 for(const required of [
   'Latest Development: `2026-09-29-v11`',
   'Latest Production: `2026-09-29-v06`',
-  'Production functional baseline last promoted from Development: `2026-09-29-v08`',
+  'Production functional baseline last promoted from Development: `2026-09-29-v10`',
   'migrations/2026/',
   'migrations/legacy/',
   'Custom Order',
