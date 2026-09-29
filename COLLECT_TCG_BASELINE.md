@@ -84,13 +84,26 @@ Purpose: keep the approved Collect TCG website QR/CTA watermark from appearing d
 
 Changes:
 - The website watermark keeps the existing 82% width target for portrait/card images.
-- Banner width is now additionally capped so the banner height is at most 24% of the source image height before normal margins.
-- Landscape photos therefore receive a smaller banner while the approved banner artwork, QR replacement coordinates, placement and portrait behavior remain unchanged.
+- Banner width is additionally capped so the banner height is at most 24% of the source image height before normal margins.
+- For the supplied 1080×607 landscape example, the computed banner changes from about 886×193 px to about 670×146 px.
+- Landscape photos therefore receive a smaller banner while the approved banner artwork, QR replacement coordinates, bottom placement and portrait behavior remain unchanged.
 - No uploaded source image is cropped or resized differently by this change.
 
 SQL required: No.
 
-Validation status: implementation committed; workflow/package validation pending.
+Validation status: completed successfully. Feature tests passed 55/55, changed JavaScript syntax passed, repository/import/asset validation passed after aligning two stale Production-baseline checker markers, and the full retained Development regression chain passed. Dedicated v05 executable sizing validation confirmed the supplied 1080×607 landscape case is reduced, remains within the 24% height cap, and a representative portrait image retains the previous 82% width sizing. Generated SEO, release packaging and Development Pages deployment passed. Downloaded release ZIPs passed independent `unzip -t` integrity checks and SHA-256 matched the manifest.
+
+Release records:
+- Source/generated commit: `1bb670210d6ba7b18e94e06a98af0b2256fb76b4`
+- Package-validation commit: `295f922ccda135a5834029c4934d7c00215a5686`
+- Workflow run: `36525476813`
+- Package-validation Pages run: `36525517440`
+- Full ZIP: `Collect-TCG-Dev-2026-09-29-v05-full.zip`
+  - SHA-256: `ab0a8ede4686ab99c97c93e3627808ffb93bb58d59c7126a26a3a1f295931ad4`
+- Patch ZIP: `Collect-TCG-Dev-2026-09-29-v04-to-2026-09-29-v05-patch.zip`
+  - SHA-256: `d7ecb2a909d17c1fc3bb9af6a573a3e24c39fdac7b89d92e3da49feebfd2ae46`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not available. The watermark sizing was executable/static validated rather than visually exercised in a browser; user confirmation on Development is still appropriate for the preferred visual size.
 
 ### Production promotion `2026-09-29-v02`
 
