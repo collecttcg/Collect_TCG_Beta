@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v12`
+Latest Development: `2026-09-29-v13`
 
-Previous Development: `2026-09-29-v11`
+Previous Development: `2026-09-29-v12`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v07`
+Latest Production: `2026-09-29-v08`
 
-Previous Production: `2026-09-29-v06`
+Previous Production: `2026-09-29-v07`
 
-Production functional baseline last promoted from Development: `2026-09-29-v11`
+Production functional baseline last promoted from Development: `2026-09-29-v12`
 
-Production package-validation HEAD: `56336f79bd1d94ef79238a70280528f15c66302b`
+Production package-validation HEAD: `d12d2d106c56a91f59f1a9757f8d27c87d1eb723`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -76,6 +76,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v13`
+
+Previous Development: `2026-09-29-v12`
+
+Purpose: make the Owner quick-card **Mark Sold** action deterministically set Availability to Sold and stamp the sale date/time at the moment the owner clicks Mark Sold.
+
+Changes:
+- Quick **Mark Sold** now sends `availability: Sold` together with a fresh `sold_at` timestamp created at the click action.
+- The Sold archive therefore displays the local calendar date corresponding to the Mark Sold click instead of depending on the database trigger to create the timestamp.
+- Moving a sold card back to Available, Reserved or Collection (NFS) continues to clear the local `sold_at` value and preserves the existing database-trigger fallback.
+- No changes to manual Add/Edit sold-date controls, Bulk Status behavior, buyer-interest snapshot capture, Owner permissions, public visibility, analytics, Contact to Buy, generators or giveaways.
+
+SQL required: No. The existing `sold_at` field is reused.
+
+Validation status: implementation committed; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-29-v12`
 
