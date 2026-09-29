@@ -37,9 +37,9 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-29-v09`
+Latest Development: `2026-09-29-v10`
 
-Previous Development: `2026-09-29-v08`
+Previous Development: `2026-09-29-v09`
 
 Previous validated Beta release: `2026-09-26-v20`
 
@@ -76,6 +76,24 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-29-v10`
+
+Previous Development: `2026-09-29-v09`
+
+Purpose: make the Facebook Single Card Post Generator title start with the card Game category.
+
+Changes:
+- Single Card Facebook titles now place the normalized Game label first, before WTS / format / POP / era / year / series / card name / card code.
+- Single Card NFS titles follow the same Game-first rule before COLLECTION SHOWCASE【NFS】.
+- Separate Listing Title, eBay title, Card List/Card Drop and giveaway title formats are unchanged.
+- Added a regression test for the Game-first title contract and refreshed affected module cache-busters.
+
+SQL required: No.
+
+Validation status: implementation committed; GitHub validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser validation has not been performed.
 
 ### Development `2026-09-29-v09`
 
