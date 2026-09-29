@@ -107,9 +107,9 @@ jobs:
     - name: Create Development release packages
       shell: bash
       env:
-        RELEASE_VERSION: 2026-09-29-v10
-        PREVIOUS_VERSION: 2026-09-29-v09
-        PREVIOUS_COMMIT: 5f25c340799528f7a0193ca6a2ee51a0c2eebba0
+        RELEASE_VERSION: 2026-09-29-v11
+        PREVIOUS_VERSION: 2026-09-29-v10
+        PREVIOUS_COMMIT: 41c0f3e0e59721f92eaea15227709ac9adf0c194
       run: "set -euo pipefail\nmkdir -p release\nFULL=\"release/Collect-TCG-Dev-${RELEASE_VERSION}-full.zip\"\nPATCH=\"release/Collect-TCG-Dev-${PREVIOUS_VERSION}-to-${RELEASE_VERSION}-patch.zip\"\
         \n\ngit archive --format=zip --output=\"${FULL}\" HEAD\n\nrm -rf .release-patch\nmkdir -p .release-patch\nwhile IFS=\
         \ read -r -d '' path; do\n  mkdir -p \".release-patch/$(dirname \"$path\")\"\n  cp -a \"$path\" \".release-patch/$path\"\
@@ -119,20 +119,20 @@ jobs:
     - name: Upload Development release packages
       uses: actions/upload-artifact@v4
       with:
-        name: Collect-TCG-Dev-2026-09-29-v10-packages
-        path: 'release/Collect-TCG-Dev-2026-09-29-v10-full.zip
+        name: Collect-TCG-Dev-2026-09-29-v11-packages
+        path: 'release/Collect-TCG-Dev-2026-09-29-v11-full.zip
 
-          release/Collect-TCG-Dev-2026-09-29-v09-to-2026-09-29-v10-patch.zip
+          release/Collect-TCG-Dev-2026-09-29-v10-to-2026-09-29-v11-patch.zip
 
           '
         if-no-files-found: error
         retention-days: 30
     - name: Record package validation manifest
       shell: bash
-      run: "set -euo pipefail\nmkdir -p release-manifests\nMANIFEST=\"release-manifests/2026-09-29-v10.txt\"\n{\n  echo \"\
-        Version: 2026-09-29-v10\"\n  echo \"Previous version: 2026-09-29-v09\"\n  echo \"Source commit: $(git rev-parse HEAD)\"\
-        \n  echo \"Full ZIP: Collect-TCG-Dev-2026-09-29-v10-full.zip\"\n  echo \"Patch ZIP: Collect-TCG-Dev-2026-09-29-v09-to-2026-09-29-v10-patch.zip\"\
-        \n  echo\n  sha256sum release/*.zip\n} > \"$MANIFEST\"\ngit add \"$MANIFEST\"\ngit commit -m \"Development 2026-09-29-v10:\
+      run: "set -euo pipefail\nmkdir -p release-manifests\nMANIFEST=\"release-manifests/2026-09-29-v11.txt\"\n{\n  echo \"\
+        Version: 2026-09-29-v11\"\n  echo \"Previous version: 2026-09-29-v10\"\n  echo \"Source commit: $(git rev-parse HEAD)\"\
+        \n  echo \"Full ZIP: Collect-TCG-Dev-2026-09-29-v11-full.zip\"\n  echo \"Patch ZIP: Collect-TCG-Dev-2026-09-29-v10-to-2026-09-29-v11-patch.zip\"\
+        \n  echo\n  sha256sum release/*.zip\n} > \"$MANIFEST\"\ngit add \"$MANIFEST\"\ngit commit -m \"Development 2026-09-29-v11:\
         \ record package validation\"\ngit push\n"
   deploy:
     needs: refresh
