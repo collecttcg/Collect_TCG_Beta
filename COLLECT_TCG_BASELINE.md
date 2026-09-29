@@ -93,6 +93,8 @@ Changes:
 
 SQL required: No.
 
+Implementation commit: `a961041eb29c82a7f3b0b2c5ccf681a137800813`
+
 Validation status: implementation committed; validation and packaging in progress.
 
 Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
