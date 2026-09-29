@@ -81,13 +81,15 @@ Important promotion state:
 
 Previous Development: `2026-09-29-v09`
 
-Purpose: make the Facebook Single Card Post Generator title start with the card Game category.
+Purpose: make generated Post Generator titles start with the Game category whenever game data is available.
 
 Changes:
-- Single Card Facebook titles now place the normalized Game label first, before WTS / format / POP / era / year / series / card name / card code.
-- Single Card NFS titles follow the same Game-first rule before COLLECTION SHOWCASE【NFS】.
-- Separate Listing Title, eBay title, Card List/Card Drop and giveaway title formats are unchanged.
-- Added a regression test for the Game-first title contract and refreshed affected module cache-busters.
+- Single Card Facebook WTS and NFS titles place the normalized Game label first.
+- Single Card copy/listing titles and eBay listing titles place Game first.
+- Carousell inventory-card generated Product Details start with Game before the format/card lead line.
+- Card List and Card Drop generated posts start their first/title line with the selected card game category; mixed-game selections list their unique game labels first.
+- Giveaway headings remain unchanged because giveaway records do not provide a Game field; no game is inferred from prize text.
+- Added regression coverage for the Game-first title contract across applicable Post Generators and refreshed affected module cache-busters.
 
 SQL required: No.
 
