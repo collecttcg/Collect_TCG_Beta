@@ -37,21 +37,21 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-30-v01`
+Latest Development: `2026-09-30-v02`
 
-Previous Development: `2026-09-29-v14`
+Previous Development: `2026-09-30-v01`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-29-v09`
+Latest Production: `2026-09-30-v01`
 
-Previous Production: `2026-09-29-v08`
+Previous Production: `2026-09-29-v10`
 
-Production functional baseline last promoted from Development: `2026-09-29-v13`
+Production functional baseline last promoted from Development: `2026-09-30-v01`
 
-Production package-validation HEAD: `86ce84330e9d0f6ff24febff528bd4137738388a`
+Production package-validation HEAD: `b4a83f9b016d8b1024fad244ae15886ea2b041f0`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
@@ -76,6 +76,23 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-30-v02`
+
+Previous Development: `2026-09-30-v01`
+
+Purpose: make `WTS` the first text in the Generate Post Details WTS title while preserving the approved game/format/era/detail order.
+
+Changes:
+- Changes the single-card Generate Post Details title from `[GAME] WTS【FORMAT】【ERA】 ...` to `WTS [GAME]【FORMAT】【ERA】 ...`.
+- Example: `WTS ONE PIECE HYPER BATTLE【DMG】【VINTAGE】 2001 CARDDASS GRAND BOX DX ACE C531`.
+- Does not change Card List, Card Drop, NFS, eBay, Carousell or Giveaway title formats.
+
+SQL required: No.
+
+Validation status: implementation committed; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
 
 ### Development `2026-09-30-v01`
 

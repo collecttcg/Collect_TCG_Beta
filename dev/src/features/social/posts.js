@@ -293,9 +293,9 @@ function defaultFbPostTitle(card){
       card.name || "",
       card.card_code || ""
     ].filter(Boolean);
-    const salesLead=`WTS【${appContext.fbFormatLabel(card)}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)}`;
+    const salesLead=`${game ? `WTS ${game}` : "WTS"}【${appContext.fbFormatLabel(card)}】${appContext.postPopLabel(card)}${appContext.postEraLabel(card)}`;
 
-    return [game,salesLead,...parts].filter(Boolean).join(" ").replace(/\s+/g," ").trim().toUpperCase();
+    return [salesLead,...parts].filter(Boolean).join(" ").replace(/\s+/g," ").trim().toUpperCase();
   }
 
 function singleCardCopyTitle(card){

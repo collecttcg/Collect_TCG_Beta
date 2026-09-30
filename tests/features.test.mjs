@@ -933,8 +933,8 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-30-v01'/);
-  assert.equal((registry.match(/posts\.js\?v=2026-09-30-v01/g)||[]).length,1);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-30-v02'/);
+  assert.equal((registry.match(/posts\.js\?v=2026-09-30-v02/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
   assert.doesNotMatch(analytics,/function insightInterestScore\(/);
@@ -958,7 +958,7 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  a.getWebsiteShareUrl=()=>"https://example.test/#/inventory";
  a.collectSocialPostLines=()=>[];
  const card={id:"game-first-title",game:"One Piece Card Game",year:"2024",series:"Championship",name:"Monkey D. Luffy",card_code:"P-001",era:"Championship",language:"English",format:"Graded",availability:"Available",grading:[{company:"PSA",grade:"10",pop_count:12}]};
- assert.match(a.defaultFbPostTitle(card),/^ONE PIECE WTS【PSA 10】/);
+ assert.match(a.defaultFbPostTitle(card),/^WTS ONE PIECE【PSA 10】/);
  assert.match(a.singleCardCopyTitle(card),/^ONE PIECE · /);
  assert.match(a.ebayListingTitle(card),/^ONE PIECE /);
  assert.match(a.defaultCarousellProductDetails(card),/^ONE PIECE 【PSA 10】/);
@@ -969,6 +969,16 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
  assert.ok(source.includes("appContext.fbGameLabel(selectedCard)} COLLECTION SHOWCASE【NFS】"));
 });
 
+
+
+
+test("Development 2026-09-30-v02 puts WTS first in Generate Post Details title",()=>{
+  const a=app();
+  a.fbFormatLabel=()=>"DMG";
+  a.postPopLabel=()=>"";
+  const card={id:"wts-first-title",game:"One Piece Hyper Battle",year:"2001",series:"Grand Box DX",name:"Ace",card_code:"C531",era:"Vintage",language:"Japanese",format:"Raw",availability:"Available"};
+  assert.equal(a.defaultFbPostTitle(card),"WTS ONE PIECE HYPER BATTLE【DMG】【VINTAGE】 2001 CARDDASS GRAND BOX DX ACE C531");
+});
 
 test("Development 2026-09-29-v12 restores only Card List title order while Card Drop stays Game-first",()=>{
   const a=app();
@@ -1034,7 +1044,7 @@ test('Development v14 eBay generator has one-step Prepare eBay Listing workflow'
   assert.ok(posts.includes('eBay listing ready · text copied'));
   assert.ok(posts.includes('Could not fully prepare eBay listing'));
 });
-test('Development 2026-09-30-v01 places Prepare eBay Listing above the listing fields',()=>{
+test('Development 2026-09-30-v02 places Prepare eBay Listing above the listing fields',()=>{
   const posts=postGeneratorSource();
   const prepareIndex=posts.indexOf('id="ebayPrepareListing"');
   const titleIndex=posts.indexOf('id="ebayTitleOutput"');
