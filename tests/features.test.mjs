@@ -972,6 +972,13 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
 
 
 
+test("Development 2026-09-30-v03 shows Raw condition in shared card details information grid",()=>{
+  const details=source("../dev/src/features/cards/details.js");
+  assert.ok(details.includes('appContext.effectiveFormat(card)==="Raw" ? `<div class="detail-item"><div class="detail-label">Condition</div>'));
+  assert.ok(details.includes("appContext.escapeHtml(condition)"));
+  assert.equal((details.match(/<div class="detail-label">Condition<\/div>/g)||[]).length,1);
+});
+
 test("Development 2026-09-30-v02 puts WTS first in Generate Post Details title",()=>{
   const a=app();
   a.fbFormatLabel=()=>"DMG";

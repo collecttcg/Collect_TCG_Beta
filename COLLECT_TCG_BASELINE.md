@@ -37,19 +37,19 @@ Use the actual build date. Development and Production have independent counters 
 
 ## Current Versions
 
-Latest Development: `2026-09-30-v02`
+Latest Development: `2026-09-30-v03`
 
-Previous Development: `2026-09-30-v01`
+Previous Development: `2026-09-30-v02`
 
 Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-30-v01`
+Latest Production: `2026-09-30-v02`
 
-Previous Production: `2026-09-29-v10`
+Previous Production: `2026-09-30-v01`
 
-Production functional baseline last promoted from Development: `2026-09-30-v01`
+Production functional baseline last promoted from Development: `2026-09-30-v02`
 
 Production package-validation HEAD: `b4a83f9b016d8b1024fad244ae15886ea2b041f0`
 
@@ -76,6 +76,25 @@ Important promotion state:
 ---
 
 ## Current Release State
+
+### Development `2026-09-30-v03`
+
+Previous Development: `2026-09-30-v02`
+
+Purpose: restore explicit Raw card condition visibility in the Card Information section on both desktop and mobile card details.
+
+Changes:
+- Adds a `Condition` item immediately after `Format` when the effective card format is Raw.
+- Uses the existing full condition label already calculated by card details (for example Near Mint or Damaged).
+- The shared details markup means the same field appears on desktop and mobile.
+- Graded cards do not receive a redundant Condition item; their grade remains in the existing Grade / Condition summary.
+- No CSS/layout redesign and no database changes.
+
+SQL required: No.
+
+Validation status: implementation committed; validation and packaging in progress.
+
+Validation limitation: interactive desktop/mobile/Safari browser testing has not yet been performed.
 
 ### Development `2026-09-30-v02`
 

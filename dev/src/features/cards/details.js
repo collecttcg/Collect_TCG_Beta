@@ -1374,6 +1374,7 @@ async function openDetailsModal(card){
           <div class="detail-info-section-title">Card information</div>
           <div class="detail-grid details-info-grid">
             <div class="detail-item"><div class="detail-label">Format</div><div class="detail-value">${appContext.escapeHtml(appContext.effectiveFormat(card))}</div></div>
+            ${appContext.effectiveFormat(card)==="Raw" ? `<div class="detail-item"><div class="detail-label">Condition</div><div class="detail-value">${appContext.escapeHtml(condition)}</div></div>` : ""}
             ${isSoldListing && soldDateLabel ? `<div class="detail-item"><div class="detail-label">Sold Date</div><div class="detail-value">${appContext.escapeHtml(soldDateLabel)}</div></div>` : ""}
             ${card.card_code ? `<div class="detail-item"><div class="detail-label">Card Code</div><div class="detail-value">${appContext.escapeHtml(card.card_code)}</div></div>` : ""}
             ${card.year ? `<div class="detail-item"><div class="detail-label">Year</div><div class="detail-value">${appContext.escapeHtml(card.year)}</div></div>` : ""}
