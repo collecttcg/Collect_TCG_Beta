@@ -45,13 +45,13 @@ Previous validated Beta release: `2026-09-26-v20`
 
 Beta v20 package-validation HEAD: `46783f9758e2f4ecaeef90a9139aa40147c2a811`
 
-Latest Production: `2026-09-30-v02`
+Latest Production: `2026-09-30-v03`
 
-Previous Production: `2026-09-30-v01`
+Previous Production: `2026-09-30-v02`
 
-Production functional baseline last promoted from Development: `2026-09-30-v02`
+Production functional baseline last promoted from Development: `2026-09-30-v03`
 
-Production package-validation HEAD: `b4a83f9b016d8b1024fad244ae15886ea2b041f0`
+Production package-validation HEAD: `a30f219a57623bb4cdead48f2370910c2018659f`
 
 GitHub Pages status at reconciliation:
 - Development `2026-09-27-v08` renames the active application directory to `dev/` and publishes the contents of `dev/` as the GitHub Pages root, so public Development URLs no longer expose `/beta/` or `/dev/`.
