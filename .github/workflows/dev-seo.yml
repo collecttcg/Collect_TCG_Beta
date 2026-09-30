@@ -132,7 +132,7 @@ jobs:
       run: "set -euo pipefail\nmkdir -p release-manifests\nMANIFEST=\"release-manifests/2026-09-30-v03.txt\"\n{\n  echo \"\
         Version: 2026-09-30-v03\"\n  echo \"Previous version: 2026-09-30-v02\"\n  echo \"Source commit: $(git rev-parse HEAD)\"\
         \n  echo \"Full ZIP: Collect-TCG-Dev-2026-09-30-v03-full.zip\"\n  echo \"Patch ZIP: Collect-TCG-Dev-2026-09-30-v02-to-2026-09-30-v03-patch.zip\"\
-        \n  echo\n  sha256sum release/*.zip\n} > \"$MANIFEST\"\ngit add \"$MANIFEST\"\ngit commit -m \"Development 2026-09-30-v02:\
+        \n  echo\n  sha256sum release/*.zip\n} > \"$MANIFEST\"\ngit add \"$MANIFEST\"\ngit commit -m \"Development 2026-09-30-v03:\
         \ record package validation\"\ngit push\n"
   deploy:
     needs: refresh
