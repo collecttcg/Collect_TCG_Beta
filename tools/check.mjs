@@ -78,8 +78,8 @@ if(!fs.existsSync(baselinePath)) throw new Error('Missing COLLECT_TCG_BASELINE.m
 const baseline=fs.readFileSync(baselinePath,'utf8');
 for(const required of [
   'Latest Development: `2026-09-30-v02`',
-  'Latest Production: `2026-09-29-v09`',
-  'Production functional baseline last promoted from Development: `2026-09-29-v13`',
+  'Latest Production: `2026-09-30-v01`',
+  'Production functional baseline last promoted from Development: `2026-09-30-v01`',
   'migrations/2026/',
   'migrations/legacy/',
   'Custom Order',
