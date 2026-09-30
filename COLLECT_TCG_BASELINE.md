@@ -92,9 +92,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; validation and packaging in progress.
+Validation status: completed successfully. The final feature regression suite passed (64/64), including the Raw-condition Card Information contract. Changed JavaScript syntax/import/reference validation, CSS and retained release contracts, SEO syntax/self-test/generation, package creation/integrity, artifact upload and Development GitHub Pages deployment all passed. Static inspection confirms desktop and mobile use the same Card Information markup, so the Raw Condition field is present in both layouts without a CSS-specific branch.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not yet been performed.
+Release records:
+- Implementation commit: `58f2318cef1c206a9a3afd67ae15fa8d8768a4cf`
+- Test-harness correction commit: `0fa0bbaddc35970cc7add69e96db0579b38a6dec`
+- Release-label correction/source commit: `51b74747ba756c7b1f14ad95178a2438032ff231`
+- Package-validation commit: `6a302b170d2f0e5295f9e1496fc0ac955e7188da`
+- Successful Development workflow: `36674185246`
+- Full ZIP SHA256: `fdab5db480f85aed92414bdd018467b0bcacbcf07e829f85247037a093648db6`
+- Patch ZIP SHA256: `02462ba6efb530e94a3ac9040147125e93898a1f15b70b94e8026d4d2d9c706c`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed; desktop/mobile coverage for this field is statically verified from their shared renderer rather than visually exercised in a browser.
 
 ### Development `2026-09-30-v02`
 
