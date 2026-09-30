@@ -933,7 +933,7 @@ test('Development 2026-09-29-v09 legacy refactor keeps canonical module and CSS 
   const index=readSource('../dev/index.html');
   const styleOrder=JSON.parse(readSource('../docs/style-order.json'));
 
-  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-30-v02'/);
+  assert.match(initializer,/export \{ initializeApp \} from '\.\/register-features\.js\?v=2026-09-30-v03'/);
   assert.equal((registry.match(/posts\.js\?v=2026-09-30-v02/g)||[]).length,1);
   assert.equal((registry.match(/page\.js\?v=2026-09-29-v09/g)||[]).length,1);
   assert.doesNotMatch(analytics,/function insightContactMetrics\(/);
@@ -973,7 +973,7 @@ test("Development 2026-09-29-v10 Post Generator titles start with the game categ
 
 
 test("Development 2026-09-30-v03 shows Raw condition in shared card details information grid",()=>{
-  const details=source("../dev/src/features/cards/details.js");
+  const details=readSource("../dev/src/features/cards/details.js");
   assert.ok(details.includes('appContext.effectiveFormat(card)==="Raw" ? `<div class="detail-item"><div class="detail-label">Condition</div>'));
   assert.ok(details.includes("appContext.escapeHtml(condition)"));
   assert.equal((details.match(/<div class="detail-label">Condition<\/div>/g)||[]).length,1);
