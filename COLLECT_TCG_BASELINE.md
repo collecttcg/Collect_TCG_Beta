@@ -90,9 +90,18 @@ Changes:
 
 SQL required: No.
 
-Validation status: implementation committed; validation and packaging in progress.
+Validation status: completed successfully. The full feature regression suite passed (63/63), including the exact WTS-first Ace C531 title regression. SEO syntax/self-test/generation, repository-wide JavaScript/import/reference validation, CSS and retained release contracts, package creation/integrity, artifact upload and Development GitHub Pages deployment all passed.
 
-Validation limitation: interactive desktop/mobile/Safari browser testing has not been performed.
+Release records:
+- Implementation commit: `973ab589e50ea8dd4e0a672dfcc8c342c98fb86c`
+- Baseline validation correction: `a5802de0c1b89561a803e61bb19598eb79aae9af`
+- Validated/generated source commit: `4dc564d43e4e06239f8841d8f2f7fc346d6c4746`
+- Package-validation commit: `51b31ff6b61ad261c8a6cffb5a71783a819444ff`
+- Successful Development workflow: `36669007692`
+- Full ZIP SHA256: `0259b3cb0b079eee5dba8d9a8319cd2e20534f4a7bb03338e5cc307a9229d72e`
+- Patch ZIP SHA256: `9c1b632b9e8443d77faa6782bf0d23704ace88687300bc4641d0e63caf7eb069`
+
+Validation limitation: interactive desktop/mobile/Safari browser testing was not performed.
 
 ### Development `2026-09-30-v01`
 
