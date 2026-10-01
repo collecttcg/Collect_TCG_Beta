@@ -64,7 +64,7 @@ Important promotion state:
 - Production 2026-09-27-v04 completed the last-known-good recovery automation; it does not promote new Beta application behavior.
 - `production-last-known-good` now advances only after the final Production manifest commit successfully deploys through GitHub Pages.
 - Current validated/deployed Production last-known-good commit: `56336f79bd1d94ef79238a70280528f15c66302b`.
-- Recommended external disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (not yet created; one-time GitHub admin action required).
+- External disaster-recovery repository: `collecttcg/Collect_TCG_Backup` (private; created 2026-10-01). Git repository recovery is automated weekly/on-demand using full Git bundles for Production and Development. Workflow run `36885168071` successfully bundle-verified and round-trip restored both repositories with full ref comparison; snapshot release `repository-backup-2026-10-01T153324Z`. Supabase database + actual Storage object recovery remains pending and must not be treated as validated.
 - Production 2026-09-27-v02 promoted filtered rearranging from Beta 2026-09-27-v02.
 - Filtered Inventory/Collection card rearranging is therefore now shared by Beta and Production; hidden cards retain their global slots and filtered views do not rewrite game-category order.
 - Production 2026-09-27-v01 retains the validated Beta v16 functional baseline and adds Production-only repository cleanup plus QR Generator registration repair.
